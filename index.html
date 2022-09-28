@@ -4,17 +4,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tom Kimberlin</title>
-    <style>
-      :root {
-        color-scheme: light dark;
-      }
-      body {
-        font-family: sans-serif;
-        margin: auto;
-        max-width: 50em;
-        padding: 1em;
-      }
-    </style>
   </head>
   <body>
     <h1>Tom Kimberlin</h1>
@@ -22,4 +11,21 @@
     <p>Email: <a href="mailto:tom@kimberlin.dev">tom@kimberlin.dev</a></p>
     <p>GitHub: <a href="https://github.com/tomkimberlin">tomkimberlin</a></p>
   </body>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+    body {
+      font-family: sans-serif;
+      margin: auto;
+      max-width: 50em;
+      padding: 1em;
+    }
+    @supports (color-scheme: dark light) {
+      @media screen and (prefers-color-scheme: dark) {
+        :where(a:link) {color: #9e9eff;}
+        :where(a:visited) {color: #d0adf0;}
+      }
+    }
+  </style>
 </html>
