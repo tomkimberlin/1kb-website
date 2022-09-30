@@ -1,4 +1,4 @@
-# my-website
+# 1kb-website
 
 This is my personal website which was designed to be submitted to the [1kb.club](https://1kb.club).
 
