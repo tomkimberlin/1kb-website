@@ -1,6 +1,6 @@
 # 1kb-website
 
-This is my personal website which was designed to be submitted to the [1kb.club](https://1kb.club).
+This is my personal website inspired by [1kb.club](https://1kb.club).
 
 ## About
 - [Under 1kb page size](https://gtmetrix.com/reports/takimberlin.com/kgc99z0A/)
