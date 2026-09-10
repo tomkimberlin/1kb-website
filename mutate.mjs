@@ -25,7 +25,7 @@ for(let round=0;round<5;round++){
  }
  seeds=[...seeds,...next].sort((a,b)=>compress(a)-compress(b)||a.length-b.length).slice(0,40);
 }
-const best=seeds[0],report={tested,html:best.length,brotli:compress(best),best};
+const best=seeds[0],report={tested,html:Buffer.byteLength(best),brotli:compress(best),best,top:seeds};
 fs.writeFileSync('optimization/refined.json',JSON.stringify(report,null,2)+'\n');
 fs.writeFileSync('optimization/candidate.html',best);
-console.log(report);
+console.log({tested,html:report.html,brotli:report.brotli,best});

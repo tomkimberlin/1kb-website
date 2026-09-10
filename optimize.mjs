@@ -1,32 +1,30 @@
+// Measure equivalent serializations of the current page. Never overwrite it.
 import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
-import {execFileSync} from 'node:child_process';
-import {brotliCompressSync,gzipSync,constants as c} from 'node:zlib';
-const original=execFileSync('git',['show','715f2de:index.html'],{encoding:'utf8'});
+import {brotliCompressSync,constants as c} from 'node:zlib';
+const source=readFileSync('index.html','utf8');
 const perm=a=>a.length?a.flatMap((x,i)=>perm(a.filter((_,j)=>i!==j)).map(p=>[x,...p])):[[]];
-let best, count=0;
-const candidates=[];
-for(const close of ['', '</a>']) for(const href of ['https://github.com/tomkimberlin', '//github.com/tomkimberlin', 'g']) for(const doctype of ['<!doctype html>','<!DOCTYPE html>','<!doctypehtml>']) for(const brace of [true,false]) for(const quotes of [true,false]) {
- const css=['color-scheme:dark','font:5vmin monospace','padding:1em'];
- for(const declarations of perm(css)) for(const order of [0,1]) for(const initial of ['',',initial-scale=1']) {
-  const body=`Hi, I'm Tom! <a href=${href}>GitHub${close}`;
-  const rules=[`html{${declarations.join(';')}}`,'a{color:#fff}'];
-  if(order) rules.reverse();
-  if(!brace)rules[rules.length-1]=rules.at(-1).slice(0,-1);
-  const heads=['<title>Tom Kimberlin</title>','<link rel=icon href=data:,>',`<meta name=viewport content=${quotes?'"':''}width=device-width${initial}${quotes?'"':''}>`,`<style>${rules.join('')}</style>`];
-  for(const head of perm(heads)) {
-   const html=doctype+head.join('')+body;
-   const data=Buffer.from(html);
-   const br=brotliCompressSync(data,{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_MODE]:c.BROTLI_MODE_TEXT,[c.BROTLI_PARAM_SIZE_HINT]:data.length}});
-   const candidate={html,bytes:data.length,br:br.length,initial,close,href,doctype,brace,quotes};
-   candidates.push(candidate); count++;
-   if(!best||candidate.br<best.br||candidate.br===best.br&&candidate.bytes<best.bytes)best=candidate;
-  }
- }
+const title=source.match(/<title>.*?<\/title>/s)[0];
+const style=source.match(/<style>(.*?)<\/style>/s)[1];
+const declarations=style.match(/html\{([^}]+)/)[1].split(';').filter(Boolean);
+const body=source.replace(/^\ufeff/,'').replace(/<!doctype\s*html>/i,'').replace(/<style>.*?<\/style>|<title>.*?<\/title>|<link[^>]*>|<meta[^>]*>/gs,'');
+const score=html=>brotliCompressSync(Buffer.from(html),{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_LGWIN]:16}}).length;
+const top=[];let count=0;
+function consider(html) {
+ const candidate={html,bytes:Buffer.byteLength(html),br:score(html)};count++;
+ top.push(candidate);top.sort((a,b)=>a.br-b.br||a.bytes-b.bytes);if(top.length>40)top.length=40;
 }
-candidates.sort((a,b)=>a.br-b.br||a.bytes-b.bytes);
-const baseline=Buffer.from(original);
-const report={count,baseline:{bytes:baseline.length,brotli:brotliCompressSync(baseline,{params:{[c.BROTLI_PARAM_QUALITY]:11}}).length,gzip:gzipSync(baseline,{level:9}).length},best,top:candidates.slice(0,20)};
+consider(source);
+for(const ds of perm(declarations))for(const reverse of [false,true])for(const brace of [true,false])for(const quote of ['', '"'])for(const doctype of ['<!doctype html>','<!DOCTYPE html>']) {
+ const rules=[`html{${ds.join(';')}}`,'a{color:#fff}'];if(reverse)rules.reverse();if(!brace)rules[rules.length-1]=rules.at(-1).slice(0,-1);
+ const heads=[title,'<link rel=icon href=data:,>',`<meta name=viewport content=${quote}width=device-width${quote}>`,`<style>${rules.join('')}</style>`];
+ for(const order of perm(heads))for(const encoding of ['\ufeff','<meta charset=utf-8>'])consider((encoding==='\ufeff'?encoding:'')+doctype+(encoding==='\ufeff'?'':encoding)+order.join('')+body);
+}
+// Starting with the best serializations, compare redirect and direct link targets.
+const heads=[...top];
+for(const seed of heads) for(const g of ['g','https://github.com/tomkimberlin','//github.com/tomkimberlin'])for(const x of ['x','https://xmr.surf','//xmr.surf'])for(const s of ['s','https://github.com/tomkimberlin/1kb-website','//github.com/tomkimberlin/1kb-website'])for(const close of ['', '</a>']) {
+ consider(seed.html.replace('href=g','href='+g).replace('href=x','href='+x).replace('href=s','href='+s).replace(/<\/a>$/,'')+close);
+}
 mkdirSync('optimization',{recursive:true});
-writeFileSync('optimization/search.json',JSON.stringify(report,null,2)+'\n');
-writeFileSync('optimization/candidate.html',best.html);
-console.log(JSON.stringify({count,baseline:report.baseline,best},null,2));
+const report={count,baseline:{bytes:Buffer.byteLength(source),brotli:score(source)},best:top[0],top};
+writeFileSync('optimization/search.json',JSON.stringify(report,null,2)+'\n');writeFileSync('optimization/candidate.html',top[0].html);
+console.log(JSON.stringify({count,baseline:report.baseline,best:report.best},null,2));

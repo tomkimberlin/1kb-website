@@ -49,6 +49,7 @@ test('redirects and missing paths have empty bodies',async()=>{
     ['http://tomkimberlin.com/?x=1','https://tomkimberlin.com/?x=1'],
     ['https://www.tomkimberlin.com/g','https://tomkimberlin.com/g'],
     ['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
+    ['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website'],
   ]) {
     const response=call(url);
     assert.equal(response.status,301);assert.equal(response.headers.get('location'),location);

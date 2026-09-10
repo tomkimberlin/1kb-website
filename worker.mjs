@@ -38,6 +38,8 @@ export default {
       return new Response(null, {status: 405, headers: {allow: 'GET, HEAD'}});
     }
     if (url.pathname === '/g') return redirect('https://github.com/tomkimberlin');
+    if (url.pathname === '/x') return redirect('https://xmr.surf/');
+    if (url.pathname === '/s') return redirect('https://github.com/tomkimberlin/1kb-website');
     if (url.pathname === '/index.html') return redirect('/' + url.search);
     if (url.pathname !== '/') return new Response(null, {status: 404});
 

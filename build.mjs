@@ -1,6 +1,9 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {brotliCompressSync,brotliDecompressSync,gzipSync,gunzipSync,constants as c} from 'node:zlib';
 const data=readFileSync('index.html');
+// The page promises less than 1 KB even before compression (decimal kilobytes).
+if(data.length>=1000)throw Error('The under-1-KB claim no longer holds');
+new TextDecoder('utf-8',{fatal:true}).decode(data);
 let best;
 let attempts=0;
 for(let quality=0;quality<=11;quality++) for(let mode=0;mode<=2;mode++) for(let window=10;window<=24;window++) for(const hint of [0,data.length]) {
