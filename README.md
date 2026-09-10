@@ -1,45 +1,37 @@
 # 1kb website
 
-My personal website at **[tomkimberlin.com](https://tomkimberlin.com/)**. Sysadmin, developer, AI optimist, tinkerer, gamer, FAA certified drone pilot. A deliberately tiny homepage with a link to my Monero node. A Cloudflare Worker serves the complete site directly, with no home server, tunnel, database, or external origin.
+My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Hosted on a Cloudflare Worker.
 
-## How small?
+## Size
 
-Measured on September 10, 2026, with the page title **Tom Kimberlin**:
+Measured September 10, 2026:
 
-| Representation | HTML response body |
+| Encoding | Response body |
 | --- | ---: |
-| Uncompressed | **428 bytes** |
-| Brotli | **271 bytes** |
-| Gzip, optimized with Zopfli | **338 bytes** |
-| A fresh repeat visit in Chromium/Firefox | **0 network bytes** |
+| Uncompressed | 428 bytes |
+| Brotli | 271 bytes |
+| Gzip | 338 bytes |
 
-These are **body sizes**, not the complete TLS/TCP/HTTP exchange. Cloudflare adds response headers, and establishing a new connection costs additional bytes. The original version in commit `715f2de` was already only 456 bytes raw / 247 bytes Brotli. The intervening greeting-only version was 230 bytes raw / 128 bytes Brotli. The current page adds a bio, Monero and source links, and four emojis. Different versions contain different text, so their size differences are not solely minification gains. The on-page claim uses decimal kilobytes and holds even before compression; the build fails at 1,000 bytes.
+These sizes exclude HTTP headers and connection overhead. The build rejects HTML of 1,000 bytes or more.
 
-## What was optimized
+## Optimizations
 
-- **One document, one request.** Inline CSS, a system monospace font, no JavaScript, frameworks, images, external fonts, stylesheets, analytics, or trackers.
-- **An empty data-URL favicon.** `<link rel=icon href=data:,>` prevents an automatic request for `/favicon.ico`.
-- **Short equivalent CSS.** `5vmin` replaces `min(5vw,5vh)`. Unnecessary declarations, punctuation, whitespace, and explicit document wrappers were removed. The final hyperlink closes at end of file through the browser's HTML parser.
-- **One-character link targets.** `/g`, `/x`, and `/s` redirect to GitHub, XMR.surf, and this repository. Each redirect has an empty body. This minimizes the initial page, with the explicit tradeoff of one redirect after a click. Direct and protocol-relative URLs were also compared.
-- **Compression-aware ordering.** The richer page went through 6,769 serialization/link candidates and 399 follow-up mutations. Then 47 shortlisted variants were compared across the full Brotli grid: another 50,760 compression trials. For the latest bio, the initial serialization was 281 bytes Brotli; the chosen equivalent form is 271 bytes. Shorter source does not always mean a smaller download.
-- **Color without downloads.** Four Unicode emojis use the device's existing emoji font. A three-byte UTF-8 BOM makes decoding explicit. In the earlier 400-byte revision, removing the BOM increased Brotli size from 238 to 248 bytes before even adding an HTTP charset declaration; replacing it with a charset meta tag reached 255 bytes. All three browser engines correctly decoded the chosen form.
-- **Offline compression.** The build tries 1,080 Brotli parameter combinations and keeps the smallest output. Gzip is also compared across zlib settings and a precomputed Zopfli result, including searches up to 10,000 iterations. All outputs are decompressed and checked against the source.
-- **Precompressed bytes embedded in the Worker.** The three representations are bundled into the server code. `encodeBody: 'manual'` sends them unchanged, with no origin fetch or runtime compression. The Worker code itself is never downloaded by the browser.
-- **No edge rewriting.** `Cache-Control: no-transform` preserves the precompressed body. Cloudflare's email rewriting and other content-changing features are disabled for this dedicated domain.
-- **Lean response headers.** Optional reporting, range, validator, and server-identification headers are stripped wherever the origin and Cloudflare allow it. Cloudflare's protected or later-injected headers remain; removing a header in a rule does not guarantee it disappears on the wire.
-- **Empty redirects.** HTTP-to-HTTPS, `www`, and GitHub redirects return no body. The Worker handles the HTTPS redirect to avoid Cloudflare's default 167-byte redirect page.
-- **Caching.** The page has a one-day browser lifetime. A measured fresh revisit uses zero network bytes. The Worker already holds the complete content at the edge; it does not need an origin-response cache or a Cache API lookup.
-- **Correct negotiation.** A zone request transform preserves the visitor's `Accept-Encoding` before normalization. In live tests, even `request.cf.clientAcceptEncoding` dropped quality weights. The Worker reads the preserved header, respects exclusions and weighted preferences, and chooses the smallest equally preferred representation.
+- Inline CSS, system fonts, and Unicode emojis keep everything in one file. An empty data-URL favicon prevents a separate icon request.
+- Optional HTML tags, attribute quotes, and CSS punctuation are omitted where the browser permits it. `5vmin` replaces `min(5vw,5vh)`.
+- Markup and CSS ordering are tested for compressed size. Fewer source bytes do not always produce a smaller compressed file.
+- A UTF-8 BOM specifies the encoding for the emojis.
+- One-character links (`/g`, `/x`, `/s`) shorten the HTML. Each adds an empty redirect when clicked.
+- The build tries 1,080 Brotli configurations and compares gzip settings with a precomputed Zopfli file. Every compressed result is checked against the source after decompression.
+- The Worker embeds all three representations and sends precompressed bytes with `encodeBody: 'manual'`.
+- A request transform preserves the original `Accept-Encoding` so the Worker can respect quality weights and exclusions.
+- `Cache-Control: no-transform` and disabled content injection prevent Cloudflare from modifying the page. Response transforms remove optional headers; Cloudflare still adds some headers that cannot be removed.
+- Browser caching lasts one day. HTTPS and hostname redirects have empty bodies.
 
-## Verification and limits
+See [OPTIMIZATION.md](OPTIMIZATION.md) for measurements and validation. The search does not prove a global minimum.
 
-Earlier versions were checked in Chromium, Firefox, and WebKit at desktop and phone dimensions, including UTF-8 decoding, visible text, title, all three links, and overflow. This copy revision preserves the same styles and link targets; its UTF-8 and approved text were checked directly. Byte-for-byte live compression checks cover Brotli, gzip, identity, and quality-weighted encoding preferences.
+## Build and check
 
-The earlier 400-byte profile revision also had every single-byte deletion checked for valid UTF-8 and tested against the rendered layout, content, metadata, and link targets. Deletions that still render identically are recompressed: some remove source bytes but increase the download. This is an extensive measured search, **not a mathematical proof of the globally smallest possible page**.
-
-HTTP/2 measurements count compressed header blocks, the body, and frame overhead separately. Browser Resource Timing uses its own transfer-size accounting, so it is not substituted for a packet capture. See [OPTIMIZATION.md](OPTIMIZATION.md) for the verification record and header caveats.
-
-## Reproduce and maintain
+Requires Node.js 22 or later.
 
 ```sh
 npm ci
@@ -47,7 +39,9 @@ npm test
 npm run check
 ```
 
-To repeat the optional source search:
+`index.html` is the page source. `build.mjs` generates the compressed files and `public/worker.mjs`; `worker.mjs` handles routing and content negotiation.
+
+To search for smaller equivalent markup:
 
 ```sh
 node optimize.mjs
@@ -55,26 +49,17 @@ node mutate.mjs
 node tune.mjs
 ```
 
-Node.js 22+ is sufficient. Search output is written to ignored `optimization/`; it does not overwrite the actual page. Review and browser-check a candidate before replacing `index.html`.
+Candidates are written to `optimization/`. Review their rendering before replacing `index.html`.
 
-`build.mjs` reuses `compression/index.html.gz` only if decompression matches the current source and it beats zlib. After an edit, a stale precomputed file is ignored. To regenerate the Zopfli candidate, install `zopfli==0.4.3` in a Python virtual environment and run `python optimize-gzip.py`.
+To regenerate the Zopfli candidate, install `zopfli==0.4.3` in a Python virtual environment and run `python optimize-gzip.py`. The build uses `compression/index.html.gz` only when it matches the source and is smaller than zlib's output.
 
-`worker.mjs` contains routing and content negotiation. `build.mjs` generates the self-contained `public/worker.mjs`. `wrangler.jsonc` defines the Worker and its apex and `www` custom domains. Deploy from an authenticated Cloudflare account with:
+## Deploy
 
 ```sh
 npx wrangler login
 npm run deploy
 ```
 
-The deployed zone settings and request/response transform rules are recorded in `cloudflare-rules.json`; Wrangler does not install these zone rules. When recreating the site in another zone, install equivalent rules, disable browser analytics/content injection, and update the hostnames and profile link. The request rule must overwrite `x-onekb-accept-encoding` from the actual incoming `Accept-Encoding`; it must not trust a visitor-supplied value.
+`wrangler.jsonc` configures the Worker and custom domains. Zone settings and transform rules are recorded in `cloudflare-rules.json` and must be applied separately. The encoding rule must overwrite `x-onekb-accept-encoding` with the incoming `Accept-Encoding` value.
 
-The Worker has no resource bindings, secrets, schedules, or origin requests. Server-side logs and traces are sampled at 1%; they do not inject browser analytics. No Cloudflare credentials are stored in the repository. The deployment uses Workers and is subject to the account's Workers limits.
-
-After a deployment, verify the public compressed response against the built file. Browser-cached pages may remain for one day; a force reload fetches the update immediately. A previous Worker version can be redeployed for rollback. The former home-server deployment is preserved in Git history at `28e5576`; it is no longer running or required.
-
-## References
-
-- [Cloudflare compression and no-transform behavior](https://developers.cloudflare.com/speed/optimization/content/compression/)
-- [Cloudflare response-header restrictions](https://developers.cloudflare.com/rules/transform/response-header-modification/)
-- [Workers precompressed response handling](https://developers.cloudflare.com/workers/runtime-apis/response/#the-encodebody-option)
-- [Workers custom domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
+After deployment, compare live response bodies with the built files. Force reload to bypass the one-day browser cache. To roll back, rebuild and deploy a previous commit.
