@@ -8,9 +8,9 @@ Measured on September 10, 2026, with the page title **Tom Kimberlin**:
 
 | Representation | HTML response body |
 | --- | ---: |
-| Uncompressed | **400 bytes** |
-| Brotli | **238 bytes** |
-| Gzip, optimized with Zopfli | **325 bytes** |
+| Uncompressed | **378 bytes** |
+| Brotli | **237 bytes** |
+| Gzip, optimized with Zopfli | **310 bytes** |
 | A fresh repeat visit in Chromium/Firefox | **0 network bytes** |
 
 These are **body sizes**, not the complete TLS/TCP/HTTP exchange. Cloudflare adds response headers, and establishing a new connection costs additional bytes. The original version in commit `715f2de` was already only 456 bytes raw / 247 bytes Brotli. The intervening greeting-only version was 230 bytes raw / 128 bytes Brotli. The current page adds a bio, Monero and source links, and four emojis. Different versions contain different text, so their size differences are not solely minification gains. The on-page claim uses decimal kilobytes and holds even before compression; the build fails at 1,000 bytes.
@@ -21,8 +21,8 @@ These are **body sizes**, not the complete TLS/TCP/HTTP exchange. Cloudflare add
 - **An empty data-URL favicon.** `<link rel=icon href=data:,>` prevents an automatic request for `/favicon.ico`.
 - **Short equivalent CSS.** `5vmin` replaces `min(5vw,5vh)`. Unnecessary declarations, punctuation, whitespace, and explicit document wrappers were removed. The final hyperlink closes at end of file through the browser's HTML parser.
 - **One-character link targets.** `/g`, `/x`, and `/s` redirect to GitHub, XMR.surf, and this repository. Each redirect has an empty body. This minimizes the initial page, with the explicit tradeoff of one redirect after a click. Direct and protocol-relative URLs were also compared.
-- **Compression-aware ordering.** The richer page went through 6,769 serialization/link candidates and 376 follow-up mutations. Then 43 shortlisted variants were compared across the full Brotli grid: another 46,440 compression trials. The initial richer draft was 267 bytes Brotli; the chosen equivalent form is 238 bytes. Shorter source does not always mean a smaller download.
-- **Color without downloads.** Four Unicode emojis use the device's existing emoji font. A three-byte UTF-8 BOM makes decoding explicit. For this source, removing the BOM increased Brotli size to 248 bytes before even adding an HTTP charset declaration; replacing it with a charset meta tag reached 255 bytes. All three browser engines correctly decoded the chosen form.
+- **Compression-aware ordering.** The richer page went through 6,769 serialization/link candidates and 356 follow-up mutations. Then 40 shortlisted variants were compared across the full Brotli grid: another 43,200 compression trials. After the latest wording edit, the initial serialization was 260 bytes Brotli; the chosen equivalent form is 237 bytes. Shorter source does not always mean a smaller download.
+- **Color without downloads.** Four Unicode emojis use the device's existing emoji font. A three-byte UTF-8 BOM makes decoding explicit. In the earlier 400-byte revision, removing the BOM increased Brotli size from 238 to 248 bytes before even adding an HTTP charset declaration; replacing it with a charset meta tag reached 255 bytes. All three browser engines correctly decoded the chosen form.
 - **Offline compression.** The build tries 1,080 Brotli parameter combinations and keeps the smallest output. Gzip is also compared across zlib settings and a precomputed Zopfli result, including searches up to 10,000 iterations. All outputs are decompressed and checked against the source.
 - **Precompressed bytes embedded in the Worker.** The three representations are bundled into the server code. `encodeBody: 'manual'` sends them unchanged, with no origin fetch or runtime compression. The Worker code itself is never downloaded by the browser.
 - **No edge rewriting.** `Cache-Control: no-transform` preserves the precompressed body. Cloudflare's email rewriting and other content-changing features are disabled for this dedicated domain.
@@ -35,7 +35,7 @@ These are **body sizes**, not the complete TLS/TCP/HTTP exchange. Cloudflare add
 
 The page is checked in Chromium, Firefox, and WebKit at desktop and phone dimensions, including UTF-8 decoding, visible text, title, all three links, and overflow. Byte-for-byte live compression checks cover Brotli, gzip, identity, and quality-weighted encoding preferences.
 
-Each single-byte deletion is checked for valid UTF-8, then tested against the rendered layout, content, metadata, and link targets. Deletions that still render identically are recompressed: some remove source bytes but increase the download. This is an extensive measured search, **not a mathematical proof of the globally smallest possible page**.
+The earlier 400-byte profile revision also had every single-byte deletion checked for valid UTF-8 and tested against the rendered layout, content, metadata, and link targets. Deletions that still render identically are recompressed: some remove source bytes but increase the download. This is an extensive measured search, **not a mathematical proof of the globally smallest possible page**.
 
 HTTP/2 measurements count compressed header blocks, the body, and frame overhead separately. Browser Resource Timing uses its own transfer-size accounting, so it is not substituted for a packet capture. See [OPTIMIZATION.md](OPTIMIZATION.md) for the verification record and header caveats.
 
