@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>onekb-website</Name>
+  <Repository>onekb-nginx:20260910</Repository>
+  <Registry>https://hub.docker.com/_/nginx</Registry>
+  <Network>bridge</Network>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Project>https://github.com/tomkimberlin/1kb-website</Project>
+  <Overview>Static personal website with precompressed files and automatic HTTPS. Cloudflare provides DNS only.</Overview>
+  <Category>Network:Web</Category>
+  <WebUI>https://tomkimberlin.com</WebUI>
+  <ExtraParams>--restart unless-stopped --read-only --cap-drop ALL --cap-add NET_BIND_SERVICE --cap-add SETGID --security-opt no-new-privileges --tmpfs /tmp:rw,noexec,nosuid,size=16m --tmpfs /var/cache/nginx:rw,noexec,nosuid,size=16m --entrypoint sh --log-opt max-size=1m --log-opt max-file=2 -p 192.168.0.2:8080:80/tcp -p 192.168.0.2:8443:443/tcp -p 192.168.0.2:8443:443/udp</ExtraParams>
+  <Config Name="nginx configuration" Target="/etc/nginx" Default="/mnt/user/appdata/onekb-website/nginx" Mode="ro" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/onekb-website/nginx</Config>
+  <Config Name="Site releases" Target="/srv" Default="/mnt/user/appdata/onekb-website/site" Mode="ro" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/onekb-website/site</Config>
+  <Config Name="ACME certificate state" Target="/acme" Default="/mnt/user/appdata/onekb-website/acme" Mode="rw" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/onekb-website/acme</Config>
+  <Config Name="Published certificates" Target="/tls" Default="/mnt/user/appdata/onekb-website/tls" Mode="ro" Type="Path" Display="always" Required="true" Mask="false">/mnt/user/appdata/onekb-website/tls</Config>
+  <PostArgs>-c "umask 077; exec nginx -g 'daemon off;'"</PostArgs>
+</Container>

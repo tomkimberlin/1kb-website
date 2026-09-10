@@ -5,8 +5,11 @@
   "scripts": {
     "build": "node build.mjs",
     "test": "node build.mjs && node --test worker.test.mjs",
-    "deploy": "wrangler deploy",
-    "check": "wrangler deploy --dry-run"
+    "deploy": "sh server/deploy.sh",
+    "check": "node --check server/site.js && node --check server/verify.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh",
+    "deploy:worker": "wrangler deploy",
+    "verify:live": "node server/verify.mjs",
+    "check:worker": "wrangler deploy --dry-run"
   },
   "devDependencies": {
     "wrangler": "4.131.0"

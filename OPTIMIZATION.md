@@ -15,3 +15,5 @@ The approved wording was optimized across 6,769 serialization/link candidates, 3
 Seventeen Worker tests and the Wrangler production dry run passed. Live responses were compared byte for byte against Brotli, gzip, and identity artifacts, including weighted preferences and exclusions. UTF-8, approved text, and unchanged link targets were checked directly. A fresh visual browser check was not run for this copy revision. This copy update did not change the Worker routing or Cloudflare zone configuration.
 
 The earlier three-engine layout/link/deletion audits and HTTP/2 header measurements are retained in the linked audit, with their original sizes explicitly scoped to that version. They are not presented as fresh exhaustive checks of this wording revision. The measured search does not prove global optimality.
+
+The website now runs directly on Alfred using nginx. The HTML above is unchanged; see [TRANSPORT.md](TRANSPORT.md) for the separate server, certificate and protocol audit.

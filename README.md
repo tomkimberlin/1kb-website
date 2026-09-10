@@ -1,65 +1,43 @@
 # 1kb website
 
-My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Hosted on a Cloudflare Worker.
+My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served directly from my home server, Alfred. Cloudflare provides DNS only.
 
 ## Size
 
-Measured September 10, 2026:
-
-| Encoding | Response body |
+| Response body | Bytes |
 | --- | ---: |
-| Uncompressed | 428 bytes |
-| Brotli | 271 bytes |
-| Gzip | 338 bytes |
+| HTML | 428 |
+| Brotli | 271 |
+| Gzip | 338 |
 
-These sizes exclude HTTP headers and connection overhead. The build rejects HTML of 1,000 bytes or more.
+The **page** is under 1 KB. A complete HTTPS connection is larger. On September 10, 2026, the controlled cold-load test counted **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
 
 ## Optimizations
 
-- Inline CSS, system fonts, and Unicode emojis keep everything in one file. An empty data-URL favicon prevents a separate icon request.
-- Optional HTML tags, attribute quotes, and CSS punctuation are omitted where the browser permits it. `5vmin` replaces `min(5vw,5vh)`.
-- Markup and CSS ordering are tested for compressed size. Fewer source bytes do not always produce a smaller compressed file.
-- A UTF-8 BOM specifies the encoding for the emojis.
-- One-character links (`/g`, `/x`, `/s`) shorten the HTML. Each adds an empty redirect when clicked.
-- The build tries 1,080 Brotli configurations and compares gzip settings with a precomputed Zopfli file. Every compressed result is checked against the source after decompression.
-- The Worker embeds all three representations and sends precompressed bytes with `encodeBody: 'manual'`.
-- A request transform preserves the original `Accept-Encoding` so the Worker can respect quality weights and exclusions.
-- `Cache-Control: no-transform` and disabled content injection prevent Cloudflare from modifying the page. Response transforms remove optional headers; Cloudflare still adds some headers that cannot be removed.
-- Browser caching lasts one day. HTTPS and hostname redirects have empty bodies.
+- One HTML file with inline CSS, system fonts and Unicode emojis. An empty data favicon prevents another request.
+- Optional tags, quotes and punctuation are omitted. Markup order is tested for compressed size; shorter source can compress worse.
+- A UTF-8 BOM identifies the encoding. Removing it did not reduce the Brotli body and would require a longer charset declaration.
+- One-character links shorten the page. Clicking one adds an empty redirect.
+- The build compares 1,080 Brotli configurations, gzip and a Zopfli candidate, then verifies decompression.
+- nginx serves the precompressed bytes and respects `Accept-Encoding` weights and exclusions.
+- Optional response headers are removed. HTTP/2 and HTTP/3 omit redundant `Content-Length`; HTTP/1.1 retains it.
+- TLS uses a small ECDSA certificate, Let's Encrypt's `tlsserver` profile and the chain ending at ISRG Root X2. OpenSSL is built with certificate compression enabled.
+- One small, stateful session ticket supports resumption. Browser caching lasts one day. HTTP/3 remains available without an `Alt-Svc` advertisement.
 
-See [OPTIMIZATION.md](OPTIMIZATION.md) for measurements and validation. The search does not prove a global minimum.
+[HTML measurements](OPTIMIZATION.md) and [transport measurements](TRANSPORT.md) document the search. Neither proves an absolute minimum.
 
-## Build and check
+## Build, test and deploy
 
-Requires Node.js 22 or later.
+Requires Node.js 22+, `curl`, and SSH access to Alfred.
 
 ```sh
 npm ci
 npm test
 npm run check
-```
-
-`index.html` is the page source. `build.mjs` generates the compressed files and `public/worker.mjs`; `worker.mjs` handles routing and content negotiation.
-
-To search for smaller equivalent markup:
-
-```sh
-node optimize.mjs
-node mutate.mjs
-node tune.mjs
-```
-
-Candidates are written to `optimization/`. Review their rendering before replacing `index.html`.
-
-To regenerate the Zopfli candidate, install `zopfli==0.4.3` in a Python virtual environment and run `python optimize-gzip.py`. The build uses `compression/index.html.gz` only when it matches the source and is smaller than zlib's output.
-
-## Deploy
-
-```sh
-npx wrangler login
 npm run deploy
+npm run verify:live
 ```
 
-`wrangler.jsonc` configures the Worker and custom domains. Zone settings and transform rules are recorded in `cloudflare-rules.json` and must be applied separately. The encoding rule must overwrite `x-onekb-accept-encoding` with the incoming `Accept-Encoding` value.
+`index.html` is the page source. `server/` contains nginx configuration, its reproducible image build, deployment and certificate renewal support. See [server operations](server/README.md) for setup and rollback.
 
-After deployment, compare live response bodies with the built files. Force reload to bypass the one-day browser cache. To roll back, rebuild and deploy a previous commit.
+The former Cloudflare Worker is retained as a fallback. `deploy:worker` updates its code; it does not move DNS or attach the domain.

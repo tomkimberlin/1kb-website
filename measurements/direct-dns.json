@@ -1,0 +1,32 @@
+{
+  "host": "tomkimberlin.com",
+  "resolver": "1.1.1.1",
+  "edns": false,
+  "dnssec": false,
+  "queries": [
+    {
+      "type": 1,
+      "query_bytes": 34,
+      "response_bytes": 50,
+      "ipv4_udp_bytes": 140,
+      "answer_count": 1,
+      "flags": "8180"
+    },
+    {
+      "type": 28,
+      "query_bytes": 34,
+      "response_bytes": 94,
+      "ipv4_udp_bytes": 184,
+      "answer_count": 0,
+      "flags": "8180"
+    },
+    {
+      "type": 65,
+      "query_bytes": 34,
+      "response_bytes": 94,
+      "ipv4_udp_bytes": 184,
+      "answer_count": 0,
+      "flags": "8180"
+    }
+  ]
+}

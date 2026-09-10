@@ -1,0 +1,955 @@
+{
+  "host": "tomkimberlin.com",
+  "protocol": "h3",
+  "scope": "Aioquic client with classical key exchange; IPv4/UDP count includes 28 bytes per datagram, excludes DNS and link-layer overhead.",
+  "measurements": [
+    {
+      "connection": "cold",
+      "session_reused": false,
+      "snapshots": [
+        {
+          "phase": "handshake_complete",
+          "udp_payload": {
+            "sent": 2460,
+            "received": 2826
+          },
+          "datagrams": {
+            "sent": 3,
+            "received": 3
+          },
+          "ipv4_udp_total": {
+            "sent": 2544,
+            "received": 2910
+          }
+        },
+        {
+          "phase": "response_0_complete",
+          "udp_payload": {
+            "sent": 3157,
+            "received": 3742
+          },
+          "datagrams": {
+            "sent": 8,
+            "received": 7
+          },
+          "ipv4_udp_total": {
+            "sent": 3381,
+            "received": 3938
+          }
+        },
+        {
+          "phase": "response_4_complete",
+          "udp_payload": {
+            "sent": 3535,
+            "received": 4187
+          },
+          "datagrams": {
+            "sent": 10,
+            "received": 9
+          },
+          "ipv4_udp_total": {
+            "sent": 3815,
+            "received": 4439
+          }
+        },
+        {
+          "phase": "after_ack_flush",
+          "udp_payload": {
+            "sent": 3625,
+            "received": 4245
+          },
+          "datagrams": {
+            "sent": 12,
+            "received": 11
+          },
+          "ipv4_udp_total": {
+            "sent": 3961,
+            "received": 4553
+          }
+        }
+      ],
+      "datagrams": [
+        {
+          "direction": "sent",
+          "bytes": 1200
+        },
+        {
+          "direction": "received",
+          "bytes": 1200
+        },
+        {
+          "direction": "sent",
+          "bytes": 1200
+        },
+        {
+          "direction": "received",
+          "bytes": 1200
+        },
+        {
+          "direction": "sent",
+          "bytes": 60
+        },
+        {
+          "direction": "received",
+          "bytes": 426
+        },
+        {
+          "direction": "sent",
+          "bytes": 197
+        },
+        {
+          "direction": "sent",
+          "bytes": 333
+        },
+        {
+          "direction": "received",
+          "bytes": 56
+        },
+        {
+          "direction": "sent",
+          "bytes": 60
+        },
+        {
+          "direction": "received",
+          "bytes": 56
+        },
+        {
+          "direction": "sent",
+          "bytes": 60
+        },
+        {
+          "direction": "received",
+          "bytes": 394
+        },
+        {
+          "direction": "sent",
+          "bytes": 47
+        },
+        {
+          "direction": "received",
+          "bytes": 410
+        },
+        {
+          "direction": "sent",
+          "bytes": 333
+        },
+        {
+          "direction": "sent",
+          "bytes": 45
+        },
+        {
+          "direction": "received",
+          "bytes": 33
+        },
+        {
+          "direction": "received",
+          "bytes": 412
+        },
+        {
+          "direction": "received",
+          "bytes": 29
+        },
+        {
+          "direction": "sent",
+          "bytes": 45
+        },
+        {
+          "direction": "received",
+          "bytes": 29
+        },
+        {
+          "direction": "sent",
+          "bytes": 45
+        },
+        {
+          "direction": "sent",
+          "bytes": 42
+        },
+        {
+          "direction": "received",
+          "bytes": 1350
+        }
+      ],
+      "responses": [
+        {
+          "stream": 0,
+          "body_bytes": 271,
+          "headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Thu, 10 Sep 2026 22:03:47 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ]
+        },
+        {
+          "stream": 4,
+          "body_bytes": 271,
+          "headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Thu, 10 Sep 2026 22:03:47 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ]
+        }
+      ],
+      "h3_events": [
+        {
+          "data": {
+            "new": "control",
+            "stream_id": 2
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077826911.0378
+        },
+        {
+          "data": {
+            "new": "qpack_encoder",
+            "stream_id": 6
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077826911.0642
+        },
+        {
+          "data": {
+            "new": "qpack_decoder",
+            "stream_id": 10
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077826911.0698
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":method",
+                  "value": "GET"
+                },
+                {
+                  "name": ":scheme",
+                  "value": "https"
+                },
+                {
+                  "name": ":authority",
+                  "value": "tomkimberlin.com"
+                },
+                {
+                  "name": ":path",
+                  "value": "/"
+                },
+                {
+                  "name": "accept-encoding",
+                  "value": "br"
+                },
+                {
+                  "name": "user-agent",
+                  "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+                },
+                {
+                  "name": "accept",
+                  "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+                },
+                {
+                  "name": "sec-fetch-dest",
+                  "value": "document"
+                },
+                {
+                  "name": "sec-fetch-mode",
+                  "value": "navigate"
+                },
+                {
+                  "name": "sec-fetch-site",
+                  "value": "none"
+                },
+                {
+                  "name": "sec-fetch-user",
+                  "value": "?1"
+                },
+                {
+                  "name": "accept-language",
+                  "value": "en-US,en;q=0.9"
+                },
+                {
+                  "name": "priority",
+                  "value": "u=0, i"
+                }
+              ]
+            },
+            "length": 287,
+            "stream_id": 0
+          },
+          "name": "http:frame_created",
+          "time": 1789077826931.008
+        },
+        {
+          "data": {
+            "new": "control",
+            "stream_id": 3
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077826950.8481
+        },
+        {
+          "data": {
+            "new": "qpack_decoder",
+            "stream_id": 7
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077826950.871
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":status",
+                  "value": "200"
+                },
+                {
+                  "name": "date",
+                  "value": "Thu, 10 Sep 2026 22:03:47 GMT"
+                },
+                {
+                  "name": "content-type",
+                  "value": "text/html"
+                },
+                {
+                  "name": "vary",
+                  "value": "accept-encoding"
+                },
+                {
+                  "name": "cache-control",
+                  "value": "max-age=86400"
+                },
+                {
+                  "name": "content-encoding",
+                  "value": "br"
+                }
+              ]
+            },
+            "length": 92,
+            "stream_id": 0
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077826951.325
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "data"
+            },
+            "length": 271,
+            "stream_id": 0
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077826951.331
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":method",
+                  "value": "GET"
+                },
+                {
+                  "name": ":scheme",
+                  "value": "https"
+                },
+                {
+                  "name": ":authority",
+                  "value": "tomkimberlin.com"
+                },
+                {
+                  "name": ":path",
+                  "value": "/"
+                },
+                {
+                  "name": "accept-encoding",
+                  "value": "br"
+                },
+                {
+                  "name": "user-agent",
+                  "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+                },
+                {
+                  "name": "accept",
+                  "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+                },
+                {
+                  "name": "sec-fetch-dest",
+                  "value": "document"
+                },
+                {
+                  "name": "sec-fetch-mode",
+                  "value": "navigate"
+                },
+                {
+                  "name": "sec-fetch-site",
+                  "value": "none"
+                },
+                {
+                  "name": "sec-fetch-user",
+                  "value": "?1"
+                },
+                {
+                  "name": "accept-language",
+                  "value": "en-US,en;q=0.9"
+                },
+                {
+                  "name": "priority",
+                  "value": "u=0, i"
+                }
+              ]
+            },
+            "length": 287,
+            "stream_id": 4
+          },
+          "name": "http:frame_created",
+          "time": 1789077826951.509
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":status",
+                  "value": "200"
+                },
+                {
+                  "name": "date",
+                  "value": "Thu, 10 Sep 2026 22:03:47 GMT"
+                },
+                {
+                  "name": "content-type",
+                  "value": "text/html"
+                },
+                {
+                  "name": "vary",
+                  "value": "accept-encoding"
+                },
+                {
+                  "name": "cache-control",
+                  "value": "max-age=86400"
+                },
+                {
+                  "name": "content-encoding",
+                  "value": "br"
+                }
+              ]
+            },
+            "length": 92,
+            "stream_id": 4
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077826962.156
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "data"
+            },
+            "length": 271,
+            "stream_id": 4
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077826962.1602
+        }
+      ]
+    },
+    {
+      "connection": "resumption_attempt",
+      "session_reused": true,
+      "snapshots": [
+        {
+          "phase": "handshake_complete",
+          "udp_payload": {
+            "sent": 1200,
+            "received": 1200
+          },
+          "datagrams": {
+            "sent": 1,
+            "received": 1
+          },
+          "ipv4_udp_total": {
+            "sent": 1228,
+            "received": 1228
+          }
+        },
+        {
+          "phase": "response_0_complete",
+          "udp_payload": {
+            "sent": 2780,
+            "received": 2004
+          },
+          "datagrams": {
+            "sent": 4,
+            "received": 3
+          },
+          "ipv4_udp_total": {
+            "sent": 2892,
+            "received": 2088
+          }
+        },
+        {
+          "phase": "response_4_complete",
+          "udp_payload": {
+            "sent": 3118,
+            "received": 2417
+          },
+          "datagrams": {
+            "sent": 5,
+            "received": 4
+          },
+          "ipv4_udp_total": {
+            "sent": 3258,
+            "received": 2529
+          }
+        },
+        {
+          "phase": "after_ack_flush",
+          "udp_payload": {
+            "sent": 3208,
+            "received": 2446
+          },
+          "datagrams": {
+            "sent": 7,
+            "received": 5
+          },
+          "ipv4_udp_total": {
+            "sent": 3404,
+            "received": 2586
+          }
+        }
+      ],
+      "datagrams": [
+        {
+          "direction": "sent",
+          "bytes": 1200
+        },
+        {
+          "direction": "received",
+          "bytes": 1200
+        },
+        {
+          "direction": "sent",
+          "bytes": 1200
+        },
+        {
+          "direction": "sent",
+          "bytes": 333
+        },
+        {
+          "direction": "received",
+          "bytes": 394
+        },
+        {
+          "direction": "sent",
+          "bytes": 47
+        },
+        {
+          "direction": "received",
+          "bytes": 410
+        },
+        {
+          "direction": "sent",
+          "bytes": 338
+        },
+        {
+          "direction": "received",
+          "bytes": 413
+        },
+        {
+          "direction": "sent",
+          "bytes": 45
+        },
+        {
+          "direction": "received",
+          "bytes": 29
+        },
+        {
+          "direction": "sent",
+          "bytes": 45
+        },
+        {
+          "direction": "sent",
+          "bytes": 42
+        }
+      ],
+      "responses": [
+        {
+          "stream": 0,
+          "body_bytes": 271,
+          "headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Thu, 10 Sep 2026 22:03:47 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ]
+        },
+        {
+          "stream": 4,
+          "body_bytes": 271,
+          "headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Thu, 10 Sep 2026 22:03:47 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ]
+        }
+      ],
+      "h3_events": [
+        {
+          "data": {
+            "new": "control",
+            "stream_id": 2
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077827200.46
+        },
+        {
+          "data": {
+            "new": "qpack_encoder",
+            "stream_id": 6
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077827200.4868
+        },
+        {
+          "data": {
+            "new": "qpack_decoder",
+            "stream_id": 10
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077827200.4922
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":method",
+                  "value": "GET"
+                },
+                {
+                  "name": ":scheme",
+                  "value": "https"
+                },
+                {
+                  "name": ":authority",
+                  "value": "tomkimberlin.com"
+                },
+                {
+                  "name": ":path",
+                  "value": "/"
+                },
+                {
+                  "name": "accept-encoding",
+                  "value": "br"
+                },
+                {
+                  "name": "user-agent",
+                  "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+                },
+                {
+                  "name": "accept",
+                  "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+                },
+                {
+                  "name": "sec-fetch-dest",
+                  "value": "document"
+                },
+                {
+                  "name": "sec-fetch-mode",
+                  "value": "navigate"
+                },
+                {
+                  "name": "sec-fetch-site",
+                  "value": "none"
+                },
+                {
+                  "name": "sec-fetch-user",
+                  "value": "?1"
+                },
+                {
+                  "name": "accept-language",
+                  "value": "en-US,en;q=0.9"
+                },
+                {
+                  "name": "priority",
+                  "value": "u=0, i"
+                }
+              ]
+            },
+            "length": 287,
+            "stream_id": 0
+          },
+          "name": "http:frame_created",
+          "time": 1789077827200.871
+        },
+        {
+          "data": {
+            "new": "control",
+            "stream_id": 3
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077827215.336
+        },
+        {
+          "data": {
+            "new": "qpack_decoder",
+            "stream_id": 7
+          },
+          "name": "http:stream_type_set",
+          "time": 1789077827215.366
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":status",
+                  "value": "200"
+                },
+                {
+                  "name": "date",
+                  "value": "Thu, 10 Sep 2026 22:03:47 GMT"
+                },
+                {
+                  "name": "content-type",
+                  "value": "text/html"
+                },
+                {
+                  "name": "vary",
+                  "value": "accept-encoding"
+                },
+                {
+                  "name": "cache-control",
+                  "value": "max-age=86400"
+                },
+                {
+                  "name": "content-encoding",
+                  "value": "br"
+                }
+              ]
+            },
+            "length": 92,
+            "stream_id": 0
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077827215.909
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "data"
+            },
+            "length": 271,
+            "stream_id": 0
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077827215.914
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":method",
+                  "value": "GET"
+                },
+                {
+                  "name": ":scheme",
+                  "value": "https"
+                },
+                {
+                  "name": ":authority",
+                  "value": "tomkimberlin.com"
+                },
+                {
+                  "name": ":path",
+                  "value": "/"
+                },
+                {
+                  "name": "accept-encoding",
+                  "value": "br"
+                },
+                {
+                  "name": "user-agent",
+                  "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+                },
+                {
+                  "name": "accept",
+                  "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+                },
+                {
+                  "name": "sec-fetch-dest",
+                  "value": "document"
+                },
+                {
+                  "name": "sec-fetch-mode",
+                  "value": "navigate"
+                },
+                {
+                  "name": "sec-fetch-site",
+                  "value": "none"
+                },
+                {
+                  "name": "sec-fetch-user",
+                  "value": "?1"
+                },
+                {
+                  "name": "accept-language",
+                  "value": "en-US,en;q=0.9"
+                },
+                {
+                  "name": "priority",
+                  "value": "u=0, i"
+                }
+              ]
+            },
+            "length": 287,
+            "stream_id": 4
+          },
+          "name": "http:frame_created",
+          "time": 1789077827216.1409
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "headers",
+              "headers": [
+                {
+                  "name": ":status",
+                  "value": "200"
+                },
+                {
+                  "name": "date",
+                  "value": "Thu, 10 Sep 2026 22:03:47 GMT"
+                },
+                {
+                  "name": "content-type",
+                  "value": "text/html"
+                },
+                {
+                  "name": "vary",
+                  "value": "accept-encoding"
+                },
+                {
+                  "name": "cache-control",
+                  "value": "max-age=86400"
+                },
+                {
+                  "name": "content-encoding",
+                  "value": "br"
+                }
+              ]
+            },
+            "length": 92,
+            "stream_id": 4
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077827223.395
+        },
+        {
+          "data": {
+            "frame": {
+              "frame_type": "data"
+            },
+            "length": 271,
+            "stream_id": 4
+          },
+          "name": "http:frame_parsed",
+          "time": 1789077827223.399
+        }
+      ]
+    }
+  ]
+}

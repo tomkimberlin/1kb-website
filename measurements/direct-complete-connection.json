@@ -1,0 +1,16 @@
+[
+  {
+    "connection": "cold",
+    "observed_ip_bytes": 6833,
+    "observed_packets": 22,
+    "estimated_ip_bytes_at_mtu_1500": 6989,
+    "scope": "One request, 80ms idle processing, client close, 250ms final capture; no DNS or link-layer bytes"
+  },
+  {
+    "connection": "resumed",
+    "observed_ip_bytes": 5295,
+    "observed_packets": 22,
+    "estimated_ip_bytes_at_mtu_1500": 5347,
+    "scope": "One request, 80ms idle processing, client close, 250ms final capture; no DNS or link-layer bytes"
+  }
+]
