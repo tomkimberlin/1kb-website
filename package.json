@@ -1,0 +1,14 @@
+{
+  "name": "onekb-website",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node build.mjs && node --test worker.test.mjs",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "4.131.0"
+  }
+}
