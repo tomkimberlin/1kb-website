@@ -1,8 +1,10 @@
 # Transport audit — September 10, 2026
 
-The page is 428 UTF-8 bytes, including its BOM. Its Brotli body is 271 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+The current page is 427 UTF-8 bytes, including its BOM. Its Brotli body is 270 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
 
-## Controlled comparison
+## Controlled hosting comparison
+
+This comparison predates the lowercase `xmr.surf` label. Both endpoints used the same 271-byte Brotli body. The later copy edit did not change the server settings. See [the gallery comparison](COMPARISON.md) for subsequent measurements with the HTML body excluded.
 
 Both endpoints served the exact same Brotli bytes for `tomkimberlin.com`. The client offered TLS certificate compression and post-quantum hybrid key exchange. Certificate and hostname verification remained enabled. These are controlled Python/OpenSSL requests with representative Chromium headers, not a browser trace.
 
@@ -46,7 +48,7 @@ TLS 1.2/1.3 support and hybrid key exchange remain enabled. Disabling modern cry
 
 ## Verification and reproduction
 
-`npm run verify:live` checks 74 HTTP/1.1 and HTTP/2 cases: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The approved HTML and visible wording were unchanged.
+`npm run verify:live` checks 74 HTTP/1.1 and HTTP/2 cases: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The hosting comparison kept the approved HTML and visible wording unchanged.
 
 ```sh
 python3 -m venv .venv

@@ -1,19 +1,19 @@
-# Optimization verification — September 10, 2026
+# HTML optimization — September 10, 2026
 
-The approved bio is **“🛠️ Sysadmin, developer, AI optimist, tinkerer, gamer, FAA certified drone pilot”**: one comma-separated paragraph with one emoji. The greeting, Monero link, under-1-KB note, and GitHub/Source links remain. The complete page has four emojis.
+The link label is now `xmr.surf`. The bio, other visible wording and link destinations are unchanged.
 
-| Representation | Current HTML response body |
+| Representation | Bytes |
 | --- | ---: |
-| Identity | 428 bytes |
-| Brotli | 271 bytes |
-| Gzip, Zopfli | 338 bytes |
+| UTF-8 HTML, including BOM | 427 |
+| Brotli | 270 |
+| Gzip, Zopfli | 336 |
 
-These count UTF-8 bytes including the BOM, excluding HTTP headers and connection overhead. The build enforces a source below 1,000 bytes. The previous 400-byte / 238-byte Brotli profile is documented in [its detailed audit](OPTIMIZATION-4593824.md).
+The direct lowercase edit produced 274 Brotli bytes. Reordering the same CSS rules and declarations, and omitting the final CSS closing brace at the stylesheet boundary, reduced this to 270. The source dropped one byte; gzip dropped two bytes compared with the preceding version.
 
-The approved wording was optimized across 6,769 serialization/link candidates, 399 mutations, and 50,760 Brotli trials over 47 finalists. The direct edit initially compressed to 281 bytes; equivalent markup and CSS ordering reduced it to 271. The approved visible text was preserved exactly. The final build compares 1,080 Brotli configurations and verifies decompression. Zopfli was rerun through 10,000 iterations.
+The renewed search measured 6,769 serialization/link candidates, 376 mutations, and 47,520 Brotli configurations across 44 finalists. The build then compared 1,080 Brotli configurations and verified decompression. Zopfli was rerun through 10,000 iterations.
 
-Seventeen Worker tests and the Wrangler production dry run passed. Live responses were compared byte for byte against Brotli, gzip, and identity artifacts, including weighted preferences and exclusions. UTF-8, approved text, and unchanged link targets were checked directly. A fresh visual browser check was not run for this copy revision. This copy update did not change the Worker routing or Cloudflare zone configuration.
+All 17 existing tests and 74 live HTTP/1.1 and HTTP/2 checks passed. Live identity, Brotli and gzip bodies matched their local artifacts. An external host independently verified the public Brotli SHA-256. A direct source comparison confirmed that the only visible-text change was the lowercase link label. No fresh visual browser check was performed.
 
-The earlier three-engine layout/link/deletion audits and HTTP/2 header measurements are retained in the linked audit, with their original sizes explicitly scoped to that version. They are not presented as fresh exhaustive checks of this wording revision. The measured search does not prove global optimality.
+The build enforces UTF-8 and a source below 1,000 bytes. These sizes exclude HTTP headers and connection overhead; see [the transport audit](TRANSPORT.md) and [gallery comparison](COMPARISON.md).
 
-The website now runs directly on Alfred using nginx. The HTML above is unchanged; see [TRANSPORT.md](TRANSPORT.md) for the separate server, certificate and protocol audit.
+The preceding version in commit `d273611` was 428 bytes raw, 271 Brotli and 338 gzip. Earlier layout and deletion audits are retained in [the older audit](OPTIMIZATION-4593824.md), scoped to that version. No measured search proves a global minimum.

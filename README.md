@@ -6,11 +6,11 @@ My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served direc
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 428 |
-| Brotli | 271 |
-| Gzip | 338 |
+| HTML | 427 |
+| Brotli | 270 |
+| Gzip | 336 |
 
-The **page** is under 1 KB. A complete HTTPS connection is larger. On September 10, 2026, the controlled cold-load test counted **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
+The **page** is under 1 KB. A complete HTTPS connection is larger. In the September 10, 2026 hosting comparison, the then-current 271-byte Brotli page used **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
 
 ## Optimizations
 
@@ -24,7 +24,7 @@ The **page** is under 1 KB. A complete HTTPS connection is larger. On September 
 - TLS uses a small ECDSA certificate, Let's Encrypt's `tlsserver` profile and the chain ending at ISRG Root X2. OpenSSL is built with certificate compression enabled.
 - One small, stateful session ticket supports resumption. Browser caching lasts one day. HTTP/3 remains available without an `Alt-Svc` advertisement.
 
-[HTML measurements](OPTIMIZATION.md) and [transport measurements](TRANSPORT.md) document the search. Neither proves an absolute minimum.
+[HTML measurements](OPTIMIZATION.md), [transport measurements](TRANSPORT.md), and [comparison with other 1 KB sites](COMPARISON.md) document the results. They do not prove an absolute minimum.
 
 ## Build, test and deploy
 
