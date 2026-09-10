@@ -17,7 +17,23 @@ Only `acme/` is writable by the web container. Certificate keys stay on Alfred. 
 
 The router forwards TCP 80 to `192.168.0.2:8080`, and TCP/UDP 443 to `192.168.0.2:8443`. These map to the container's ports 80/443. nginx's certificate-management listener on 9443 is container-loopback only.
 
-Cloudflare's apex and `www` records are DNS-only A records with a 300-second TTL. **Automatic updates when the WAN IP changes are not configured:** creating a dedicated DNS token was unavailable through the connected API. Update both A records if the home IP changes. No token was created or stored during that attempt.
+Cloudflare's apex and `www` records are DNS-only A records with a 300-second TTL. `bin/update-dns.sh` checks the WAN IPv4 every five minutes and updates those two existing records only when necessary. It confirms a changed address using a second HTTPS lookup, preserves other record fields, and refuses unexpected record types/names or proxied records.
+
+## Automatic DNS updates
+
+The credential is stored only in `/mnt/user/appdata/onekb-website/secrets/cloudflare-dns-token`, owned by root with mode 600 in a mode-700 directory. It is not mounted into the web container. The token needs Zone / DNS / Edit for `tomkimberlin.com` only, without a fixed client-IP restriction. The script passes it to curl through stdin, with tracing disabled.
+
+`/boot/config/plugins/user.scripts/onekb-dns.cron` supplies the five-minute schedule. Concurrent runs are prevented by `state/dns.lock`. No-change runs are silent; changes and failures go to the `onekb-dns` system-log tag.
+
+```sh
+# Check normally; updates only if the WAN IP differs.
+/bin/bash /mnt/user/appdata/onekb-website/bin/update-dns.sh
+# Explicitly verify write access by PATCHing the already-current address.
+/bin/bash /mnt/user/appdata/onekb-website/bin/update-dns.sh --verify-write
+crontab -c /etc/cron.d -l | grep onekb-dns
+```
+
+To disable automatic updates, rename `onekb-dns.cron` to `onekb-dns.cron.disabled` and run `update_cron`. The current DNS addresses and website continue working; future IP changes then require manual updates. Keep the credential private or revoke it if retiring this updater.
 
 ## Deploy
 
