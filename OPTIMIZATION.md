@@ -11,7 +11,7 @@
 - `font:1.125rem/1.5 monospace` uses a system font and relative sizing. The page keeps browser-default link colors.
 - The final sentence uses `style=color:canvas` to match the browser background while remaining in the HTML. [Canvas system color](https://www.w3.org/TR/css-color-4/#valdef-color-canvas).
 - Paragraphs separate the sections. Sentences flow together, and a comma separates the project links.
-- One-character URLs keep the HTML short; each link adds an empty redirect when clicked.
+- Some links use one-character URLs and empty redirects to keep the HTML short. GitHub repository links and the email address use direct URLs.
 
 ## Compression
 
