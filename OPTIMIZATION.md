@@ -5,11 +5,11 @@
 ## Markup and styling
 
 - ASCII source avoids an encoding marker or charset declaration.
-- Optional document tags, eligible quotes, the final CSS brace and final anchor closing tag are omitted.
+- Optional document tags, eligible quotes and the final CSS brace are omitted.
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile layout.
 - An empty data favicon prevents an automatic favicon request.
 - `font:1.125rem/1.5 monospace` uses a system font and relative sizing. The page keeps browser-default link colors.
-- Paragraphs separate the text. Two `<br>` elements stack the footer links without blank lines.
+- Paragraphs separate the sections. `<br>` elements break lines after the welcome sentence and between the project links.
 - One-character URLs keep the HTML short; each link adds an empty redirect when clicked.
 
 ## Compression
