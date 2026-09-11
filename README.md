@@ -4,9 +4,9 @@ My website: [tomkimberlin.com](https://tomkimberlin.com/).
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 515 |
-| Brotli | 263 |
-| Gzip | 368 |
+| HTML | 507 |
+| Brotli | 256 |
+| Gzip | 354 |
 
 These sizes cover the page. Headers, TLS, DNS and network framing add to the total transfer.
 
@@ -19,7 +19,7 @@ These sizes cover the page. Headers, TLS, DNS and network framing add to the tot
 - Brotli and gzip are compressed ahead of time and checked against the source.
 - nginx omits optional headers and supports TLS certificate compression and session reuse.
 
-[HTML optimization](OPTIMIZATION.md) and [delivery settings](TRANSPORT.md) explain the implementation. [build-report.json](build-report.json) contains the current build sizes.
+[HTML optimization](OPTIMIZATION.md) and [delivery settings](TRANSPORT.md) explain the implementation. [Compare delivery overhead with other 1kb.club sites](COMPARISON.md). [build-report.json](build-report.json) contains the current build sizes.
 
 ## Build and deploy
 

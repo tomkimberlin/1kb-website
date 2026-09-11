@@ -23,7 +23,7 @@ for(const ds of perm(declarations))for(const reverse of [false,true])for(const b
 }
 // Starting with the best serializations, compare redirect and direct link targets.
 const heads=[...top];
-const destinations={g:'https://github.com/tomkimberlin',p:'https://paste.kimberlin.net/',k:'https://1kb.club/',x:'https://xmr.surf/'};
+const destinations={e:'https://www.linkedin.com/company/euthenics',g:'https://github.com/tomkimberlin',p:'https://paste.kimberlin.net/',k:'https://1kb.club/',x:'https://xmr.surf/'};
 for(const seed of heads) {
  let variants=[seed.html];
  for(const [path,url] of Object.entries(destinations)) {
