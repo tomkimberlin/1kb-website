@@ -1,6 +1,6 @@
 # Transport audit — September 10, 2026
 
-The current page is 427 UTF-8 bytes, including its BOM. Its Brotli body is 270 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+The current page is 445 UTF-8 bytes, including its BOM. Its Brotli body is 255 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
 
 ## Controlled hosting comparison
 
@@ -48,7 +48,7 @@ TLS 1.2/1.3 support and hybrid key exchange remain enabled. Disabling modern cry
 
 ## Verification and reproduction
 
-`npm run verify:live` checks 74 HTTP/1.1 and HTTP/2 cases: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The hosting comparison kept the approved HTML and visible wording unchanged.
+`npm run verify:live` now checks 76 HTTP/1.1 and HTTP/2 cases, including the Telegram redirect: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The hosting comparison kept the approved HTML and visible wording unchanged.
 
 ```sh
 python3 -m venv .venv

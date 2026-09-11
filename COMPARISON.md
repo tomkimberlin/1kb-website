@@ -2,6 +2,8 @@
 
 Tom's site had the lowest overhead in this six-site sample after subtracting each response body. This does not establish a global record or an absolute minimum.
 
+This sample used the 270-byte Brotli page in commit `f32b6bf`, before the later copy and Telegram update. The gallery was not retested for that update.
+
 The other sites were selected from [1kb.club](https://1kb.club/), including several of its smallest listed pages and `hi.mrkrk.me`, the possible match for the remembered Telegram contact. Their different amounts of content are excluded from the totals below.
 
 | Site | TLS traffic through first document, minus body | Estimated TCP/IP + DNS through connection close, minus body |

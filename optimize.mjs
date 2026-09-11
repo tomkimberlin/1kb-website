@@ -21,8 +21,8 @@ for(const ds of perm(declarations))for(const reverse of [false,true])for(const b
 }
 // Starting with the best serializations, compare redirect and direct link targets.
 const heads=[...top];
-for(const seed of heads) for(const g of ['g','https://github.com/tomkimberlin','//github.com/tomkimberlin'])for(const x of ['x','https://xmr.surf','//xmr.surf'])for(const s of ['s','https://github.com/tomkimberlin/1kb-website','//github.com/tomkimberlin/1kb-website'])for(const close of ['', '</a>']) {
- consider(seed.html.replace('href=g','href='+g).replace('href=x','href='+x).replace('href=s','href='+s).replace(/<\/a>$/,'')+close);
+for(const seed of heads) for(const g of ['g','https://github.com/tomkimberlin','//github.com/tomkimberlin'])for(const x of ['x','https://xmr.surf','//xmr.surf'])for(const s of ['s','https://github.com/tomkimberlin/1kb-website','//github.com/tomkimberlin/1kb-website'])for(const t of ['t','https://t.me/tomkimberlin','//t.me/tomkimberlin'])for(const close of ['', '</a>']) {
+ consider(seed.html.replace('href=g','href='+g).replace('href=x','href='+x).replace('href=s','href='+s).replace('href=t','href='+t).replace(/<\/a>$/,'')+close);
 }
 mkdirSync('optimization',{recursive:true});
 const report={count,baseline:{bytes:Buffer.byteLength(source),brotli:score(source)},best:top[0],top};
