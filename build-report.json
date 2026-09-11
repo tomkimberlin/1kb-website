@@ -1,12 +1,12 @@
 {
   "html": 1667,
   "brotli": 714,
-  "gzip": 892,
+  "gzip": 894,
   "attempts": 1080,
   "brotliParams": {
     "0": 2,
     "1": 11,
-    "2": 16,
+    "2": 11,
     "5": 0
   },
   "budget": {
