@@ -6,9 +6,9 @@ My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served direc
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 428 |
-| Brotli | 229 |
-| Gzip | 310 |
+| HTML | 416 |
+| Brotli | 224 |
+| Gzip | 300 |
 
 The **page** is under 1 KB. A complete HTTPS connection is larger. In the September 10, 2026 hosting comparison, the then-current 271-byte Brotli page used **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
 
@@ -16,7 +16,7 @@ The **page** is under 1 KB. A complete HTTPS connection is larger. In the Septem
 
 - One ASCII HTML file with inline CSS, system fonts and browser-default link colors. An empty data favicon prevents another request.
 - Optional tags, quotes and punctuation are omitted. Markup order is tested for compressed size; shorter source can compress worse.
-- Character references display the middle dots while keeping the source ASCII, so no encoding marker or charset declaration is needed.
+- ASCII-only source needs no encoding marker or charset declaration.
 - One-character links shorten the page. Clicking one adds an empty redirect.
 - The build compares 1,080 Brotli configurations, gzip and a Zopfli candidate, then verifies decompression.
 - nginx serves the precompressed bytes and respects `Accept-Encoding` weights and exclusions.

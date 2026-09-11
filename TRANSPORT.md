@@ -1,6 +1,6 @@
 # Transport audit — September 10, 2026
 
-The current page is 428 ASCII bytes. Its Brotli body is 229 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+The current page is 416 ASCII bytes. Its Brotli body is 224 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
 
 `https://tom.kimberlin.net` uses an empty Cloudflare Worker 301 redirect to the canonical domain. NEL and Report-To are removed by a hostname-scoped transform; Cloudflare identification and Alt-Svc remain. Plain HTTP uses a direct-to-canonical edge rule with a 167-byte body, avoiding the zone-wide HTTPS upgrade's additional redirect hop. The alias entry path adds Cloudflare response headers before the direct homepage request, and HTTPS adds a separate TLS connection. The historical measurements below cover `tomkimberlin.com`, not this additional alias path.
 
