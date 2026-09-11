@@ -6,7 +6,7 @@ const perm=a=>a.length?a.flatMap((x,i)=>perm(a.filter((_,j)=>i!==j)).map(p=>[x,.
 const title=source.match(/<title>.*?<\/title>/s)[0];
 const style=source.match(/<style>(.*?)<\/style>/s)[1];
 const linkRule=style.match(/a\{[^}]*(?:}|$)/)?.[0];
-const declarations=style.match(/html\{([^}]+)/)[1].split(';').filter(Boolean);
+const declarations=style.match(/html\{([^}]+)/i)[1].split(';').filter(Boolean);
 const body=source.replace(/^\ufeff/,'').replace(/<!doctype\s*html>/i,'').replace(/<style>.*?<\/style>|<title>.*?<\/title>|<link[^>]*>|<meta[^>]*>/gs,'');
 const encodings=/[^\x00-\x7f]/.test(body+title+style)?['\ufeff','<meta charset=utf-8>']:['','\ufeff','<meta charset=utf-8>'];
 const score=html=>brotliCompressSync(Buffer.from(html),{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_LGWIN]:16}}).length;

@@ -5,10 +5,11 @@
 ## Markup and styling
 
 - ASCII source avoids an encoding marker or charset declaration.
-- Optional document tags, eligible quotes and the final CSS brace are omitted.
+- Optional document tags and eligible quotes are omitted when doing so improves compressed size.
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile layout.
 - An empty data favicon prevents an automatic favicon request.
 - `font:1.125rem/1.5 monospace` uses a system font and relative sizing. The page keeps browser-default link colors.
+- The final sentence uses `style=color:canvas` to match the browser background while remaining in the HTML. [Canvas system color](https://www.w3.org/TR/css-color-4/#valdef-color-canvas).
 - Paragraphs separate the sections. Sentences flow together, and a comma separates the project links.
 - One-character URLs keep the HTML short; each link adds an empty redirect when clicked.
 
