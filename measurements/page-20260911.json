@@ -1,0 +1,69 @@
+{
+  "measuredAt": "2026-09-11T17:51:00Z",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "b56f1d068dd7557cb37d83f9e4058781fc18e7ce9b3e68111ed12b47d3b6be38",
+  "brotliSha256": "6e213202e1bc8d43a40302986f6b0bb58d9efd42b2b3a9f9af73d31c42b092f8",
+  "html": 1655,
+  "brotli": 709,
+  "gzip": 888,
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/dvTse572/overview",
+    "pageWeight": 818,
+    "browser": "Chrome 147",
+    "location": "US East",
+    "labScore": 99,
+    "fcpMs": 527,
+    "lcpMs": 527,
+    "tbtMs": 0,
+    "cls": 0,
+    "requestReport": "https://www.debugbear.com/test/website-speed/dvTse572/requests",
+    "requests": 1
+  },
+  "chromium": {
+    "documentEncodedDataLength": 817,
+    "encodedBodySize": 709,
+    "decodedBodySize": 1655,
+    "resourceTimingTransferSize": 1009,
+    "requests": 1,
+    "subresources": 0,
+    "protocol": "h2",
+    "responseHeaders": [
+      "cache-control",
+      "content-encoding",
+      "content-type",
+      "date",
+      "vary"
+    ]
+  },
+  "visualVerification": {
+    "widths": [
+      320,
+      402,
+      1440
+    ],
+    "comparedAnimationTimesMs": [
+      0,
+      250,
+      6000,
+      18000
+    ],
+    "linksUnchanged": 8,
+    "noHorizontalOverflow": true,
+    "noExtraVerticalScrollAt402x874": true,
+    "reducedMotionDisablesAllAnimations": true,
+    "note": "At 320px, removing redundant alignment changes the span box height by 0.015625px; heading and page layout are unchanged."
+  },
+  "limits": {
+    "clubBytes": 1024,
+    "debugbearMargin": 206,
+    "scope": "Compressed document and response headers; excludes DNS, TCP/TLS setup and request headers."
+  },
+  "optimization": {
+    "approvedHtml": 1719,
+    "approvedBrotli": 738,
+    "approvedGzip": 936,
+    "semanticVariants": 855,
+    "serializationVariants": 32000,
+    "brotliParameterCombinations": 1080
+  }
+}

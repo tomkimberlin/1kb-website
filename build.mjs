@@ -1,8 +1,10 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync} from 'node:fs';
 import {brotliCompressSync,brotliDecompressSync,gzipSync,gunzipSync,constants as c} from 'node:zlib';
 const data=readFileSync('index.html');
-// The page promises less than 1 KB even before compression (decimal kilobytes).
-if(data.length>=1000)throw Error('The under-1-KB claim no longer holds');
+// 1KB Club measures transferred bytes, including response headers, not raw HTML.
+// Reserve 309 bytes above Brotli for a conservative browser-counter budget.
+// Confirm the published page with the club's linked DebugBear scanner as well.
+const limit=1024, overheadAllowance=309;
 new TextDecoder('utf-8',{fatal:true}).decode(data);
 let best;
 let attempts=0;
@@ -21,10 +23,12 @@ if(existsSync('compression/index.html.gz')) {
  if(gunzipSync(optimized).equals(data)&&optimized.length<gzip.length)gzip=optimized;
 }
 if(!brotliDecompressSync(best.data).equals(data)||!gunzipSync(gzip).equals(data))throw Error('Compression round trip failed');
+if(best.data.length+overheadAllowance>=limit)throw Error('Brotli plus the browser overhead allowance must stay below 1,024 bytes');
+if(gzip.length>=limit)throw Error('The gzip response body must stay below 1,024 bytes');
 mkdirSync('public',{recursive:true});
 writeFileSync('public/index.html',data);
 writeFileSync('public/index.html.br',best.data);
 writeFileSync('public/index.html.gz',gzip);
-const report={html:data.length,brotli:best.data.length,gzip:gzip.length,attempts,brotliParams:best.params};
+const report={html:data.length,brotli:best.data.length,gzip:gzip.length,attempts,brotliParams:best.params,budget:{limit,overheadAllowance,brotliWithAllowance:best.data.length+overheadAllowance}};
 writeFileSync('build-report.json',JSON.stringify(report,null,2)+'\n');
 console.log(report);

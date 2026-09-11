@@ -25,7 +25,7 @@ All sites received the same representative Chromium request fields and compressi
 
 ## Scope and reproduction
 
-The measured page at revision `7a11a30` was 570 bytes of HTML, 279 bytes with Brotli and 391 bytes with gzip. Its exact Brotli hash was verified in all three runs. Later copy edits are reflected in [the current build sizes](build-report.json); the delivery configuration is unchanged. [Raw measurements](measurements/gallery-20260911.json) include every run, ranges, response headers, TLS message lengths and packet metadata. Packet payloads, peer HTML and TLS secrets are not included.
+The measured page at revision `7a11a30` was 570 bytes of HTML, 279 bytes with Brotli and 391 bytes with gzip. Its exact Brotli hash was verified in all three runs. The current design and copy have different [build sizes](build-report.json); the delivery configuration is unchanged. [Raw measurements](measurements/gallery-20260911.json) include every run, ranges, response headers, TLS message lengths and packet metadata. Packet payloads, peer HTML and TLS secrets are not included.
 
 These are controlled document exchanges, not complete browser loads or a global ranking. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 

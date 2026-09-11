@@ -2,24 +2,30 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-| Response body | Bytes |
-| --- | ---: |
-| HTML | 781 |
-| Brotli | 342 |
-| Gzip | 446 |
+Rotating neon rays, tilted text strips, coordinated color cycles and a waving hand, drawn with inline CSS and a native emoji.
 
-These sizes cover the page. Headers, TLS, DNS and network framing add to the total transfer.
+The published page measured **818 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/dvTse572/overview) on September 11, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+
+| Measurement | Bytes |
+| --- | ---: |
+| DebugBear page weight | **818** |
+| Brotli response body | 709 |
+| Gzip response body | 888 |
+| Raw HTML | 1,655 |
+
+DebugBear counts the compressed page and response headers. Raw HTML is larger than 1 KB. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
 ## How it stays small
 
-- One ASCII HTML file, inline CSS and a system font.
-- Optional markup omitted; equivalent HTML and CSS orderings compared for compressed size.
+- One ASCII HTML file, inline CSS, native fonts and no external assets.
+- Unused styling and optional syntax removed; more than 32,000 equivalent serializations compared for compressed size.
 - An empty data favicon avoids another request.
 - One-character links lead to empty redirects.
 - Brotli and gzip are compressed ahead of time and checked against the source.
 - nginx omits optional headers and supports TLS certificate compression and session reuse.
+- Reduced-motion preferences stop the animation.
 
-[HTML optimization](OPTIMIZATION.md) and [delivery settings](TRANSPORT.md) explain the implementation. [Compare delivery overhead with other 1kb.club sites](COMPARISON.md). [build-report.json](build-report.json) contains the current build sizes.
+[HTML optimization](OPTIMIZATION.md) explains the design, color strategy and byte budget. [Delivery settings](TRANSPORT.md) cover the server, and [the gallery comparison](COMPARISON.md) compares its delivery overhead with other 1kb.club sites. [Build sizes](build-report.json) and [browser measurements](measurements/page-20260911.json) retain the results.
 
 ## Build locally
 
