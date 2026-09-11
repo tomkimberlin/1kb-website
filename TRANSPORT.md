@@ -1,6 +1,6 @@
 # Transport audit — September 10, 2026
 
-The current page is 437 ASCII bytes. Its Brotli body is 220 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+The current page is 409 ASCII bytes. Its Brotli body is 211 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
 
 ## Controlled hosting comparison
 

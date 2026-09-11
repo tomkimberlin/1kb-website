@@ -1,24 +1,24 @@
 # HTML optimization — September 10, 2026
 
-The page introduces Tom as “a tinkerer near Cleveland, Ohio, USA.” It displays `<1 KB` with no space after the less-than sign. The footer links are GitHub, Telegram, Monero node and Source; Monero node links to `https://xmr.surf/`.
+The page introduces Tom as “a tinkerer near Cleveland, Ohio, USA.” It displays `<1 KB` with no space after the less-than sign. The footer links are GitHub, Telegram and Monero node; Monero node links to `https://xmr.surf/`.
 
 | Representation | Bytes |
 | --- | ---: |
-| ASCII HTML | 437 |
-| Brotli | 220 |
-| Gzip, Zopfli | 301 |
+| ASCII HTML | 409 |
+| Brotli | 211 |
+| Gzip, Zopfli | 300 |
 
-The copy edit initially produced 431 raw bytes and 226 Brotli bytes. Equivalent source ordering reduced Brotli to 221. Changing the three middle-dot references from `&#183` to `&middot` increased the raw source to 437 bytes but reduced Brotli to 220. The source remains ASCII, so no encoding marker or charset declaration is needed. A parser check verified the approved text, line and paragraph breaks, and footer link order.
+Removing the Source link initially produced 408 raw bytes and 216 Brotli bytes. Equivalent ordering and character references produced 409 raw bytes and 211 Brotli bytes. The middle dots use `&#183`, and `&lt1` displays `<1` in text. The source remains ASCII, so no encoding marker or charset declaration is needed. A parser check verified the copy, line and paragraph breaks, and three footer links.
 
-The search checked 13,393 serializations, 109 mutations and 476 character-reference variants. Seventeen shortlisted sources were tested across 18,360 Brotli configurations. The final build tested 1,080 configurations and verified decompression. Zopfli was rerun through 10,000 iterations. [Candidate and measurements](measurements/tinkerer-20260910.json) preserve the selected source and search counts.
+The search checked 13,393 serializations, 79 mutations and 504 character-reference variants. Eighteen shortlisted sources were tested across 19,440 Brotli configurations. The final build tested 1,080 configurations and verified decompression. Zopfli was rerun through 10,000 iterations. [Candidate and measurements](measurements/no-source-20260910.json) preserve the selected source and search counts.
 
 ## Styling and markup
 
 The page keeps `font:1em monospace`, browser-default link colors, its dark scheme and padding. The greeting and location occupy separate lines in the opening paragraph. The remaining sections use normal paragraph spacing.
 
-The title, doctype, mobile viewport declaration and empty data favicon remain. Removing them affects tab identification, standards-mode rendering, mobile layout or automatic favicon requests. Optional tags, quotes and the final CSS closing brace are omitted. The literal `<` before `1` is parsed as text, not a tag. One-character links use the existing empty redirects.
+The title, doctype, mobile viewport declaration and empty data favicon remain. Removing them affects tab identification, standards-mode rendering, mobile layout or automatic favicon requests. Optional document tags and the final anchor closing tag are omitted. This serialization retains viewport quotes and the CSS closing brace because it compresses better. One-character links use the existing empty redirects.
 
-The previous page was 405 raw / 217 Brotli / 294 gzip bytes. Earlier [styling measurements](measurements/style-options-20260910.json) apply to that earlier copy. Lower raw byte count does not necessarily mean lower transfer size.
+The previous page with the Source link was 437 raw / 220 Brotli / 301 gzip bytes; its [measurements](measurements/tinkerer-20260910.json) are retained. Earlier [styling measurements](measurements/style-options-20260910.json) apply to their original copy. Lower raw byte count does not necessarily mean lower transfer size.
 
 ## Verification
 
