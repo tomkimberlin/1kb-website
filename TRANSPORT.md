@@ -4,7 +4,7 @@ The page size in [build-report.json](build-report.json) covers the response body
 
 ## Main website
 
-The home server serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
+nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
 
 - **Compression:** nginx serves precompressed Brotli, gzip or identity bytes according to `Accept-Encoding`, including quality weights and exclusions.
 - **Headers:** normal HTTP/2 responses keep Date, Content-Type, Content-Encoding, Vary and Cache-Control. Server is suppressed. Content-Length is omitted for HTTP/2 and HTTP/3 and retained for HTTP/1.1 framing.
@@ -15,7 +15,7 @@ The home server serves `tomkimberlin.com` directly. Cloudflare provides DNS only
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
 
-The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server operations](server/README.md) covers certificate renewal and deployment.
+The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server configuration](server/README.md) covers certificate renewal and deployment.
 
 ## Alias
 
@@ -24,11 +24,12 @@ The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) an
 ## Verification
 
 ```sh
+npm run build
 npm run verify:live
 npm run verify:alias
 ```
 
-These checks cover exact page representations, encoding negotiation, HEAD, redirects, errors, and alias path/query preservation.
+These checks use Node.js and curl with HTTP/2 support. They target the published domains and compare responses against the local `public/` files, so the checkout must match the deployed revision. They cover exact page representations, encoding negotiation, HEAD, redirects, errors, and alias path/query preservation. Testing another deployment requires updating the hostnames and expected redirects in `server/verify.mjs` and `server/verify-alias.mjs`.
 
 For fresh transport measurements:
 
@@ -41,4 +42,4 @@ python3 -m venv .venv
 .venv/bin/python tools/measure-dns.py tomkimberlin.com optimization/dns.json
 ```
 
-The Python TLS client must use an OpenSSL build with certificate compression enabled to measure that feature. These probes measure controlled exchanges, not a complete browser load; their output states the measurement boundary.
+Replace `YOUR_ORIGIN_IP` with the public IPv4 address of the website's server. The HTTP/3 probe defaults to `tomkimberlin.com` and checks the response against the local Brotli file. The Python TLS client must use an OpenSSL build with certificate compression enabled to measure that feature. These probes measure controlled exchanges, not a complete browser load; their output states the measurement boundary.

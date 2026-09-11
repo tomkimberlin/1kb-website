@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on the home server. Native nginx ACME renews; this publishes complete, validated
+# Run on the Docker host. Native nginx ACME renews; this publishes complete, validated
 # certificate/key pairs and reloads nginx only when a certificate changes.
 set -eu
 umask 077

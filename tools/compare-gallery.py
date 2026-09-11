@@ -1,7 +1,8 @@
 """Controlled cold document exchanges, with metadata-only capture of owned TCP flows.
 
 Not a browser load: excludes subresources, favicon discovery, redirects and browser DNS.
-Runs on the home server in an ephemeral container with certificate compression enabled.
+Requires Linux raw sockets and the configured capture interface (br0).
+The measurement container provides an OpenSSL build with certificate compression enabled.
 """
 import argparse, gzip, hashlib, json, math, select, socket, ssl, struct, threading, time
 from pathlib import Path

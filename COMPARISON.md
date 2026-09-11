@@ -29,10 +29,18 @@ The measured page at revision `7a11a30` was 570 bytes of HTML, 279 bytes with Br
 
 These are controlled document exchanges, not complete browser loads or a global ranking. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
-The [probe](tools/compare-gallery.py) uses a Linux host's `br0` interface and captures metadata only for its selected peer address and owned TCP source port. Run it on the home server with the website's image already built:
+The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the selected peer address and TCP source port. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
+
+From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
+docker build -t onekb-nginx:20260910 -f server/Dockerfile .
 docker build -t onekb-gallery:20260911 -f tools/gallery.Dockerfile .
+```
+
+Collect a sample:
+
+```sh
 mkdir -p optimization/gallery
 docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
   --security-opt no-new-privileges --read-only \

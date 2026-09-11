@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on the home server after building the image and preparing config/site/certificates.
+# Start the container on the Docker host after preparing the image and bind mounts.
 set -eu
 base=/mnt/user/appdata/onekb-website
 name=${ONEKB_CONTAINER:-onekb-website}
