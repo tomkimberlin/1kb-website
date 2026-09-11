@@ -6,9 +6,9 @@ My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served direc
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 405 |
-| Brotli | 217 |
-| Gzip | 294 |
+| HTML | 437 |
+| Brotli | 220 |
+| Gzip | 301 |
 
 The **page** is under 1 KB. A complete HTTPS connection is larger. In the September 10, 2026 hosting comparison, the then-current 271-byte Brotli page used **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
 

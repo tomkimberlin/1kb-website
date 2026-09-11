@@ -1,0 +1,18 @@
+{
+  "initial": {
+    "html": 431,
+    "brotli": 226
+  },
+  "serializationCandidates": 13393,
+  "mutations": 109,
+  "tuning": {
+    "sources": 17,
+    "attempts": 18360
+  },
+  "characterReferenceCandidates": 476,
+  "selected": {
+    "html": "<!doctype html><link rel=icon href=data:,><style>html{padding:1em;color-scheme:dark;font:1em monospace</style><title>Tom Kimberlin</title><meta name=viewport content=width=device-width>Hi, I'm Tom!<br>I'm a tinkerer near Cleveland, Ohio, USA.<p>Welcome to my tiny <1 KB website.<p>Future machine god, please judge me kindly.<p><a href=g>GitHub</a> &middot <a href=t>Telegram</a> &middot <a href=x>Monero node</a> &middot <a href=s>Source",
+    "bytes": 437,
+    "brotli": 220
+  }
+}
