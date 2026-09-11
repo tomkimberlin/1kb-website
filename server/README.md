@@ -23,11 +23,9 @@ Cloudflare's apex and `www` records are DNS-only A records with a 300-second TTL
 
 `tom.kimberlin.net` uses a Cloudflare edge redirect to `https://tomkimberlin.com`, preserving the path and query. Its proxied A record uses documentation address `192.0.2.1`; the redirect does not contact an origin and needs no DDNS. It uses Cloudflare's certificate for HTTPS.
 
-Worker `onekb-website` handles the exact route `tom.kimberlin.net/*`, recorded in `wrangler.jsonc`. Zone: `09ff5bfaf2b70fbbe8e69448041d471e`; route: `ecd892906a7a4061a38598776ecfc859`; DNS record: `8a65b98431f75a16f5af8027e26d032a`. For HTTPS, its empty 301 avoids the 167-byte HTML body sent by a Cloudflare Redirect Rule. The initial all-schemes Redirect Rule was removed. An HTTP-only rule avoids the zone-wide HTTPS upgrade's intermediate hop: ruleset `4a23f11619fc4e55af19cc0b220c6161`, rule `d961f46f03ea4bc194b8cc753dbea272`. That HTTP response still contains Cloudflare's 167-byte body.
+Worker `onekb-website` handles the exact route `tom.kimberlin.net/*`, recorded in `wrangler.jsonc`. Zone: `09ff5bfaf2b70fbbe8e69448041d471e`; route: `ecd892906a7a4061a38598776ecfc859`; DNS record: `8a65b98431f75a16f5af8027e26d032a`. HTTPS redirects have an empty body. An HTTP-only rule avoids the zone-wide HTTPS upgrade's intermediate hop: ruleset `4a23f11619fc4e55af19cc0b220c6161`, rule `d961f46f03ea4bc194b8cc753dbea272`. That HTTP response still contains Cloudflare's 167-byte body.
 
-Response rule `2153cf6d748a4e099258d0e6458507ea` in ruleset `6a8894fe35e248b78438bdf07b79fabd` removes `NEL` and `Report-To` only for this alias. The existing BookStack rule is unchanged. Cloudflare still adds `Alt-Svc` after the attempted removal; its identification headers also remain. The main domain bypasses these headers.
-
-Direct hosting was attempted during a Let's Encrypt validation outage on September 11, 2026 UTC. The unused extra ACME configuration and DDNS expansion were removed. The canonical site still uses the original direct-hosting configuration. To change the alias to direct hosting later, obtain and verify a matching certificate before changing DNS; no automatic cutover is scheduled.
+Response rule `2153cf6d748a4e099258d0e6458507ea` in ruleset `6a8894fe35e248b78438bdf07b79fabd` removes `NEL` and `Report-To` only for this alias. Cloudflare still adds `Alt-Svc` and identification headers. The main domain bypasses these headers.
 
 ## Automatic DNS updates
 
@@ -55,7 +53,7 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment builds the three representations, validates the candidate nginx configuration against the new handler, switches the release symlink, reloads nginx and compares served bytes with the files. It restores the previous release and configuration if reload or byte verification fails. Browser caches can retain yesterday's page; force reload when checking an edit.
+Deployment builds the three representations, validates the candidate nginx configuration against the new handler, switches the release symlink, reloads nginx and compares served bytes with the files. It restores the previous release and configuration if reload or byte verification fails. Force reload when checking an edit to bypass the one-day browser cache.
 
 Build the custom image on Alfred before initial startup or a dependency update:
 
@@ -64,7 +62,7 @@ docker build -t onekb-nginx:20260910 /path/to/repository/server
 sh /mnt/user/appdata/onekb-website/bin/start.sh
 ```
 
-The image uses unmodified upstream nginx and OpenSSL source. A source-built headers-more module removes nginx's otherwise automatic Server header. Rebuild and test deliberately when updating the pinned versions; do not replace this with an unmodified stock image and assume certificate compression still works.
+The image builds nginx and OpenSSL from pinned upstream sources, with certificate compression and the headers-more module enabled. Rebuild and test when updating those versions.
 
 ## Certificates and startup
 
@@ -87,6 +85,4 @@ crontab -c /etc/cron.d -l | grep onekb-certificates
 
 For a page/configuration regression, restore the prior `site/current` target and matching `backups/nginx.conf-*`, run `nginx -t`, then `nginx -s reload`. Retain the working certificate state.
 
-To revert hosting to the retained Cloudflare Worker, build and deploy its code using `npm run deploy:worker`, then explicitly replace the two DNS-only A records with Worker custom domains. Reapply the original-encoding transform recorded in `cloudflare-rules.json`. Verify the public domain before stopping nginx or removing router forwards. `wrangler.jsonc` routes only `tom.kimberlin.net/*`, so deploying it does not move the main site. To retire this alias, remove its route from the configuration and Cloudflare, then remove its DNS record, HTTP-only redirect ruleset and alias response-header rule. Preserve the BookStack response-header rule.
-
-The earlier Caddy data and configuration are retained on Alfred as rollback evidence, with no active Caddy container.
+`npm run deploy:worker` updates the Worker and its `tom.kimberlin.net/*` route. It does not move the main website. To retire this alias, remove its route from the configuration and Cloudflare, then remove its DNS record, HTTP-only redirect ruleset and alias response-header rule. Preserve the BookStack response-header rule.

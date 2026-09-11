@@ -5,14 +5,10 @@ const {constants:c}=zlib;
 const compress=s=>zlib.brotliCompressSync(Buffer.from(s),{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_LGWIN]:10}}).length;
 let seeds=JSON.parse(fs.readFileSync('optimization/search.json')).top.map(x=>x.html),tested=0;
 const mutations=[
- s=>s.replace('#fff','white'),
- s=>s.replace('#fff','#FFF'),
  s=>s.replace('rel=icon href=data:,','href=data:, rel=icon'),
  s=>s.replace('name=viewport content=width=device-width','content=width=device-width name=viewport'),
  s=>s.replace('name=viewport','name="viewport"'),
  s=>s.replace('href=g','href="g"'),
- s=>s.replace('! <a','!<a').replace('>GitHub','> GitHub'),
- s=>s.replace('5vmin monospace','min(5vw,5vh)monospace'),
  s=>s.replace('color-scheme:dark','color-scheme:dark;'),
  s=>s.replace('html{','HTML{')
 ];
