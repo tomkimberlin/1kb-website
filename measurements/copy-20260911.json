@@ -6,26 +6,11 @@
   "html": 1657,
   "brotli": 713,
   "gzip": 888,
-  "copy": "This website is less than 1 KB in size. Source code.",
   "chromium": {
     "encodedBodySize": 713,
     "decodedBodySize": 1657,
     "resourceTimingTransferSize": 1013,
-    "subresources": 0,
-    "viewport": [
-      402,
-      874
-    ],
-    "scrollSize": [
-      402,
-      874
-    ]
-  },
-  "verification": {
-    "sizePhraseLinksTo": "https://1kb.club/",
-    "sourceCodeLinksTo": "https://github.com/tomkimberlin/1kb-website",
-    "stylesheetUnchangedFrom": "d803718",
-    "allThreeServedRepresentationsMatch": true
+    "subresources": 0
   },
   "scope": "Compressed document and response headers; excludes DNS, TCP/TLS setup and request headers.",
   "debugbear": {

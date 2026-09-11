@@ -10,21 +10,13 @@ The build reserves 309 bytes above the Brotli body and rejects a combined size o
 
 ## Markup and styling
 
-- One ASCII document, inline CSS, native fonts and a character reference for the hand; no script or downloaded artwork.
-- Optional HTML tags and safe attribute quotes omitted. CSS closes the final open blocks at the end of the stylesheet; the hand's numeric reference needs no semicolon before the next tag.
-- A doctype, title and viewport declaration preserve standards mode, tab identification and mobile sizing. The unused viewport-fit setting is removed.
+- One ASCII document, inline CSS, native fonts and numeric character references; no external assets.
+- Optional HTML tags and safe attribute quotes omitted. CSS closes open blocks at stylesheet EOF; numeric references need no semicolon before a tag.
+- The doctype, title and viewport declaration preserve standards mode, tab identification and mobile sizing.
 - An empty data favicon prevents a separate favicon request.
-- A repeating conic gradient draws the rays. CSS `rotate` replaces longer transform declarations, and one keyframe serves both the background and hand through a custom property.
-- Flex layout places the hand beside the two-line greeting. The equal-height items need no explicit cross-axis alignment.
-- The page uses an 18px base font, a responsive heading, underlined links and wrapping for long addresses. Reduced-motion preferences disable all animation.
-- The final sentence stays in the source inside a hidden paragraph.
-- Short service links use empty redirects. GitHub repository links and the visible email address keep their direct destinations.
-
-## Color and motion
-
-Cyan, magenta and yellow sit against near-black, with narrow white highlights on the rays. Background and strip colors share a 48-second hue cycle. The white greeting retains an opaque dark backing; its shadow and the hand's shadow share a magenta-to-cyan cycle. The hand stays yellow and swings continuously from the wrist. Heading and strip tilts alternate. No colors or timings are randomized in the page.
-
-The fixed background keeps the compact layout. Native Safari overscroll can expose the canvas beyond that layer; the page does not add artificial scroll space to compensate.
+- CSS gradients replace images; individual `rotate` declarations and shared keyframes reduce animation code.
+- An 18px base font, underlined links, text wrapping and reduced-motion support remain.
+- Short links use empty redirects.
 
 ## Compression and further edits
 
@@ -46,4 +38,4 @@ npm test
 npm run check
 ```
 
-Deploy, verify the exact served representations and rerun the club's scanner. Experiments and screenshots remain outside the published page and repository history.
+Deploy, verify the exact served representations and rerun the club's scanner.

@@ -35,35 +35,9 @@
       "vary"
     ]
   },
-  "visualVerification": {
-    "widths": [
-      320,
-      402,
-      1440
-    ],
-    "comparedAnimationTimesMs": [
-      0,
-      250,
-      6000,
-      18000
-    ],
-    "linksUnchanged": 8,
-    "noHorizontalOverflow": true,
-    "noExtraVerticalScrollAt402x874": true,
-    "reducedMotionDisablesAllAnimations": true,
-    "note": "At 320px, removing redundant alignment changes the span box height by 0.015625px; heading and page layout are unchanged."
-  },
   "limits": {
     "clubBytes": 1024,
     "debugbearMargin": 206,
     "scope": "Compressed document and response headers; excludes DNS, TCP/TLS setup and request headers."
-  },
-  "optimization": {
-    "approvedHtml": 1719,
-    "approvedBrotli": 738,
-    "approvedGzip": 936,
-    "semanticVariants": 855,
-    "serializationVariants": 32000,
-    "brotliParameterCombinations": 1080
   }
 }
