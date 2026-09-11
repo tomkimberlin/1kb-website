@@ -1,22 +1,22 @@
 {
-  "measuredAt": "2026-09-11T18:01:00Z",
+  "measuredAt": "2026-09-11T21:29:03Z",
   "url": "https://tomkimberlin.com/",
-  "htmlSha256": "cc64db99cf9b0594635f3f1a1e27e25a2c2101ac2df8038a7c0242e84aabb078",
-  "brotliSha256": "79139a3e67b7c08d842db5611c072e3616994b7201b95c8ae7320298198bb07b",
-  "html": 1657,
-  "brotli": 713,
-  "gzip": 888,
+  "htmlSha256": "ec1f248c43b4fc1afe018dfcf863603559f3827ec2ef33bb86a66a4ca19a1ccd",
+  "brotliSha256": "e6ce1c00e6f3657dabd87e374271f1513b26624acb6e4449f6f0e15853503bb8",
+  "html": 1667,
+  "brotli": 714,
+  "gzip": 892,
   "chromium": {
-    "encodedBodySize": 713,
-    "decodedBodySize": 1657,
-    "resourceTimingTransferSize": 1013,
+    "encodedBodySize": 714,
+    "decodedBodySize": 1667,
+    "resourceTimingTransferSize": 1014,
     "subresources": 0
   },
   "scope": "Compressed document and response headers; excludes DNS, TCP/TLS setup and request headers.",
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/KflButjL/overview",
-    "pageWeight": 822,
+    "report": "https://www.debugbear.com/test/website-speed/UnVKZJ7U/overview",
+    "pageWeight": 823,
     "clubLimit": 1024,
-    "margin": 202
+    "margin": 201
   }
 }
