@@ -4,9 +4,9 @@ My website: [tomkimberlin.com](https://tomkimberlin.com/).
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 501 |
+| HTML | 493 |
 | Brotli | 255 |
-| Gzip | 353 |
+| Gzip | 352 |
 
 These sizes cover the page. Headers, TLS, DNS and network framing add to the total transfer.
 

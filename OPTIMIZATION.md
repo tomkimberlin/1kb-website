@@ -9,7 +9,7 @@
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile layout.
 - An empty data favicon prevents an automatic favicon request.
 - `font:1.125rem/1.5 monospace` uses a system font and relative sizing. The page keeps browser-default link colors.
-- Paragraphs separate the sections. `<br>` elements break lines after the welcome sentence and between the project links.
+- Paragraphs separate the sections. Sentences flow together, and a comma separates the project links.
 - One-character URLs keep the HTML short; each link adds an empty redirect when clicked.
 
 ## Compression
