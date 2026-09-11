@@ -16,6 +16,7 @@ function request(protocol, path='/', encoding='br', method='GET', origin='https:
   if(protocol==='--http2'&&origin.startsWith('https:'))assert(statusLine.startsWith('HTTP/2 '),statusLine);
   const status=Number(statusLine.split(' ')[1]);
   const headers=Object.fromEntries(lines.map(line=>{const n=line.indexOf(':');return [line.slice(0,n).toLowerCase(),line.slice(n+1).trim()]}));
+  if(status!==200)assert.equal(headers['content-type'],undefined,`${origin}${path} ${method} ${protocol}`);
   assert(!lines.some(line=>/^(server|alt-svc|etag|last-modified|accept-ranges|cf-[^:]*|nel|report-to|server-timing):/i.test(line)),lines);
   if(protocol==='--http2'&&origin.startsWith('https:'))assert.equal(headers['content-length'],undefined);
   return {status,headers,body:data.subarray(end+4)};

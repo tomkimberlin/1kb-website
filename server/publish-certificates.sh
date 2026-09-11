@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on Alfred. Native nginx ACME renews; this publishes complete, validated
+# Run on the home server. Native nginx ACME renews; this publishes complete, validated
 # certificate/key pairs and reloads nginx only when a certificate changes.
 set -eu
 umask 077
@@ -7,11 +7,11 @@ base=/mnt/user/appdata/onekb-website
 mkdir -p "$base/tls/releases" "$base/state"
 exec 9>"$base/state/certificates.lock"
 flock -n 9 || exit 0
-fingerprint=$(cat "$base"/acme/tomkimberlin.com-*.crt "$base"/acme/www.tomkimberlin.com-*.crt | sha256sum | cut -d' ' -f1)
+fingerprint=$(cat "$base"/acme/tomkimberlin.com-*.crt "$base"/acme/www.tomkimberlin.com-*.crt "$base"/acme/tom.kimberlin.net-*.crt | sha256sum | cut -d' ' -f1)
 if test -f "$base/state/certificate-fingerprint" && test "$fingerprint" = "$(cat "$base/state/certificate-fingerprint")"; then exit 0; fi
 release="$base/tls/releases/$fingerprint"
 mkdir -p "$release"
-for domain in tomkimberlin.com www.tomkimberlin.com; do
+for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
     set -- "$base/acme/$domain-"*.crt
     test "$#" -eq 1
     cert=$1

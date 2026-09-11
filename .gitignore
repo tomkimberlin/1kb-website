@@ -1,7 +1,5 @@
 public/
 optimization/
 node_modules/
-.wrangler/
 .env*
-.dev.vars*
 .venv/

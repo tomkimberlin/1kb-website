@@ -4,11 +4,11 @@ The page size in [build-report.json](build-report.json) covers the response body
 
 ## Main website
 
-Alfred serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
+The home server serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
 
 - **Compression:** nginx serves precompressed Brotli, gzip or identity bytes according to `Accept-Encoding`, including quality weights and exclusions.
 - **Headers:** normal HTTP/2 responses keep Date, Content-Type, Content-Encoding, Vary and Cache-Control. Server is suppressed. Content-Length is omitted for HTTP/2 and HTTP/3 and retained for HTTP/1.1 framing.
-- **Redirects and errors:** empty bodies avoid HTML boilerplate.
+- **Redirects and errors:** empty bodies avoid HTML boilerplate and omit Content-Type. An HTTP/2 alias redirect sends only Date and Location.
 - **Caching:** `max-age=86400` allows a fresh browser cache to satisfy repeat visits. Vary keeps cached representations separate.
 - **Certificates:** ECDSA P-256, one hostname per certificate, Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference.
 - **Certificate compression:** the pinned OpenSSL build enables Brotli, zlib and Zstandard. nginx loads static certificates and enables compression for clients that support it.
@@ -19,9 +19,7 @@ The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) an
 
 ## Alias
 
-`https://tom.kimberlin.net` returns an empty Cloudflare Worker 301 to the main website. A hostname-scoped transform removes NEL and Report-To; Cloudflare identification and Alt-Svc headers remain. This entry path adds a separate TLS connection and redirect.
-
-Plain HTTP uses an edge rule that redirects directly to the main HTTPS address, avoiding an intermediate HTTPS-alias hop. Cloudflare supplies a 167-byte body for that HTTP response.
+`tom.kimberlin.net` and `www.tomkimberlin.com` use DNS-only A records pointing to the same server. Both HTTP and HTTPS return an empty 301 directly to `https://tomkimberlin.com`, preserving the path and query. Their HTTPS listeners use separate ECDSA certificates with automatic renewal and certificate compression. An alias visit still adds a redirect and, for HTTPS, a separate TLS connection.
 
 ## Verification
 

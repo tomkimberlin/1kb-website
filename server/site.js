@@ -39,7 +39,7 @@ function empty(r, status, location) {
   r.finish();
 }
 function serve(r) {
-  if (r.variables.scheme === 'http' || r.variables.host === 'www.tomkimberlin.com') {
+  if (r.variables.scheme === 'http' || r.variables.host === 'www.tomkimberlin.com' || r.variables.host === 'tom.kimberlin.net') {
     return empty(r,301,'https://tomkimberlin.com'+r.variables.request_uri);
   }
   if (r.method !== 'GET' && r.method !== 'HEAD') {

@@ -23,14 +23,14 @@ These sizes cover the page. Headers, TLS, DNS and network framing add to the tot
 
 ## Build and deploy
 
-Requires Node.js 22+, curl and SSH access to Alfred.
+Requires Node.js 22+, curl and SSH access to the home server.
 
 ```sh
 npm ci
 npm test
 npm run check
-npm run deploy
+npm run deploy -- YOUR_SSH_HOST
 npm run verify:live
 ```
 
-`index.html` is the page source. Alfred serves it directly; Cloudflare provides DNS. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it through Cloudflare. See [server operations](server/README.md) for DNS, certificates, the alias and rollback.
+`index.html` is the page source. The home server serves it directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it on the same server. See [server operations](server/README.md) for DNS, certificates, the alias and rollback.

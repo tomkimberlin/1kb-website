@@ -4,15 +4,10 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node build.mjs && node --test worker.test.mjs",
+    "test": "node build.mjs && node --test server/site.test.mjs",
     "deploy": "sh server/deploy.sh",
     "check": "node --check slim.mjs && node --check server/site.js && node --check server/verify.mjs && node --check server/verify-alias.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh && bash -n server/update-dns.sh",
-    "deploy:worker": "wrangler deploy",
     "verify:live": "node server/verify.mjs",
-    "check:worker": "wrangler deploy --dry-run",
     "verify:alias": "node server/verify-alias.mjs"
-  },
-  "devDependencies": {
-    "wrangler": "4.131.0"
   }
 }

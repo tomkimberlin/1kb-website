@@ -1,5 +1,5 @@
 #!/bin/sh
-# Run on Alfred after building the image and preparing config/site/certificates.
+# Run on the home server after building the image and preparing config/site/certificates.
 set -eu
 base=/mnt/user/appdata/onekb-website
 name=${ONEKB_CONTAINER:-onekb-website}

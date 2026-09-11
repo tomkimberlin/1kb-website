@@ -2,7 +2,11 @@
 # Build locally, then atomically activate the three static representations.
 set -eu
 cd "$(dirname "$0")/.."
-host=${1:-alfred}
+host=${1:-${ONEKB_SSH_HOST:-}}
+if test -z "$host"; then
+  printf 'Usage: npm run deploy -- YOUR_SSH_HOST\n' >&2
+  exit 2
+fi
 node build.mjs
 release=$(date -u +%Y%m%dT%H%M%SZ)-$(shasum -a 256 index.html | cut -c1-12)
 base=/mnt/user/appdata/onekb-website
@@ -39,5 +43,6 @@ for pair in br:br gzip:gz identity:html; do
     -H "Accept-Encoding: $encoding" https://tomkimberlin.com/ -o "backups/check-$release" || \
     ! cmp "backups/check-$release" "site/current/$file"; then rollback; exit 1; fi
 done
+rm -f nginx/nginx.conf.next "backups/check-$release"
 printf 'Active release: %s\n' "$release"
 REMOTE
