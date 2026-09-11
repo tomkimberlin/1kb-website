@@ -1,0 +1,37 @@
+{
+  "measuredAt": "2026-09-11T18:01:00Z",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "cc64db99cf9b0594635f3f1a1e27e25a2c2101ac2df8038a7c0242e84aabb078",
+  "brotliSha256": "79139a3e67b7c08d842db5611c072e3616994b7201b95c8ae7320298198bb07b",
+  "html": 1657,
+  "brotli": 713,
+  "gzip": 888,
+  "copy": "This website is less than 1 KB in size. Source code.",
+  "chromium": {
+    "encodedBodySize": 713,
+    "decodedBodySize": 1657,
+    "resourceTimingTransferSize": 1013,
+    "subresources": 0,
+    "viewport": [
+      402,
+      874
+    ],
+    "scrollSize": [
+      402,
+      874
+    ]
+  },
+  "verification": {
+    "sizePhraseLinksTo": "https://1kb.club/",
+    "sourceCodeLinksTo": "https://github.com/tomkimberlin/1kb-website",
+    "stylesheetUnchangedFrom": "d803718",
+    "allThreeServedRepresentationsMatch": true
+  },
+  "scope": "Compressed document and response headers; excludes DNS, TCP/TLS setup and request headers.",
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/KflButjL/overview",
+    "pageWeight": 822,
+    "clubLimit": 1024,
+    "margin": 202
+  }
+}

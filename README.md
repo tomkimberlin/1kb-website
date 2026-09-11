@@ -4,14 +4,14 @@ Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.co
 
 Rotating neon rays, tilted text strips, coordinated color cycles and a waving hand, drawn with inline CSS and a native emoji.
 
-The published page measured **818 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/dvTse572/overview) on September 11, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **822 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/KflButjL/overview) on September 11, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **818** |
-| Brotli response body | 709 |
+| DebugBear page weight | **822** |
+| Brotli response body | 713 |
 | Gzip response body | 888 |
-| Raw HTML | 1,655 |
+| Raw HTML | 1,657 |
 
 DebugBear counts the compressed page and response headers. Raw HTML is larger than 1 KB. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -25,7 +25,7 @@ DebugBear counts the compressed page and response headers. Raw HTML is larger th
 - nginx omits optional headers and supports TLS certificate compression and session reuse.
 - Reduced-motion preferences stop the animation.
 
-[HTML optimization](OPTIMIZATION.md) explains the design, color strategy and byte budget. [Delivery settings](TRANSPORT.md) cover the server, and [the gallery comparison](COMPARISON.md) compares its delivery overhead with other 1kb.club sites. [Build sizes](build-report.json) and [browser measurements](measurements/page-20260911.json) retain the results.
+[HTML optimization](OPTIMIZATION.md) explains the design, color strategy and byte budget. [Delivery settings](TRANSPORT.md) cover the server, and [the gallery comparison](COMPARISON.md) compares its delivery overhead with other 1kb.club sites. [Build sizes](build-report.json) and [browser measurements](measurements/copy-20260911.json) retain the results.
 
 ## Build locally
 
