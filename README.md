@@ -1,14 +1,14 @@
 # 1kb website
 
-My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served directly from my home server, Alfred. Cloudflare provides DNS only.
+My personal website: [tomkimberlin.com](https://tomkimberlin.com/). Served directly from my home server, Alfred. Cloudflare provides DNS for the main site. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it through Cloudflare.
 
 ## Size
 
 | Response body | Bytes |
 | --- | ---: |
-| HTML | 409 |
-| Brotli | 211 |
-| Gzip | 300 |
+| HTML | 428 |
+| Brotli | 229 |
+| Gzip | 310 |
 
 The **page** is under 1 KB. A complete HTTPS connection is larger. In the September 10, 2026 hosting comparison, the then-current 271-byte Brotli page used **5,648 bytes through TLS in both directions**, versus **6,474 through Cloudflare**, with certificate compression enabled on both. TCP/IP and DNS add more; [the transport audit](TRANSPORT.md) includes those measurements and their limits.
 
@@ -40,4 +40,4 @@ npm run verify:live
 
 `index.html` is the page source. `server/` contains nginx configuration, its reproducible image build, deployment and certificate renewal support. See [server operations](server/README.md) for setup and rollback.
 
-The former Cloudflare Worker is retained as a fallback. `deploy:worker` updates its code; it does not move DNS or attach the domain.
+The Cloudflare Worker handles only `tom.kimberlin.net/*`, returning an empty redirect. Its page-serving code remains available for rollback. `npm run deploy:worker` updates this Worker and its alias route; the main domain continues to use Alfred.

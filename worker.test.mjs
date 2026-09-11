@@ -48,13 +48,18 @@ test('redirects and missing paths have empty bodies',async()=>{
   for(const [url,location] of [
     ['http://tomkimberlin.com/?x=1','https://tomkimberlin.com/?x=1'],
     ['https://www.tomkimberlin.com/g','https://tomkimberlin.com/g'],
+    ['http://tom.kimberlin.net/','https://tomkimberlin.com/'],
+    ['https://tom.kimberlin.net/','https://tomkimberlin.com/'],
+    ['https://tom.kimberlin.net/p?from=alias&check=1','https://tomkimberlin.com/p?from=alias&check=1'],
     ['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
-    ['/t','https://t.me/tomkimberlin'],['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website'],
+    ['/p','https://paste.kimberlin.net/'],['/k','https://1kb.club/'],['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website'],
   ]) {
     const response=call(url);
     assert.equal(response.status,301);assert.equal(response.headers.get('location'),location);
     assert.equal((await response.arrayBuffer()).byteLength,0);
   }
   assert.equal(call('/missing').status,404);
+  assert.equal(call('/t').status,404);
+  assert.equal((await call('/t').arrayBuffer()).byteLength,0);
   assert.equal((await call('/missing').arrayBuffer()).byteLength,0);
 });

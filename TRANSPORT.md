@@ -1,6 +1,8 @@
 # Transport audit — September 10, 2026
 
-The current page is 409 ASCII bytes. Its Brotli body is 211 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+The current page is 428 ASCII bytes. Its Brotli body is 229 bytes. “Under 1 KB” describes the HTML, not an entire HTTPS connection.
+
+`https://tom.kimberlin.net` uses an empty Cloudflare Worker 301 redirect to the canonical domain. NEL and Report-To are removed by a hostname-scoped transform; Cloudflare identification and Alt-Svc remain. Plain HTTP uses a direct-to-canonical edge rule with a 167-byte body, avoiding the zone-wide HTTPS upgrade's additional redirect hop. The alias entry path adds Cloudflare response headers before the direct homepage request, and HTTPS adds a separate TLS connection. The historical measurements below cover `tomkimberlin.com`, not this additional alias path.
 
 ## Controlled hosting comparison
 
@@ -48,7 +50,7 @@ TLS 1.2/1.3 support and hybrid key exchange remain enabled. Disabling modern cry
 
 ## Verification and reproduction
 
-`npm run verify:live` now checks 76 HTTP/1.1 and HTTP/2 cases, including the Telegram redirect: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The hosting comparison kept the approved HTML and visible wording unchanged.
+`npm run verify:live` checks 80 HTTP/1.1 and HTTP/2 cases, including the PrivateBin and 1kb.club redirects and the removed Telegram path: exact Brotli/gzip/identity bodies, weighted negotiation, exclusions, HEAD, empty redirects/errors and unavailable internal files. HTTP/3, TLS resumption, strict certificate validation and access from an external server were checked separately. The hosting comparison kept the approved HTML and visible wording unchanged.
 
 ```sh
 python3 -m venv .venv

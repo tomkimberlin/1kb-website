@@ -31,7 +31,7 @@ function redirect(location) {
 export default {
   fetch(request) {
     const url = new URL(request.url);
-    if (url.protocol === 'http:' || url.hostname === 'www.tomkimberlin.com') {
+    if (url.protocol === 'http:' || url.hostname === 'www.tomkimberlin.com' || url.hostname === 'tom.kimberlin.net') {
       return redirect('https://tomkimberlin.com' + url.pathname + url.search);
     }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
@@ -39,7 +39,8 @@ export default {
     }
     if (url.pathname === '/g') return redirect('https://github.com/tomkimberlin');
     if (url.pathname === '/x') return redirect('https://xmr.surf/');
-    if (url.pathname === '/t') return redirect('https://t.me/tomkimberlin');
+    if (url.pathname === '/p') return redirect('https://paste.kimberlin.net/');
+    if (url.pathname === '/k') return redirect('https://1kb.club/');
     if (url.pathname === '/s') return redirect('https://github.com/tomkimberlin/1kb-website');
     if (url.pathname === '/index.html') return redirect('/' + url.search);
     if (url.pathname !== '/') return new Response(null, {status: 404});
