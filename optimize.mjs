@@ -7,6 +7,7 @@ const title=source.match(/<title>.*?<\/title>/s)[0];
 const style=source.match(/<style>(.*?)<\/style>/s)[1];
 const declarations=style.match(/html\{([^}]+)/)[1].split(';').filter(Boolean);
 const body=source.replace(/^\ufeff/,'').replace(/<!doctype\s*html>/i,'').replace(/<style>.*?<\/style>|<title>.*?<\/title>|<link[^>]*>|<meta[^>]*>/gs,'');
+const encodings=/[^\x00-\x7f]/.test(body+title+style)?['\ufeff','<meta charset=utf-8>']:['','\ufeff','<meta charset=utf-8>'];
 const score=html=>brotliCompressSync(Buffer.from(html),{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_LGWIN]:16}}).length;
 const top=[];let count=0;
 function consider(html) {
@@ -17,7 +18,7 @@ consider(source);
 for(const ds of perm(declarations))for(const reverse of [false,true])for(const brace of [true,false])for(const quote of ['', '"'])for(const doctype of ['<!doctype html>','<!DOCTYPE html>']) {
  const rules=[`html{${ds.join(';')}}`,'a{color:#fff}'];if(reverse)rules.reverse();if(!brace)rules[rules.length-1]=rules.at(-1).slice(0,-1);
  const heads=[title,'<link rel=icon href=data:,>',`<meta name=viewport content=${quote}width=device-width${quote}>`,`<style>${rules.join('')}</style>`];
- for(const order of perm(heads))for(const encoding of ['\ufeff','<meta charset=utf-8>'])consider((encoding==='\ufeff'?encoding:'')+doctype+(encoding==='\ufeff'?'':encoding)+order.join('')+body);
+ for(const order of perm(heads))for(const encoding of encodings)consider((encoding==='\ufeff'?encoding:'')+doctype+(encoding==='\ufeff'?'':encoding)+order.join('')+body);
 }
 // Starting with the best serializations, compare redirect and direct link targets.
 const heads=[...top];

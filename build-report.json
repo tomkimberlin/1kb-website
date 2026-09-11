@@ -1,7 +1,7 @@
 {
-  "html": 445,
-  "brotli": 255,
-  "gzip": 340,
+  "html": 423,
+  "brotli": 224,
+  "gzip": 306,
   "attempts": 1080,
   "brotliParams": {
     "0": 0,
