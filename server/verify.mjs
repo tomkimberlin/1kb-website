@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 
-const representations = Object.fromEntries(Object.entries({identity:'',br:'.br',gzip:'.gz'}).map(([k,s])=>[k,readFileSync(new URL('../public/index.html'+s,import.meta.url))]));
+const representations = Object.fromEntries(Object.entries({identity:'',br:'.br',gzip:'.gz',deflate:'.deflate'}).map(([k,s])=>[k,readFileSync(new URL('../public/index.html'+s,import.meta.url))]));
 const ip=process.env.ONEKB_TEST_IP;
 const connect=[];
 if(ip&&process.env.ONEKB_TEST_HTTPS_PORT) for(const host of ['tomkimberlin.com','www.tomkimberlin.com']) connect.push('--connect-to',`${host}:443:${ip}:${process.env.ONEKB_TEST_HTTPS_PORT}`);
@@ -21,7 +21,7 @@ function request(protocol, path='/', encoding='br', method='GET', origin='https:
   if(protocol==='--http2'&&origin.startsWith('https:'))assert.equal(headers['content-length'],undefined);
   return {status,headers,body:data.subarray(end+4)};
 }
-const cases=[['br','br'],['gzip','gzip'],['identity','identity'],['','identity'],['br;q=0,gzip;q=0','identity'],['gzip, deflate, br, zstd','br'],['br;q=0,gzip;q=1','gzip'],['gzip;q=0.5,br;q=1','br'],['gzip;q=1,br;q=0.2','gzip'],['identity;q=1,br;q=0.5','identity'],['*;q=0',null],['*','br'],['br;q=0,*;q=1','gzip'],['br;q=0,gzip;q=0,*;q=0',null],['identity;q=0',null],['identity;q=0,br','br'],['BR;q=0.500,GZIP;q=0.250','br'],['br;q=banana,gzip','gzip'],['br;q=1.1','identity'],['br;q=0,br;q=1','br'],['gzip,identity','gzip'],['br;q=0.001,identity;q=0','br']];
+const cases=[['br','br'],['deflate','deflate'],['gzip,deflate','deflate'],['deflate;q=0.5,gzip','gzip'],['deflate;q=0,gzip','gzip'],['gzip','gzip'],['identity','identity'],['','identity'],['br;q=0,gzip;q=0','identity'],['gzip, deflate, br, zstd','br'],['br;q=0,gzip;q=1','gzip'],['gzip;q=0.5,br;q=1','br'],['gzip;q=1,br;q=0.2','gzip'],['identity;q=1,br;q=0.5','identity'],['*;q=0',null],['*','br'],['br;q=0,*;q=1','deflate'],['br;q=0,gzip;q=0,*;q=0',null],['identity;q=0',null],['identity;q=0,br','br'],['BR;q=0.500,GZIP;q=0.250','br'],['br;q=banana,gzip','gzip'],['br;q=1.1','identity'],['br;q=0,br;q=1','br'],['gzip,identity','gzip'],['br;q=0.001,identity;q=0','br']];
 let checks=0;
 for(const protocol of ['--http1.1','--http2']) {
  for(const [accepted,encoding] of cases) {
@@ -34,7 +34,7 @@ for(const protocol of ['--http1.1','--http2']) {
   else assert.equal(r.headers['cache-control'],undefined);
   checks++;
  }
- for(const encoding of ['br','gzip','identity']) {
+ for(const encoding of ['br','gzip','deflate','identity']) {
   const r=request(protocol,'/',encoding,'HEAD');assert.equal(r.status,200);assert.equal(r.body.length,0);if(r.headers['content-length']!==undefined)assert.equal(Number(r.headers['content-length']),representations[encoding].length);assert.equal(r.headers['content-encoding'],encoding==='identity'?undefined:encoding);checks++;
  }
  for(const [path,status,location,method,origin] of [

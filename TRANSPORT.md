@@ -6,14 +6,18 @@ The page size in [build-report.json](build-report.json) covers the response body
 
 nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
 
-- **Compression:** nginx serves precompressed Brotli, gzip or identity bytes according to `Accept-Encoding`, including quality weights and exclusions.
+- **Compression:** nginx serves precompressed Brotli, deflate, gzip or identity bytes according to `Accept-Encoding`, including quality weights and exclusions.
 - **Headers:** normal HTTP/2 responses keep Date, Content-Type, Content-Encoding, Vary and Cache-Control. Server is suppressed. Content-Length is omitted for HTTP/2 and HTTP/3 and retained for HTTP/1.1 framing.
+- **Header encoding:** the nginx patch uses HPACK static name indices and QPACK static name/value entries. HTTP/3 explicitly sends `text/html; charset=utf-8`, which has a one-byte QPACK entry.
+- **HTTP/2 setup:** the receive window starts at the 65,535-byte protocol default and grows when request data arrives. The matching stream-window setting and unnecessary initial table-size reset are omitted.
 - **Redirects and errors:** empty bodies avoid HTML boilerplate and omit Content-Type. An HTTP/2 alias redirect sends only Date and Location.
 - **Caching:** `max-age=86400` allows a fresh browser cache to satisfy repeat visits. Vary keeps cached representations separate.
 - **Certificates:** ECDSA P-256, one hostname per certificate, Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference.
 - **Certificate compression:** the pinned OpenSSL build enables Brotli, zlib and Zstandard. nginx loads static certificates and enables compression for clients that support it.
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
+
+The September 12 [audit](measurements/payload-20260912.json) reduced the measured HTTP/2 header block from 91 to 63 bytes, setup frames by 19 bytes, and the HTTP/3 header block from 92 to 43 bytes. Date compression can vary with its value. TLS buffers of 1, 4, 16 and 32 KB produced the same traffic; the default remains. Encryption, certificate verification, session reuse, caching and encoding separation remain enabled.
 
 The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server configuration](server/README.md) covers certificate renewal and deployment.
 
@@ -37,6 +41,7 @@ For fresh transport measurements:
 mkdir -p optimization
 python3 -m venv .venv
 .venv/bin/pip install -r tools/requirements.txt
+.venv/bin/python tools/verify-http2.py
 .venv/bin/python tools/measure-transport.py --out optimization/http2.json
 .venv/bin/python tools/measure-http3.py --ip YOUR_ORIGIN_IP --out optimization/http3.json
 .venv/bin/python tools/measure-dns.py tomkimberlin.com optimization/dns.json

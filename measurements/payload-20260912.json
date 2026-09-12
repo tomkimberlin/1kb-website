@@ -1,0 +1,84 @@
+{
+  "measuredAt": "2026-09-12T14:15:39Z",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "511cc9d222ebfe8c8c795e94f3b3c0c302fa156568e48e1bbe90a3fae4826c28",
+  "brotliSha256": "d7e490aebb98b4c51f956dcbe4d69920d8cb923ba4aa8f7c981f78824edffda3",
+  "html": 1661,
+  "brotli": 708,
+  "gzip": 891,
+  "deflate": 879,
+  "chromium": {
+    "encodedBodySize": 708,
+    "decodedBodySize": 1661,
+    "resourceTimingTransferSize": 1008,
+    "subresources": 0
+  },
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/2tL1Ocpl/overview",
+    "previousPageWeight": 823,
+    "pageWeight": 789,
+    "clubLimit": 1024,
+    "margin": 235,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
+  },
+  "http2": {
+    "before": {
+      "firstHeaderBlock": 91,
+      "secondHeaderBlock": 90,
+      "setupFrames": 49,
+      "serverBytesAfterHandshakeThroughFirstResponse": 1017,
+      "serverBytesForSecondResponse": 844,
+      "sessionResumed": true
+    },
+    "after": {
+      "firstHeaderBlock": 63,
+      "secondHeaderBlock": 63,
+      "setupFrames": 30,
+      "serverBytesAfterHandshakeThroughFirstResponse": 964,
+      "serverBytesForSecondResponse": 811,
+      "sessionResumed": true
+    },
+    "scope": "Same representative request and OpenSSL 3.5.8 client, loopback/direct origin. Resumed TLS removes variable ECDSA signature length from the comparison; TCP/IP and DNS are excluded."
+  },
+  "http3": {
+    "headerBlockBefore": 92,
+    "headerBlockAfter": 43,
+    "scope": "QPACK field-section bytes measured with aioquic 1.3.0; QUIC framing and handshake traffic excluded."
+  },
+  "compressionSearch": {
+    "brotliParameterCombinations": 138240,
+    "equivalentSerializations": 39060,
+    "zopfliMaximumIterations": 100000,
+    "zstdBest": 909
+  },
+  "verification": {
+    "handlerTests": 23,
+    "http1AndHttp2Checks": 92,
+    "aliasChecks": 12,
+    "http2TableAndFramingChecks": 12,
+    "http3Checks": 14,
+    "isolatedUploadBytes": 200000,
+    "visualComparison": {
+      "engines": [
+        "Chromium",
+        "WebKit"
+      ],
+      "viewports": [
+        320,
+        402,
+        844,
+        1440
+      ],
+      "animationPhasesMilliseconds": [
+        375,
+        6000,
+        24000
+      ],
+      "reducedMotion": true
+    },
+    "liveBrowserViewports": [
+      402,
+      1440
+    ]
+  }
+}

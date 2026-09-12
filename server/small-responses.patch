@@ -1,0 +1,207 @@
+--- a/src/http/v2/ngx_http_v2.c
++++ b/src/http/v2/ngx_http_v2.c
+@@ -240,7 +240,7 @@
+     h2c->http_connection = hc;
+ 
+     h2c->send_window = NGX_HTTP_V2_DEFAULT_WINDOW;
+-    h2c->recv_window = NGX_HTTP_V2_MAX_WINDOW;
++    h2c->recv_window = NGX_HTTP_V2_DEFAULT_WINDOW;
+ 
+     h2c->init_window = NGX_HTTP_V2_DEFAULT_WINDOW;
+ 
+@@ -273,14 +273,6 @@
+     }
+ 
+     if (ngx_http_v2_send_settings(h2c) == NGX_ERROR) {
+-        ngx_http_close_connection(c);
+-        return;
+-    }
+-
+-    if (ngx_http_v2_send_window_update(h2c, 0, NGX_HTTP_V2_MAX_WINDOW
+-                                               - NGX_HTTP_V2_DEFAULT_WINDOW)
+-        == NGX_ERROR)
+-    {
+         ngx_http_close_connection(c);
+         return;
+     }
+@@ -2256,7 +2248,10 @@
+ 
+         case NGX_HTTP_V2_HEADER_TABLE_SIZE_SETTING:
+ 
+-            h2c->table_update = 1;
++            /* No dynamic indices are referenced by this encoder. */
++            if (value < 4096) {
++                h2c->table_update = 1;
++            }
+             break;
+ 
+         default:
+@@ -2728,7 +2723,11 @@
+         return NGX_ERROR;
+     }
+ 
+-    len = NGX_HTTP_V2_SETTINGS_PARAM_SIZE * 3;
++    h2scf = ngx_http_get_module_srv_conf(h2c->http_connection->conf_ctx,
++                                         ngx_http_v2_module);
++
++    len = NGX_HTTP_V2_SETTINGS_PARAM_SIZE
++          * (2 + (h2scf->preread_size != NGX_HTTP_V2_DEFAULT_WINDOW));
+ 
+     buf = ngx_create_temp_buf(h2c->pool, NGX_HTTP_V2_FRAME_HEADER_SIZE + len);
+     if (buf == NULL) {
+@@ -2756,17 +2755,16 @@
+ 
+     buf->last = ngx_http_v2_write_sid(buf->last, 0);
+ 
+-    h2scf = ngx_http_get_module_srv_conf(h2c->http_connection->conf_ctx,
+-                                         ngx_http_v2_module);
+-
+     buf->last = ngx_http_v2_write_uint16(buf->last,
+                                          NGX_HTTP_V2_MAX_STREAMS_SETTING);
+     buf->last = ngx_http_v2_write_uint32(buf->last,
+                                          h2scf->concurrent_streams);
+ 
+-    buf->last = ngx_http_v2_write_uint16(buf->last,
++    if (h2scf->preread_size != NGX_HTTP_V2_DEFAULT_WINDOW) {
++        buf->last = ngx_http_v2_write_uint16(buf->last,
+                                          NGX_HTTP_V2_INIT_WINDOW_SIZE_SETTING);
+-    buf->last = ngx_http_v2_write_uint32(buf->last, h2scf->preread_size);
++        buf->last = ngx_http_v2_write_uint32(buf->last, h2scf->preread_size);
++    }
+ 
+     buf->last = ngx_http_v2_write_uint16(buf->last,
+                                          NGX_HTTP_V2_MAX_FRAME_SIZE_SETTING);
+--- a/src/http/v2/ngx_http_v2_filter_module.c
++++ b/src/http/v2/ngx_http_v2_filter_module.c
+@@ -598,10 +598,30 @@
+         }
+ #endif
+ 
+-        *pos++ = 0;
+-
+-        pos = ngx_http_v2_write_name(pos, header[i].key.data,
+-                                     header[i].key.len, tmp);
++        /* RFC 7541 static names; use the same encoding as built-in fields. */
++        if (header[i].key.len == 13
++            && ngx_strncasecmp(header[i].key.data,
++                               (u_char *) "cache-control", 13) == 0)
++        {
++            *pos++ = ngx_http_v2_inc_indexed(24);
++
++        } else if (header[i].key.len == 16
++                   && ngx_strncasecmp(header[i].key.data,
++                                      (u_char *) "content-encoding", 16) == 0)
++        {
++            *pos++ = ngx_http_v2_inc_indexed(26);
++
++        } else if (header[i].key.len == 4
++                   && ngx_strncasecmp(header[i].key.data,
++                                      (u_char *) "vary", 4) == 0)
++        {
++            *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_VARY_INDEX);
++
++        } else {
++            *pos++ = 0;
++            pos = ngx_http_v2_write_name(pos, header[i].key.data,
++                                        header[i].key.len, tmp);
++        }
+ 
+         pos = ngx_http_v2_write_value(pos, header[i].value.data,
+                                       header[i].value.len, tmp);
+--- a/src/http/v3/ngx_http_v3_filter_module.c
++++ b/src/http/v3/ngx_http_v3_filter_module.c
+@@ -81,6 +81,51 @@
+ static ngx_http_output_body_filter_pt    ngx_http_next_body_filter;
+ 
+ 
++static uintptr_t
++ngx_http_v3_encode_static_field(u_char *p, ngx_table_elt_t *header)
++{
++    ngx_str_t  *key, *value;
++
++    key = &header->key;
++    value = &header->value;
++
++    /* RFC 9204 static entries; unknown fields retain the literal encoder. */
++    if (key->len == 13
++        && ngx_strncasecmp(key->data, (u_char *) "cache-control", 13) == 0)
++    {
++        return ngx_http_v3_encode_field_lri(p, 0, 36, value->data, value->len);
++    }
++
++    if (key->len == 16
++        && ngx_strncasecmp(key->data, (u_char *) "content-encoding", 16) == 0)
++    {
++        if (value->len == 2 && ngx_strncmp(value->data, "br", 2) == 0) {
++            return ngx_http_v3_encode_field_ri(p, 0, 42);
++        }
++
++        if (value->len == 4 && ngx_strncmp(value->data, "gzip", 4) == 0) {
++            return ngx_http_v3_encode_field_ri(p, 0, 43);
++        }
++
++        return ngx_http_v3_encode_field_lri(p, 0, 42, value->data, value->len);
++    }
++
++    if (key->len == 4
++        && ngx_strncasecmp(key->data, (u_char *) "vary", 4) == 0)
++    {
++        if (value->len == 15
++            && ngx_strncmp(value->data, "accept-encoding", 15) == 0)
++        {
++            return ngx_http_v3_encode_field_ri(p, 0, 59);
++        }
++
++        return ngx_http_v3_encode_field_lri(p, 0, 59, value->data, value->len);
++    }
++
++    return ngx_http_v3_encode_field_l(p, key, value);
++}
++
++
+ static ngx_int_t
+ ngx_http_v3_header_filter(ngx_http_request_t *r)
+ {
+@@ -313,8 +358,7 @@
+             continue;
+         }
+ 
+-        len += ngx_http_v3_encode_field_l(NULL, &header[i].key,
+-                                          &header[i].value);
++        len += ngx_http_v3_encode_static_field(NULL, &header[i]);
+     }
+ 
+     ngx_log_debug1(NGX_LOG_DEBUG_HTTP, c->log, 0, "http3 header len:%uz", len);
+@@ -405,10 +449,19 @@
+                        "http3 output header: \"content-type: %V\"",
+                        &r->headers_out.content_type);
+ 
+-        b->last = (u_char *) ngx_http_v3_encode_field_lri(b->last, 0,
++        if (r->headers_out.content_type.len == sizeof("text/html; charset=utf-8") - 1
++            && ngx_strncmp(r->headers_out.content_type.data,
++                           "text/html; charset=utf-8",
++                           sizeof("text/html; charset=utf-8") - 1) == 0)
++        {
++            b->last = (u_char *) ngx_http_v3_encode_field_ri(b->last, 0, 52);
++
++        } else {
++            b->last = (u_char *) ngx_http_v3_encode_field_lri(b->last, 0,
+                                     NGX_HTTP_V3_HEADER_CONTENT_TYPE_TEXT_PLAIN,
+                                     r->headers_out.content_type.data,
+                                     r->headers_out.content_type.len);
++        }
+     }
+ 
+     if (r->headers_out.content_length == NULL
+@@ -499,9 +552,8 @@
+                        "http3 output header: \"%V: %V\"",
+                        &header[i].key, &header[i].value);
+ 
+-        b->last = (u_char *) ngx_http_v3_encode_field_l(b->last,
+-                                                        &header[i].key,
+-                                                        &header[i].value);
++        b->last = (u_char *) ngx_http_v3_encode_static_field(b->last,
++                                                             &header[i]);
+     }
+ 
+     if (r->header_only) {

@@ -16,11 +16,15 @@ RUN curl -fLsS https://nginx.org/download/nginx-1.30.4.tar.gz -o nginx.tar.gz \
  && echo 'c14cb5e6c998590c209efbf77bd7637ce2cab02332e4192756a8af5b26ba4284  headers.tar.gz' | sha256sum -c - \
  && tar xzf nginx.tar.gz && tar xzf headers.tar.gz
 WORKDIR /build/nginx-1.30.4
-RUN ./configure --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40 >/tmp/configure.log \
- && make -j4 modules >/tmp/modules.log
+COPY server/small-responses.patch /build/small-responses.patch
+RUN patch --fuzz=0 -p1 < /build/small-responses.patch
+RUN ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/dev/stderr --http-log-path=/dev/stdout --pid-path=/tmp/nginx.pid --lock-path=/tmp/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-cc-opt="-Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt" --with-ld-opt="-Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs" --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40 >/tmp/configure.log \
+ && make -j4 >/tmp/modules.log
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c
 RUN apk add --no-cache brotli-libs zlib zstd-libs
 COPY --from=build /opt/openssl/lib/libssl.so.3 /opt/openssl/lib/libcrypto.so.3 /opt/openssl/lib/
 COPY --from=build /opt/openssl/bin/openssl /opt/openssl/bin/openssl
 ENV LD_LIBRARY_PATH=/opt/openssl/lib
 COPY --from=headers /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
+
+COPY --from=headers /build/nginx-1.30.4/objs/nginx /usr/sbin/nginx

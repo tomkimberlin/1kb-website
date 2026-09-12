@@ -1,6 +1,6 @@
 # Server configuration
 
-This directory contains the Docker, nginx, certificate and DNS configuration used by `tomkimberlin.com`. The deployment runs on Unraid in container `onekb-website`, using image `onekb-nginx:20260910` built from the pinned sources in [Dockerfile](Dockerfile). Native nginx ACME issues and renews ECDSA certificates with the `tlsserver` profile and ISRG Root X2 chain preference.
+This directory contains the Docker, nginx, certificate and DNS configuration used by `tomkimberlin.com`. The deployment runs on Unraid in container `onekb-website`, using image `onekb-nginx:20260912` built from the pinned sources in [Dockerfile](Dockerfile). Native nginx ACME issues and renews ECDSA certificates with the `tlsserver` profile and ISRG Root X2 chain preference.
 
 The paths, LAN address, domains and Cloudflare record IDs below describe that installation. To deploy a copy, adapt them in the shell scripts, nginx configuration, request handler, verification scripts and Unraid template. The scripts assume the container, directory layout and certificates have already been prepared; they are not a general-purpose installer.
 
@@ -51,15 +51,15 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment builds the three representations, validates the candidate nginx configuration against the new handler, switches the release symlink, reloads nginx and compares served bytes with the files. It restores the previous release and configuration if reload or byte verification fails. The verification commands target the domains configured in their scripts; see [verification requirements](../TRANSPORT.md#verification). Force reload when checking an edit to bypass the one-day browser cache.
+Deployment builds the four representations, validates the candidate nginx configuration against the new handler, pins the handler path to that release, switches the release symlink, reloads nginx and waits for served bytes to match all four files. It restores the previous release and configuration if reload or byte verification fails. The verification commands target the domains configured in their scripts; see [verification requirements](../TRANSPORT.md#verification). Force reload when checking an edit to bypass the one-day browser cache.
 
 On the target Docker host, build the custom image from the repository root:
 
 ```sh
-docker build -t onekb-nginx:20260910 -f server/Dockerfile .
+docker build -t onekb-nginx:20260912 -f server/Dockerfile .
 ```
 
-The image builds nginx and OpenSSL from pinned upstream sources, with certificate compression and the headers-more module enabled. `server/start.sh` starts the container after the configuration, page files and initial certificates exist at its configured paths. Rebuild and test the image when updating pinned versions.
+The image builds nginx and OpenSSL from pinned upstream sources, with certificate compression and the headers-more module enabled. `server/start.sh` starts the container after the configuration, page files and initial certificates exist at its configured paths. The [response-encoding patch](small-responses.patch) changes HTTP/2 setup and HPACK/QPACK encoding; it applies with zero fuzz to the pinned nginx source. Rebuild and rerun the protocol probes when updating nginx. The page deployment script does not replace the running container image.
 
 ## Certificates and startup
 
@@ -81,5 +81,7 @@ crontab -c /etc/cron.d -l | grep onekb-certificates
 ## Rollback
 
 For a page/configuration regression, restore the prior `site/current` target and matching `backups/nginx.conf-*`, run `nginx -t`, then `nginx -s reload`. Retain the working certificate state.
+
+For an image regression, recreate the container with a retained image using `ONEKB_IMAGE=PREVIOUS_IMAGE sh bin/start.sh` from the base directory after stopping and removing the failed container. Restore the matching startup script and Unraid template as well.
 
 For an alias-only problem, retain the working main-domain configuration and certificates while repairing the alias listener or DNS record. Keep DNS records unproxied to preserve the minimal responses.

@@ -9,7 +9,8 @@ const body=source.slice(source.indexOf('<h1'));
 const title=source.match(/<title>.*?<\/title>/s)[0];
 const meta=source.match(/<meta[^>]+>/)[0];
 const icon=source.match(/<link[^>]+>/)[0];
-const score=html=>Math.min(...[0,1,2].map(mode=>brotliCompressSync(Buffer.from(html),{params:{[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_MODE]:mode,[c.BROTLI_PARAM_LGWIN]:16}}).length));
+const currentParams=JSON.parse(readFileSync('build-report.json','utf8')).brotliParams;
+const score=html=>Math.min(...[currentParams,...[0,1,2].map(mode=>({[c.BROTLI_PARAM_QUALITY]:11,[c.BROTLI_PARAM_MODE]:mode,[c.BROTLI_PARAM_LGWIN]:16}))].map(params=>brotliCompressSync(Buffer.from(html),{params}).length));
 let rng=129811;
 const random=()=>((rng=(Math.imul(rng,1664525)+1013904223)>>>0)/2**32);
 function shuffle(values){

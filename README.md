@@ -2,14 +2,15 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **823 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/n9tgaPbc/overview) on September 11, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **789 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/2tL1Ocpl/overview) on September 12, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **823** |
-| Brotli response body | 714 |
-| Gzip response body | 894 |
-| Raw HTML | 1,667 |
+| DebugBear page weight | **789** |
+| Brotli response body | 708 |
+| Gzip response body | 891 |
+| Deflate response body | 879 |
+| Raw HTML | 1,661 |
 
 DebugBear counts the compressed page and response headers. Raw HTML is larger than 1 KB. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -19,11 +20,11 @@ DebugBear counts the compressed page and response headers. Raw HTML is larger th
 - Optional syntax omitted; equivalent HTML and CSS forms compared for compressed size.
 - An empty data favicon avoids another request.
 - One-character links lead to empty redirects.
-- Brotli and gzip are compressed ahead of time and checked against the source.
-- nginx omits optional headers and supports TLS certificate compression and session reuse.
+- Brotli, gzip and deflate are compressed ahead of time and checked against the source.
+- nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
 - Reduced-motion preferences stop the animation.
 
-[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/copy-20260911.json).
+[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/payload-20260912.json).
 
 ## Build locally
 
@@ -35,7 +36,7 @@ npm test
 npm run check
 ```
 
-`index.html` is the page source. The build writes HTML, Brotli and gzip files to `public/` and records their sizes in `build-report.json`.
+`index.html` is the page source. The build writes HTML, Brotli, gzip and deflate files to `public/` and records their sizes in `build-report.json`.
 
 ## Hosting
 

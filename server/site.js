@@ -3,6 +3,7 @@ import fs from 'fs';
 // Loaded together on nginx reload; never sent as JavaScript to the browser.
 const representations = {
   br: fs.readFileSync('/srv/current/index.html.br'),
+  deflate: fs.readFileSync('/srv/current/index.html.deflate'),
   gzip: fs.readFileSync('/srv/current/index.html.gz'),
   identity: fs.readFileSync('/srv/current/index.html')
 };
@@ -19,7 +20,7 @@ function selectEncoding(value) {
     weights[name] = Number.isFinite(q) && q >= 0 && q <= 1 ? q : 0;
   }
   let selected, best = 0;
-  const names = ['br', 'gzip'];
+  const names = ['br', 'deflate', 'gzip'];
   for (let i = 0; i < names.length; i++) {
     const name = names[i];
     const q = weights[name] === undefined ? (weights['*'] || 0) : weights[name];
@@ -53,7 +54,8 @@ function serve(r) {
   r.headersOut.Vary = 'accept-encoding';
   const encoding = selectEncoding(r.headersIn['Accept-Encoding'] || '');
   if (!encoding) return empty(r,406);
-  r.headersOut['Content-Type'] = 'text/html';
+  // QPACK has a one-byte static entry for this complete UTF-8 content type.
+  r.headersOut['Content-Type'] = r.httpVersion === '3.0' ? 'text/html; charset=utf-8' : 'text/html';
   r.headersOut['Cache-Control'] = 'max-age=86400';
   if (encoding !== 'identity') r.headersOut['Content-Encoding'] = encoding;
   r.return(200,representations[encoding]);

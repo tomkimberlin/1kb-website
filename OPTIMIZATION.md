@@ -20,7 +20,9 @@ The build reserves 309 bytes above the Brotli body and rejects a combined size o
 
 ## Compression and further edits
 
-`build.mjs` compares 1,080 Brotli configurations and gzip settings, then verifies that both compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller.
+`build.mjs` compares 5,988 Brotli configurations and gzip settings, then verifies that all compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller. Deflate reuses the optimized DEFLATE stream with a 6-byte zlib wrapper instead of gzip's 18-byte wrapper.
+
+The September 12 audit tested 138,240 combined Brotli parameter settings, 39,060 equivalent serialization trials, Zopfli through 100,000 iterations, and Zstandard levels -7 through 22. The smallest verified Brotli result was 708 bytes. Chromium and WebKit comparisons covered four viewport sizes, three animation phases and reduced motion. These are measured search results, not a proof of a global minimum.
 
 To search equivalent CSS declarations, independent rule order and head order:
 
