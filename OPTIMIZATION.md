@@ -6,7 +6,7 @@
 
 [1KB Club's submission instructions](https://1kb.club/submit/) use the Network → Bytes total result from its linked DebugBear scanner, with a limit of 1,024 bytes. This counts the compressed response and response headers. It is not the raw source length or the full DNS/TCP/TLS exchange.
 
-The build reserves 309 bytes above the Brotli body and rejects a combined size of 1,024 bytes or more. This is a conservative local budget, not a substitute for measuring the published page. The gzip body must also remain below 1,024 bytes. [Delivery settings](TRANSPORT.md) explain the remaining network overhead.
+The build reserves 128 bytes above the Brotli body and rejects a combined size of 1,024 bytes or more. The measured HTTP/2 header/framing cost is 81 bytes. This allowance leaves margin for variation; the published page is also checked with the club's scanner. Chromium's Resource Timing API adds a fixed 300-byte estimate, which is not the actual compressed header size. The gzip body must also remain below 1,024 bytes. [Delivery settings](TRANSPORT.md) explain the remaining network overhead.
 
 ## Markup and styling
 
@@ -15,6 +15,7 @@ The build reserves 309 bytes above the Brotli body and rejects a combined size o
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile sizing.
 - An empty data favicon prevents a separate favicon request.
 - CSS gradients replace images; individual `rotate` declarations and shared keyframes reduce animation code.
+- `prefers-color-scheme` selects light or dark colors automatically; CSS variables share the background color. `color-scheme` also matches native browser controls.
 - An 18px base font, underlined links, text wrapping and reduced-motion support remain.
 - Short links use empty redirects.
 
@@ -22,7 +23,7 @@ The build reserves 309 bytes above the Brotli body and rejects a combined size o
 
 `build.mjs` compares 5,988 Brotli configurations and gzip settings, then verifies that all compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller. Deflate reuses the optimized DEFLATE stream with a 6-byte zlib wrapper instead of gzip's 18-byte wrapper.
 
-The September 12 audit tested 138,240 combined Brotli parameter settings, 39,060 equivalent serialization trials, Zopfli through 100,000 iterations, and Zstandard levels -7 through 22. The smallest verified Brotli result was 708 bytes. Chromium and WebKit comparisons covered four viewport sizes, three animation phases and reduced motion. These are measured search results, not a proof of a global minimum.
+The [September 12 payload audit](measurements/payload-20260912.json) tested 138,240 combined Brotli parameter settings, 39,060 equivalent serialization trials, Zopfli through 100,000 iterations, and Zstandard levels -7 through 22. The measured revision was 708 bytes with Brotli. Chromium and WebKit comparisons covered four viewport sizes, three animation phases and reduced motion. These are measured search results, not a proof of a global minimum.
 
 To search equivalent CSS declarations, independent rule order and head order:
 
@@ -30,7 +31,7 @@ To search equivalent CSS declarations, independent rule order and head order:
 node optimize.mjs
 ```
 
-This deterministic search writes `optimization/candidate.html` and `optimization/search.json`, never replacing the source. It is tailored to the current stylesheet: its rules have no conflicting declarations of equal specificity. Recheck that assumption after adding rules. Smaller source does not always compress better.
+This deterministic search writes `optimization/candidate.html` and `optimization/search.json`, never replacing the source. It preserves media-query order after the base rules. Other rules must have no order-dependent declarations of equal specificity; recheck that assumption after adding rules. Smaller source does not always compress better.
 
 Before adopting a candidate, compare the text, links, layout, animation phases and reduced-motion behavior at mobile and desktop widths. After replacing `index.html`, regenerate the optional Zopfli candidate in a Python environment with `zopfli==0.4.3`:
 

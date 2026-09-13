@@ -2,15 +2,15 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **789 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/2tL1Ocpl/overview) on September 12, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **828 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/9nlDwQi8/overview) on September 12, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **789** |
-| Brotli response body | 708 |
-| Gzip response body | 891 |
-| Deflate response body | 879 |
-| Raw HTML | 1,661 |
+| DebugBear page weight | **828** |
+| Brotli response body | 747 |
+| Gzip response body | 932 |
+| Deflate response body | 920 |
+| Raw HTML | 1,771 |
 
 DebugBear counts the compressed page and response headers. Raw HTML is larger than 1 KB. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -22,9 +22,9 @@ DebugBear counts the compressed page and response headers. Raw HTML is larger th
 - One-character links lead to empty redirects.
 - Brotli, gzip and deflate are compressed ahead of time and checked against the source.
 - nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
-- Reduced-motion preferences stop the animation.
+- CSS follows the device's light/dark preference; reduced-motion preferences stop the animation.
 
-[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/payload-20260912.json).
+[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/theme-20260913.json).
 
 ## Build locally
 

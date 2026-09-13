@@ -33,8 +33,9 @@ for(let i=0;i<attempts;i++){
  // These alternatives preserve this page's values and selectors.
  for(const [a,b] of [["content:''",'content:""'],['#fff','white'],['font-size:2em','font-size:200%'],['1turn','360deg']])if(random()<.5)style=style.replaceAll(a,b);
  style=style.replace(/\{([^{}]+)\}/g,(_,declarations)=>'{'+shuffle(declarations.split(';').filter(Boolean)).join(';')+'}');
- // Current rules have no order-dependent declarations of equal specificity.
- style=shuffle(rules(style)).join('');
+ // Theme overrides must follow their base rules.
+ const blocks=rules(style);
+ style=shuffle(blocks.filter(rule=>!rule.startsWith('@media'))).join('')+blocks.filter(rule=>rule.startsWith('@media')).join('');
  if(random()<.5)style=style.replace(/}+$/,'');
  const html=(random()<.5?'<!doctype html>':'<!DOCTYPE html>')+shuffle([meta,icon,title,'<style>'+style+'</style>']).join('')+body;
  const n=score(html);

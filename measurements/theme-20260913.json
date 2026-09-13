@@ -1,0 +1,44 @@
+{
+  "measuredAt": "2026-09-13T01:50:03.032654+00:00",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "03f43c8a7aa36dce65a6d345df6335697058ceca5e41f73c7a1f0ba0ed4f03cc",
+  "brotliSha256": "1f1a3febcafb83ad6abd13fc7451a6c9ab6debd6e6d73869874a6a288e8e177d",
+  "html": 1771,
+  "brotli": 747,
+  "gzip": 932,
+  "deflate": 920,
+  "chromium": {
+    "encodedBodySize": 747,
+    "decodedBodySize": 1771,
+    "resourceTimingTransferSize": 1047,
+    "subresources": 0
+  },
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/9nlDwQi8/overview",
+    "pageWeight": 828,
+    "clubLimit": 1024,
+    "margin": 196,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
+  },
+  "themes": {
+    "selection": "prefers-color-scheme",
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "viewports": [
+      320,
+      402,
+      1440
+    ],
+    "darkAppearancePreserved": true,
+    "themeSwitchRequests": 0,
+    "reducedMotionVerified": true
+  },
+  "verification": {
+    "handlerTests": 23,
+    "http1AndHttp2Checks": 92,
+    "aliasChecks": 12,
+    "serializationTrials": 2500
+  }
+}
