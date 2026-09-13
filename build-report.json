@@ -1,20 +1,20 @@
 {
-  "html": 1771,
-  "brotli": 747,
-  "gzip": 932,
-  "deflate": 920,
+  "html": 1869,
+  "brotli": 786,
+  "gzip": 976,
+  "deflate": 964,
   "attempts": 5988,
   "brotliParams": {
     "0": 0,
     "1": 11,
     "2": 16,
     "4": 0,
-    "7": 1,
+    "7": 2,
     "8": 0
   },
   "budget": {
     "limit": 1024,
     "overheadAllowance": 128,
-    "brotliWithAllowance": 875
+    "brotliWithAllowance": 914
   }
 }

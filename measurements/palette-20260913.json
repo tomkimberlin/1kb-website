@@ -1,0 +1,76 @@
+{
+  "measuredAt": "2026-09-13T16:10:55.499134+00:00",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "fcb74ebf4a2c4326cd5b0f52d6c6f513d8cd6fe7f5a0a7922e28dc4775f9d1e7",
+  "brotliSha256": "21f5dfdbf75fa26fa42472f73e3aa7a238d3d6f2eadffa55c0ce40106255b3ff",
+  "html": 1869,
+  "brotli": 786,
+  "gzip": 976,
+  "deflate": 964,
+  "chromium": {
+    "encodedBodySize": 786,
+    "decodedBodySize": 1869,
+    "resourceTimingTransferSize": 1086,
+    "subresources": 0
+  },
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/SOymPlLR/overview",
+    "pageWeight": 867,
+    "clubLimit": 1024,
+    "margin": 157,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
+    "labScore": 100,
+    "lcpMs": 577,
+    "tbtMs": 0,
+    "cls": 0
+  },
+  "palette": {
+    "cycleSeconds": 48,
+    "hueOffsets": {
+      "rays": [
+        300,
+        180
+      ],
+      "strips": [
+        60,
+        0
+      ]
+    },
+    "saturationPercent": 100,
+    "lightnessPercent": {
+      "rays": 50,
+      "strips": 75
+    },
+    "minimumHueSeparationDegrees": 60,
+    "minimumSampledTextContrast": 6.249956875194098,
+    "rayWidthsDegrees": [
+      9,
+      5
+    ],
+    "whiteEdge": false
+  },
+  "verification": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "viewports": [
+      320,
+      402,
+      1440
+    ],
+    "hueSamplesPerThemePerEngine": 361,
+    "contentAndGeometryPreserved": true,
+    "themeSwitchRequests": 0,
+    "reducedMotionVerified": true,
+    "handlerTests": 23,
+    "http1AndHttp2Checks": 92,
+    "aliasChecks": 12,
+    "serializationTrials": 16000,
+    "serializationScope": "Pre-final candidate; removing the redundant initial hue declaration and changing its descriptor quotes then saved four more Brotli bytes."
+  }
+}

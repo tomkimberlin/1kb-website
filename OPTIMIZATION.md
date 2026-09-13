@@ -15,6 +15,7 @@ The build reserves 128 bytes above the Brotli body and rejects a combined size o
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile sizing.
 - An empty data favicon prevents a separate favicon request.
 - CSS gradients replace images; individual `rotate` declarations and shared keyframes reduce animation code.
+- One registered CSS hue variable keeps strips and rays at least 60 degrees apart, with fixed saturation and lightness.
 - `prefers-color-scheme` selects light or dark colors automatically; CSS variables share the background color. `color-scheme` also matches native browser controls.
 - An 18px base font, underlined links, text wrapping and reduced-motion support remain.
 - Short links use empty redirects.
