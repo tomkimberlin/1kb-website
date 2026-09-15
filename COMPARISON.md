@@ -21,15 +21,13 @@ This server sent a 1,500-byte compressed Certificate handshake message. The othe
 
 All sites received the same representative Chromium request fields and compression preferences from OpenSSL 3.5.8, with certificate compression, hybrid key exchange and certificate verification enabled. Every request used a new TLS context, without session resumption or a browser cache.
 
-`pba.im` selected HTTP/1.1; the others selected HTTP/2. `5.vg` selected TLS 1.2. `cv.btxx.org` and `hi.mrkrk.me` selected X25519; this website, `pba.im` and `1k.lom.me` selected X25519MLKEM768. The client did not force smaller, weaker settings to improve a score.
+`pba.im` selected HTTP/1.1; the others selected HTTP/2. `5.vg` selected TLS 1.2. `cv.btxx.org` and `hi.mrkrk.me` selected X25519; this website, `pba.im` and `1k.lom.me` selected X25519MLKEM768.
 
 ## Scope and reproduction
 
 At measurement time, the page was 733 bytes of HTML, 337 bytes with Brotli and 460 bytes with gzip. The [raw measurements](measurements/gallery-20260915.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
 
-HTML-only edits do not require refreshing this comparison because the response body is subtracted. Rerun it when delivery settings change (such as headers, TLS or server configuration), or to collect a newer sample. `npm run check:measurements` validates the gallery against its recorded snapshot and checks the separate browser page-size measurements against the current build.
-
-These are controlled document exchanges, not complete browser loads or a global ranking. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
+The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
 The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the selected peer address and TCP source port. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 

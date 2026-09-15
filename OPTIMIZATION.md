@@ -19,11 +19,11 @@ The build reserves 128 bytes above the Brotli body and rejects a combined size o
 - Body text is 18px; links retain their native underlines.
 - All nine anchor hrefs are one character. Their redirects have empty bodies; the email address remains visible and copyable.
 
-## Compression and further edits
+## Compression
 
 `build.mjs` compares 5,988 Brotli configurations and gzip settings, then verifies that all compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller. Deflate reuses the optimized DEFLATE stream with a 6-byte zlib wrapper instead of gzip's 18-byte wrapper.
 
-Optimization used 64,000 equivalent serialization trials, 138,240 combined Brotli parameter settings, 4,896 assignments for the three new short links, and Zopfli through 100,000 iterations. The final 16,000-trial serialization pass and parameter/link searches found no smaller Brotli result than 337 bytes. Chromium and WebKit confirmed identical text, links and layout at 320, 402 and 1440 pixels in both themes. This is a measured search, not a proof of a global minimum.
+Optimization used 64,000 equivalent serialization trials, 138,240 combined Brotli parameter settings, 4,896 short-link assignments, and Zopfli through 100,000 iterations. The final 16,000-trial serialization pass and parameter/link searches found no smaller Brotli result than 337 bytes. Chromium and WebKit confirmed identical text, links and layout at 320, 402 and 1440 pixels in both themes. This is a measured search, not a proof of a global minimum.
 
 To search equivalent CSS declarations, independent rule order and head order:
 
@@ -31,14 +31,12 @@ To search equivalent CSS declarations, independent rule order and head order:
 node optimize.mjs
 ```
 
-This deterministic search writes `optimization/candidate.html` and `optimization/search.json`, never replacing the source. It preserves media-query order after the base rules. Other rules must have no order-dependent declarations of equal specificity; recheck that assumption after adding rules. Smaller source does not always compress better.
+This deterministic search writes `optimization/candidate.html` and `optimization/search.json`, never replacing the source. It preserves media-query order after the base rules and assumes other rules have no order-dependent declarations of equal specificity. Smaller source does not always compress better.
 
-Before adopting a candidate, compare text, links and layout in both themes at mobile and desktop widths. After replacing `index.html`, regenerate the optional Zopfli candidate in a Python environment with `zopfli==0.4.3`:
+To generate the optional Zopfli candidate, use a Python environment with `zopfli==0.4.3`:
 
 ```sh
 python optimize-gzip.py
 npm test
 npm run check
 ```
-
-After a page change, deploy, verify the exact served representations and refresh the browser page-size measurement with the club's scanner. The [gallery comparison](COMPARISON.md) excludes the response body and only needs a new sample when delivery settings change or a newer comparison is wanted. Run `npm run check:measurements` to check browser measurements against the build and the gallery against its recorded snapshot.

@@ -17,7 +17,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
 
-The September 12 [audit](measurements/payload-20260912.json) reduced the measured HTTP/2 header block from 91 to 63 bytes, setup frames by 19 bytes, and the HTTP/3 header block from 92 to 43 bytes. Date compression can vary with its value. TLS buffers of 1, 4, 16 and 32 KB produced the same traffic; the default remains. Encryption, certificate verification, session reuse, caching and encoding separation remain enabled.
+The [transport audit](measurements/payload-20260912.json) measured a 63-byte HTTP/2 header block and a 43-byte HTTP/3 header block. Date compression varies with its value. TLS buffers of 1, 4, 16 and 32 KB produced the same traffic totals.
 
 The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server configuration](server/README.md) covers certificate renewal and deployment.
 
@@ -35,7 +35,7 @@ npm run verify:alias
 
 These checks use Node.js and curl with HTTP/2 support. They target the published domains and compare responses against the local `public/` files, so the checkout must match the deployed revision. They cover exact page representations, encoding negotiation, HEAD, redirects, errors, and alias path/query preservation. Testing another deployment requires updating the hostnames and expected redirects in `server/verify.mjs` and `server/verify-alias.mjs`.
 
-For fresh transport measurements:
+The transport probes measure protocol framing and connection overhead:
 
 ```sh
 mkdir -p optimization

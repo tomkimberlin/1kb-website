@@ -42,4 +42,4 @@ npm run check
 
 nginx serves the published website directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it.
 
-The [server configuration](server/README.md) documents this deployment, including its Unraid paths, domains and DNS records. Deploying a copy requires adapting those settings and preparing a Docker host with SSH access. The deployment script updates an existing installation; it does not provision a new server.
+The [hosting guide](server/README.md) explains the server configuration, deployment requirements and settings needed to host a copy.
