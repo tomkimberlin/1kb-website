@@ -2,15 +2,15 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **456 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/rsAdyLFk/overview) on September 15, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **418 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/dMalgIOJ/overview) on September 15, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **456** |
-| Brotli response body | 375 |
-| Gzip response body | 486 |
-| Deflate response body | 474 |
-| Raw HTML | 883 |
+| DebugBear page weight | **418** |
+| Brotli response body | 337 |
+| Gzip response body | 460 |
+| Deflate response body | 448 |
+| Raw HTML | 733 |
 
 DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -19,7 +19,7 @@ DebugBear counts the compressed page and response headers. DNS, connection setup
 - One ASCII HTML file, inline CSS, native fonts and no external assets.
 - Optional syntax omitted; equivalent HTML and CSS forms compared for compressed size.
 - An empty data favicon avoids another request.
-- One-character links lead to empty redirects.
+- All nine anchor hrefs use one-character paths and empty redirects.
 - Brotli, gzip and deflate are compressed ahead of time and checked against the source.
 - nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
 - Native browser colors follow the device's light/dark preference.

@@ -1,27 +1,28 @@
 {
-  "measuredAt": "2026-09-15T17:15:32.725811+00:00",
+  "measuredAt": "2026-09-15T17:45:43.243686+00:00",
   "url": "https://tomkimberlin.com/",
-  "htmlSha256": "86854c7d12651460ff7fdc5f13ba9cd98e5dbfe1b62c1ee42f8edbde57be370f",
-  "brotliSha256": "5df595b83f9ba4e5b16c99b9557223a3394ca8b2c578e9d15588ef6e8ac0dc94",
-  "html": 883,
-  "brotli": 375,
-  "gzip": 486,
-  "deflate": 474,
-  "css": 110,
+  "htmlSha256": "ad2027f81e669abc9134909cf8c0ec87ca6dbc2c4cb0b6d59a20450a2b7a8841",
+  "brotliSha256": "76a2450eb17c80d80c20673db0357f18d069d3eb72de68ad254c4496f0c7ff21",
+  "release": "20260915T174349Z-ad2027f81e66",
+  "html": 733,
+  "brotli": 337,
+  "gzip": 460,
+  "deflate": 448,
+  "css": 113,
   "chromium": {
-    "encodedBodySize": 375,
-    "decodedBodySize": 883,
-    "resourceTimingTransferSize": 675,
+    "encodedBodySize": 337,
+    "decodedBodySize": 733,
+    "resourceTimingTransferSize": 637,
     "subresources": 0
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/rsAdyLFk/overview",
-    "pageWeight": 456,
+    "report": "https://www.debugbear.com/test/website-speed/dMalgIOJ/overview",
+    "pageWeight": 418,
     "clubLimit": 1024,
-    "margin": 568,
+    "margin": 606,
     "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
     "labScore": 100,
-    "lcpMs": 500,
+    "lcpMs": 536,
     "tbtMs": 0,
     "cls": 0
   },
@@ -40,16 +41,20 @@
       1440
     ],
     "links": 9,
+    "singleCharacterAnchorHrefs": true,
     "cssRules": 2,
     "animations": 0,
     "themeSwitchRequests": 0,
     "handlerTests": 23,
-    "http1AndHttp2Checks": 92,
+    "http1AndHttp2Checks": 100,
     "aliasChecks": 12,
     "serializationTrials": {
-      "initialPreview": 11520,
-      "headingRevision": 864,
-      "finalTypography": 529
-    }
+      "total": 64000,
+      "finalHrefRevision": 16000
+    },
+    "finalBrotliParameterTrials": 138240,
+    "newLinkAssignments": 4896,
+    "zopfliMaximumIterations": 100000,
+    "finalSearchFoundSmallerBrotli": false
   }
 }

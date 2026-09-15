@@ -17,13 +17,13 @@ The build reserves 128 bytes above the Brotli body and rejects a combined size o
 - Two CSS rules set type size, line height, column width, spacing and automatic light/dark colors.
 - `color-scheme:light dark` uses native page, text and link colors.
 - Body text is 18px; links retain their native underlines.
-- Short links use empty redirects.
+- All nine anchor hrefs are one character. Their redirects have empty bodies; the email address remains visible and copyable.
 
 ## Compression and further edits
 
 `build.mjs` compares 5,988 Brotli configurations and gzip settings, then verifies that all compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller. Deflate reuses the optimized DEFLATE stream with a 6-byte zlib wrapper instead of gzip's 18-byte wrapper.
 
-The [September 12 payload audit](measurements/payload-20260912.json) tested 138,240 combined Brotli parameter settings, 39,060 equivalent serialization trials, Zopfli through 100,000 iterations, and Zstandard levels -7 through 22. The measured revision was 708 bytes with Brotli. Chromium and WebKit comparisons covered four viewport sizes, three animation phases and reduced motion. These are measured search results, not a proof of a global minimum.
+Optimization used 64,000 equivalent serialization trials, 138,240 combined Brotli parameter settings, 4,896 assignments for the three new short links, and Zopfli through 100,000 iterations. The final 16,000-trial serialization pass and parameter/link searches found no smaller Brotli result than 337 bytes. Chromium and WebKit confirmed identical text, links and layout at 320, 402 and 1440 pixels in both themes. This is a measured search, not a proof of a global minimum.
 
 To search equivalent CSS declarations, independent rule order and head order:
 
@@ -41,4 +41,4 @@ npm test
 npm run check
 ```
 
-Deploy, verify the exact served representations and rerun the club's scanner.
+Deploy, verify the exact served representations, rerun the club's scanner and refresh the [gallery comparison](COMPARISON.md). Run `npm run check:measurements` before publishing measurement updates; it checks their source and Brotli hashes against the build.

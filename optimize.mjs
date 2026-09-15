@@ -31,7 +31,7 @@ const attempts=16000;
 for(let i=0;i<attempts;i++){
  let style=css;
  // These alternatives preserve this page's values and selectors.
- for(const [a,b] of [["content:''",'content:""'],['#fff','white'],['font-size:2em','font-size:200%'],['1turn','360deg']])if(random()<.5)style=style.replaceAll(a,b);
+ for(const [a,b] of [['font-size:1.5em','font-size:150%'],['padding:1em','padding:18px']])if(random()<.5)style=style.includes(a)?style.replaceAll(a,b):style.replaceAll(b,a);
  style=style.replace(/\{([^{}]+)\}/g,(_,declarations)=>'{'+shuffle(declarations.split(';').filter(Boolean)).join(';')+'}');
  // Theme overrides must follow their base rules.
  const blocks=rules(style);
