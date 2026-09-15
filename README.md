@@ -2,17 +2,17 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **867 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SOymPlLR/overview) on September 13, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **456 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/rsAdyLFk/overview) on September 15, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **867** |
-| Brotli response body | 786 |
-| Gzip response body | 976 |
-| Deflate response body | 964 |
-| Raw HTML | 1,869 |
+| DebugBear page weight | **456** |
+| Brotli response body | 375 |
+| Gzip response body | 486 |
+| Deflate response body | 474 |
+| Raw HTML | 883 |
 
-DebugBear counts the compressed page and response headers. Raw HTML is larger than 1 KB. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
+DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
 ## How it stays small
 
@@ -22,9 +22,9 @@ DebugBear counts the compressed page and response headers. Raw HTML is larger th
 - One-character links lead to empty redirects.
 - Brotli, gzip and deflate are compressed ahead of time and checked against the source.
 - nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
-- CSS follows the device's light/dark preference; reduced-motion preferences stop the animation.
+- Native browser colors follow the device's light/dark preference.
 
-[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/palette-20260913.json).
+[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/minimal-20260915.json).
 
 ## Build locally
 

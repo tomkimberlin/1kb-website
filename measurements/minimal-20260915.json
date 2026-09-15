@@ -1,0 +1,55 @@
+{
+  "measuredAt": "2026-09-15T17:15:32.725811+00:00",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "86854c7d12651460ff7fdc5f13ba9cd98e5dbfe1b62c1ee42f8edbde57be370f",
+  "brotliSha256": "5df595b83f9ba4e5b16c99b9557223a3394ca8b2c578e9d15588ef6e8ac0dc94",
+  "html": 883,
+  "brotli": 375,
+  "gzip": 486,
+  "deflate": 474,
+  "css": 110,
+  "chromium": {
+    "encodedBodySize": 375,
+    "decodedBodySize": 883,
+    "resourceTimingTransferSize": 675,
+    "subresources": 0
+  },
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/rsAdyLFk/overview",
+    "pageWeight": 456,
+    "clubLimit": 1024,
+    "margin": 568,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
+    "labScore": 100,
+    "lcpMs": 500,
+    "tbtMs": 0,
+    "cls": 0
+  },
+  "verification": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "viewports": [
+      320,
+      402,
+      1440
+    ],
+    "links": 9,
+    "cssRules": 2,
+    "animations": 0,
+    "themeSwitchRequests": 0,
+    "handlerTests": 23,
+    "http1AndHttp2Checks": 92,
+    "aliasChecks": 12,
+    "serializationTrials": {
+      "initialPreview": 11520,
+      "headingRevision": 864,
+      "finalTypography": 529
+    }
+  }
+}

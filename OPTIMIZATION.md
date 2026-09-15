@@ -1,6 +1,6 @@
 # HTML optimization
 
-`index.html` contains the entire page: content, styling and animation. [build-report.json](build-report.json) records the raw HTML and compressed response sizes.
+`index.html` contains the entire page: content and styling. [build-report.json](build-report.json) records the raw HTML and compressed response sizes.
 
 ## What the 1 KB limit measures
 
@@ -10,14 +10,13 @@ The build reserves 128 bytes above the Brotli body and rejects a combined size o
 
 ## Markup and styling
 
-- One ASCII document, inline CSS, native fonts and numeric character references; no external assets.
-- Optional HTML tags and safe attribute quotes omitted. CSS closes open blocks at stylesheet EOF; numeric references need no semicolon before a tag.
+- One ASCII document, inline CSS and native fonts; no external assets.
+- Optional HTML tags and safe attribute quotes omitted. CSS closes open blocks at stylesheet EOF.
 - The doctype, title and viewport declaration preserve standards mode, tab identification and mobile sizing.
 - An empty data favicon prevents a separate favicon request.
-- CSS gradients replace images; individual `rotate` declarations and shared keyframes reduce animation code.
-- One registered CSS hue variable keeps strips and rays at least 60 degrees apart, with fixed saturation and lightness.
-- `prefers-color-scheme` selects light or dark colors automatically; CSS variables share the background color. `color-scheme` also matches native browser controls.
-- An 18px base font, underlined links, text wrapping and reduced-motion support remain.
+- Two CSS rules set type size, line height, column width, spacing and automatic light/dark colors.
+- `color-scheme:light dark` uses native page, text and link colors.
+- Body text is 18px; links retain their native underlines.
 - Short links use empty redirects.
 
 ## Compression and further edits
@@ -34,7 +33,7 @@ node optimize.mjs
 
 This deterministic search writes `optimization/candidate.html` and `optimization/search.json`, never replacing the source. It preserves media-query order after the base rules. Other rules must have no order-dependent declarations of equal specificity; recheck that assumption after adding rules. Smaller source does not always compress better.
 
-Before adopting a candidate, compare the text, links, layout, animation phases and reduced-motion behavior at mobile and desktop widths. After replacing `index.html`, regenerate the optional Zopfli candidate in a Python environment with `zopfli==0.4.3`:
+Before adopting a candidate, compare text, links and layout in both themes at mobile and desktop widths. After replacing `index.html`, regenerate the optional Zopfli candidate in a Python environment with `zopfli==0.4.3`:
 
 ```sh
 python optimize-gzip.py
