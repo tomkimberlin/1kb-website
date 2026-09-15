@@ -41,4 +41,4 @@ npm test
 npm run check
 ```
 
-Deploy, verify the exact served representations, rerun the club's scanner and refresh the [gallery comparison](COMPARISON.md). Run `npm run check:measurements` before publishing measurement updates; it checks their source and Brotli hashes against the build.
+After a page change, deploy, verify the exact served representations and refresh the browser page-size measurement with the club's scanner. The [gallery comparison](COMPARISON.md) excludes the response body and only needs a new sample when delivery settings change or a newer comparison is wanted. Run `npm run check:measurements` to check browser measurements against the build and the gallery against its recorded snapshot.

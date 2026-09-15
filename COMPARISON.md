@@ -25,9 +25,9 @@ All sites received the same representative Chromium request fields and compressi
 
 ## Scope and reproduction
 
-The measured page is 733 bytes of HTML, 337 bytes with Brotli and 460 bytes with gzip. The [raw measurements](measurements/gallery-20260915.json) identify the deployed HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
+At measurement time, the page was 733 bytes of HTML, 337 bytes with Brotli and 460 bytes with gzip. The [raw measurements](measurements/gallery-20260915.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
 
-Refresh all three runs and the browser measurement after publishing a page change, then run `npm run check:measurements`. That check rejects results from a different HTML or Brotli build.
+HTML-only edits do not require refreshing this comparison because the response body is subtracted. Rerun it when delivery settings change (such as headers, TLS or server configuration), or to collect a newer sample. `npm run check:measurements` validates the gallery against its recorded snapshot and checks the separate browser page-size measurements against the current build.
 
 These are controlled document exchanges, not complete browser loads or a global ranking. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
