@@ -23,7 +23,7 @@ The build reserves 128 bytes above the Brotli body and rejects a combined size o
 
 `build.mjs` compares 5,988 Brotli configurations and gzip settings, then verifies that all compressed files decode exactly to the source. It also uses `compression/index.html.gz` when that Zopfli candidate matches the source and is smaller. Deflate reuses the optimized DEFLATE stream with a 6-byte zlib wrapper instead of gzip's 18-byte wrapper.
 
-Optimization used 64,000 equivalent serialization trials, 138,240 combined Brotli parameter settings, 4,896 short-link assignments, and Zopfli through 100,000 iterations. The final 16,000-trial serialization pass and parameter/link searches found no smaller Brotli result than 337 bytes. Chromium and WebKit confirmed identical text, links and layout at 320, 402 and 1440 pixels in both themes. This is a measured search, not a proof of a global minimum.
+Declaration order, head-element order, whitespace, attribute quoting and equivalent CSS syntax were compared by compressed size. The selected version compresses to 335 bytes with Brotli and 456 bytes with gzip. Chromium and WebKit confirmed identical text, links and layout at 320, 402 and 1440 pixels in both themes.
 
 To search equivalent CSS declarations, independent rule order and head order:
 

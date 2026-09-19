@@ -6,6 +6,7 @@ let css=source.match(/<style>(.*?)<\/style>/s)[1];
 // CSS closes outstanding blocks at EOF. Restore them before shuffling leaves.
 while((css.match(/\{/g)||[]).length>(css.match(/\}/g)||[]).length)css+='}';
 const body=source.slice(source.indexOf('<h1'));
+const comments=source.slice(0,source.indexOf('<h1')).match(/<!--[\s\S]*?-->/g)||[];
 const title=source.match(/<title>.*?<\/title>/s)[0];
 const meta=source.match(/<meta[^>]+>/)[0];
 const icon=source.match(/<link[^>]+>/)[0];
@@ -31,13 +32,13 @@ const attempts=16000;
 for(let i=0;i<attempts;i++){
  let style=css;
  // These alternatives preserve this page's values and selectors.
- for(const [a,b] of [['font-size:1.5em','font-size:150%'],['padding:1em','padding:18px']])if(random()<.5)style=style.includes(a)?style.replaceAll(a,b):style.replaceAll(b,a);
+ for(const [a,b] of [['font-size:1.5em','font-size:150%'],['padding:1em','padding:18px'],['margin:auto','margin:0 auto']])if(random()<.5)style=style.includes(a)?style.replaceAll(a,b):style.replaceAll(b,a);
  style=style.replace(/\{([^{}]+)\}/g,(_,declarations)=>'{'+shuffle(declarations.split(';').filter(Boolean)).join(';')+'}');
  // Theme overrides must follow their base rules.
  const blocks=rules(style);
  style=shuffle(blocks.filter(rule=>!rule.startsWith('@media'))).join('')+blocks.filter(rule=>rule.startsWith('@media')).join('');
  if(random()<.5)style=style.replace(/}+$/,'');
- const html=(random()<.5?'<!doctype html>':'<!DOCTYPE html>')+shuffle([meta,icon,title,'<style>'+style+'</style>']).join('')+body;
+ const html=(random()<.5?'<!doctype html>':'<!DOCTYPE html>')+shuffle([meta,icon,title,'<style>'+style+'</style>',...comments]).join('')+body;
  const n=score(html);
  if(n<bytes||n===bytes&&html.length<best.length){best=html;bytes=n;}
 }
