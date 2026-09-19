@@ -52,7 +52,10 @@ test('unacceptable encodings and methods return empty errors',()=>{
   assert.equal(r.body.length,0);
 });
 test('aliases and short links preserve their redirect destinations',()=>{
-  for(const [,path] of readFileSync('index.html','utf8').matchAll(/<a href=([^ >]+)>/g)) {
+  const links=[...readFileSync('index.html','utf8').matchAll(/<a href=(?:"([^"]+)"|'([^']+)'|([^ >]+))>/g)];
+  assert.equal(links.length,9);
+  for(const match of links) {
+    const path=match[1]??match[2]??match[3];
     assert.match(path,/^[a-z]$/);
     assert.equal(call('/'+path).status,301,path);
   }

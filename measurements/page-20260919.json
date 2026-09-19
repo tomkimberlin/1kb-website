@@ -1,28 +1,28 @@
 {
-  "measuredAt": "2026-09-19T21:17:28.927473+00:00",
+  "measuredAt": "2026-09-19T21:35:09.571369+00:00",
   "url": "https://tomkimberlin.com/",
-  "htmlSha256": "8e75450100778e69a2febdae4059147fec4cac8b0f35ed22b40f6e2d97869c84",
-  "brotliSha256": "82cce6d30ee5e130d730593f339e0220bfe5af180db67e5549f6ffd4cf11ea26",
-  "release": "20260919T211314Z-8e7545010077",
-  "html": 734,
-  "brotli": 335,
-  "gzip": 456,
-  "deflate": 444,
-  "css": 114,
+  "htmlSha256": "a038ddbc3cb88a914a2da40f5be109db434d0df88ccbdc69454d29bb5f34df67",
+  "brotliSha256": "d01d9cbf271d53403eefc130d88cce2e6e7666fc031bd98dbcd0bac496443b4e",
+  "release": "20260919T213233Z-a038ddbc3cb8",
+  "html": 722,
+  "brotli": 309,
+  "gzip": 449,
+  "deflate": 437,
+  "css": 104,
   "chromium": {
-    "encodedBodySize": 335,
-    "decodedBodySize": 734,
-    "resourceTimingTransferSize": 635,
+    "encodedBodySize": 309,
+    "decodedBodySize": 722,
+    "resourceTimingTransferSize": 609,
     "subresources": 0
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/yzmC1DkC/overview",
-    "pageWeight": 416,
+    "report": "https://www.debugbear.com/test/website-speed/7P3aOXW3/overview",
+    "pageWeight": 390,
     "clubLimit": 1024,
-    "margin": 608,
+    "margin": 634,
     "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
     "labScore": 100,
-    "lcpMs": 547,
+    "lcpMs": 534,
     "tbtMs": 0,
     "cls": 0
   },
@@ -42,17 +42,25 @@
     ],
     "links": 9,
     "singleCharacterAnchorHrefs": true,
-    "cssRules": 2,
     "animations": 0,
     "themeSwitchRequests": 0,
     "handlerTests": 23,
     "http1AndHttp2Checks": 100,
     "aliasChecks": 12,
     "serializationTrials": {
-      "total": 180000
+      "total": 296000,
+      "currentWording": 216000
     },
     "finalBrotliParameterTrials": 138240,
     "zopfliMaximumIterations": 100000,
-    "finalSearchFoundSmallerBrotli": false
+    "finalSearchFoundSmallerBrotli": false,
+    "inlineStyles": 2,
+    "singleByteRemovalPositions": 722,
+    "alternateBrotliEncoder": {
+      "name": "rust-brotli",
+      "version": "8.0.2",
+      "configurations": 72,
+      "smallest": 309
+    }
   }
 }
