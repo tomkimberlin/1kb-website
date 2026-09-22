@@ -1,8 +1,16 @@
 # Making a tiny website smaller
 
-I built the foundation of this website years ago, then let Astra cook on it. The optimization had a tight loop: change, measure, verify, repeat. A smaller result had to preserve the content, links and layout.
+I built the foundation of this website years ago, then let Astra cook on it. The tight loop of changing, measuring and verifying made it an ideal problem for AI to tackle.
 
-Fitting into [1KB Club](https://1kb.club/) was the starting point. The work went from HTML and CSS to nginx and TLS. Astra ran the experiments, implemented the changes and drafted this write-up.
+The initial goal was fitting into [1KB Club](https://1kb.club/). Once it qualified, I wanted to see just how far Astra could take it. That expanded the work from HTML and CSS into headers, caching, nginx and TLS.
+
+Every optimization had to preserve these minimum requirements:
+
+- All content, including the hidden comment, and every link destination.
+- The mobile and desktop layout, readable text, light/dark appearance and keyboard navigation.
+- Valid HTTPS, supported protocols and encodings, caching and session reuse.
+
+A candidate only counted as an improvement after its smaller size and preserved behavior were verified.
 
 ## First, decide what “small” means
 
