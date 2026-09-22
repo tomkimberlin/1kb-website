@@ -4,13 +4,17 @@ This directory contains the nginx configuration and deployment scripts for [tomk
 
 The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result.
 
-Image `onekb-nginx:20260922f` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
+Image `onekb-nginx:20260922g` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
 
 The image build runs [certificate-compression checks](../tools/verify-certificate-compression.c) and the [20-case TLS regression harness](../tools/verify-tls-flight.c) before copying the libraries into the runtime image. The harness verifies complete handshakes and application data, including forced write retries, record-size limits, resumption, pending-buffer cleanup and allocation-failure alerts. The patched OpenSSL library also passed 219 tests across 23 selected upstream recipes; the complete upstream suite is not claimed.
 
+The [certificate-cache loader](certificate-cache.patch) optionally replaces the normal Brotli result with a smaller offline encoding. It selects the file by the exact Certificate-body hash, fully decompresses it and requires byte-for-byte equality before installation. Missing, stale, malformed or non-improving entries retain ordinary compression. [Measurements](../measurements/certificate-cache-20260922.json) show 9, 8 and 2 bytes saved for the current apex, `www` and alternate-host certificates; savings depend on the certificate and client support.
+
+The Docker build also runs the [12-case cache-loader test](../tools/verify-certificate-cache.c). Its archived public certificate is a byte-validation fixture; expiration does not affect these loader checks. No production private key is part of the fixture.
+
 ## Hosting a copy
 
-The scripts target an existing installation. They require Docker, SSH, curl and a prepared directory layout with nginx configuration and initial certificates. Building the page requires Node.js 22+, `sh` and Bash.
+The scripts target an existing installation. They require Docker, SSH, curl, `timeout`, `flock` and a prepared directory layout with nginx configuration and initial certificates. Building the page requires Node.js 22+, `sh` and Bash.
 
 The following settings are specific to this deployment:
 
@@ -30,6 +34,7 @@ A separate installation needs its own values in these files. The default base di
 | `site/releases/`, `site/current` | Immutable page releases and the active-release symlink |
 | `acme/` | ACME account state and renewed certificates |
 | `tls/releases/`, `tls/current` | Validated certificates and keys used by public listeners |
+| `tls/compressed/` | Optional Brotli certificate messages keyed by the exact Certificate-body SHA256 |
 | `bin/` | Startup, certificate publishing and DNS scripts |
 | `backups/` | Previous configuration and release pointers |
 
@@ -40,8 +45,11 @@ The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public
 Build the server image on the Docker host from the repository root:
 
 ```sh
-docker build -t onekb-nginx:20260922f -f server/Dockerfile .
+docker build -t onekb-nginx:20260922g -f server/Dockerfile .
+docker build --target certificate-optimizer -t onekb-certificate-optimizer:20260922g -f server/Dockerfile .
 ```
+
+Install [cache-certificates.sh](cache-certificates.sh) as `bin/cache-certificates.sh` under the configured base directory. The optimizer image compiles its encoder during the image build and receives only public PEM certificates when run.
 
 [start.sh](start.sh) launches the container using the configured paths, page files and initial certificates. The supplied [Unraid template](unraid-template.xml) provides the same mounts and port mappings for Unraid's container interface.
 
@@ -61,7 +69,9 @@ The verification commands compare responses with the local build and cover encod
 
 nginx's native ACME module issues and renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. Internal listeners manage renewal; public listeners load static certificates so OpenSSL can precompress certificate messages.
 
-[publish-certificates.sh](publish-certificates.sh) validates trust, hostname, remaining validity and matching keys, then publishes the certificates together. It reloads nginx only when the certificate fingerprint changes. Failed checks leave the previous certificates in service.
+[publish-certificates.sh](publish-certificates.sh) validates trust, hostname, remaining validity and matching keys. Before publishing a new release, it calls [cache-certificates.sh](cache-certificates.sh) with a 45-second deadline and five-second forced-stop grace. The isolated optimizer has no network access and mounts only public certificate PEM files, never their private keys. It atomically writes optional hash-named entries into `tls/compressed/`.
+
+Optimizer absence, failure or timeout does not block certificate publication: nginx uses its normal compressed certificate wherever no validated smaller entry exists. The publisher then switches the complete certificate release, tests and reloads nginx, restoring the previous release on activation failure. It runs only when the certificate fingerprint changes. Refreshing compression for unchanged certificates requires running the helper and explicitly testing/reloading nginx.
 
 The publishing script runs every five minutes. On Unraid, its schedule is `/boot/config/plugins/user.scripts/onekb-certificates.cron`.
 

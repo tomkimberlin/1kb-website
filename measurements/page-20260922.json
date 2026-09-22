@@ -41,7 +41,7 @@
     "http1AndHttp2Checks": 106,
     "aliasChecks": 12,
     "buildBrotliParameterTrials": 5988,
-    "serverImage": "onekb-nginx:20260922f",
+    "serverImage": "onekb-nginx:20260922g",
     "equivalentRenderChecks": 12,
     "liveBrowserChecks": 12,
     "html5Parsing": true,
@@ -50,7 +50,9 @@
     "selectedOpenSSLTests": 219,
     "http1PersistenceChecks": 18,
     "http2ProtocolChecks": 15,
-    "tlsFlightVerification": "measurements/tls-flight-20260922.json"
+    "tlsFlightVerification": "measurements/tls-flight-20260922.json",
+    "certificateCacheLoaderCases": 12,
+    "certificateCacheVerification": "measurements/certificate-cache-20260922.json"
   },
   "brotliSource": "compression/index.html.br",
   "brotliOptimizer": "optimize-brotli.py"

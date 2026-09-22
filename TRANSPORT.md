@@ -17,6 +17,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 - **Caching:** `max-age=86400` allows a fresh browser cache to satisfy repeat visits. Vary keeps cached representations separate.
 - **Certificates:** ECDSA P-256, one hostname per certificate, Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference.
 - **Certificate compression:** the pinned OpenSSL build enables Brotli, zlib and Zstandard. nginx loads static certificates and enables compression for clients that support it. The Brotli encoder compares its default with a quality-10, 2,048-byte-window pass and keeps the smaller output. This runs during static-certificate precompression; renewal uses the same comparison for the new certificates.
+- **Offline certificate cache:** image `onekb-nginx:20260922g` can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [comparison](measurements/certificate-cache-20260922.json) saves 9 bytes for the current main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. Renewal may produce different savings.
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
 
@@ -24,9 +25,13 @@ The [transport audit](measurements/payload-20260912.json) measured a 63-byte HTT
 
 The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server configuration](server/README.md) covers certificate renewal and deployment.
 
+The optional [certificate optimizer](server/cache-certificates.sh) runs in a separate container before a new certificate release is published. It receives public PEM files only, has no network access and publishes cache entries atomically. A 45-second deadline with five-second forced-stop grace bounds this optional step; errors retain normal compression and do not delay renewal indefinitely. The runtime loader always validates against the newly loaded certificate, so an old entry cannot substitute a stale chain.
+
+The image build runs 12 cache-loader cases covering valid installation, interrupted and short reads, malformed/stale/non-improving input, file-type checks and preservation of the fallback cache. Six nginx configuration checks cover supported static use and reject incompatible configurations. The archived public fixture tests serialization and cache behavior without relying on its validity dates.
+
 ## TLS handshake records
 
-Image `onekb-nginx:20260922f` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
+Image `onekb-nginx:20260922g` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
 
 | Handshake | Original records | Combined records | Record overhead saved |
 | --- | ---: | ---: | ---: |

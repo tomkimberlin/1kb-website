@@ -1,0 +1,311 @@
+{
+  "measuredAt": "2026-09-22T21:01:31.825952+00:00",
+  "deploymentStatus": "live",
+  "beforeImage": "onekb-nginx:20260922f",
+  "afterImage": "onekb-nginx:20260922g",
+  "stagedImageId": "sha256:7890a9b34ed3f654415298960d0a48c78293f7b1ede53c289e537b5d11f44fb8",
+  "loaderPatchSha256": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+  "scope": "Brotli-compressed TLS Certificate payloads for the current certificates, compared between production baseline and an isolated candidate. Logical CompressedCertificate messages add 12 bytes. Savings require a supporting client and a validated smaller cache entry; they do not change HTML or TLS record overhead.",
+  "comparisons": [
+    {
+      "host": "tomkimberlin.com",
+      "beforeCompressedBytes": 1487,
+      "afterCompressedBytes": 1478,
+      "bytesSaved": 9,
+      "beforeMessageBytes": 1499,
+      "afterMessageBytes": 1490,
+      "beforePayloadSha256": "5c4302025d553988aac94a68d710fc40a0ef002c288ba000b6b41aa823c3ea0e",
+      "afterPayloadSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+      "certificateVerified": true,
+      "httpStatus": 200,
+      "responseBodyBytes": 317
+    },
+    {
+      "host": "www.tomkimberlin.com",
+      "beforeCompressedBytes": 1508,
+      "afterCompressedBytes": 1500,
+      "bytesSaved": 8,
+      "beforeMessageBytes": 1520,
+      "afterMessageBytes": 1512,
+      "beforePayloadSha256": "d39e612a752cdf279cf1f110a8ea115897385cac7591676ec014c153f794d131",
+      "afterPayloadSha256": "d90debb9d1e6947b6250b4c58947fbf4161835e296bfcc3ed62545e832305bd9",
+      "certificateVerified": true,
+      "httpStatus": 301,
+      "responseBodyBytes": 0
+    },
+    {
+      "host": "tom.kimberlin.net",
+      "beforeCompressedBytes": 1492,
+      "afterCompressedBytes": 1490,
+      "bytesSaved": 2,
+      "beforeMessageBytes": 1504,
+      "afterMessageBytes": 1502,
+      "beforePayloadSha256": "e8b8dc8ffeb9a11f962a9a861c6943a4cfa319ad35aa45a92ab6c1750274124a",
+      "afterPayloadSha256": "05814cc6fc4cc43b2fe62e89f3ed99dc70084480bb717b98dae50f09f8ef4f74",
+      "certificateVerified": true,
+      "httpStatus": 301,
+      "responseBodyBytes": 0
+    }
+  ],
+  "stagedProtocolChecks": [
+    {
+      "host": "tomkimberlin.com",
+      "mode": "h1-tls12",
+      "httpStatus": 200,
+      "httpVersion": "1.1",
+      "bodyBytes": 317,
+      "certificateVerified": true
+    },
+    {
+      "host": "tomkimberlin.com",
+      "mode": "h2",
+      "httpStatus": 200,
+      "httpVersion": "2",
+      "bodyBytes": 317,
+      "certificateVerified": true
+    },
+    {
+      "host": "tomkimberlin.com",
+      "mode": "h3",
+      "httpStatus": 200,
+      "httpVersion": "3",
+      "bodyBytes": 317,
+      "certificateVerified": true
+    },
+    {
+      "host": "www.tomkimberlin.com",
+      "mode": "h1-tls12",
+      "httpStatus": 301,
+      "httpVersion": "1.1",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    },
+    {
+      "host": "www.tomkimberlin.com",
+      "mode": "h2",
+      "httpStatus": 301,
+      "httpVersion": "2",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    },
+    {
+      "host": "www.tomkimberlin.com",
+      "mode": "h3",
+      "httpStatus": 301,
+      "httpVersion": "3",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    },
+    {
+      "host": "tom.kimberlin.net",
+      "mode": "h1-tls12",
+      "httpStatus": 301,
+      "httpVersion": "1.1",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    },
+    {
+      "host": "tom.kimberlin.net",
+      "mode": "h2",
+      "httpStatus": 301,
+      "httpVersion": "2",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    },
+    {
+      "host": "tom.kimberlin.net",
+      "mode": "h3",
+      "httpStatus": 301,
+      "httpVersion": "3",
+      "bodyBytes": 0,
+      "certificateVerified": true
+    }
+  ],
+  "stagedFallbackChecks": [
+    {
+      "case": "missing",
+      "configurationTestPassed": true,
+      "reloadPassed": true,
+      "certificateVerified": true,
+      "compressedBytes": 1487,
+      "payloadSha256": "5c4302025d553988aac94a68d710fc40a0ef002c288ba000b6b41aa823c3ea0e",
+      "httpStatus": 200,
+      "responseBodyBytes": 317
+    },
+    {
+      "case": "wrong-body",
+      "configurationTestPassed": true,
+      "reloadPassed": true,
+      "certificateVerified": true,
+      "compressedBytes": 1487,
+      "payloadSha256": "5c4302025d553988aac94a68d710fc40a0ef002c288ba000b6b41aa823c3ea0e",
+      "httpStatus": 200,
+      "responseBodyBytes": 317
+    },
+    {
+      "case": "truncated",
+      "configurationTestPassed": true,
+      "reloadPassed": true,
+      "certificateVerified": true,
+      "compressedBytes": 1487,
+      "payloadSha256": "5c4302025d553988aac94a68d710fc40a0ef002c288ba000b6b41aa823c3ea0e",
+      "httpStatus": 200,
+      "responseBodyBytes": 317
+    },
+    {
+      "case": "restored",
+      "configurationTestPassed": true,
+      "reloadPassed": true,
+      "certificateVerified": true,
+      "compressedBytes": 1478,
+      "payloadSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+      "httpStatus": 200,
+      "responseBodyBytes": 317
+    }
+  ],
+  "loaderTests": {
+    "count": 12,
+    "passed": true,
+    "addressSanitizer": true,
+    "undefinedBehaviorSanitizer": true,
+    "sanitizerDiagnostics": 0,
+    "leakSanitizer": "unsupported on test platform",
+    "cases": [
+      {
+        "case": "missing",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "valid-1478",
+        "installed": true,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "eintr-and-short-reads",
+        "installed": true,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "truncated",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "trailing-junk",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "non-improving",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "empty",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "malformed",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "stale-exact-length-body",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "wrong-output-length",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "directory-instead-of-file",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      },
+      {
+        "case": "fifo-without-writer",
+        "installed": false,
+        "exact_cache_verified": true,
+        "prior_error_preserved": true
+      }
+    ]
+  },
+  "nginxConfigurationTests": {
+    "count": 6,
+    "passed": true,
+    "cases": [
+      {
+        "case": "enabled-static",
+        "exit": 0,
+        "expected": true
+      },
+      {
+        "case": "disabled-off",
+        "exit": 0,
+        "expected": true
+      },
+      {
+        "case": "compression-disabled",
+        "exit": 1,
+        "expected": true
+      },
+      {
+        "case": "multiple-certificates",
+        "exit": 1,
+        "expected": true
+      },
+      {
+        "case": "variable-certificate",
+        "exit": 1,
+        "expected": true
+      },
+      {
+        "case": "variable-directory",
+        "exit": 1,
+        "expected": true
+      }
+    ]
+  },
+  "liveValidation": {
+    "imageId": "sha256:7890a9b34ed3f654415298960d0a48c78293f7b1ede53c289e537b5d11f44fb8",
+    "certificatePayloadsMatchStaging": true,
+    "hostnamesVerified": [
+      "tomkimberlin.com",
+      "www.tomkimberlin.com",
+      "tom.kimberlin.net"
+    ],
+    "browserCases": 12,
+    "http1Tls12Http2Http3Checks": 9,
+    "httpChecks": 106,
+    "aliasChecks": 12,
+    "http2SessionResumed": true,
+    "certificateAndKeyFingerprintsUnchanged": true,
+    "publisherFixtureCases": 5,
+    "publisherFailureCases": [
+      "optimizer failure",
+      "optimizer timeout",
+      "nginx test failure",
+      "nginx reload failure"
+    ]
+  },
+  "limits": [
+    "Staging results do not assert production deployment.",
+    "Cache miss and stale-data tests retain the mounted certificate; a newly generated renewal leaf was not substituted in this staging container.",
+    "Archived public-certificate loader fixtures exercise bytes and cache selection, not certificate validity dates."
+  ]
+}

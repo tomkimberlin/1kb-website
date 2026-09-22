@@ -1,0 +1,303 @@
+--- a/src/http/modules/ngx_http_ssl_module.c
++++ b/src/http/modules/ngx_http_ssl_module.c
+@@ -8,6 +8,19 @@
+ #include <ngx_config.h>
+ #include <ngx_core.h>
+ #include <ngx_http.h>
++
++#ifndef NGX_SSL_CERT_BROTLI_CACHE
++#define NGX_SSL_CERT_BROTLI_CACHE  0
++#endif
++
++#if (NGX_SSL_CERT_BROTLI_CACHE && OPENSSL_VERSION_NUMBER >= 0x30500000L \
++     && !defined LIBRESSL_VERSION_NUMBER && !defined OPENSSL_IS_BORINGSSL \
++     && defined SSL_OP_NO_TX_CERTIFICATE_COMPRESSION)
++#define NGX_SSL_CERT_BROTLI_CACHE_SUPPORTED  1
++#include "ngx_http_ssl_brotli_cache.h"
++#else
++#define NGX_SSL_CERT_BROTLI_CACHE_SUPPORTED  0
++#endif
+ 
+ #if (NGX_QUIC_OPENSSL_COMPAT)
+ #include <ngx_event_quic_openssl_compat.h>
+@@ -136,6 +149,13 @@
+       ngx_conf_set_flag_slot,
+       NGX_HTTP_SRV_CONF_OFFSET,
+       offsetof(ngx_http_ssl_srv_conf_t, certificate_compression),
++      NULL },
++
++    { ngx_string("ssl_certificate_compression_brotli_cache"),
++      NGX_HTTP_SRV_CONF|NGX_CONF_TAKE1,
++      ngx_conf_set_str_slot,
++      NGX_HTTP_SRV_CONF_OFFSET,
++      offsetof(ngx_http_ssl_srv_conf_t, certificate_brotli_cache),
+       NULL },
+ 
+     { ngx_string("ssl_dhparam"),
+@@ -690,6 +710,12 @@
+     ngx_conf_merge_value(conf->certificate_compression,
+                          prev->certificate_compression, 0);
+ 
++    ngx_conf_merge_str_value(conf->certificate_brotli_cache,
++                            prev->certificate_brotli_cache, "");
++    if (ngx_strcmp(conf->certificate_brotli_cache.data, "off") == 0) {
++        conf->certificate_brotli_cache.len = 0;
++    }
++
+     ngx_conf_merge_value(conf->early_data, prev->early_data, 0);
+     ngx_conf_merge_value(conf->reject_handshake, prev->reject_handshake, 0);
+ 
+@@ -738,6 +764,31 @@
+     ngx_conf_merge_str_value(conf->stapling_file, prev->stapling_file, "");
+     ngx_conf_merge_str_value(conf->stapling_responder,
+                          prev->stapling_responder, "");
++
++    if (conf->certificate_brotli_cache.len) {
++#if !(NGX_SSL_CERT_BROTLI_CACHE_SUPPORTED)
++        ngx_log_error(NGX_LOG_EMERG, cf->log, 0,
++                      "ssl_certificate_compression_brotli_cache requires "
++                      "the OpenSSL 3.5 Brotli cache build option");
++        return NGX_CONF_ERROR;
++#endif
++        if (!conf->certificate_compression || conf->certificates == NULL
++            || conf->certificates->nelts != 1)
++        {
++            ngx_log_error(NGX_LOG_EMERG, cf->log, 0,
++                          "ssl_certificate_compression_brotli_cache requires "
++                          "compression and exactly one static certificate");
++            return NGX_CONF_ERROR;
++        }
++        if (ngx_strlchr(conf->certificate_brotli_cache.data,
++                        conf->certificate_brotli_cache.data
++                        + conf->certificate_brotli_cache.len, '$') != NULL
++            || ngx_conf_full_name(cf->cycle, &conf->certificate_brotli_cache, 1)
++               != NGX_OK)
++        {
++            return NGX_CONF_ERROR;
++        }
++    }
+ 
+     conf->ssl.log = cf->log;
+ 
+@@ -806,6 +857,13 @@
+         return NGX_CONF_ERROR;
+     }
+ 
++    if (conf->certificate_values && conf->certificate_brotli_cache.len) {
++        ngx_log_error(NGX_LOG_EMERG, cf->log, 0,
++                      "ssl_certificate_compression_brotli_cache "
++                      "does not support variable certificates");
++        return NGX_CONF_ERROR;
++    }
++
+     if (conf->certificate_values) {
+ 
+ #ifdef SSL_R_CERT_CB_ERROR
+@@ -961,6 +1019,28 @@
+     if (ngx_ssl_conf_commands(cf, &conf->ssl, conf->conf_commands) != NGX_OK) {
+         return NGX_CONF_ERROR;
+     }
++
++#if (NGX_SSL_CERT_BROTLI_CACHE_SUPPORTED)
++    if (conf->certificate_brotli_cache.len) {
++        const char  *reason;
++
++        if (!ngx_ssl_cert_cache_single(conf->ssl.ctx)) {
++            ngx_log_error(NGX_LOG_EMERG, cf->log, 0,
++                          "Brotli certificate cache requires exactly one "
++                          "loaded certificate and key");
++            return NGX_CONF_ERROR;
++        }
++
++        if (!ngx_ssl_cert_cache_load(conf->ssl.ctx,
++                                    (char *) conf->certificate_brotli_cache.data,
++                                    &reason)
++            && reason != NULL)
++        {
++            ngx_log_error(NGX_LOG_WARN, cf->log, 0,
++                          "Brotli certificate cache ignored: %s", reason);
++        }
++    }
++#endif
+ 
+     return NGX_CONF_OK;
+ }
+--- a/src/http/modules/ngx_http_ssl_module.h
++++ b/src/http/modules/ngx_http_ssl_module.h
+@@ -19,6 +19,7 @@
+ 
+     ngx_flag_t                      prefer_server_ciphers;
+     ngx_flag_t                      certificate_compression;
++    ngx_str_t                       certificate_brotli_cache;
+     ngx_flag_t                      early_data;
+     ngx_flag_t                      reject_handshake;
+ 
+--- /dev/null
++++ b/src/http/modules/ngx_http_ssl_brotli_cache.h
+@@ -0,0 +1,166 @@
++/* Optional, bounded precompressed-certificate cache. Configuration-time only. */
++#ifndef NGX_HTTP_SSL_BROTLI_CACHE_H
++#define NGX_HTTP_SSL_BROTLI_CACHE_H
++#include <openssl/ssl.h>
++#include <openssl/err.h>
++#include <openssl/evp.h>
++#include <brotli/decode.h>
++#include <sys/stat.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <errno.h>
++#include <string.h>
++
++#define NGX_SSL_CERT_BODY_LIMIT 65536
++#define NGX_SSL_CERT_CACHE_PATH_LIMIT 4096
++
++static int
++ngx_ssl_cert_cache_decode(const unsigned char *src, size_t len,
++    unsigned char *out, size_t expected)
++{
++    BrotliDecoderState *decoder;
++    BrotliDecoderResult result;
++    size_t left = expected, total = 0;
++
++    decoder = BrotliDecoderCreateInstance(NULL, NULL, NULL);
++    if (decoder == NULL) {
++        return 0;
++    }
++    result = BrotliDecoderDecompressStream(decoder, &len, &src, &left, &out,
++                                          &total);
++    BrotliDecoderDestroyInstance(decoder);
++    return result == BROTLI_DECODER_RESULT_SUCCESS && len == 0
++           && left == 0 && total == expected;
++}
++
++/* nginx has loaded private keys; the optimizer/byte validator needs only PEM. */
++static int
++ngx_ssl_cert_cache_single(SSL_CTX *ctx)
++{
++    X509 *selected = SSL_CTX_get0_certificate(ctx);
++    int count = 0;
++
++    if (selected == NULL) {
++        return 0;
++    }
++    if (SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_FIRST)) {
++        do { count++; } while (SSL_CTX_set_current_cert(ctx, SSL_CERT_SET_NEXT));
++    }
++    return SSL_CTX_select_current_cert(ctx, selected) && count == 1;
++}
++
++/* 1 installs; 0 preserves the normal cache. NULL reason is an ordinary miss. */
++static int
++ngx_ssl_cert_cache_load(SSL_CTX *ctx, const char *directory,
++    const char **reason)
++{
++    static const char hex[] = "0123456789abcdef";
++    unsigned char *normal = NULL, *body = NULL, *candidate = NULL, *decoded = NULL;
++    unsigned char digest[EVP_MAX_MD_SIZE], extra;
++    unsigned int digest_len = 0;
++    size_t raw = 0, normal_len, length, offset, dir_len, i;
++    char *path = NULL;
++    int fd = -1, installed = 0, mark = ERR_set_mark();
++    ssize_t n;
++    struct stat st;
++
++    *reason = "cannot generate the configured Certificate body";
++    normal_len = SSL_CTX_get1_compressed_cert(ctx, TLSEXT_comp_cert_brotli,
++                                             &normal, &raw);
++    if (normal_len == 0 || raw == 0 || raw > NGX_SSL_CERT_BODY_LIMIT
++        || normal_len > NGX_SSL_CERT_BODY_LIMIT)
++    {
++        goto done;
++    }
++    *reason = "cannot allocate or decode the configured Certificate body";
++    body = OPENSSL_malloc(raw);
++    decoded = OPENSSL_malloc(raw);
++    if (body == NULL || decoded == NULL
++        || !ngx_ssl_cert_cache_decode(normal, normal_len, body, raw))
++    {
++        goto done;
++    }
++    if (!EVP_Digest(body, raw, digest, &digest_len, EVP_sha256(), NULL)
++        || digest_len != 32)
++    {
++        goto done;
++    }
++    dir_len = strlen(directory);
++    if (dir_len > NGX_SSL_CERT_CACHE_PATH_LIMIT - 69) {
++        *reason = "cache directory path is too long";
++        goto done;
++    }
++    path = OPENSSL_malloc(dir_len + 69);
++    if (path == NULL) {
++        goto done;
++    }
++    memcpy(path, directory, dir_len);
++    path[dir_len++] = '/';
++    for (i = 0; i < 32; i++) {
++        path[dir_len + 2*i] = hex[digest[i] >> 4];
++        path[dir_len + 2*i + 1] = hex[digest[i] & 15];
++    }
++    memcpy(path + dir_len + 64, ".br", 4);
++    fd = open(path, O_RDONLY | O_NONBLOCK);
++    if (fd == -1) {
++        *reason = errno == ENOENT ? NULL : "cannot open cache entry";
++        goto done;
++    }
++    *reason = "cache entry must be a nonempty regular file smaller than default";
++    if (fstat(fd, &st) != 0 || !S_ISREG(st.st_mode) || st.st_size <= 0
++        || (unsigned long long) st.st_size >= normal_len)
++    {
++        goto done;
++    }
++    length = (size_t) st.st_size;
++    candidate = OPENSSL_malloc(length);
++    if (candidate == NULL) {
++        *reason = "cannot allocate cache entry";
++        goto done;
++    }
++    *reason = "cannot read a complete, stable cache entry";
++    offset = 0;
++    while (offset < length) {
++        n = read(fd, candidate + offset, length - offset);
++        if (n < 0 && errno == EINTR) {
++            continue;
++        }
++        if (n <= 0) {
++            goto done;
++        }
++        offset += (size_t) n;
++    }
++    do { n = read(fd, &extra, 1); } while (n < 0 && errno == EINTR);
++    if (n != 0) {
++        goto done;
++    }
++    *reason = "cache entry does not exactly match the configured Certificate body";
++    if (!ngx_ssl_cert_cache_decode(candidate, length, decoded, raw)
++        || memcmp(body, decoded, raw) != 0)
++    {
++        goto done;
++    }
++    *reason = "cannot install validated cache entry";
++    installed = SSL_CTX_set1_compressed_cert(ctx, TLSEXT_comp_cert_brotli,
++                                           candidate, length, raw);
++    if (installed) {
++        *reason = NULL;
++    }
++
++done:
++    if (fd != -1) {
++        close(fd);
++    }
++    OPENSSL_free(path);
++    OPENSSL_free(normal);
++    OPENSSL_free(body);
++    OPENSSL_free(decoded);
++    OPENSSL_free(candidate);
++    if (mark) {
++        ERR_pop_to_mark();
++    } else {
++        ERR_clear_error();
++    }
++    return installed;
++}
++#endif

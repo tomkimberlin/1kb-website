@@ -1,48 +1,48 @@
 {
   "description": "Three independent cold document exchanges per site; body bytes subtracted from summary metrics.",
-  "measuredAt": "2026-09-22T20:28:30.907429+00:00",
+  "measuredAt": "2026-09-22T21:01:31.825952+00:00",
   "htmlSha256": "fc06c9f7af02b536a3c579caa26d6ff6a394b97ef02c0869c30a8099d6076b22",
   "brotliSha256": "26a20ca9da90cf2a7418f007ce641e6e7207bc9d8c903e5243c16f1c48b011b2",
   "release": "20260922T202250Z-fc06c9f7af02",
-  "serverImage": "onekb-nginx:20260922f",
+  "serverImage": "onekb-nginx:20260922g",
   "summary": [
     {
       "url": "https://tomkimberlin.com/",
-      "tls_median": 5262,
+      "tls_median": 5251,
       "tls_range": [
-        5261,
-        5262
+        5251,
+        5252
       ],
-      "total_median": 6954,
+      "total_median": 6995,
       "total_range": [
-        6902,
-        7005
+        6943,
+        6996
       ]
     },
     {
       "url": "https://pba.im/200B",
-      "tls_median": 7693,
+      "tls_median": 7692,
       "tls_range": [
-        7691,
+        7692,
         7693
       ],
-      "total_median": 9421,
+      "total_median": 9393,
       "total_range": [
-        9391,
-        9473
+        9392,
+        9420
       ]
     },
     {
       "url": "https://cv.btxx.org/",
-      "tls_median": 6735,
+      "tls_median": 6737,
       "tls_range": [
-        6734,
-        6764
+        6735,
+        6737
       ],
       "total_median": 8947,
       "total_range": [
-        8946,
-        8976
+        8897,
+        9013
       ]
     },
     {
@@ -52,10 +52,10 @@
         7246,
         7246
       ],
-      "total_median": 9095,
+      "total_median": 9043,
       "total_range": [
-        9043,
-        9147
+        8991,
+        9095
       ]
     },
     {
@@ -63,31 +63,31 @@
       "tls_median": 8892,
       "tls_range": [
         8892,
-        8894
+        8893
       ],
-      "total_median": 11008,
+      "total_median": 11098,
       "total_range": [
-        10942,
+        10839,
         11174
       ]
     },
     {
       "url": "https://hi.mrkrk.me/",
-      "tls_median": 6762,
+      "tls_median": 6763,
       "tls_range": [
         6762,
         6764
       ],
-      "total_median": 8702,
+      "total_median": 8692,
       "total_range": [
-        8650,
-        8764
+        8638,
+        8751
       ]
     }
   ],
   "runs": [
     {
-      "time_utc": "2026-09-22T20:23:25Z",
+      "time_utc": "2026-09-22T20:59:37Z",
       "request_headers": [
         [
           "accept-encoding",
@@ -175,7 +175,7 @@
             {
               "direction": "read",
               "type": 25,
-              "bytes": 1499
+              "bytes": 1490
             },
             {
               "direction": "read",
@@ -205,7 +205,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:18 GMT"
+              "Tue, 22 Sep 2026 20:59:30 GMT"
             ],
             [
               "content-type",
@@ -228,11 +228,11 @@
           "body_sha256": "26a20ca9da90cf2a7418f007ce641e6e7207bc9d8c903e5243c16f1c48b011b2",
           "tls_through_body_complete": {
             "sent": 2157,
-            "received": 3421
+            "received": 3412
           },
           "tls_before_client_close": {
             "sent": 2157,
-            "received": 3421
+            "received": 3412
           },
           "response_http_plain_bytes": 422,
           "dns_queries": [
@@ -286,7 +286,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 376560017,
+              "seq": 3791213983,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -297,7 +297,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 619301690,
+              "seq": 1161337731,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -308,7 +308,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 376560018,
+              "seq": 3791213984,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -319,7 +319,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 376560018,
+              "seq": 3791213984,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1656
             },
@@ -330,7 +330,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 619301691,
+              "seq": 1161337732,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -341,7 +341,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 619301691,
+              "seq": 1161337732,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -352,20 +352,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 376561570,
+              "seq": 3791215536,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 1480,
-              "tcp_payload_bytes": 1428,
+              "ip_bytes": 1471,
+              "tcp_payload_bytes": 1419,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 619303139,
+              "seq": 1161339180,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1480
+              "ip_bytes_at_1500_mtu": 1471
             },
             {
               "direction": "sent",
@@ -374,7 +374,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 376561570,
+              "seq": 3791215536,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -385,7 +385,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 376561570,
+              "seq": 3791215536,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 116
             },
@@ -396,7 +396,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 619304567,
+              "seq": 1161340599,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -407,7 +407,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 376561634,
+              "seq": 3791215600,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 562
             },
@@ -418,7 +418,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 619304646,
+              "seq": 1161340678,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 89
             },
@@ -429,7 +429,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 619304683,
+              "seq": 1161340715,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 481
             },
@@ -440,7 +440,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 376562144,
+              "seq": 3791216110,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -451,7 +451,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 619305112,
+              "seq": 1161341144,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -462,7 +462,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 376562175,
+              "seq": 3791216141,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -473,7 +473,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 376562199,
+              "seq": 3791216165,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -484,7 +484,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 619305112,
+              "seq": 1161341144,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -495,7 +495,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 619305112,
+              "seq": 1161341144,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -506,7 +506,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 376562200,
+              "seq": 3791216166,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -517,15 +517,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 619305113,
+              "seq": 1161341145,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 6762,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 6814,
+          "observed_ipv4_tcp_bytes": 6753,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 6805,
           "dns_ipv4_udp_bytes": 508,
-          "estimated_tcp_plus_dns_bytes": 7322
+          "estimated_tcp_plus_dns_bytes": 7313
         },
         {
           "url": "https://pba.im/200B",
@@ -563,7 +563,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 80
+              "bytes": 79
             },
             {
               "direction": "read",
@@ -604,11 +604,11 @@
           "body_sha256": "ae50236de5af849e3f8067e12c48c7f37fe46dc34acc04f9f8f58e4250062017",
           "tls_through_body_complete": {
             "sent": 2238,
-            "received": 5571
+            "received": 5570
           },
           "tls_before_client_close": {
             "sent": 2238,
-            "received": 5571
+            "received": 5570
           },
           "response_http_plain_bytes": 193,
           "dns_queries": [
@@ -640,7 +640,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 1904498786,
+              "seq": 125673890,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -651,7 +651,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 1224617650,
+              "seq": 92077254,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -662,7 +662,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904498787,
+              "seq": 125673891,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -673,7 +673,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1904498787,
+              "seq": 125673891,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1646
             },
@@ -684,7 +684,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1224617651,
+              "seq": 92077255,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -695,7 +695,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1224617651,
+              "seq": 92077255,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -706,7 +706,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904500329,
+              "seq": 125675433,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -717,7 +717,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1224619099,
+              "seq": 92078703,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -728,7 +728,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904500329,
+              "seq": 125675433,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -739,7 +739,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1224620547,
+              "seq": 92080151,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -750,20 +750,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904500329,
+              "seq": 125675433,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 802,
-              "tcp_payload_bytes": 750,
+              "ip_bytes": 801,
+              "tcp_payload_bytes": 749,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1224621747,
+              "seq": 92081351,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 802
+              "ip_bytes_at_1500_mtu": 801
             },
             {
               "direction": "sent",
@@ -772,7 +772,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904500329,
+              "seq": 125675433,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -783,7 +783,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1904500329,
+              "seq": 125675433,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -794,7 +794,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1224622497,
+              "seq": 92082100,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -805,7 +805,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1904500409,
+              "seq": 125675513,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 668
             },
@@ -816,7 +816,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1224622752,
+              "seq": 92082355,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -827,7 +827,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 1224623007,
+              "seq": 92082610,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 267
             },
@@ -838,7 +838,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1904501025,
+              "seq": 125676129,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -849,7 +849,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1904501025,
+              "seq": 125676129,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -860,37 +860,26 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 1904501049,
+              "seq": 125676153,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
-              "direction": "received",
-              "ip_bytes": 40,
+              "direction": "sent",
+              "ip_bytes": 52,
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 1224623223,
+              "tcp_header_bytes": 32,
+              "flags": 17,
+              "seq": 125676153,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 40,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 1224623223,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
+              "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 9021,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9073,
+          "observed_ipv4_tcp_bytes": 8992,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9044,
           "dns_ipv4_udp_bytes": 464,
-          "estimated_tcp_plus_dns_bytes": 9537
+          "estimated_tcp_plus_dns_bytes": 9508
         },
         {
           "url": "https://cv.btxx.org/",
@@ -928,7 +917,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 111
+              "bytes": 112
             },
             {
               "direction": "read",
@@ -965,10 +954,6 @@
               "Apache"
             ],
             [
-              "strict-transport-security",
-              "max-age=31536000; includeSubDomains; preload"
-            ],
-            [
               "content-security-policy",
               "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; font-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self';"
             ],
@@ -1001,8 +986,8 @@
               "bytes"
             ],
             [
-              "content-type",
-              "text/html; charset=UTF-8"
+              "age",
+              "2171"
             ],
             [
               "vary",
@@ -1019,19 +1004,23 @@
             [
               "content-length",
               "230"
+            ],
+            [
+              "content-type",
+              "text/html; charset=UTF-8"
             ]
           ],
           "body_bytes": 230,
           "body_sha256": "bc136bd40a22f4b5c03a2a0ba1f4612835902806c31622e33531e750f753e416",
           "tls_through_body_complete": {
             "sent": 2165,
-            "received": 4829
+            "received": 4802
           },
           "tls_before_client_close": {
             "sent": 2165,
-            "received": 4829
+            "received": 4802
           },
-          "response_http_plain_bytes": 765,
+          "response_http_plain_bytes": 737,
           "dns_queries": [
             {
               "qtype": 1,
@@ -1071,7 +1060,7 @@
             {
               "type": 1,
               "stream": 1,
-              "payload_bytes": 480
+              "payload_bytes": 452
             },
             {
               "type": 0,
@@ -1088,7 +1077,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 2976949676,
+              "seq": 3719299662,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -1099,7 +1088,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 1469257927,
+              "seq": 1655170736,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -1110,7 +1099,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2976949677,
+              "seq": 3719299663,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1121,9 +1110,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2976949677,
+              "seq": 3719299663,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 64,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 44,
+              "flags": 16,
+              "seq": 1655170737,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 64
             },
             {
               "direction": "received",
@@ -1132,20 +1132,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1469257928,
+              "seq": 1655170737,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 3892,
-              "tcp_payload_bytes": 3840,
+              "ip_bytes": 1500,
+              "tcp_payload_bytes": 1448,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
-              "flags": 24,
-              "seq": 1469257928,
-              "estimated_segments_at_1500_mtu": 3,
-              "ip_bytes_at_1500_mtu": 3996
+              "flags": 16,
+              "seq": 1655170737,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 1500
             },
             {
               "direction": "sent",
@@ -1154,7 +1154,29 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2976951224,
+              "seq": 3719301210,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 2445,
+              "tcp_payload_bytes": 2393,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 24,
+              "seq": 1655172185,
+              "estimated_segments_at_1500_mtu": 2,
+              "ip_bytes_at_1500_mtu": 2497
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 3719301210,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1165,7 +1187,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2976951224,
+              "seq": 3719301210,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -1176,7 +1198,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469261768,
+              "seq": 1655174578,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -1187,7 +1209,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2976951304,
+              "seq": 3719301290,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
@@ -1198,7 +1220,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469261847,
+              "seq": 1655174657,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -1209,7 +1231,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469261926,
+              "seq": 1655174736,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 102
             },
@@ -1220,7 +1242,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2976951811,
+              "seq": 3719301797,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1231,7 +1253,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469261976,
+              "seq": 1655174786,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -1242,31 +1264,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2976951811,
+              "seq": 3719301797,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
             {
               "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 1469262007,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 802,
-              "tcp_payload_bytes": 750,
+              "ip_bytes": 774,
+              "tcp_payload_bytes": 722,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469262007,
+              "seq": 1655174817,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 802
+              "ip_bytes_at_1500_mtu": 774
             },
             {
               "direction": "sent",
@@ -1275,7 +1286,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2976951842,
+              "seq": 3719301828,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1286,7 +1297,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2976951842,
+              "seq": 3719301828,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -1297,7 +1308,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2976951866,
+              "seq": 3719301852,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1308,7 +1319,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469262757,
+              "seq": 1655175539,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 91
             },
@@ -1319,7 +1330,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2976951866,
+              "seq": 3719301852,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -1330,7 +1341,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1469262796,
+              "seq": 1655175578,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1341,7 +1352,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2976951867,
+              "seq": 3719301853,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -1352,7 +1363,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1469262796,
+              "seq": 1655175578,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -1363,7 +1374,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2976951867,
+              "seq": 3719301853,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -1374,7 +1385,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 1469262820,
+              "seq": 1655175602,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1385,15 +1396,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2976951867,
+              "seq": 3719301853,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             }
           ],
-          "observed_ipv4_tcp_bytes": 8505,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8661,
+          "observed_ipv4_tcp_bytes": 8594,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8698,
           "dns_ipv4_udp_bytes": 545,
-          "estimated_tcp_plus_dns_bytes": 9206
+          "estimated_tcp_plus_dns_bytes": 9243
         },
         {
           "url": "https://5.vg/",
@@ -1459,7 +1470,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:22 GMT"
+              "Tue, 22 Sep 2026 20:59:33 GMT"
             ],
             [
               "content-type",
@@ -1553,7 +1564,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 149109913,
+              "seq": 2584323806,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -1564,7 +1575,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 3080487226,
+              "seq": 1232329649,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -1575,7 +1586,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149109914,
+              "seq": 2584323807,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1586,7 +1597,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 149109914,
+              "seq": 2584323807,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1644
             },
@@ -1597,42 +1608,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3080487227,
+              "seq": 1232329650,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3080487227,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 149111454,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
+              "ip_bytes": 2948,
+              "tcp_payload_bytes": 2896,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080488675,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
+              "seq": 1232329650,
+              "estimated_segments_at_1500_mtu": 2,
+              "ip_bytes_at_1500_mtu": 3000
             },
             {
               "direction": "sent",
@@ -1641,7 +1630,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149111454,
+              "seq": 2584325347,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1652,7 +1641,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080490123,
+              "seq": 1232332546,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -1663,7 +1652,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149111454,
+              "seq": 2584325347,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1674,7 +1663,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080491323,
+              "seq": 1232333746,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 477
             },
@@ -1685,7 +1674,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149111454,
+              "seq": 2584325347,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1696,7 +1685,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 149111454,
+              "seq": 2584325347,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 202
             },
@@ -1707,7 +1696,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080491748,
+              "seq": 1232334171,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 302
             },
@@ -1718,20 +1707,9 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080491998,
+              "seq": 1232334421,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 113
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 149111604,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "sent",
@@ -1740,7 +1718,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 149111604,
+              "seq": 2584325497,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 553
             },
@@ -1751,7 +1729,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080492059,
+              "seq": 1232334482,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -1762,7 +1740,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 149112105,
+              "seq": 2584325998,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -1773,7 +1751,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3080492089,
+              "seq": 1232334512,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 770
             },
@@ -1784,7 +1762,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149112135,
+              "seq": 2584326028,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1795,7 +1773,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 149112135,
+              "seq": 2584326028,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 75
             },
@@ -1806,7 +1784,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3080492807,
+              "seq": 1232335230,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1817,7 +1795,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 3080492807,
+              "seq": 1232335230,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -1828,15 +1806,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 149112159,
+              "seq": 2584326052,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 9192,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9244,
+          "observed_ipv4_tcp_bytes": 9036,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9140,
           "dns_ipv4_udp_bytes": 406,
-          "estimated_tcp_plus_dns_bytes": 9650
+          "estimated_tcp_plus_dns_bytes": 9546
         },
         {
           "url": "https://1k.lom.me/",
@@ -1908,7 +1886,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:23 GMT"
+              "Tue, 22 Sep 2026 20:59:34 GMT"
             ],
             [
               "content-type",
@@ -1932,11 +1910,11 @@
             ],
             [
               "x-trace-id",
-              "ti_6b7b653f51867ee8d52ffbf567d93ad9"
+              "ti_8063e6ca646d2218b879093fd61a99c0"
             ],
             [
               "x-backend",
-              "phl-web-02"
+              "phl-web-05"
             ],
             [
               "x-frontend",
@@ -1944,7 +1922,7 @@
             ],
             [
               "x-cache-status",
-              "STALE"
+              "MISS"
             ],
             [
               "content-encoding",
@@ -1955,13 +1933,13 @@
           "body_sha256": "9f1ca69b0bd16a6a1b0196df0ae30c447c1441deb1110fe1ca0e69c2a4deea2f",
           "tls_through_body_complete": {
             "sent": 2161,
-            "received": 7024
+            "received": 7022
           },
           "tls_before_client_close": {
             "sent": 2161,
-            "received": 7024
+            "received": 7022
           },
-          "response_http_plain_bytes": 616,
+          "response_http_plain_bytes": 614,
           "dns_queries": [
             {
               "qtype": 1,
@@ -2001,7 +1979,7 @@
             {
               "type": 1,
               "stream": 1,
-              "payload_bytes": 258
+              "payload_bytes": 256
             },
             {
               "type": 0,
@@ -2018,7 +1996,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 264211529,
+              "seq": 3785424483,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2029,7 +2007,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 862061042,
+              "seq": 1592843482,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2040,7 +2018,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264211530,
+              "seq": 3785424484,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2051,20 +2029,9 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 264211530,
+              "seq": 3785424484,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1649
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 64,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 44,
-              "flags": 16,
-              "seq": 862061043,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 64
             },
             {
               "direction": "received",
@@ -2073,7 +2040,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 862061043,
+              "seq": 1592843483,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2084,7 +2051,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 862061043,
+              "seq": 1592843483,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -2095,7 +2062,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213075,
+              "seq": 3785426029,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2106,7 +2073,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862062491,
+              "seq": 1592844931,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -2117,7 +2084,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213075,
+              "seq": 3785426029,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2128,7 +2095,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862063939,
+              "seq": 1592846379,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -2139,7 +2106,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213075,
+              "seq": 3785426029,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2150,7 +2117,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862065139,
+              "seq": 1592847579,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1776
             },
@@ -2161,7 +2128,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213075,
+              "seq": 3785426029,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2172,7 +2139,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 264213075,
+              "seq": 3785426029,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -2183,7 +2150,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862066811,
+              "seq": 1592849251,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -2194,7 +2161,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 264213155,
+              "seq": 3785426109,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 557
             },
@@ -2205,7 +2172,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862067098,
+              "seq": 1592849538,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -2216,7 +2183,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862067385,
+              "seq": 1592849825,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 114
             },
@@ -2227,20 +2194,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213660,
+              "seq": 3785426614,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 350,
-              "tcp_payload_bytes": 298,
+              "ip_bytes": 83,
+              "tcp_payload_bytes": 31,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862067447,
+              "seq": 1592849887,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 350
+              "ip_bytes_at_1500_mtu": 83
             },
             {
               "direction": "sent",
@@ -2249,20 +2216,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 264213660,
+              "seq": 3785426614,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
             {
               "direction": "received",
-              "ip_bytes": 374,
-              "tcp_payload_bytes": 322,
+              "ip_bytes": 639,
+              "tcp_payload_bytes": 587,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 862067745,
+              "seq": 1592849918,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 374
+              "ip_bytes_at_1500_mtu": 639
             },
             {
               "direction": "sent",
@@ -2271,7 +2238,18 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213691,
+              "seq": 3785426645,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 1592850505,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2281,10 +2259,21 @@
               "tcp_payload_bytes": 24,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
-              "flags": 25,
-              "seq": 264213691,
+              "flags": 24,
+              "seq": 3785426645,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 17,
+              "seq": 3785426669,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
@@ -2293,7 +2282,18 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 862068067,
+              "seq": 1592850505,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 1592850506,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2304,7 +2304,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 862068067,
+              "seq": 1592850505,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2315,15 +2315,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 264213716,
+              "seq": 3785426670,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 10693,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 10797,
+          "observed_ipv4_tcp_bytes": 10783,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 10887,
           "dns_ipv4_udp_bytes": 502,
-          "estimated_tcp_plus_dns_bytes": 11299
+          "estimated_tcp_plus_dns_bytes": 11389
         },
         {
           "url": "https://hi.mrkrk.me/",
@@ -2361,7 +2361,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 80
+              "bytes": 79
             },
             {
               "direction": "read",
@@ -2395,7 +2395,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:25 GMT"
+              "Tue, 22 Sep 2026 20:59:36 GMT"
             ],
             [
               "content-type",
@@ -2410,11 +2410,11 @@
           "body_sha256": "7f2fd783b6bf9019e9328e679f8d98bf9575bbed780f0b020f52ab018057821a",
           "tls_through_body_complete": {
             "sent": 2165,
-            "received": 5128
+            "received": 5127
           },
           "tls_before_client_close": {
             "sent": 2165,
-            "received": 5128
+            "received": 5127
           },
           "response_http_plain_bytes": 654,
           "dns_queries": [
@@ -2473,7 +2473,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 3928874833,
+              "seq": 280273630,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2484,7 +2484,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 3928874833,
+              "seq": 280273630,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2495,7 +2495,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 4144695736,
+              "seq": 1532846855,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2506,7 +2506,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928874834,
+              "seq": 280273631,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2517,20 +2517,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3928874834,
+              "seq": 280273631,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
             },
             {
               "direction": "received",
-              "ip_bytes": 64,
+              "ip_bytes": 52,
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
-              "tcp_header_bytes": 44,
+              "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4144695737,
+              "seq": 1532846856,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 64
+              "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
@@ -2539,7 +2539,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4144695737,
+              "seq": 1532846856,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2550,7 +2550,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4144695737,
+              "seq": 1532846856,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -2561,7 +2561,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928876381,
+              "seq": 280275178,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2572,7 +2572,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144697185,
+              "seq": 1532848304,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -2583,20 +2583,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928876381,
+              "seq": 280275178,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 990,
-              "tcp_payload_bytes": 938,
+              "ip_bytes": 989,
+              "tcp_payload_bytes": 937,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144698633,
+              "seq": 1532849752,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 990
+              "ip_bytes_at_1500_mtu": 989
             },
             {
               "direction": "sent",
@@ -2605,7 +2605,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928876381,
+              "seq": 280275178,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2616,7 +2616,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3928876381,
+              "seq": 280275178,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -2627,7 +2627,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144699571,
+              "seq": 1532850689,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -2638,7 +2638,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3928876461,
+              "seq": 280275258,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
@@ -2649,7 +2649,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144699858,
+              "seq": 1532850976,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -2660,7 +2660,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144700145,
+              "seq": 1532851263,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 114
             },
@@ -2671,7 +2671,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928876968,
+              "seq": 280275765,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2682,7 +2682,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144700207,
+              "seq": 1532851325,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 150
             },
@@ -2693,7 +2693,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3928876968,
+              "seq": 280275765,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -2704,7 +2704,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4144700305,
+              "seq": 1532851423,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 612
             },
@@ -2715,7 +2715,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928876999,
+              "seq": 280275796,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2726,7 +2726,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 3928876999,
+              "seq": 280275796,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -2737,7 +2737,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4144700865,
+              "seq": 1532851983,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2748,7 +2748,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 4144700865,
+              "seq": 1532851983,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -2759,20 +2759,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3928877024,
+              "seq": 280275821,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 8757,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8809,
+          "observed_ipv4_tcp_bytes": 8744,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8796,
           "dns_ipv4_udp_bytes": 484,
-          "estimated_tcp_plus_dns_bytes": 9293
+          "estimated_tcp_plus_dns_bytes": 9280
         }
       ]
     },
     {
-      "time_utc": "2026-09-22T20:23:36Z",
+      "time_utc": "2026-09-22T20:59:42Z",
       "request_headers": [
         [
           "accept-encoding",
@@ -2860,12 +2860,12 @@
             {
               "direction": "read",
               "type": 25,
-              "bytes": 1499
+              "bytes": 1490
             },
             {
               "direction": "read",
               "type": 15,
-              "bytes": 80
+              "bytes": 78
             },
             {
               "direction": "read",
@@ -2890,7 +2890,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:31 GMT"
+              "Tue, 22 Sep 2026 20:59:37 GMT"
             ],
             [
               "content-type",
@@ -2913,11 +2913,11 @@
           "body_sha256": "26a20ca9da90cf2a7418f007ce641e6e7207bc9d8c903e5243c16f1c48b011b2",
           "tls_through_body_complete": {
             "sent": 2157,
-            "received": 3422
+            "received": 3411
           },
           "tls_before_client_close": {
             "sent": 2157,
-            "received": 3422
+            "received": 3411
           },
           "response_http_plain_bytes": 422,
           "dns_queries": [
@@ -2971,7 +2971,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 2350375361,
+              "seq": 3613606056,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2982,7 +2982,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 2415834523,
+              "seq": 4159555990,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -2993,7 +2993,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2350375362,
+              "seq": 3613606057,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3004,7 +3004,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2350375362,
+              "seq": 3613606057,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1656
             },
@@ -3015,20 +3015,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2415834524,
+              "seq": 4159555991,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 2929,
-              "tcp_payload_bytes": 2877,
+              "ip_bytes": 2918,
+              "tcp_payload_bytes": 2866,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2415834524,
+              "seq": 4159555991,
               "estimated_segments_at_1500_mtu": 2,
-              "ip_bytes_at_1500_mtu": 2981
+              "ip_bytes_at_1500_mtu": 2970
             },
             {
               "direction": "sent",
@@ -3037,7 +3037,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2350376914,
+              "seq": 3613607609,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3048,7 +3048,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2350376914,
+              "seq": 3613607609,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 116
             },
@@ -3059,7 +3059,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2415837401,
+              "seq": 4159558857,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -3070,7 +3070,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2350376978,
+              "seq": 3613607673,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 562
             },
@@ -3081,7 +3081,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2415837480,
+              "seq": 4159558936,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 89
             },
@@ -3092,7 +3092,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2415837517,
+              "seq": 4159558973,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 481
             },
@@ -3103,7 +3103,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2350377488,
+              "seq": 3613608183,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -3114,7 +3114,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2415837946,
+              "seq": 4159559402,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3125,7 +3125,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2350377519,
+              "seq": 3613608214,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -3136,7 +3136,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2350377543,
+              "seq": 3613608238,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3147,7 +3147,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2415837946,
+              "seq": 4159559402,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3158,7 +3158,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2415837946,
+              "seq": 4159559402,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3169,15 +3169,26 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2350377544,
+              "seq": 3613608239,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 4159559403,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 6607,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 6711,
+          "observed_ipv4_tcp_bytes": 6648,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 6752,
           "dns_ipv4_udp_bytes": 508,
-          "estimated_tcp_plus_dns_bytes": 7219
+          "estimated_tcp_plus_dns_bytes": 7260
         },
         {
           "url": "https://pba.im/200B",
@@ -3215,7 +3226,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 78
+              "bytes": 79
             },
             {
               "direction": "read",
@@ -3256,11 +3267,11 @@
           "body_sha256": "ae50236de5af849e3f8067e12c48c7f37fe46dc34acc04f9f8f58e4250062017",
           "tls_through_body_complete": {
             "sent": 2238,
-            "received": 5569
+            "received": 5570
           },
           "tls_before_client_close": {
             "sent": 2238,
-            "received": 5569
+            "received": 5570
           },
           "response_http_plain_bytes": 193,
           "dns_queries": [
@@ -3292,7 +3303,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 989135574,
+              "seq": 1371195582,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -3303,7 +3314,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 2693103815,
+              "seq": 1571061623,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -3314,7 +3325,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989135575,
+              "seq": 1371195583,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3325,7 +3336,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 989135575,
+              "seq": 1371195583,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1646
             },
@@ -3336,7 +3347,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2693103816,
+              "seq": 1571061624,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3347,7 +3358,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2693103816,
+              "seq": 1571061624,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -3358,7 +3369,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989137117,
+              "seq": 1371197125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3369,7 +3380,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2693105264,
+              "seq": 1571063072,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -3380,7 +3391,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989137117,
+              "seq": 1371197125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3391,7 +3402,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2693106712,
+              "seq": 1571064520,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -3402,20 +3413,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989137117,
+              "seq": 1371197125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 800,
-              "tcp_payload_bytes": 748,
+              "ip_bytes": 801,
+              "tcp_payload_bytes": 749,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2693107912,
+              "seq": 1571065720,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 800
+              "ip_bytes_at_1500_mtu": 801
             },
             {
               "direction": "sent",
@@ -3424,7 +3435,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989137117,
+              "seq": 1371197125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3435,7 +3446,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 989137117,
+              "seq": 1371197125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -3446,7 +3457,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2693108660,
+              "seq": 1571066469,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -3457,7 +3468,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 989137197,
+              "seq": 1371197205,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 668
             },
@@ -3468,7 +3479,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2693108915,
+              "seq": 1571066724,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -3479,7 +3490,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 2693109170,
+              "seq": 1571066979,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 267
             },
@@ -3490,7 +3501,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 989137813,
+              "seq": 1371197821,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3501,7 +3512,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 989137813,
+              "seq": 1371197821,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -3512,26 +3523,37 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 989137837,
+              "seq": 1371197845,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
-              "direction": "sent",
-              "ip_bytes": 52,
+              "direction": "received",
+              "ip_bytes": 40,
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 17,
-              "seq": 989137837,
+              "tcp_header_bytes": 20,
+              "flags": 4,
+              "seq": 1571067195,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
+              "ip_bytes_at_1500_mtu": 40
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 40,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 20,
+              "flags": 4,
+              "seq": 1571067195,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 40
             }
           ],
-          "observed_ipv4_tcp_bytes": 8991,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9043,
+          "observed_ipv4_tcp_bytes": 9020,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9072,
           "dns_ipv4_udp_bytes": 464,
-          "estimated_tcp_plus_dns_bytes": 9507
+          "estimated_tcp_plus_dns_bytes": 9536
         },
         {
           "url": "https://cv.btxx.org/",
@@ -3639,7 +3661,7 @@
             ],
             [
               "age",
-              "12"
+              "2178"
             ],
             [
               "vary",
@@ -3666,13 +3688,13 @@
           "body_sha256": "bc136bd40a22f4b5c03a2a0ba1f4612835902806c31622e33531e750f753e416",
           "tls_through_body_complete": {
             "sent": 2165,
-            "received": 4799
+            "received": 4800
           },
           "tls_before_client_close": {
             "sent": 2165,
-            "received": 4799
+            "received": 4800
           },
-          "response_http_plain_bytes": 736,
+          "response_http_plain_bytes": 737,
           "dns_queries": [
             {
               "qtype": 1,
@@ -3712,7 +3734,7 @@
             {
               "type": 1,
               "stream": 1,
-              "payload_bytes": 451
+              "payload_bytes": 452
             },
             {
               "type": 0,
@@ -3729,7 +3751,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 2505234577,
+              "seq": 1862657492,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -3740,7 +3762,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 1607688996,
+              "seq": 1016425764,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -3751,7 +3773,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2505234578,
+              "seq": 1862657493,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3762,7 +3784,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2505234578,
+              "seq": 1862657493,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
             },
@@ -3773,20 +3795,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1607688997,
+              "seq": 1016425765,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 3891,
-              "tcp_payload_bytes": 3839,
+              "ip_bytes": 1500,
+              "tcp_payload_bytes": 1448,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
-              "flags": 24,
-              "seq": 1607688997,
-              "estimated_segments_at_1500_mtu": 3,
-              "ip_bytes_at_1500_mtu": 3995
+              "flags": 16,
+              "seq": 1016425765,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 1500
             },
             {
               "direction": "sent",
@@ -3795,7 +3817,29 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2505236125,
+              "seq": 1862659040,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 2443,
+              "tcp_payload_bytes": 2391,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 24,
+              "seq": 1016427213,
+              "estimated_segments_at_1500_mtu": 2,
+              "ip_bytes_at_1500_mtu": 2495
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 1862659040,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3806,7 +3850,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2505236125,
+              "seq": 1862659040,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -3817,7 +3861,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607692836,
+              "seq": 1016429604,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -3828,7 +3872,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2505236205,
+              "seq": 1862659120,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
@@ -3839,7 +3883,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607692915,
+              "seq": 1016429683,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -3850,7 +3894,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607692994,
+              "seq": 1016429762,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 102
             },
@@ -3861,7 +3905,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2505236712,
+              "seq": 1862659627,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3872,7 +3916,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607693044,
+              "seq": 1016429812,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -3883,31 +3927,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2505236712,
+              "seq": 1862659627,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
             {
               "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 1607693075,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 773,
-              "tcp_payload_bytes": 721,
+              "ip_bytes": 774,
+              "tcp_payload_bytes": 722,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607693075,
+              "seq": 1016429843,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 773
+              "ip_bytes_at_1500_mtu": 774
             },
             {
               "direction": "sent",
@@ -3916,7 +3949,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2505236743,
+              "seq": 1862659658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3927,7 +3960,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2505236743,
+              "seq": 1862659658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -3938,7 +3971,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2505236767,
+              "seq": 1862659682,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -3949,7 +3982,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607693796,
+              "seq": 1016430565,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 91
             },
@@ -3960,29 +3993,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2505236767,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 1607693835,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 40,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 2505236768,
+              "seq": 1862659682,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -3993,7 +4004,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1607693835,
+              "seq": 1016430604,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -4004,7 +4015,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2505236768,
+              "seq": 1862659683,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -4014,8 +4025,8 @@
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
-              "flags": 17,
-              "seq": 1607693859,
+              "flags": 16,
+              "seq": 1016430604,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4026,15 +4037,37 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 2505236768,
+              "seq": 1862659683,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 40
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 17,
+              "seq": 1016430628,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 40,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 20,
+              "flags": 4,
+              "seq": 1862659683,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             }
           ],
-          "observed_ipv4_tcp_bytes": 8475,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8631,
+          "observed_ipv4_tcp_bytes": 8528,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8632,
           "dns_ipv4_udp_bytes": 545,
-          "estimated_tcp_plus_dns_bytes": 9176
+          "estimated_tcp_plus_dns_bytes": 9177
         },
         {
           "url": "https://5.vg/",
@@ -4100,7 +4133,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:34 GMT"
+              "Tue, 22 Sep 2026 20:59:40 GMT"
             ],
             [
               "content-type",
@@ -4194,7 +4227,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 649172410,
+              "seq": 3192724436,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -4205,7 +4238,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 608657997,
+              "seq": 565457664,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -4216,7 +4249,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649172411,
+              "seq": 3192724437,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4227,7 +4260,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 649172411,
+              "seq": 3192724437,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1644
             },
@@ -4238,7 +4271,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 608657998,
+              "seq": 565457665,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4249,7 +4282,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 608657998,
+              "seq": 565457665,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -4260,7 +4293,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649173951,
+              "seq": 3192725977,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4271,7 +4304,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608659446,
+              "seq": 565459113,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -4282,7 +4315,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649173951,
+              "seq": 3192725977,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4293,7 +4326,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608660894,
+              "seq": 565460561,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -4304,7 +4337,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649173951,
+              "seq": 3192725977,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4315,7 +4348,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608662094,
+              "seq": 565461761,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 477
             },
@@ -4326,7 +4359,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649173951,
+              "seq": 3192725977,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4337,7 +4370,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 649173951,
+              "seq": 3192725977,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 202
             },
@@ -4348,7 +4381,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608662519,
+              "seq": 565462186,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 302
             },
@@ -4359,9 +4392,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608662769,
+              "seq": 565462436,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 113
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 3192726127,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "sent",
@@ -4370,7 +4414,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 649174101,
+              "seq": 3192726127,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 553
             },
@@ -4381,7 +4425,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608662830,
+              "seq": 565462497,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -4392,7 +4436,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 649174602,
+              "seq": 3192726628,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -4403,7 +4447,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 608662860,
+              "seq": 565462527,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 770
             },
@@ -4414,7 +4458,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649174632,
+              "seq": 3192726658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4425,7 +4469,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 649174632,
+              "seq": 3192726658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 75
             },
@@ -4436,7 +4480,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 608663578,
+              "seq": 565463245,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4447,7 +4491,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 608663578,
+              "seq": 565463245,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4458,15 +4502,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 649174656,
+              "seq": 3192726682,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 9140,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9192,
+          "observed_ipv4_tcp_bytes": 9192,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9244,
           "dns_ipv4_udp_bytes": 406,
-          "estimated_tcp_plus_dns_bytes": 9598
+          "estimated_tcp_plus_dns_bytes": 9650
         },
         {
           "url": "https://1k.lom.me/",
@@ -4538,7 +4582,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:35 GMT"
+              "Tue, 22 Sep 2026 20:59:40 GMT"
             ],
             [
               "content-type",
@@ -4562,7 +4606,7 @@
             ],
             [
               "x-trace-id",
-              "ti_17a430d76f9188f67311125b512a6dbd"
+              "ti_94ab919c4bb87671043ad321f92b987c"
             ],
             [
               "x-backend",
@@ -4648,7 +4692,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 3624087485,
+              "seq": 2083290490,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -4659,7 +4703,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 4291652013,
+              "seq": 3550102120,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -4670,7 +4714,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624087486,
+              "seq": 2083290491,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4681,7 +4725,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3624087486,
+              "seq": 2083290491,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1649
             },
@@ -4692,7 +4736,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 44,
               "flags": 16,
-              "seq": 4291652014,
+              "seq": 3550102121,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 64
             },
@@ -4703,7 +4747,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4291652014,
+              "seq": 3550102121,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4714,7 +4758,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4291652014,
+              "seq": 3550102121,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -4725,7 +4769,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089031,
+              "seq": 2083292036,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4736,7 +4780,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291653462,
+              "seq": 3550103569,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -4747,7 +4791,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089031,
+              "seq": 2083292036,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4758,7 +4802,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291654910,
+              "seq": 3550105017,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -4769,7 +4813,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089031,
+              "seq": 2083292036,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4780,7 +4824,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291656110,
+              "seq": 3550106217,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1776
             },
@@ -4791,7 +4835,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089031,
+              "seq": 2083292036,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4802,7 +4846,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3624089031,
+              "seq": 2083292036,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -4813,7 +4857,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291657782,
+              "seq": 3550107889,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -4824,7 +4868,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3624089111,
+              "seq": 2083292116,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 557
             },
@@ -4835,7 +4879,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291658069,
+              "seq": 3550108176,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -4846,7 +4890,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291658356,
+              "seq": 3550108463,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 114
             },
@@ -4857,7 +4901,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089616,
+              "seq": 2083292621,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4868,7 +4912,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291658418,
+              "seq": 3550108525,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -4879,7 +4923,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3624089616,
+              "seq": 2083292621,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -4890,7 +4934,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4291658449,
+              "seq": 3550108556,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 639
             },
@@ -4901,7 +4945,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089647,
+              "seq": 2083292652,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4912,7 +4956,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4291659036,
+              "seq": 3550109143,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4923,7 +4967,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3624089647,
+              "seq": 2083292652,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -4934,7 +4978,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 3624089671,
+              "seq": 2083292676,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4945,7 +4989,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 44,
               "flags": 16,
-              "seq": 4291659036,
+              "seq": 3550109143,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 64
             },
@@ -4956,7 +5000,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4291659036,
+              "seq": 3550109143,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4967,7 +5011,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 4291659036,
+              "seq": 3550109143,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -4978,7 +5022,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3624089672,
+              "seq": 2083292677,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
@@ -5058,7 +5102,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:36 GMT"
+              "Tue, 22 Sep 2026 20:59:41 GMT"
             ],
             [
               "content-type",
@@ -5136,7 +5180,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 1975526489,
+              "seq": 1857976725,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5147,7 +5191,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 2889070300,
+              "seq": 1725964747,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5158,7 +5202,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975526490,
+              "seq": 1857976726,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5169,20 +5213,9 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1975526490,
+              "seq": 1857976726,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 64,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 44,
-              "flags": 16,
-              "seq": 2889070301,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 64
             },
             {
               "direction": "received",
@@ -5191,7 +5224,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2889070301,
+              "seq": 1725964748,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5202,7 +5235,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2889070301,
+              "seq": 1725964748,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -5213,7 +5246,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528037,
+              "seq": 1857978273,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5224,7 +5257,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889071749,
+              "seq": 1725966196,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -5235,7 +5268,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528037,
+              "seq": 1857978273,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5246,7 +5279,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889073197,
+              "seq": 1725967644,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 988
             },
@@ -5257,7 +5290,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528037,
+              "seq": 1857978273,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5268,7 +5301,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1975528037,
+              "seq": 1857978273,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -5279,7 +5312,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889074133,
+              "seq": 1725968580,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -5290,7 +5323,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1975528117,
+              "seq": 1857978353,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
@@ -5301,7 +5334,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889074420,
+              "seq": 1725968867,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -5312,7 +5345,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889074707,
+              "seq": 1725969154,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 114
             },
@@ -5323,7 +5356,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528624,
+              "seq": 1857978860,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5334,7 +5367,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889074769,
+              "seq": 1725969216,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 150
             },
@@ -5345,7 +5378,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1975528624,
+              "seq": 1857978860,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -5356,7 +5389,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2889074867,
+              "seq": 1725969314,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 612
             },
@@ -5367,7 +5400,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528655,
+              "seq": 1857978891,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5378,7 +5411,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 1975528655,
+              "seq": 1857978891,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -5389,7 +5422,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2889075427,
+              "seq": 1725969874,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5400,7 +5433,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2889075427,
+              "seq": 1725969874,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5411,20 +5444,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1975528680,
+              "seq": 1857978916,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 8695,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8747,
+          "observed_ipv4_tcp_bytes": 8631,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8683,
           "dns_ipv4_udp_bytes": 484,
-          "estimated_tcp_plus_dns_bytes": 9231
+          "estimated_tcp_plus_dns_bytes": 9167
         }
       ]
     },
     {
-      "time_utc": "2026-09-22T20:23:41Z",
+      "time_utc": "2026-09-22T20:59:47Z",
       "request_headers": [
         [
           "accept-encoding",
@@ -5512,12 +5545,12 @@
             {
               "direction": "read",
               "type": 25,
-              "bytes": 1499
+              "bytes": 1490
             },
             {
               "direction": "read",
               "type": 15,
-              "bytes": 80
+              "bytes": 78
             },
             {
               "direction": "read",
@@ -5542,7 +5575,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:37 GMT"
+              "Tue, 22 Sep 2026 20:59:42 GMT"
             ],
             [
               "content-type",
@@ -5565,11 +5598,11 @@
           "body_sha256": "26a20ca9da90cf2a7418f007ce641e6e7207bc9d8c903e5243c16f1c48b011b2",
           "tls_through_body_complete": {
             "sent": 2157,
-            "received": 3422
+            "received": 3411
           },
           "tls_before_client_close": {
             "sent": 2157,
-            "received": 3422
+            "received": 3411
           },
           "response_http_plain_bytes": 422,
           "dns_queries": [
@@ -5623,7 +5656,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 2092750709,
+              "seq": 1014931757,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5634,7 +5667,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 1989282443,
+              "seq": 2180623376,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5645,7 +5678,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2092750710,
+              "seq": 1014931758,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5656,7 +5689,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2092750710,
+              "seq": 1014931758,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1656
             },
@@ -5667,7 +5700,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1989282444,
+              "seq": 2180623377,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5678,7 +5711,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1989282444,
+              "seq": 2180623377,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -5689,20 +5722,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2092752262,
+              "seq": 1014933310,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 1481,
-              "tcp_payload_bytes": 1429,
+              "ip_bytes": 1470,
+              "tcp_payload_bytes": 1418,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1989283892,
+              "seq": 2180624825,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1481
+              "ip_bytes_at_1500_mtu": 1470
             },
             {
               "direction": "sent",
@@ -5711,7 +5744,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2092752262,
+              "seq": 1014933310,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5722,7 +5755,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2092752262,
+              "seq": 1014933310,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 116
             },
@@ -5733,7 +5766,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1989285321,
+              "seq": 2180626243,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -5744,7 +5777,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2092752326,
+              "seq": 1014933374,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 562
             },
@@ -5755,7 +5788,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1989285400,
+              "seq": 2180626322,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 89
             },
@@ -5766,7 +5799,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1989285437,
+              "seq": 2180626359,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 481
             },
@@ -5777,7 +5810,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2092752836,
+              "seq": 1014933884,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -5788,7 +5821,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1989285866,
+              "seq": 2180626788,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5799,7 +5832,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 2092752867,
+              "seq": 1014933915,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -5810,7 +5843,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 2092752891,
+              "seq": 1014933939,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5821,7 +5854,18 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1989285866,
+              "seq": 2180626788,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 16,
+              "seq": 2180626789,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5832,7 +5876,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 1989285866,
+              "seq": 2180626788,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5843,15 +5887,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 2092752892,
+              "seq": 1014933940,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 6711,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 6763,
+          "observed_ipv4_tcp_bytes": 6752,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 6804,
           "dns_ipv4_udp_bytes": 508,
-          "estimated_tcp_plus_dns_bytes": 7271
+          "estimated_tcp_plus_dns_bytes": 7312
         },
         {
           "url": "https://pba.im/200B",
@@ -5966,7 +6010,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 124821300,
+              "seq": 56253668,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5977,7 +6021,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 3965419821,
+              "seq": 1823795565,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -5988,7 +6032,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124821301,
+              "seq": 56253669,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -5999,7 +6043,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 124821301,
+              "seq": 56253669,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1646
             },
@@ -6010,18 +6054,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3965419822,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3965419822,
+              "seq": 1823795566,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6032,7 +6065,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3965419822,
+              "seq": 1823795566,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -6043,7 +6076,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124822843,
+              "seq": 56255211,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6054,7 +6087,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3965421270,
+              "seq": 1823797014,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -6065,7 +6098,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124822843,
+              "seq": 56255211,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6076,7 +6109,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3965422718,
+              "seq": 1823798462,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -6087,7 +6120,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124822843,
+              "seq": 56255211,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6098,7 +6131,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3965423918,
+              "seq": 1823799662,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 802
             },
@@ -6109,7 +6142,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124822843,
+              "seq": 56255211,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6120,7 +6153,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 124822843,
+              "seq": 56255211,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -6131,7 +6164,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3965424668,
+              "seq": 1823800412,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -6142,7 +6175,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 124822923,
+              "seq": 56255291,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 668
             },
@@ -6153,7 +6186,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3965424923,
+              "seq": 1823800667,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 307
             },
@@ -6164,7 +6197,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 3965425178,
+              "seq": 1823800922,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 267
             },
@@ -6175,7 +6208,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 124823539,
+              "seq": 56255907,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6186,7 +6219,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 124823539,
+              "seq": 56255907,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -6197,37 +6230,26 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 124823563,
+              "seq": 56255931,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
-              "direction": "received",
-              "ip_bytes": 40,
+              "direction": "sent",
+              "ip_bytes": 52,
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 3965425394,
+              "tcp_header_bytes": 32,
+              "flags": 17,
+              "seq": 56255931,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 40,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 3965425394,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
+              "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 9073,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9125,
+          "observed_ipv4_tcp_bytes": 8993,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9045,
           "dns_ipv4_udp_bytes": 464,
-          "estimated_tcp_plus_dns_bytes": 9589
+          "estimated_tcp_plus_dns_bytes": 9509
         },
         {
           "url": "https://cv.btxx.org/",
@@ -6265,7 +6287,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 111
+              "bytes": 112
             },
             {
               "direction": "read",
@@ -6335,7 +6357,7 @@
             ],
             [
               "age",
-              "17"
+              "2183"
             ],
             [
               "vary",
@@ -6362,13 +6384,13 @@
           "body_sha256": "bc136bd40a22f4b5c03a2a0ba1f4612835902806c31622e33531e750f753e416",
           "tls_through_body_complete": {
             "sent": 2165,
-            "received": 4800
+            "received": 4802
           },
           "tls_before_client_close": {
             "sent": 2165,
-            "received": 4800
+            "received": 4802
           },
-          "response_http_plain_bytes": 736,
+          "response_http_plain_bytes": 737,
           "dns_queries": [
             {
               "qtype": 1,
@@ -6408,7 +6430,7 @@
             {
               "type": 1,
               "stream": 1,
-              "payload_bytes": 451
+              "payload_bytes": 452
             },
             {
               "type": 0,
@@ -6425,7 +6447,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 340319390,
+              "seq": 3395028868,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -6436,7 +6458,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 4216546542,
+              "seq": 1273374844,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -6447,7 +6469,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 340319391,
+              "seq": 3395028869,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6458,7 +6480,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 340319391,
+              "seq": 3395028869,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
             },
@@ -6469,42 +6491,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 4216546543,
+              "seq": 1273374845,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 4216546543,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 340320938,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 2444,
-              "tcp_payload_bytes": 2392,
+              "ip_bytes": 3893,
+              "tcp_payload_bytes": 3841,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216547991,
-              "estimated_segments_at_1500_mtu": 2,
-              "ip_bytes_at_1500_mtu": 2496
+              "seq": 1273374845,
+              "estimated_segments_at_1500_mtu": 3,
+              "ip_bytes_at_1500_mtu": 3997
             },
             {
               "direction": "sent",
@@ -6513,7 +6513,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 340320938,
+              "seq": 3395030416,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6524,7 +6524,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 340320938,
+              "seq": 3395030416,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -6535,7 +6535,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216550383,
+              "seq": 1273378686,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -6546,7 +6546,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 340321018,
+              "seq": 3395030496,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
@@ -6557,7 +6557,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216550462,
+              "seq": 1273378765,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 131
             },
@@ -6568,7 +6568,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216550541,
+              "seq": 1273378844,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 102
             },
@@ -6579,7 +6579,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 340321525,
+              "seq": 3395031003,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6590,7 +6590,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216550591,
+              "seq": 1273378894,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -6601,20 +6601,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 340321525,
+              "seq": 3395031003,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
             {
               "direction": "received",
-              "ip_bytes": 773,
-              "tcp_payload_bytes": 721,
+              "ip_bytes": 774,
+              "tcp_payload_bytes": 722,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216550622,
+              "seq": 1273378925,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 773
+              "ip_bytes_at_1500_mtu": 774
             },
             {
               "direction": "sent",
@@ -6623,7 +6623,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 340321556,
+              "seq": 3395031034,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6634,7 +6634,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 340321556,
+              "seq": 3395031034,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -6645,7 +6645,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 340321580,
+              "seq": 3395031058,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6656,7 +6656,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216551343,
+              "seq": 1273379647,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 91
             },
@@ -6667,7 +6667,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 340321581,
+              "seq": 3395031058,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -6678,7 +6678,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 4216551382,
+              "seq": 1273379686,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -6689,29 +6689,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 340321581,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 40
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 4216551343,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 40,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 20,
-              "flags": 4,
-              "seq": 340321581,
+              "seq": 3395031058,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             },
@@ -6722,7 +6700,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 4216551406,
+              "seq": 1273379710,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6733,15 +6711,37 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 20,
               "flags": 4,
-              "seq": 340321581,
+              "seq": 3395031058,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 40
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 52,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 17,
+              "seq": 1273379710,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 52
+            },
+            {
+              "direction": "sent",
+              "ip_bytes": 40,
+              "tcp_payload_bytes": 0,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 20,
+              "flags": 4,
+              "seq": 3395031059,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 40
             }
           ],
-          "observed_ipv4_tcp_bytes": 8528,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8632,
+          "observed_ipv4_tcp_bytes": 8426,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8582,
           "dns_ipv4_udp_bytes": 545,
-          "estimated_tcp_plus_dns_bytes": 9177
+          "estimated_tcp_plus_dns_bytes": 9127
         },
         {
           "url": "https://5.vg/",
@@ -6807,7 +6807,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:39 GMT"
+              "Tue, 22 Sep 2026 20:59:44 GMT"
             ],
             [
               "content-type",
@@ -6901,7 +6901,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 3529186173,
+              "seq": 1792740969,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -6912,7 +6912,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 3646931385,
+              "seq": 253811077,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -6923,7 +6923,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529186174,
+              "seq": 1792740970,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -6934,7 +6934,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3529186174,
+              "seq": 1792740970,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1644
             },
@@ -6945,53 +6945,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3646931386,
+              "seq": 253811078,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3646931386,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3646931386,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3529187714,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
+              "ip_bytes": 2948,
+              "tcp_payload_bytes": 2896,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646932834,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
+              "seq": 253811078,
+              "estimated_segments_at_1500_mtu": 2,
+              "ip_bytes_at_1500_mtu": 3000
             },
             {
               "direction": "sent",
@@ -7000,7 +6967,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529187714,
+              "seq": 1792742510,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7011,7 +6978,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646934282,
+              "seq": 253813974,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -7022,7 +6989,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529187714,
+              "seq": 1792742510,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7033,7 +7000,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646935482,
+              "seq": 253815174,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 477
             },
@@ -7044,7 +7011,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529187714,
+              "seq": 1792742510,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7055,7 +7022,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3529187714,
+              "seq": 1792742510,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 202
             },
@@ -7066,7 +7033,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646935907,
+              "seq": 253815599,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 302
             },
@@ -7077,7 +7044,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646936157,
+              "seq": 253815849,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 113
             },
@@ -7088,7 +7055,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529187864,
+              "seq": 1792742660,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7099,7 +7066,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3529187864,
+              "seq": 1792742660,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 553
             },
@@ -7110,7 +7077,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646936218,
+              "seq": 253815910,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -7121,7 +7088,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3529188365,
+              "seq": 1792743161,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 82
             },
@@ -7132,7 +7099,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3646936248,
+              "seq": 253815940,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 770
             },
@@ -7143,7 +7110,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529188395,
+              "seq": 1792743191,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7154,7 +7121,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 3529188395,
+              "seq": 1792743191,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 75
             },
@@ -7165,7 +7132,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3646936966,
+              "seq": 253816658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7176,7 +7143,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 3646936966,
+              "seq": 253816658,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7187,15 +7154,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3529188419,
+              "seq": 1792743215,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 9244,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 9296,
+          "observed_ipv4_tcp_bytes": 9088,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 9192,
           "dns_ipv4_udp_bytes": 406,
-          "estimated_tcp_plus_dns_bytes": 9702
+          "estimated_tcp_plus_dns_bytes": 9598
         },
         {
           "url": "https://1k.lom.me/",
@@ -7267,7 +7234,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:40 GMT"
+              "Tue, 22 Sep 2026 20:59:45 GMT"
             ],
             [
               "content-type",
@@ -7291,11 +7258,11 @@
             ],
             [
               "x-trace-id",
-              "ti_1d10c3643eadcd6c128275d22f89c29c"
+              "ti_0b034411c34cb9f4b918eb06dfa1d838"
             ],
             [
               "x-backend",
-              "phl-web-02"
+              "phl-web-05"
             ],
             [
               "x-frontend",
@@ -7314,13 +7281,13 @@
           "body_sha256": "9f1ca69b0bd16a6a1b0196df0ae30c447c1441deb1110fe1ca0e69c2a4deea2f",
           "tls_through_body_complete": {
             "sent": 2161,
-            "received": 7022
+            "received": 7023
           },
           "tls_before_client_close": {
             "sent": 2161,
-            "received": 7022
+            "received": 7023
           },
-          "response_http_plain_bytes": 614,
+          "response_http_plain_bytes": 615,
           "dns_queries": [
             {
               "qtype": 1,
@@ -7360,7 +7327,7 @@
             {
               "type": 1,
               "stream": 1,
-              "payload_bytes": 256
+              "payload_bytes": 257
             },
             {
               "type": 0,
@@ -7377,7 +7344,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 3183209402,
+              "seq": 1262246318,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -7388,7 +7355,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 1333252311,
+              "seq": 1958107907,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -7399,7 +7366,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183209403,
+              "seq": 1262246319,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7410,7 +7377,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3183209403,
+              "seq": 1262246319,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1649
             },
@@ -7421,42 +7388,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1333252312,
+              "seq": 1958107908,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 1333252312,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
-              "flags": 16,
-              "seq": 3183210948,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "received",
-              "ip_bytes": 1500,
-              "tcp_payload_bytes": 1448,
+              "ip_bytes": 2948,
+              "tcp_payload_bytes": 2896,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333253760,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 1500
+              "seq": 1958107908,
+              "estimated_segments_at_1500_mtu": 2,
+              "ip_bytes_at_1500_mtu": 3000
             },
             {
               "direction": "sent",
@@ -7465,7 +7410,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183210948,
+              "seq": 1262247864,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7476,7 +7421,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333255208,
+              "seq": 1958110804,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1252
             },
@@ -7487,7 +7432,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183210948,
+              "seq": 1262247864,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7498,7 +7443,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333256408,
+              "seq": 1958112004,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1776
             },
@@ -7509,7 +7454,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183210948,
+              "seq": 1262247864,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7520,7 +7465,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3183210948,
+              "seq": 1262247864,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -7531,7 +7476,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333258080,
+              "seq": 1958113676,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -7542,7 +7487,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3183211028,
+              "seq": 1262247944,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 557
             },
@@ -7553,7 +7498,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333258367,
+              "seq": 1958113963,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -7564,7 +7509,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333258654,
+              "seq": 1958114250,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 114
             },
@@ -7575,20 +7520,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183211533,
+              "seq": 1262248449,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 348,
-              "tcp_payload_bytes": 296,
+              "ip_bytes": 349,
+              "tcp_payload_bytes": 297,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333258716,
+              "seq": 1958114312,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 348
+              "ip_bytes_at_1500_mtu": 349
             },
             {
               "direction": "sent",
@@ -7597,7 +7542,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 3183211533,
+              "seq": 1262248449,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -7608,7 +7553,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1333259012,
+              "seq": 1958114609,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 374
             },
@@ -7619,7 +7564,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183211564,
+              "seq": 1262248480,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7630,7 +7575,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 3183211564,
+              "seq": 1262248480,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -7641,7 +7586,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1333259334,
+              "seq": 1958114931,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7651,27 +7596,16 @@
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
-              "flags": 17,
-              "seq": 1333259334,
-              "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 52
-            },
-            {
-              "direction": "sent",
-              "ip_bytes": 52,
-              "tcp_payload_bytes": 0,
-              "ip_header_bytes": 20,
-              "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 3183211589,
+              "seq": 1958114931,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 10627,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 10731,
+          "observed_ipv4_tcp_bytes": 10472,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 10628,
           "dns_ipv4_udp_bytes": 502,
-          "estimated_tcp_plus_dns_bytes": 11233
+          "estimated_tcp_plus_dns_bytes": 11130
         },
         {
           "url": "https://hi.mrkrk.me/",
@@ -7709,7 +7643,7 @@
             {
               "direction": "read",
               "type": 15,
-              "bytes": 78
+              "bytes": 80
             },
             {
               "direction": "read",
@@ -7743,7 +7677,7 @@
             ],
             [
               "date",
-              "Tue, 22 Sep 2026 20:23:41 GMT"
+              "Tue, 22 Sep 2026 20:59:46 GMT"
             ],
             [
               "content-type",
@@ -7758,11 +7692,11 @@
           "body_sha256": "7f2fd783b6bf9019e9328e679f8d98bf9575bbed780f0b020f52ab018057821a",
           "tls_through_body_complete": {
             "sent": 2165,
-            "received": 5126
+            "received": 5128
           },
           "tls_before_client_close": {
             "sent": 2165,
-            "received": 5126
+            "received": 5128
           },
           "response_http_plain_bytes": 654,
           "dns_queries": [
@@ -7821,7 +7755,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 2,
-              "seq": 1939851925,
+              "seq": 3639983338,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -7832,7 +7766,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 40,
               "flags": 18,
-              "seq": 527361550,
+              "seq": 2861467654,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 60
             },
@@ -7843,7 +7777,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939851926,
+              "seq": 3639983339,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7854,20 +7788,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1939851926,
+              "seq": 3639983339,
               "estimated_segments_at_1500_mtu": 2,
               "ip_bytes_at_1500_mtu": 1651
             },
             {
               "direction": "received",
-              "ip_bytes": 64,
+              "ip_bytes": 52,
               "tcp_payload_bytes": 0,
               "ip_header_bytes": 20,
-              "tcp_header_bytes": 44,
+              "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 527361551,
+              "seq": 2861467655,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 64
+              "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
@@ -7876,7 +7810,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 527361551,
+              "seq": 2861467655,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7887,7 +7821,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 527361551,
+              "seq": 2861467655,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -7898,7 +7832,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939853473,
+              "seq": 3639984886,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7909,7 +7843,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527362999,
+              "seq": 2861469103,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 1500
             },
@@ -7920,20 +7854,20 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939853473,
+              "seq": 3639984886,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
             {
               "direction": "received",
-              "ip_bytes": 988,
-              "tcp_payload_bytes": 936,
+              "ip_bytes": 990,
+              "tcp_payload_bytes": 938,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527364447,
+              "seq": 2861470551,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 988
+              "ip_bytes_at_1500_mtu": 990
             },
             {
               "direction": "sent",
@@ -7942,7 +7876,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939853473,
+              "seq": 3639984886,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -7953,7 +7887,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1939853473,
+              "seq": 3639984886,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 132
             },
@@ -7964,7 +7898,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527365383,
+              "seq": 2861471489,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 339
             },
@@ -7975,20 +7909,31 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1939853553,
+              "seq": 3639984966,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 559
             },
             {
               "direction": "received",
-              "ip_bytes": 401,
-              "tcp_payload_bytes": 349,
+              "ip_bytes": 339,
+              "tcp_payload_bytes": 287,
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527365670,
+              "seq": 2861471776,
               "estimated_segments_at_1500_mtu": 1,
-              "ip_bytes_at_1500_mtu": 401
+              "ip_bytes_at_1500_mtu": 339
+            },
+            {
+              "direction": "received",
+              "ip_bytes": 114,
+              "tcp_payload_bytes": 62,
+              "ip_header_bytes": 20,
+              "tcp_header_bytes": 32,
+              "flags": 24,
+              "seq": 2861472063,
+              "estimated_segments_at_1500_mtu": 1,
+              "ip_bytes_at_1500_mtu": 114
             },
             {
               "direction": "sent",
@@ -7997,7 +7942,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939854060,
+              "seq": 3639985473,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -8008,7 +7953,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527366019,
+              "seq": 2861472125,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 150
             },
@@ -8019,7 +7964,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 1939854060,
+              "seq": 3639985473,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 83
             },
@@ -8030,7 +7975,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 24,
-              "seq": 527366117,
+              "seq": 2861472223,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 612
             },
@@ -8041,7 +7986,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939854091,
+              "seq": 3639985504,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -8052,7 +7997,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 25,
-              "seq": 1939854091,
+              "seq": 3639985504,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 76
             },
@@ -8063,7 +8008,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 527366677,
+              "seq": 2861472783,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -8074,7 +8019,7 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 17,
-              "seq": 527366677,
+              "seq": 2861472783,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             },
@@ -8085,15 +8030,15 @@
               "ip_header_bytes": 20,
               "tcp_header_bytes": 32,
               "flags": 16,
-              "seq": 1939854116,
+              "seq": 3639985529,
               "estimated_segments_at_1500_mtu": 1,
               "ip_bytes_at_1500_mtu": 52
             }
           ],
-          "observed_ipv4_tcp_bytes": 8643,
-          "estimated_ipv4_tcp_bytes_1500_mtu": 8695,
+          "observed_ipv4_tcp_bytes": 8685,
+          "estimated_ipv4_tcp_bytes_1500_mtu": 8737,
           "dns_ipv4_udp_bytes": 484,
-          "estimated_tcp_plus_dns_bytes": 9179
+          "estimated_tcp_plus_dns_bytes": 9221
         }
       ]
     }

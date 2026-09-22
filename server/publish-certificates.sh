@@ -26,6 +26,10 @@ for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
     cp "$key" "$release/$domain.key"
     chmod 600 "$release/$domain.crt" "$release/$domain.key"
 done
+# Compression is optional: renewal must succeed even if its optimizer is absent.
+if ! timeout -k 5 45 "$base/bin/cache-certificates.sh" "$release"; then
+    printf 'Using normal certificate compression where no valid cache exists.\n' >&2
+fi
 previous=$(readlink "$base/tls/current" || true)
 ln -s "releases/$fingerprint" "$base/tls/next"
 mv -Tf "$base/tls/next" "$base/tls/current"
