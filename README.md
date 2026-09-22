@@ -2,15 +2,15 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **407 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SfddJKlk/overview) on September 21, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **401 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/HZWgxw61/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **407** |
-| Brotli response body | 326 |
-| Gzip response body | 469 |
-| Deflate response body | 457 |
-| Raw HTML | 752 |
+| DebugBear page weight | **401** |
+| Brotli response body | 320 |
+| Gzip response body | 466 |
+| Deflate response body | 454 |
+| Raw HTML | 737 |
 
 DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -24,7 +24,7 @@ DebugBear counts the compressed page and response headers. DNS, connection setup
 - nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
 - Native browser colors follow the device's light/dark preference.
 
-[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/page-20260921.json).
+[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/page-20260922.json).
 
 ## Build locally
 

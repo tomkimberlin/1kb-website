@@ -1,4 +1,4 @@
-"""Check header-table resizing and response framing on one HTTP/2 connection."""
+"""Check HTTP/2 header-table resizing, response framing and receive limits."""
 import argparse
 import json
 import socket
@@ -29,6 +29,9 @@ with socket.create_connection((args.ip or args.host, args.port), timeout=15) as 
         assert stream.selected_alpn_protocol() == 'h2'
         connection.initiate_connection()
         stream.sendall(connection.data_to_send())
+        # A maximum-size unknown extension frame must be ignored.
+        stream.sendall((16384).to_bytes(3, 'big') + bytes([0xef, 0])
+                       + bytes(4) + bytes(16384))
         for index, (size, method, path, expected_status) in enumerate(cases):
             connection.update_settings({h2.settings.SettingCodes.HEADER_TABLE_SIZE: size})
             stream_id = index * 2 + 1
@@ -58,4 +61,16 @@ with socket.create_connection((args.ip or args.host, args.port), timeout=15) as 
                     stream.sendall(pending)
             assert status == expected_status, (stream_id, status)
             assert body == (expected if method == 'GET' and path == '/' else b'')
-print(json.dumps({'checks': len(cases), 'passed': True}))
+        assert connection.max_outbound_frame_size == 16384
+        # Exceeding the default receive limit must produce FRAME_SIZE_ERROR.
+        stream.sendall((16385).to_bytes(3, 'big') + bytes([0xef, 0])
+                       + bytes(4) + bytes(16385))
+        terminated = False
+        while not terminated:
+            data = stream.recv(65536)
+            assert data, 'Missing GOAWAY for an oversized frame'
+            for event in connection.receive_data(data):
+                if isinstance(event, h2.events.ConnectionTerminated):
+                    assert event.error_code == 6, event
+                    terminated = True
+print(json.dumps({'checks': len(cases) + 3, 'passed': True}))

@@ -36,7 +36,7 @@ The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public
 Build the server image on the Docker host from the repository root:
 
 ```sh
-docker build -t onekb-nginx:20260912 -f server/Dockerfile .
+docker build -t onekb-nginx:20260922 -f server/Dockerfile .
 ```
 
 [start.sh](start.sh) launches the container using the configured paths, page files and initial certificates. The supplied [Unraid template](unraid-template.xml) provides the same mounts and port mappings for Unraid's container interface.

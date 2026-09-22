@@ -1,0 +1,62 @@
+{
+  "measuredAt": "2026-09-22T14:30:04.608448+00:00",
+  "url": "https://tomkimberlin.com/",
+  "htmlSha256": "9e8f00fe10580c555c47a9fb91af53f6d0d0e6abca1b06537282dc3248f866a7",
+  "brotliSha256": "82570105655fb1257ec1fddfa4903f4ae5920ab1e0ccd0816dc3ca9cef9d63cb",
+  "release": "20260922T142534Z-9e8f00fe1058",
+  "html": 737,
+  "brotli": 320,
+  "gzip": 466,
+  "deflate": 454,
+  "css": 103,
+  "chromium": {
+    "encodedBodySize": 320,
+    "decodedBodySize": 737,
+    "resourceTimingTransferSize": 620,
+    "subresources": 0
+  },
+  "debugbear": {
+    "report": "https://www.debugbear.com/test/website-speed/HZWgxw61/overview",
+    "pageWeight": 401,
+    "clubLimit": 1024,
+    "margin": 623,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
+    "labScore": 100,
+    "lcpMs": 588,
+    "tbtMs": 0,
+    "cls": 0
+  },
+  "verification": {
+    "engines": [
+      "Chromium",
+      "WebKit"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "viewports": [
+      320,
+      402,
+      1440
+    ],
+    "links": 9,
+    "singleCharacterAnchorHrefs": true,
+    "animations": 0,
+    "themeSwitchRequests": 0,
+    "handlerTests": 23,
+    "http1AndHttp2Checks": 100,
+    "aliasChecks": 12,
+    "zopfliMaximumIterations": 100000,
+    "inlineStyles": 2,
+    "buildBrotliParameterTrials": 5988,
+    "htmlSerializationTrials": 160000,
+    "extendedBrotliParameterTrials": 138240,
+    "http2ProtocolChecks": 15,
+    "serverImage": "onekb-nginx:20260922",
+    "http2InitialSettingsPayload": 6,
+    "tls12ExactBody": true,
+    "http3ColdAndResumedExactBodies": true,
+    "http2ColdAndResumedExactBodies": true
+  }
+}

@@ -1,17 +1,17 @@
 # Delivery overhead comparison
 
-Measured September 15, 2026, against five pages from [1kb.club](https://1kb.club/). This website had the lowest delivery overhead in this sample. Each result subtracts the response body, so having less text does not improve the ranking.
+Measured September 22, 2026, against five pages from [1kb.club](https://1kb.club/). This website had the lowest delivery overhead in this sample. Each result subtracts the response body, so having less text does not improve the ranking.
 
 Each cell shows the median of three cold connections, in bytes. Both directions are counted.
 
 | Website | TLS through first document, minus body | Estimated TCP/IP + DNS through connection close, minus body |
 | --- | ---: | ---: |
-| [This website](https://tomkimberlin.com/) | **5,356** | **7,203** |
-| [hi.mrkrk.me](https://hi.mrkrk.me/) | 6,762 | 8,698 |
-| [cv.btxx.org](https://cv.btxx.org/) | 6,770 | 8,930 |
-| [5.vg](https://5.vg/) | 7,246 | 9,095 |
-| [pba.im/200B](https://pba.im/200B) | 7,691 | 9,368 |
-| [1k.lom.me](https://1k.lom.me/) | 8,893 | 10,994 |
+| [This website](https://tomkimberlin.com/) | **5,349** | **7,197** |
+| [cv.btxx.org](https://cv.btxx.org/) | 6,734 | 8,958 |
+| [hi.mrkrk.me](https://hi.mrkrk.me/) | 6,763 | 8,651 |
+| [5.vg](https://5.vg/) | 7,246 | 9,043 |
+| [pba.im/200B](https://pba.im/200B) | 7,691 | 9,420 |
+| [1k.lom.me](https://1k.lom.me/) | 8,892 | 11,098 |
 
 The first column counts encrypted TLS traffic up to completion of the HTML response. The second includes TCP/IP setup, acknowledgments and teardown, an 80 ms idle window, and A/AAAA/HTTPS DNS queries over UDP to 1.1.1.1. It estimates segmentation of offloaded frames at a 1,500-byte MTU. The columns end at different points; subtracting them does not give TCP overhead.
 
@@ -25,7 +25,7 @@ All sites received the same representative Chromium request fields and compressi
 
 ## Scope and reproduction
 
-At measurement time, the page was 733 bytes of HTML, 337 bytes with Brotli and 460 bytes with gzip. The [raw measurements](measurements/gallery-20260915.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
+At measurement time, the page was 737 bytes of HTML, 320 bytes with Brotli and 466 bytes with gzip. The [raw measurements](measurements/gallery-20260922.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
 
 The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
@@ -34,8 +34,8 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20260912 -f server/Dockerfile .
-docker build -t onekb-gallery:20260915 -f tools/gallery.Dockerfile .
+docker build -t onekb-nginx:20260922 -f server/Dockerfile .
+docker build -t onekb-gallery:20260922 -f tools/gallery.Dockerfile .
 ```
 
 Collect a sample:
@@ -47,7 +47,7 @@ docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
   --tmpfs /tmp:rw,noexec,nosuid,size=16m \
   -v "$PWD/tools/compare-gallery.py:/probe.py:ro" \
   -v "$PWD/optimization/gallery:/out" \
-  onekb-gallery:20260915 --out /out/run-1 --port 46280
+  onekb-gallery:20260922 --out /out/run-1 --port 46280
 ```
 
 Repeat with distinct output directories and source-port ranges for additional samples. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
