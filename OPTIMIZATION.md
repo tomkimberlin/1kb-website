@@ -1,10 +1,8 @@
 # Making a tiny website smaller
 
-I built the foundation of this website years ago. More recently, I let Astra, an AI model in Codex, see how far it could push the optimization. I chose the content and design; Astra wrote and ran the experiments, implemented the changes and drafted this walkthrough.
+I built the foundation of this website years ago, then let Astra cook on it. The optimization had a tight loop: change, measure, verify, repeat. A smaller result had to preserve the content, links and layout.
 
-It was a good problem for an AI agent because there was a concrete feedback loop: propose a change, measure the bytes, check the result and repeat. Each experiment had to preserve the current content, links and layout. Astra could search combinations of HTML, CSS and compressor settings, then use browser and protocol checks to catch regressions. I kept refining what I wanted and asking it to go smaller.
-
-Fitting into [1KB Club](https://1kb.club/) was the starting point. The question became how much of the data needed to load the page could disappear. That took the work from deleting HTML characters to rebuilding the web server. The page is still a handful of paragraphs; getting there involved rather more code.
+Fitting into [1KB Club](https://1kb.club/) was the starting point. The work went from HTML and CSS to nginx and TLS. Astra ran the experiments, implemented the changes and drafted this write-up.
 
 ## First, decide what “small” means
 

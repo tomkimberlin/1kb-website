@@ -14,7 +14,7 @@ The published page measured **399 bytes** in [DebugBear](https://www.debugbear.c
 
 DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
-I built the foundation years ago, then let Astra in Codex tackle the recent optimization work. [Making a tiny website smaller](OPTIMIZATION.md) explains that AI-assisted process, the hosting, HTML and protocol decisions, what they saved and what they cost.
+I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
 
 [Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/page-20260922.json).
 
