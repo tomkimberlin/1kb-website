@@ -1,35 +1,29 @@
 {
-  "measuredAt": "2026-09-22T15:31:28.766096+00:00",
+  "measuredAt": "2026-09-22T18:21:18.973096+00:00",
   "url": "https://tomkimberlin.com/",
-  "htmlSha256": "f83f6b001651f872566cf9fcc590349c9e1d59e8bc5b960dbadde35dcf0dc2cd",
-  "brotliSha256": "82184e682819abd1917a058c4bd8bd42e381c20fe6ac9ddd901509d0cfdcbcef",
-  "release": "20260922T152325Z-f83f6b001651",
-  "html": 728,
-  "brotli": 318,
-  "gzip": 462,
-  "deflate": 450,
+  "htmlSha256": "6d1d8be9d8bb113b6e7a492ade814d7e29add67e7e99f6614deb92eb83e4f841",
+  "brotliSha256": "b97eae8d7e6d170aeaee7cc99f39ce167f69b651952c94527aafd8660ae694f8",
+  "release": "20260922T181946Z-6d1d8be9d8bb",
+  "html": 737,
+  "brotli": 324,
+  "gzip": 468,
+  "deflate": 456,
   "css": 104,
   "chromium": {
-    "encodedBodySize": 318,
-    "decodedBodySize": 728,
-    "resourceTimingTransferSize": 618,
-    "subresources": 0
+    "encodedBodySize": 324,
+    "decodedBodySize": 737,
+    "resourceTimingTransferSize": 624
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/lisc2502/overview",
-    "pageWeight": 399,
+    "report": "https://www.debugbear.com/test/website-speed/v6pn1eLl/overview",
+    "pageWeight": 405,
     "clubLimit": 1024,
-    "margin": 625,
-    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers.",
-    "labScore": 100,
-    "lcpMs": 577,
-    "tbtMs": 0,
-    "cls": 0
+    "margin": 619,
+    "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
   },
   "verification": {
     "engines": [
-      "Chromium",
-      "WebKit"
+      "Chromium"
     ],
     "themes": [
       "dark",
@@ -42,38 +36,10 @@
     ],
     "links": 9,
     "singleCharacterAnchorHrefs": true,
-    "animations": 0,
-    "themeSwitchRequests": 0,
     "handlerTests": 23,
     "http1AndHttp2Checks": 106,
     "aliasChecks": 12,
-    "zopfliMaximumIterations": 100000,
-    "inlineStyles": 2,
     "buildBrotliParameterTrials": 5988,
-    "htmlSerializationTrials": 457443,
-    "extendedBrotliParameterTrials": 138240,
-    "http2ProtocolChecks": 15,
-    "serverImage": "onekb-nginx:20260922d",
-    "http2InitialSettingsPayload": 6,
-    "tls12ExactBody": true,
-    "http3ColdAndResumedExactBodies": true,
-    "http2ColdAndResumedExactBodies": true,
-    "shortLinkTrials": 140000,
-    "certificateBrotliParameterTrials": 6912,
-    "certificateCompressionSyntheticChecks": 39,
-    "certificateCompressionChainChecks": 3,
-    "brotliCertificateHandshakeMessage": 1499,
-    "buildRuntime": {
-      "node": "v26.5.0",
-      "brotli": "1.2.0",
-      "zlib": "1.2.12"
-    },
-    "http1PersistenceChecks": 18,
-    "http1StagedChecks": 21,
-    "http1Verification": "measurements/http1-20260922.json",
-    "responseRecordVerification": "measurements/response-records-20260922.json",
-    "http1BrowserCases": 6,
-    "transportVerifiedAt": "2026-09-22T17:33:59.243859+00:00",
-    "responseBufferingChecks": 20
+    "serverImage": "onekb-nginx:20260922d"
   }
 }
