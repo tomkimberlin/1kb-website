@@ -9,6 +9,6 @@
     "check": "node --check build.mjs && node --check optimize.mjs && node --check tools/check-measurements.mjs && node --check server/site.js && node --check server/verify.mjs && node --check server/verify-alias.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh && bash -n server/update-dns.sh",
     "verify:live": "node server/verify.mjs",
     "verify:alias": "node server/verify-alias.mjs",
-    "check:measurements": "node tools/check-measurements.mjs measurements/page-20260919.json measurements/gallery-20260915.json"
+    "check:measurements": "node tools/check-measurements.mjs measurements/page-20260921.json measurements/gallery-20260915.json"
   }
 }
