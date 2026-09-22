@@ -61,7 +61,7 @@ The empty `data:,` favicon is another small expense with a purpose: it avoids a 
 
 HTML permits some closing tags and attribute quotes to be omitted. Those are straightforward savings. After that, the results get less intuitive.
 
-Brotli takes advantage of repeated strings, a built-in dictionary and the distribution of symbols. Changing declaration order, quote styles or whitespace can change the compressed result without changing the rendered page. Some apparently unnecessary whitespace survived because deleting it made the download larger.
+Brotli takes advantage of repeated strings, a built-in dictionary and the distribution of symbols. Changing declaration order, quote styles or whitespace can change the compressed result without changing the rendered page. Some apparently unnecessary whitespace survived because deleting it made the download larger. One pass added five bytes to the HTML source but removed four from its Brotli response; gzip and deflate stayed the same.
 
 The build compares thousands of Brotli settings and checks that every compressed file decodes exactly to the source. Broader searches try different serializations of the same page. An alternate encoder and longer gzip searches provide another check on the result. “Maximum quality” is a search setting, not a guarantee that every other configuration produces a larger file.
 

@@ -1,29 +1,30 @@
 {
-  "measuredAt": "2026-09-22T18:21:18.973096+00:00",
+  "measuredAt": "2026-09-22T19:02:57.761062+00:00",
   "url": "https://tomkimberlin.com/",
-  "htmlSha256": "6d1d8be9d8bb113b6e7a492ade814d7e29add67e7e99f6614deb92eb83e4f841",
-  "brotliSha256": "b97eae8d7e6d170aeaee7cc99f39ce167f69b651952c94527aafd8660ae694f8",
-  "release": "20260922T181946Z-6d1d8be9d8bb",
-  "html": 737,
-  "brotli": 324,
+  "htmlSha256": "fc06c9f7af02b536a3c579caa26d6ff6a394b97ef02c0869c30a8099d6076b22",
+  "brotliSha256": "8cce9d8bf195bdbef09cd4d71a20461de85c1765967cf14a6ab4dc7df6884c16",
+  "release": "20260922T190024Z-fc06c9f7af02",
+  "html": 742,
+  "brotli": 320,
   "gzip": 468,
   "deflate": 456,
   "css": 104,
   "chromium": {
-    "encodedBodySize": 324,
-    "decodedBodySize": 737,
-    "resourceTimingTransferSize": 624
+    "encodedBodySize": 320,
+    "decodedBodySize": 742,
+    "resourceTimingTransferSize": 620
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/v6pn1eLl/overview",
-    "pageWeight": 405,
+    "report": "https://www.debugbear.com/test/website-speed/EZ9k3SSB/overview",
+    "pageWeight": 401,
     "clubLimit": 1024,
-    "margin": 619,
+    "margin": 623,
     "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
   },
   "verification": {
     "engines": [
-      "Chromium"
+      "Chromium",
+      "WebKit"
     ],
     "themes": [
       "dark",
@@ -40,6 +41,9 @@
     "http1AndHttp2Checks": 106,
     "aliasChecks": 12,
     "buildBrotliParameterTrials": 5988,
-    "serverImage": "onekb-nginx:20260922d"
+    "serverImage": "onekb-nginx:20260922d",
+    "equivalentRenderChecks": 12,
+    "liveBrowserChecks": 12,
+    "html5Parsing": true
   }
 }
