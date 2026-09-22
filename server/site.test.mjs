@@ -64,7 +64,7 @@ test('aliases and short links preserve their redirect destinations',()=>{
     ['https://www.tomkimberlin.com/g','https://tomkimberlin.com/g'],
     ['http://tom.kimberlin.net/','https://tomkimberlin.com/'],
     ['https://tom.kimberlin.net/p?from=alias&check=1','https://tomkimberlin.com/p?from=alias&check=1'],
-    ['/w','https://euthenics.com/'],['/e','https://euthenics.com/'],['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
+    ['/b','https://github.com/tomkimberlin'],['/a','https://github.com/tomkimberlin/1kb-website'],['/o','https://1kb.club/'],['/w','https://euthenics.com/'],['/e','https://euthenics.com/'],['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
     ['/p','https://paste.kimberlin.net/'],['/k','https://1kb.club/'],
     ['/c','mailto:tomkimberlin@gmail.com'],['/m','https://github.com/tomkimberlin/m365-workbench'],['/i','https://github.com/tomkimberlin/Save-Image-As'],
     ['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website']

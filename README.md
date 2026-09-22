@@ -2,29 +2,21 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **401 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/HZWgxw61/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **399 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/lisc2502/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **401** |
-| Brotli response body | 320 |
-| Gzip response body | 466 |
-| Deflate response body | 454 |
-| Raw HTML | 737 |
+| DebugBear page weight | **399** |
+| Brotli response body | 318 |
+| Gzip response body | 462 |
+| Deflate response body | 450 |
+| Raw HTML | 728 |
 
 DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
-## How it stays small
+[Making a tiny website smaller](OPTIMIZATION.md) walks through the hosting, HTML and protocol decisions, what they saved and what they cost.
 
-- One ASCII HTML file, inline CSS, native fonts and no external assets.
-- Optional syntax omitted; equivalent HTML and CSS forms compared for compressed size.
-- An empty data favicon avoids another request.
-- All nine anchor hrefs use one-character paths and empty redirects.
-- Brotli, gzip and deflate are compressed ahead of time and checked against the source.
-- nginx uses compact HPACK/QPACK encodings, omits optional headers and supports TLS certificate compression and session reuse.
-- Native browser colors follow the device's light/dark preference.
-
-[HTML optimization](OPTIMIZATION.md), [delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/page-20260922.json).
+[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [browser measurements](measurements/page-20260922.json).
 
 ## Build locally
 

@@ -5,8 +5,15 @@ RUN curl -fLsS https://www.openssl.org/source/openssl-3.5.8.tar.gz -o openssl.ta
  && echo 'a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2  openssl.tar.gz' | sha256sum -c - \
  && tar xzf openssl.tar.gz
 WORKDIR /build/openssl-3.5.8
+COPY server/certificate-compression.patch /build/certificate-compression.patch
+RUN patch --fuzz=0 -p1 < /build/certificate-compression.patch
 RUN ./Configure --prefix=/opt/openssl --libdir=lib shared zlib enable-brotli enable-zstd no-tests \
  && make -j4 >/tmp/build.log 2>&1 && make install_sw >/tmp/install.log 2>&1
+FROM build AS compression-test
+COPY tools/verify-certificate-compression.c /build/verify-certificate-compression.c
+RUN cc -Wall -Wextra -Werror -I/opt/openssl/include /build/verify-certificate-compression.c -L/opt/openssl/lib -Wl,-rpath,/opt/openssl/lib -lcrypto -lbrotlienc -lbrotlidec -o /build/verify-certificate-compression \
+ && /build/verify-certificate-compression
+
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS headers
 RUN apk add --no-cache build-base curl pcre2-dev zlib-dev openssl-dev linux-headers
 WORKDIR /build
@@ -22,8 +29,8 @@ RUN ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/
  && make -j4 >/tmp/modules.log
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c
 RUN apk add --no-cache brotli-libs zlib zstd-libs
-COPY --from=build /opt/openssl/lib/libssl.so.3 /opt/openssl/lib/libcrypto.so.3 /opt/openssl/lib/
-COPY --from=build /opt/openssl/bin/openssl /opt/openssl/bin/openssl
+COPY --from=compression-test /opt/openssl/lib/libssl.so.3 /opt/openssl/lib/libcrypto.so.3 /opt/openssl/lib/
+COPY --from=compression-test /opt/openssl/bin/openssl /opt/openssl/bin/openssl
 ENV LD_LIBRARY_PATH=/opt/openssl/lib
 COPY --from=headers /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
 

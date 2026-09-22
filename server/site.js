@@ -47,7 +47,7 @@ function serve(r) {
     r.headersOut.Allow = 'GET, HEAD';
     return empty(r,405);
   }
-  const redirects = {'/c':'mailto:tomkimberlin@gmail.com','/m':'https://github.com/tomkimberlin/m365-workbench','/i':'https://github.com/tomkimberlin/Save-Image-As','/w':'https://euthenics.com/','/e':'https://euthenics.com/','/g':'https://github.com/tomkimberlin','/x':'https://xmr.surf/','/s':'https://github.com/tomkimberlin/1kb-website','/p':'https://paste.kimberlin.net/','/k':'https://1kb.club/'};
+  const redirects = {'/b':'https://github.com/tomkimberlin','/a':'https://github.com/tomkimberlin/1kb-website','/o':'https://1kb.club/','/c':'mailto:tomkimberlin@gmail.com','/m':'https://github.com/tomkimberlin/m365-workbench','/i':'https://github.com/tomkimberlin/Save-Image-As','/w':'https://euthenics.com/','/e':'https://euthenics.com/','/g':'https://github.com/tomkimberlin','/x':'https://xmr.surf/','/s':'https://github.com/tomkimberlin/1kb-website','/p':'https://paste.kimberlin.net/','/k':'https://1kb.club/'};
   if (Object.prototype.hasOwnProperty.call(redirects,r.uri)) return empty(r,301,redirects[r.uri]);
   if (r.uri === '/index.html') return empty(r,301,'/'+(r.variables.is_args||'')+(r.variables.args||''));
   if (r.uri !== '/') return empty(r,404);

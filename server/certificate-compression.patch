@@ -1,0 +1,33 @@
+--- a/crypto/comp/c_brotli.c
++++ b/crypto/comp/c_brotli.c
+@@ -230,7 +230,8 @@
+     size_t olen, unsigned char *in,
+     size_t ilen)
+ {
+-    size_t out_size = olen;
++    size_t out_size = olen, trial_size;
++    unsigned char *trial;
+     ossl_ssize_t ret;
+ 
+     if (ilen == 0)
+@@ -244,6 +245,20 @@
+ 
+     if (out_size > OSSL_SSIZE_MAX)
+         return -1;
++    /* A small-window pass can beat maximum quality on short inputs. */
++    if (out_size > 1) {
++        trial_size = out_size - 1;
++        trial = OPENSSL_malloc(trial_size);
++        if (trial == NULL)
++            return -1;
++        if (BrotliEncoderCompress(10, 11, BROTLI_DEFAULT_MODE, ilen, in,
++                &trial_size, trial) == BROTLI_TRUE
++            && trial_size < out_size) {
++            memcpy(out, trial, trial_size);
++            out_size = trial_size;
++        }
++        OPENSSL_free(trial);
++    }
+     ret = (ossl_ssize_t)out_size;
+     if (ret < 0)
+         return -1;
