@@ -5,7 +5,7 @@ base=/mnt/user/appdata/onekb-website
 name=${ONEKB_CONTAINER:-onekb-website}
 http_port=${ONEKB_HTTP_PORT:-8080}
 https_port=${ONEKB_HTTPS_PORT:-8443}
-image=${ONEKB_IMAGE:-onekb-nginx:20260922b}
+image=${ONEKB_IMAGE:-onekb-nginx:20260922c}
 test -f "$base/nginx/nginx.conf"
 test -f "$base/site/current/index.html.br"
 test -f "$base/tls/current/tomkimberlin.com.crt"

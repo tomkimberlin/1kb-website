@@ -53,7 +53,7 @@
     "htmlSerializationTrials": 457443,
     "extendedBrotliParameterTrials": 138240,
     "http2ProtocolChecks": 15,
-    "serverImage": "onekb-nginx:20260922b",
+    "serverImage": "onekb-nginx:20260922c",
     "http2InitialSettingsPayload": 6,
     "tls12ExactBody": true,
     "http3ColdAndResumedExactBodies": true,
@@ -67,6 +67,9 @@
       "node": "v26.5.0",
       "brotli": "1.2.0",
       "zlib": "1.2.12"
-    }
+    },
+    "http1PersistenceChecks": 11,
+    "http1StagedChecks": 14,
+    "http1Verification": "measurements/http1-20260922.json"
   }
 }

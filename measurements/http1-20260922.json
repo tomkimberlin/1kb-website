@@ -1,0 +1,381 @@
+{
+  "measuredAt": "2026-09-22T16:58:12.138349+00:00",
+  "url": "https://tomkimberlin.com/",
+  "bodySha256": "82184e682819abd1917a058c4bd8bd42e381c20fe6ac9ddd901509d0cfdcbcef",
+  "bodyBytes": 318,
+  "beforeImage": "onekb-nginx:20260922b",
+  "afterImage": "onekb-nginx:20260922c",
+  "scope": "HTTP/1 response status line and headers, ending at CRLF CRLF. TLS trust and hostname validation enabled. Optional length and upgrade fixtures were staging-only.",
+  "stagedBefore": {
+    "mode": "baseline",
+    "passed": true,
+    "checks": 14,
+    "responses": [
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 201,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 201,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 201,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 201,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET /b HTTP/1.1",
+        "request_connection": null,
+        "response_connection": "keep-alive",
+        "status": 301,
+        "header_bytes": 157,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 196,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": null,
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 0,
+        "closed": true
+      },
+      {
+        "request": "GET /_length_fixture HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 99,
+        "body_bytes": 1,
+        "closed": false
+      },
+      {
+        "request": "GET /_length_fixture HTTP/1.0",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 94,
+        "body_bytes": 1,
+        "closed": true
+      },
+      {
+        "request": "GET /_upgrade_fixture HTTP/1.1",
+        "request_connection": "upgrade",
+        "response_connection": "upgrade",
+        "status": 101,
+        "header_bytes": 114,
+        "body_bytes": 0,
+        "closed": false
+      }
+    ]
+  },
+  "stagedAfter": {
+    "mode": "patched",
+    "passed": true,
+    "checks": 14,
+    "responses": [
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "keep-alive",
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET /b HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 301,
+        "header_bytes": 133,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 196,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": null,
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 0,
+        "closed": true
+      },
+      {
+        "request": "GET /_length_fixture HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 99,
+        "body_bytes": 1,
+        "closed": false
+      },
+      {
+        "request": "GET /_length_fixture HTTP/1.0",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 94,
+        "body_bytes": 1,
+        "closed": true
+      },
+      {
+        "request": "GET /_upgrade_fixture HTTP/1.1",
+        "request_connection": "upgrade",
+        "response_connection": "upgrade",
+        "status": 101,
+        "header_bytes": 114,
+        "body_bytes": 0,
+        "closed": false
+      }
+    ]
+  },
+  "liveAfter": {
+    "mode": "patched",
+    "passed": true,
+    "checks": 11,
+    "responses": [
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "keep-alive",
+        "response_connection": null,
+        "status": 200,
+        "header_bytes": 177,
+        "body_bytes": 318,
+        "closed": false
+      },
+      {
+        "request": "GET /b HTTP/1.1",
+        "request_connection": null,
+        "response_connection": null,
+        "status": 301,
+        "header_bytes": 133,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "GET / HTTP/1.1",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 196,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": null,
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "GET / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 318,
+        "closed": true
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "keep-alive",
+        "response_connection": "keep-alive",
+        "status": 200,
+        "header_bytes": 180,
+        "body_bytes": 0,
+        "closed": false
+      },
+      {
+        "request": "HEAD / HTTP/1.0",
+        "request_connection": "close",
+        "response_connection": "close",
+        "status": 200,
+        "header_bytes": 175,
+        "body_bytes": 0,
+        "closed": true
+      }
+    ]
+  }
+}

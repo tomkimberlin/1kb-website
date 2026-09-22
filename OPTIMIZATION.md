@@ -83,6 +83,8 @@ A normal response retains Date, Content-Type, Content-Encoding, Vary and Cache-C
 
 `Content-Length` stays on HTTP/1.1 responses to delimit the body and permit connection reuse. HTTP/2 and HTTP/3 already frame their data, so it is omitted there. Error pages and redirects have empty bodies rather than generated HTML explanations.
 
+HTTP/1.1 also [defaults to persistent connections](https://www.rfc-editor.org/rfc/rfc9112.html#section-9.3). nginx still emitted `Connection: keep-alive`, so omitting that redundant field saved 24 bytes per persistent HTTP/1.1 response. The patch retains HTTP/1.0's explicit keep-alive field, close signals and upgrades. Tests send multiple requests over the same TLS socket to verify actual reuse. HTTP/2 and HTTP/3 are unaffected.
+
 The nginx patch also uses the compact entries available in HTTP/2's HPACK and HTTP/3's QPACK header tables. In HTTP/3, the longer value `text/html; charset=utf-8` is cheaper to encode than `text/html` because the complete value has a predefined table entry. Counting characters would have picked the wrong winner.
 
 Connection setup has similar opportunities. Keeping HTTP/2's default 16,384-byte inbound frame limit lets the server omit a six-byte setting. The limit is enforced: a frame one byte too large is rejected, while larger requests split across valid frames still work. Protocol defaults save bytes only when the implementation actually follows them.

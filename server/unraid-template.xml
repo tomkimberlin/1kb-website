@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Container version="2">
   <Name>onekb-website</Name>
-  <Repository>onekb-nginx:20260922b</Repository>
+  <Repository>onekb-nginx:20260922c</Repository>
   <Registry>https://hub.docker.com/_/nginx</Registry>
   <Network>bridge</Network>
   <Shell>sh</Shell>

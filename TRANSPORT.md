@@ -8,6 +8,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 
 - **Compression:** nginx serves precompressed Brotli, deflate, gzip or identity bytes according to `Accept-Encoding`, including quality weights and exclusions.
 - **Headers:** normal HTTP/2 responses keep Date, Content-Type, Content-Encoding, Vary and Cache-Control. Server is suppressed. Content-Length is omitted for HTTP/2 and HTTP/3 and retained for HTTP/1.1 framing.
+- **HTTP/1 persistence:** the redundant `Connection: keep-alive` field is omitted on persistent HTTP/1.1 responses, saving 24 bytes. HTTP/1.0's explicit keep-alive field, close signals and upgrades are preserved. The [before/after checks](measurements/http1-20260922.json) verify framing and actual connection reuse.
 - **Header encoding:** the nginx patch uses HPACK static name indices and QPACK static name/value entries. HTTP/3 explicitly sends `text/html; charset=utf-8`, which has a one-byte QPACK entry.
 - **HTTP/2 setup:** the receive window starts at the 65,535-byte protocol default and grows when request data arrives. The maximum inbound frame size stays at the 16,384-byte default. The matching stream-window and frame-size settings, and an unnecessary initial table-size reset, are omitted.
 - **Redirects and errors:** empty bodies avoid HTML boilerplate and omit Content-Type. An HTTP/2 alias redirect sends only Date and Location.
@@ -41,6 +42,7 @@ The transport probes measure protocol framing and connection overhead:
 mkdir -p optimization
 python3 -m venv .venv
 .venv/bin/pip install -r tools/requirements.txt
+.venv/bin/python tools/verify-http1.py --expected-body public/index.html.br --mode patched
 .venv/bin/python tools/verify-http2.py
 .venv/bin/python tools/measure-transport.py --out optimization/http2.json
 .venv/bin/python tools/measure-http3.py --ip YOUR_ORIGIN_IP --out optimization/http3.json
