@@ -25,6 +25,18 @@ for(let window=10;window<=24;window++) for(const block of [0,16,17,18,19,20,21,2
  const compressed=brotliCompressSync(data,{params});attempts++;
  if(compressed.length<best.data.length)best={data:compressed,params};
 }
+let brotliSource='node:zlib';
+const brotliCandidate='compression/index.html.br';
+if(existsSync(brotliCandidate)) {
+ const optimized=readFileSync(brotliCandidate);
+ let decoded;
+ try { decoded=brotliDecompressSync(optimized); }
+ catch(error) { throw new Error('Invalid Brotli candidate: '+brotliCandidate,{cause:error}); }
+ if(decoded.equals(data)&&optimized.length<best.data.length) {
+  best={data:optimized,params:null};
+  brotliSource=brotliCandidate;
+ }
+}
 let gzip;
 for(let level=1;level<=9;level++) for(let strategy=0;strategy<=4;strategy++) {
  const compressed=gzipSync(data,{level,strategy});
@@ -49,6 +61,6 @@ writeFileSync('public/index.html',data);
 writeFileSync('public/index.html.br',best.data);
 writeFileSync('public/index.html.gz',gzip);
 writeFileSync('public/index.html.deflate',deflate);
-const report={html:data.length,brotli:best.data.length,gzip:gzip.length,deflate:deflate.length,attempts,brotliParams:best.params,budget:{limit,overheadAllowance,brotliWithAllowance:best.data.length+overheadAllowance}};
+const report={html:data.length,brotli:best.data.length,gzip:gzip.length,deflate:deflate.length,attempts,brotliParams:best.params,brotliSource,budget:{limit,overheadAllowance,brotliWithAllowance:best.data.length+overheadAllowance}};
 writeFileSync('build-report.json',JSON.stringify(report,null,2)+'\n');
 console.log(report);

@@ -65,11 +65,13 @@ Brotli takes advantage of repeated strings, a built-in dictionary and the distri
 
 The build compares thousands of Brotli settings and checks that every compressed file decodes exactly to the source. Broader searches try different serializations of the same page. An alternate encoder and longer gzip searches provide another check on the result. “Maximum quality” is a search setting, not a guarantee that every other configuration produces a larger file.
 
+Eventually the stock encoder stopped at 320 bytes. Two changes to its internal search found a 318-byte encoding of exactly the same HTML: a shorter window for estimating nearby literal frequencies, and a slightly higher estimated cost for those literals. That nudged the encoder toward different matches. The output is still ordinary Brotli, readable by an unmodified decoder; neither the browser nor the server needs a custom compression library.
+
 A serialization that wins with Brotli can lose with gzip. This search prioritizes Brotli while checking the fallback sizes too; all encodings still decompress to the same HTML.
 
 All of that work happens before deployment. nginx reads precompressed files; visitors don't wait for a compression search. Brotli is preferred when accepted, with gzip, deflate and plain HTML available according to the request's encoding preferences. Deflate reuses the optimized gzip compression stream with a smaller wrapper.
 
-The [build report](build-report.json) records the selected settings. `node optimize.mjs` writes a candidate under `optimization/` for comparison, and `python optimize-gzip.py`, with `zopfli==0.4.3` installed, generates the optional gzip candidate. The build verifies the gzip candidate still matches the current HTML before using it.
+The [build report](build-report.json) records the selected settings or precompressed source. `node optimize.mjs` writes a candidate under `optimization/` for comparison. `python optimize-gzip.py`, with `zopfli==0.4.3` installed, generates the optional gzip candidate. `python optimize-brotli.py` reproduces the tuned Brotli result from a checksum-verified source archive; it needs Python 3.12+, Node and a C compiler. The normal build uses either saved candidate only if it is smaller and decodes to the current HTML. An old compressed file cannot override an edit to the page.
 
 ## What the short links cost
 

@@ -1,24 +1,24 @@
 {
-  "measuredAt": "2026-09-22T19:02:57.761062+00:00",
+  "measuredAt": "2026-09-22T20:10:58.041711+00:00",
   "url": "https://tomkimberlin.com/",
   "htmlSha256": "fc06c9f7af02b536a3c579caa26d6ff6a394b97ef02c0869c30a8099d6076b22",
-  "brotliSha256": "8cce9d8bf195bdbef09cd4d71a20461de85c1765967cf14a6ab4dc7df6884c16",
-  "release": "20260922T190024Z-fc06c9f7af02",
+  "brotliSha256": "d8d0bfe053c32c333cb4cc365283a05f95092b9d99a1f84d37a3e61c37773dbd",
+  "release": "20260922T200715Z-fc06c9f7af02",
   "html": 742,
-  "brotli": 320,
+  "brotli": 318,
   "gzip": 468,
   "deflate": 456,
   "css": 104,
   "chromium": {
-    "encodedBodySize": 320,
+    "encodedBodySize": 318,
     "decodedBodySize": 742,
-    "resourceTimingTransferSize": 620
+    "resourceTimingTransferSize": 618
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/EZ9k3SSB/overview",
-    "pageWeight": 401,
+    "report": "https://www.debugbear.com/test/website-speed/9xKeN9Uf/overview",
+    "pageWeight": 399,
     "clubLimit": 1024,
-    "margin": 623,
+    "margin": 625,
     "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
   },
   "verification": {
@@ -44,6 +44,9 @@
     "serverImage": "onekb-nginx:20260922d",
     "equivalentRenderChecks": 12,
     "liveBrowserChecks": 12,
-    "html5Parsing": true
-  }
+    "html5Parsing": true,
+    "precompressedBrotliTests": 5
+  },
+  "brotliSource": "compression/index.html.br",
+  "brotliOptimizer": "optimize-brotli.py"
 }

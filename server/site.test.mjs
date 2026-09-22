@@ -1,8 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,existsSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {spawnSync} from 'node:child_process';
 import {runInNewContext} from 'node:vm';
-import {brotliDecompressSync,gunzipSync,inflateSync} from 'node:zlib';
+import {brotliCompressSync,brotliDecompressSync,gunzipSync,inflateSync,constants as zlibConstants} from 'node:zlib';
 
 // Exercise the deployed njs handler with file reads mapped to the local build.
 // Live checks separately cover nginx's framing, HEAD handling and TLS.
@@ -92,4 +95,68 @@ test('HTTP/3 uses the complete QPACK content-type entry',()=>{
     assert.equal(r.headersOut['Content-Type'],version==='3.0'?'text/html; charset=utf-8':'text/html');
     assert.deepEqual(r.body,readFileSync('public/index.html.br'));
   }
+});
+
+const buildFixture=Buffer.from('<!DOCTYPE html><title>Build fixture</title><p>'+Array.from({length:24},(_,i)=>'Paragraph '+i+': the precompressed response must decode to the current document.').join('<p>'));
+const fixtureBrotli=quality=>brotliCompressSync(buildFixture,{params:{[zlibConstants.BROTLI_PARAM_QUALITY]:quality}});
+const fixtureStock=fixtureBrotli(1),fixtureSmaller=fixtureBrotli(11),fixtureLarger=fixtureBrotli(0);
+function runBuildFixture(t,candidate) {
+  const directory=mkdtempSync(join(tmpdir(),'onekb-build-test-'));
+  t.after(()=>rmSync(directory,{recursive:true,force:true}));
+  writeFileSync(join(directory,'index.html'),buildFixture);
+  writeFileSync(join(directory,'build.mjs'),readFileSync(new URL('../build.mjs',import.meta.url)));
+  writeFileSync(join(directory,'stock.br'),fixtureStock);
+  mkdirSync(join(directory,'compression'));
+  writeFileSync(join(directory,'compression/index.html.br'),candidate);
+  // Keep the stock search deterministic and fast; candidate decoding, output
+  // generation and all other compression use the real Node implementations.
+  writeFileSync(join(directory,'stock-encoder.mjs'),`import zlib from 'node:zlib';
+import {readFileSync} from 'node:fs';
+import {syncBuiltinESMExports} from 'node:module';
+const stock=readFileSync(new URL('./stock.br',import.meta.url));
+zlib.brotliCompressSync=()=>stock;
+syncBuiltinESMExports();
+`);
+  const result=spawnSync(process.execPath,['--import',join(directory,'stock-encoder.mjs'),'build.mjs'],{cwd:directory,encoding:'utf8'});
+  return {directory,...result};
+}
+function assertStockBuild(result) {
+  assert.equal(result.status,0,result.stderr);
+  const report=JSON.parse(readFileSync(join(result.directory,'build-report.json')));
+  assert.equal(report.brotliSource,'node:zlib');
+  assert.notEqual(report.brotliParams,null);
+  assert.equal(report.brotli,fixtureStock.length);
+  assert.deepEqual(readFileSync(join(result.directory,'public/index.html.br')),fixtureStock);
+}
+test('precompressed Brotli accepts a smaller exact match and reports its source',t=>{
+  assert(fixtureSmaller.length<fixtureStock.length);
+  const result=runBuildFixture(t,fixtureSmaller);
+  assert.equal(result.status,0,result.stderr);
+  const report=JSON.parse(readFileSync(join(result.directory,'build-report.json')));
+  assert.equal(report.brotliSource,'compression/index.html.br');
+  assert.equal(report.brotliParams,null);
+  assert.equal(report.brotli,fixtureSmaller.length);
+  assert.equal(report.attempts,5988);
+  const output=readFileSync(join(result.directory,'public/index.html.br'));
+  assert.deepEqual(output,fixtureSmaller);
+  assert.deepEqual(brotliDecompressSync(output),buildFixture);
+});
+test('precompressed Brotli ignores a smaller stale document',t=>{
+  const stale=brotliCompressSync(Buffer.from('<!DOCTYPE html><title>Old revision</title>'));
+  assert(stale.length<fixtureStock.length);
+  assertStockBuild(runBuildFixture(t,stale));
+});
+test('precompressed Brotli rejects malformed input with its path',t=>{
+  const result=runBuildFixture(t,Buffer.from([0xff]));
+  assert.notEqual(result.status,0);
+  assert.match(result.stderr,/Invalid Brotli candidate: compression\/index\.html\.br/);
+  assert.equal(existsSync(join(result.directory,'build-report.json')),false);
+  assert.equal(existsSync(join(result.directory,'public')),false);
+});
+test('precompressed Brotli ignores a larger exact match',t=>{
+  assert(fixtureLarger.length>fixtureStock.length);
+  assertStockBuild(runBuildFixture(t,fixtureLarger));
+});
+test('precompressed Brotli keeps stock provenance when the size ties',t=>{
+  assertStockBuild(runBuildFixture(t,fixtureStock));
 });
