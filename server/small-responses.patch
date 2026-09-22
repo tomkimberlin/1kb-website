@@ -251,3 +251,287 @@
  
          if (clcf->keepalive_header) {
              b->last = ngx_sprintf(b->last, "Keep-Alive: timeout=%T" CRLF,
+--- a/src/http/ngx_http_header_filter_module.c
++++ b/src/http/ngx_http_header_filter_module.c
+@@ -157,6 +157,33 @@
+ };
+ 
+ 
++/* Omit only the serializer's post-colon SP for HTTP/1.1 responses. */
++static u_char *
++ngx_http_copy_compact_header(u_char *dst, const void *data, size_t len,
++    ngx_uint_t compact)
++{
++    size_t         n;
++    const u_char  *src;
++
++    src = data;
++
++    if (compact) {
++        for (n = 0; n < len; n++) {
++            if (src[n] == ':') {
++                n++;
++                if (n < len && src[n] == ' ') {
++                    dst = ngx_cpymem(dst, src, n);
++                    return ngx_cpymem(dst, src + n + 1, len - n - 1);
++                }
++                break;
++            }
++        }
++    }
++
++    return ngx_cpymem(dst, src, len);
++}
++
++
+ static ngx_int_t
+ ngx_http_header_filter(ngx_http_request_t *r)
+ {
+@@ -164,7 +191,7 @@
+     size_t                     len;
+     ngx_str_t                  host, *status_line;
+     ngx_buf_t                 *b;
+-    ngx_uint_t                 status, i, port;
++    ngx_uint_t                 status, i, port, compact;
+     ngx_chain_t                out;
+     ngx_list_part_t           *part;
+     ngx_table_elt_t           *header;
+@@ -178,6 +205,7 @@
+     }
+ 
+     r->header_sent = 1;
++    compact = (r->http_version >= NGX_HTTP_VERSION_11);
+ 
+     if (r != r->main) {
+         return NGX_OK;
+@@ -449,8 +477,11 @@
+     /* "HTTP/1.x " */
+     b->last = ngx_cpymem(b->last, "HTTP/1.1 ", sizeof("HTTP/1.x ") - 1);
+ 
+-    /* status line */
+-    if (status_line) {
++    /* Keep explicitly supplied custom status lines intact. */
++    if (compact && r->headers_out.status_line.len == 0) {
++        b->last = ngx_sprintf(b->last, "%03ui ", r->headers_out.status);
++
++    } else if (status_line) {
+         b->last = ngx_copy(b->last, status_line->data, status_line->len);
+ 
+     } else {
+@@ -472,11 +503,12 @@
+             len = sizeof(ngx_http_server_string) - 1;
+         }
+ 
+-        b->last = ngx_cpymem(b->last, p, len);
++        b->last = ngx_http_copy_compact_header(b->last, p, len, compact);
+     }
+ 
+     if (r->headers_out.date == NULL) {
+-        b->last = ngx_cpymem(b->last, "Date: ", sizeof("Date: ") - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Date: ",
++                             sizeof("Date: ") - 1, compact);
+         b->last = ngx_cpymem(b->last, ngx_cached_http_time.data,
+                              ngx_cached_http_time.len);
+ 
+@@ -484,8 +516,8 @@
+     }
+ 
+     if (r->headers_out.content_type.len) {
+-        b->last = ngx_cpymem(b->last, "Content-Type: ",
+-                             sizeof("Content-Type: ") - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Content-Type: ",
++                             sizeof("Content-Type: ") - 1, compact);
+         p = b->last;
+         b->last = ngx_copy(b->last, r->headers_out.content_type.data,
+                            r->headers_out.content_type.len);
+@@ -510,15 +542,17 @@
+     if (r->headers_out.content_length == NULL
+         && r->headers_out.content_length_n >= 0)
+     {
+-        b->last = ngx_sprintf(b->last, "Content-Length: %O" CRLF,
++        b->last = ngx_sprintf(b->last,
++                              compact ? "Content-Length:%O" CRLF
++                                      : "Content-Length: %O" CRLF,
+                               r->headers_out.content_length_n);
+     }
+ 
+     if (r->headers_out.last_modified == NULL
+         && r->headers_out.last_modified_time != -1)
+     {
+-        b->last = ngx_cpymem(b->last, "Last-Modified: ",
+-                             sizeof("Last-Modified: ") - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Last-Modified: ",
++                             sizeof("Last-Modified: ") - 1, compact);
+         b->last = ngx_http_time(b->last, r->headers_out.last_modified_time);
+ 
+         *b->last++ = CR; *b->last++ = LF;
+@@ -526,10 +560,10 @@
+ 
+     if (host.data) {
+ 
+-        p = b->last + sizeof("Location: ") - 1;
+-
+-        b->last = ngx_cpymem(b->last, "Location: http",
+-                             sizeof("Location: http") - 1);
++        p = b->last + sizeof("Location: ") - 1 - compact;
++
++        b->last = ngx_http_copy_compact_header(b->last, "Location: http",
++                             sizeof("Location: http") - 1, compact);
+ 
+ #if (NGX_HTTP_SSL)
+         if (c->ssl) {
+@@ -557,34 +591,36 @@
+     }
+ 
+     if (r->chunked) {
+-        b->last = ngx_cpymem(b->last, "Transfer-Encoding: chunked" CRLF,
+-                             sizeof("Transfer-Encoding: chunked" CRLF) - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Transfer-Encoding: chunked" CRLF,
++                             sizeof("Transfer-Encoding: chunked" CRLF) - 1, compact);
+     }
+ 
+     if (r->headers_out.status == NGX_HTTP_SWITCHING_PROTOCOLS) {
+-        b->last = ngx_cpymem(b->last, "Connection: upgrade" CRLF,
+-                             sizeof("Connection: upgrade" CRLF) - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Connection: upgrade" CRLF,
++                             sizeof("Connection: upgrade" CRLF) - 1, compact);
+ 
+     } else if (r->keepalive) {
+         if (r->http_version < NGX_HTTP_VERSION_11) {
+-            b->last = ngx_cpymem(b->last, "Connection: keep-alive" CRLF,
+-                                 sizeof("Connection: keep-alive" CRLF) - 1);
++            b->last = ngx_http_copy_compact_header(b->last, "Connection: keep-alive" CRLF,
++                             sizeof("Connection: keep-alive" CRLF) - 1, compact);
+         }
+ 
+         if (clcf->keepalive_header) {
+-            b->last = ngx_sprintf(b->last, "Keep-Alive: timeout=%T" CRLF,
++            b->last = ngx_sprintf(b->last,
++                                  compact ? "Keep-Alive:timeout=%T" CRLF
++                                          : "Keep-Alive: timeout=%T" CRLF,
+                                   clcf->keepalive_header);
+         }
+ 
+     } else {
+-        b->last = ngx_cpymem(b->last, "Connection: close" CRLF,
+-                             sizeof("Connection: close" CRLF) - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Connection: close" CRLF,
++                             sizeof("Connection: close" CRLF) - 1, compact);
+     }
+ 
+ #if (NGX_HTTP_GZIP)
+     if (r->gzip_vary) {
+-        b->last = ngx_cpymem(b->last, "Vary: Accept-Encoding" CRLF,
+-                             sizeof("Vary: Accept-Encoding" CRLF) - 1);
++        b->last = ngx_http_copy_compact_header(b->last, "Vary: Accept-Encoding" CRLF,
++                             sizeof("Vary: Accept-Encoding" CRLF) - 1, compact);
+     }
+ #endif
+ 
+@@ -608,7 +644,10 @@
+         }
+ 
+         b->last = ngx_copy(b->last, header[i].key.data, header[i].key.len);
+-        *b->last++ = ':'; *b->last++ = ' ';
++        *b->last++ = ':';
++        if (!compact) {
++            *b->last++ = ' ';
++        }
+ 
+         b->last = ngx_copy(b->last, header[i].value.data, header[i].value.len);
+         *b->last++ = CR; *b->last++ = LF;
+--- a/src/http/ngx_http_core_module.c
++++ b/src/http/ngx_http_core_module.c
+@@ -1838,6 +1838,15 @@
+ 
+     out.buf = b;
+     out.next = NULL;
++
++#if (NGX_HTTP_V2)
++    /* The complete return body is ready before entering the header filters. */
++    if (r->stream && r == r->main && r->method == NGX_HTTP_GET
++        && status == NGX_HTTP_OK && val.len != 0 && val.len <= 1024)
++    {
++        return ngx_http_v2_send_buffered_response(r, &out);
++    }
++#endif
+ 
+     rc = ngx_http_send_header(r);
+ 
+--- a/src/http/v2/ngx_http_v2.h
++++ b/src/http/v2/ngx_http_v2.h
+@@ -222,6 +222,7 @@
+     unsigned                         rst_sent:1;
+     unsigned                         no_flow_control:1;
+     unsigned                         skip_data:1;
++    unsigned                         coalesce_headers:1;
+ };
+ 
+ 
+@@ -301,6 +302,8 @@
+ void ngx_http_v2_close_stream(ngx_http_v2_stream_t *stream, ngx_int_t rc);
+ 
+ ngx_int_t ngx_http_v2_send_output_queue(ngx_http_v2_connection_t *h2c);
++ngx_int_t ngx_http_v2_send_buffered_response(ngx_http_request_t *r,
++    ngx_chain_t *out);
+ 
+ 
+ ngx_str_t *ngx_http_v2_get_static_name(ngx_uint_t index);
+--- a/src/http/v2/ngx_http_v2_filter_module.c
++++ b/src/http/v2/ngx_http_v2_filter_module.c
+@@ -630,7 +630,9 @@
+     fin = r->header_only
+           || (r->headers_out.content_length_n == 0 && !r->expect_trailers);
+ 
+-    frame = ngx_http_v2_create_headers_frame(r, start, pos, fin, 0);
++    /* Deferred headers must flush even if the body filter buffers output. */
++    frame = ngx_http_v2_create_headers_frame(r, start, pos, fin,
++                                             stream->coalesce_headers);
+     if (frame == NULL) {
+         return NGX_ERROR;
+     }
+@@ -643,7 +645,44 @@
+         return NGX_ERROR;
+     }
+ 
++    if (stream->coalesce_headers && !fin) {
++        fc->buffered |= NGX_HTTP_V2_BUFFERED;
++        return NGX_OK;
++    }
++
+     return ngx_http_v2_filter_send(fc, stream);
++}
++
++
++ngx_int_t
++ngx_http_v2_send_buffered_response(ngx_http_request_t *r, ngx_chain_t *out)
++{
++    ngx_int_t              rc, send_rc;
++    ngx_http_v2_stream_t  *stream;
++
++    stream = r->stream;
++
++    /* Defer only this synchronous header call, never a future body event. */
++    stream->coalesce_headers = 1;
++    rc = ngx_http_send_header(r);
++    stream->coalesce_headers = 0;
++
++    if (rc != NGX_ERROR && rc <= NGX_OK && !r->header_only) {
++        rc = ngx_http_output_filter(r, out);
++    }
++
++    /*
++     * Always drain pending headers, including filter errors, header-only
++     * transformations, a buffered body, and exhausted HTTP/2 flow control.
++     * filter_send preserves the ordinary write-event and buffered flags.
++     */
++    send_rc = ngx_http_v2_filter_send(r->connection, stream);
++
++    if (send_rc == NGX_ERROR) {
++        return NGX_ERROR;
++    }
++
++    return rc == NGX_OK ? send_rc : rc;
+ }
+ 
+ 

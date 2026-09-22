@@ -1,0 +1,2407 @@
+{
+  "measuredAt": "2026-09-22T17:34:43.151341+00:00",
+  "url": "https://tomkimberlin.com/",
+  "beforeImage": "onekb-nginx:20260922c",
+  "afterImage": "onekb-nginx:20260922d",
+  "bodyBytes": 318,
+  "bodySha256": "82184e682819abd1917a058c4bd8bd42e381c20fe6ac9ddd901509d0cfdcbcef",
+  "scope": "Controlled identical HTTP/2 requests over verified TLS 1.3. First-response TLS record savings exclude variable CertificateVerify lengths. HTTP/2 frames and body bytes are unchanged; repeated-response bytes are unchanged. Packet totals can vary with timing.",
+  "firstResponseRecordBytesBefore": [
+    103,
+    349
+  ],
+  "firstResponseRecordBytesAfter": [
+    430
+  ],
+  "savedBytes": 22,
+  "stagedBefore": {
+    "host": "tomkimberlin.com",
+    "request_profile": "representative_chromium_headers",
+    "certificate_verification": true,
+    "measurements": [
+      {
+        "connection": "cold",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": false,
+        "local_port": 56102,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1607,
+            "received": 2942,
+            "time_ns": 1790097712082114480
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2132,
+            "received": 3510,
+            "time_ns": 1790097712084354799
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2180,
+            "received": 3931,
+            "time_ns": 1790097712086209345
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2180,
+            "received": 3931,
+            "time_ns": 1790097712166329575
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2180,
+          "received": 3931
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1538
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1210
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 25,
+            "bytes": 1499
+          },
+          {
+            "direction": "read",
+            "type": 15,
+            "bytes": 79
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1538,
+              "total_bytes": 1543
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1210,
+              "total_bytes": 1215
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 1516,
+              "total_bytes": 1521
+            },
+            {
+              "type": 23,
+              "payload_bytes": 96,
+              "total_bytes": 101
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 98,
+              "total_bytes": 103
+            },
+            {
+              "type": 23,
+              "payload_bytes": 344,
+              "total_bytes": 349
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:21:52 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 568
+            },
+            "elapsed_ms": 2.12
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:21:52 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 1.56
+          }
+        ]
+      },
+      {
+        "connection": "resumed",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": true,
+        "local_port": 56108,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1686,
+            "received": 1326,
+            "time_ns": 1790097712167607485
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2211,
+            "received": 1894,
+            "time_ns": 1790097712169502411
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2259,
+            "received": 2315,
+            "time_ns": 1790097712211315134
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2259,
+            "received": 2315,
+            "time_ns": 1790097712291438129
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2259,
+          "received": 2315
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1617
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1216
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1617,
+              "total_bytes": 1622
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1216,
+              "total_bytes": 1221
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 98,
+              "total_bytes": 103
+            },
+            {
+              "type": 23,
+              "payload_bytes": 344,
+              "total_bytes": 349
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:21:52 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 568
+            },
+            "elapsed_ms": 1.81
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:21:52 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 41.57
+          }
+        ]
+      }
+    ]
+  },
+  "stagedAfter": {
+    "host": "tomkimberlin.com",
+    "request_profile": "representative_chromium_headers",
+    "certificate_verification": true,
+    "measurements": [
+      {
+        "connection": "cold",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": false,
+        "local_port": 36750,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1607,
+            "received": 2942,
+            "time_ns": 1790097987702019279
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2132,
+            "received": 3488,
+            "time_ns": 1790097987704232389
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2180,
+            "received": 3909,
+            "time_ns": 1790097987746377200
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2180,
+            "received": 3909,
+            "time_ns": 1790097987826500686
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2180,
+          "received": 3909
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1538
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1210
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 25,
+            "bytes": 1499
+          },
+          {
+            "direction": "read",
+            "type": 15,
+            "bytes": 79
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1538,
+              "total_bytes": 1543
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1210,
+              "total_bytes": 1215
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 1516,
+              "total_bytes": 1521
+            },
+            {
+              "type": 23,
+              "payload_bytes": 96,
+              "total_bytes": 101
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 425,
+              "total_bytes": 430
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:26:27 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 546
+            },
+            "elapsed_ms": 2.09
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:26:27 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 41.87
+          }
+        ]
+      },
+      {
+        "connection": "resumed",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": true,
+        "local_port": 36762,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1686,
+            "received": 1326,
+            "time_ns": 1790097987827747140
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2211,
+            "received": 1872,
+            "time_ns": 1790097987829722506
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2259,
+            "received": 2293,
+            "time_ns": 1790097987871368723
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2259,
+            "received": 2293,
+            "time_ns": 1790097987951488146
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2259,
+          "received": 2293
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1617
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1216
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1617,
+              "total_bytes": 1622
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1216,
+              "total_bytes": 1221
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 425,
+              "total_bytes": 430
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:26:27 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 546
+            },
+            "elapsed_ms": 1.87
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:26:27 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 41.41
+          }
+        ]
+      }
+    ]
+  },
+  "liveAfter": {
+    "host": "tomkimberlin.com",
+    "request_profile": "representative_chromium_headers",
+    "certificate_verification": true,
+    "measurements": [
+      {
+        "connection": "cold",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": false,
+        "local_port": 43704,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1607,
+            "received": 2942,
+            "time_ns": 1790098304131713315
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2132,
+            "received": 3488,
+            "time_ns": 1790098304134207874
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2180,
+            "received": 3909,
+            "time_ns": 1790098304176887842
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2180,
+            "received": 3909,
+            "time_ns": 1790098304256983665
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2180,
+          "received": 3909
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1538
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1210
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 25,
+            "bytes": 1499
+          },
+          {
+            "direction": "read",
+            "type": 15,
+            "bytes": 79
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1538,
+              "total_bytes": 1543
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1210,
+              "total_bytes": 1215
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 1516,
+              "total_bytes": 1521
+            },
+            {
+              "type": 23,
+              "payload_bytes": 96,
+              "total_bytes": 101
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 425,
+              "total_bytes": 430
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:31:44 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 546
+            },
+            "elapsed_ms": 2.36
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:31:44 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 42.38
+          }
+        ]
+      },
+      {
+        "connection": "resumed",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "tls": "TLSv1.3",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "session_reused": true,
+        "local_port": 43712,
+        "peer_certificate_der_bytes": 858,
+        "snapshots": [
+          {
+            "phase": "handshake_complete",
+            "sent": 1686,
+            "received": 1326,
+            "time_ns": 1790098304259648743
+          },
+          {
+            "phase": "response_1_complete",
+            "sent": 2211,
+            "received": 1872,
+            "time_ns": 1790098304261515479
+          },
+          {
+            "phase": "response_3_complete",
+            "sent": 2259,
+            "received": 2293,
+            "time_ns": 1790098304303778382
+          },
+          {
+            "phase": "settled_before_close",
+            "sent": 2259,
+            "received": 2293,
+            "time_ns": 1790098304383878374
+          }
+        ],
+        "tls_bytes_before_close": {
+          "sent": 2259,
+          "received": 2293
+        },
+        "tls_handshake_messages": [
+          {
+            "direction": "write",
+            "type": 1,
+            "bytes": 1617
+          },
+          {
+            "direction": "read",
+            "type": 2,
+            "bytes": 1216
+          },
+          {
+            "direction": "read",
+            "type": 8,
+            "bytes": 19
+          },
+          {
+            "direction": "read",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "write",
+            "type": 20,
+            "bytes": 36
+          },
+          {
+            "direction": "read",
+            "type": 4,
+            "bytes": 57
+          }
+        ],
+        "tls_records": {
+          "sent": [
+            {
+              "type": 22,
+              "payload_bytes": 1617,
+              "total_bytes": 1622
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 489,
+              "total_bytes": 494
+            },
+            {
+              "type": 23,
+              "payload_bytes": 26,
+              "total_bytes": 31
+            },
+            {
+              "type": 23,
+              "payload_bytes": 43,
+              "total_bytes": 48
+            }
+          ],
+          "received": [
+            {
+              "type": 22,
+              "payload_bytes": 1216,
+              "total_bytes": 1221
+            },
+            {
+              "type": 20,
+              "payload_bytes": 1,
+              "total_bytes": 6
+            },
+            {
+              "type": 23,
+              "payload_bytes": 36,
+              "total_bytes": 41
+            },
+            {
+              "type": 23,
+              "payload_bytes": 53,
+              "total_bytes": 58
+            },
+            {
+              "type": 23,
+              "payload_bytes": 74,
+              "total_bytes": 79
+            },
+            {
+              "type": 23,
+              "payload_bytes": 32,
+              "total_bytes": 37
+            },
+            {
+              "type": 23,
+              "payload_bytes": 425,
+              "total_bytes": 430
+            },
+            {
+              "type": 23,
+              "payload_bytes": 416,
+              "total_bytes": 421
+            }
+          ]
+        },
+        "http2_frames": {
+          "sent": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 42,
+              "total_bytes": 51
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 1,
+              "payload_bytes": 388,
+              "total_bytes": 397
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 5,
+              "stream": 3,
+              "payload_bytes": 17,
+              "total_bytes": 26
+            }
+          ],
+          "received": [
+            {
+              "type": 4,
+              "flags": 0,
+              "stream": 0,
+              "payload_bytes": 6,
+              "total_bytes": 15
+            },
+            {
+              "type": 4,
+              "flags": 1,
+              "stream": 0,
+              "payload_bytes": 0,
+              "total_bytes": 9
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 1,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 1,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            },
+            {
+              "type": 1,
+              "flags": 4,
+              "stream": 3,
+              "payload_bytes": 63,
+              "total_bytes": 72
+            },
+            {
+              "type": 0,
+              "flags": 1,
+              "stream": 3,
+              "payload_bytes": 318,
+              "total_bytes": 327
+            }
+          ]
+        },
+        "requests": [
+          {
+            "stream": 1,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:31:44 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 525,
+              "received": 546
+            },
+            "elapsed_ms": 1.78
+          },
+          {
+            "stream": 3,
+            "body_bytes": 318,
+            "headers": [
+              [
+                ":status",
+                "200"
+              ],
+              [
+                "date",
+                "Tue, 22 Sep 2026 17:31:44 GMT"
+              ],
+              [
+                "content-type",
+                "text/html"
+              ],
+              [
+                "vary",
+                "accept-encoding"
+              ],
+              [
+                "cache-control",
+                "max-age=86400"
+              ],
+              [
+                "content-encoding",
+                "br"
+              ]
+            ],
+            "tls_bytes_increment": {
+              "sent": 48,
+              "received": 421
+            },
+            "elapsed_ms": 42.02
+          }
+        ]
+      }
+    ]
+  },
+  "semanticChecks": {
+    "stagedBefore": {
+      "passed": true,
+      "checks": [
+        "0:small:GET",
+        "1:small:GET",
+        "2:small:HEAD",
+        "3:empty:GET",
+        "4:redirect:GET",
+        "5:no-body:GET",
+        "6:headonly:GET",
+        "7:large:GET",
+        "8:slow:GET",
+        "zero-window:resume",
+        "zero-window:reset-and-reuse",
+        "concurrent:0",
+        "concurrent:1",
+        "concurrent:2",
+        "concurrent:3",
+        "delayed-reader:64-small-responses",
+        "streaming:headers-before-finish",
+        "header-filter-error",
+        "header-filter-error:same-connection-reuse",
+        "header-filter-error:new-connection-health"
+      ],
+      "outcomes": {
+        "0:small:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "1:small:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "2:small:HEAD": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "3:empty:GET": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "4:redirect:GET": {
+          "status": 301,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "5:no-body:GET": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "6:headonly:GET": {
+          "status": 204,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "7:large:GET": {
+          "status": 200,
+          "bytes": 200000,
+          "sha256": "c6d6322c8d7468a0d294ea3a080248b0c56e911b8a1e39381d43b6e87dfdde0c",
+          "ended": true,
+          "reset": null
+        },
+        "8:slow:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "zero-window:resume": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "zero-window:reset-and-reuse": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:0": {
+          "status": 200,
+          "bytes": 200000,
+          "sha256": "c6d6322c8d7468a0d294ea3a080248b0c56e911b8a1e39381d43b6e87dfdde0c",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:1": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:2": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:3": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "delayed-reader:64-small-responses": {
+          "responses": 64,
+          "bytes": 20352,
+          "passed": true
+        },
+        "streaming:headers-before-finish": {
+          "status": 200,
+          "bytes": 9,
+          "sha256": "6600861c7f8274a2c96894009f212ce368f90fe66296a97ef77f6820bff3ecd0",
+          "ended": true,
+          "reset": null
+        },
+        "header-filter-error": {
+          "status": null,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": false,
+          "reset": 2,
+          "connection_terminal": null
+        },
+        "header-filter-error:same-connection-reuse": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "header-filter-error:new-connection-health": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        }
+      },
+      "timings_seconds": {
+        "0:small:GET": {
+          "header_time": 0.0025,
+          "first_data": 0.0025,
+          "end_time": 0.0026
+        },
+        "1:small:GET": {
+          "header_time": 0.0016,
+          "first_data": 0.0016,
+          "end_time": 0.0016
+        },
+        "2:small:HEAD": {
+          "header_time": 0.0016,
+          "first_data": null,
+          "end_time": 0.0016
+        },
+        "3:empty:GET": {
+          "header_time": 0.0016,
+          "first_data": 0.0016,
+          "end_time": 0.0016
+        },
+        "4:redirect:GET": {
+          "header_time": 0.0015,
+          "first_data": 0.0015,
+          "end_time": 0.0015
+        },
+        "5:no-body:GET": {
+          "header_time": 0.0014,
+          "first_data": 0.0014,
+          "end_time": 0.0014
+        },
+        "6:headonly:GET": {
+          "header_time": 0.0013,
+          "first_data": null,
+          "end_time": 0.0013
+        },
+        "7:large:GET": {
+          "header_time": 0.0015,
+          "first_data": 0.0015,
+          "end_time": 0.0032
+        },
+        "8:slow:GET": {
+          "header_time": 0.0415,
+          "first_data": 0.0415,
+          "end_time": 2.7082
+        },
+        "zero-window:resume": {
+          "header_time": 0.0018,
+          "first_data": 0.0419,
+          "end_time": 0.0419
+        },
+        "zero-window:reset-and-reuse": {
+          "header_time": 0.0416,
+          "first_data": 0.0417,
+          "end_time": 0.0417
+        },
+        "concurrent:0": {
+          "header_time": 0.0018,
+          "first_data": 0.0019,
+          "end_time": 0.0071
+        },
+        "concurrent:1": {
+          "header_time": 0.0057,
+          "first_data": 0.0058,
+          "end_time": 0.0058
+        },
+        "concurrent:2": {
+          "header_time": 0.0056,
+          "first_data": null,
+          "end_time": 0.0056
+        },
+        "concurrent:3": {
+          "header_time": 0.0056,
+          "first_data": 0.0057,
+          "end_time": 0.0057
+        },
+        "streaming:headers-before-finish": {
+          "header_time": 0.0016,
+          "first_data": 0.8005,
+          "end_time": 0.8005
+        },
+        "header-filter-error": {
+          "header_time": null,
+          "first_data": null,
+          "end_time": null
+        },
+        "header-filter-error:same-connection-reuse": {
+          "header_time": 0.0421,
+          "first_data": 0.0421,
+          "end_time": 0.0421
+        },
+        "header-filter-error:new-connection-health": {
+          "header_time": 0.0015,
+          "first_data": 0.0016,
+          "end_time": 0.0016
+        }
+      }
+    },
+    "stagedAfter": {
+      "passed": true,
+      "checks": [
+        "0:small:GET",
+        "1:small:GET",
+        "2:small:HEAD",
+        "3:empty:GET",
+        "4:redirect:GET",
+        "5:no-body:GET",
+        "6:headonly:GET",
+        "7:large:GET",
+        "8:slow:GET",
+        "zero-window:resume",
+        "zero-window:reset-and-reuse",
+        "concurrent:0",
+        "concurrent:1",
+        "concurrent:2",
+        "concurrent:3",
+        "delayed-reader:64-small-responses",
+        "streaming:headers-before-finish",
+        "header-filter-error",
+        "header-filter-error:same-connection-reuse",
+        "header-filter-error:new-connection-health"
+      ],
+      "outcomes": {
+        "0:small:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "1:small:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "2:small:HEAD": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "3:empty:GET": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "4:redirect:GET": {
+          "status": 301,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "5:no-body:GET": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "6:headonly:GET": {
+          "status": 204,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "7:large:GET": {
+          "status": 200,
+          "bytes": 200000,
+          "sha256": "c6d6322c8d7468a0d294ea3a080248b0c56e911b8a1e39381d43b6e87dfdde0c",
+          "ended": true,
+          "reset": null
+        },
+        "8:slow:GET": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "zero-window:resume": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "zero-window:reset-and-reuse": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:0": {
+          "status": 200,
+          "bytes": 200000,
+          "sha256": "c6d6322c8d7468a0d294ea3a080248b0c56e911b8a1e39381d43b6e87dfdde0c",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:1": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:2": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "concurrent:3": {
+          "status": 200,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": true,
+          "reset": null
+        },
+        "delayed-reader:64-small-responses": {
+          "responses": 64,
+          "bytes": 20352,
+          "passed": true
+        },
+        "streaming:headers-before-finish": {
+          "status": 200,
+          "bytes": 9,
+          "sha256": "6600861c7f8274a2c96894009f212ce368f90fe66296a97ef77f6820bff3ecd0",
+          "ended": true,
+          "reset": null
+        },
+        "header-filter-error": {
+          "status": null,
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "ended": false,
+          "reset": 2,
+          "connection_terminal": null
+        },
+        "header-filter-error:same-connection-reuse": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        },
+        "header-filter-error:new-connection-health": {
+          "status": 200,
+          "bytes": 318,
+          "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+          "ended": true,
+          "reset": null
+        }
+      },
+      "timings_seconds": {
+        "0:small:GET": {
+          "header_time": 0.002,
+          "first_data": 0.002,
+          "end_time": 0.002
+        },
+        "1:small:GET": {
+          "header_time": 0.0416,
+          "first_data": 0.0416,
+          "end_time": 0.0416
+        },
+        "2:small:HEAD": {
+          "header_time": 0.0015,
+          "first_data": null,
+          "end_time": 0.0015
+        },
+        "3:empty:GET": {
+          "header_time": 0.0014,
+          "first_data": 0.0014,
+          "end_time": 0.0014
+        },
+        "4:redirect:GET": {
+          "header_time": 0.0014,
+          "first_data": 0.0014,
+          "end_time": 0.0014
+        },
+        "5:no-body:GET": {
+          "header_time": 0.0013,
+          "first_data": 0.0013,
+          "end_time": 0.0013
+        },
+        "6:headonly:GET": {
+          "header_time": 0.0014,
+          "first_data": null,
+          "end_time": 0.0014
+        },
+        "7:large:GET": {
+          "header_time": 0.0015,
+          "first_data": 0.0015,
+          "end_time": 0.0034
+        },
+        "8:slow:GET": {
+          "header_time": 0.043,
+          "first_data": 0.043,
+          "end_time": 3.1137
+        },
+        "zero-window:resume": {
+          "header_time": 0.0017,
+          "first_data": 0.0418,
+          "end_time": 0.0418
+        },
+        "zero-window:reset-and-reuse": {
+          "header_time": 0.0416,
+          "first_data": 0.0417,
+          "end_time": 0.0417
+        },
+        "concurrent:0": {
+          "header_time": 0.0016,
+          "first_data": 0.0018,
+          "end_time": 0.0066
+        },
+        "concurrent:1": {
+          "header_time": 0.0029,
+          "first_data": 0.0053,
+          "end_time": 0.0053
+        },
+        "concurrent:2": {
+          "header_time": 0.004,
+          "first_data": null,
+          "end_time": 0.004
+        },
+        "concurrent:3": {
+          "header_time": 0.0051,
+          "first_data": 0.0051,
+          "end_time": 0.0051
+        },
+        "streaming:headers-before-finish": {
+          "header_time": 0.0015,
+          "first_data": 0.801,
+          "end_time": 0.801
+        },
+        "header-filter-error": {
+          "header_time": null,
+          "first_data": null,
+          "end_time": null
+        },
+        "header-filter-error:same-connection-reuse": {
+          "header_time": 0.0418,
+          "first_data": 0.0418,
+          "end_time": 0.0418
+        },
+        "header-filter-error:new-connection-health": {
+          "header_time": 0.0015,
+          "first_data": 0.0015,
+          "end_time": 0.0016
+        }
+      },
+      "identical_semantics_to_baseline": true
+    }
+  }
+}

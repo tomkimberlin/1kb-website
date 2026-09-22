@@ -85,9 +85,13 @@ A normal response retains Date, Content-Type, Content-Encoding, Vary and Cache-C
 
 HTTP/1.1 also [defaults to persistent connections](https://www.rfc-editor.org/rfc/rfc9112.html#section-9.3). nginx still emitted `Connection: keep-alive`, so omitting that redundant field saved 24 bytes per persistent HTTP/1.1 response. The patch retains HTTP/1.0's explicit keep-alive field, close signals and upgrades. Tests send multiple requests over the same TLS socket to verify actual reuse. HTTP/2 and HTTP/3 are unaffected.
 
+HTTP/1.1 leaves a little room in its text format too. The space after each header colon is optional, and a status line can omit its reason phrase. The response still says `200`; it simply stops spelling out `OK`. Removing six optional spaces and those two letters reduces the normal response headers from 177 to 169 bytes. The required space after the status code stays. Both choices follow [HTTP/1.1's message syntax](https://www.rfc-editor.org/rfc/rfc9112.html#section-4), including its [header-field grammar](https://www.rfc-editor.org/rfc/rfc9112.html#section-5). HTTP/1.0 keeps its existing format.
+
 The nginx patch also uses the compact entries available in HTTP/2's HPACK and HTTP/3's QPACK header tables. In HTTP/3, the longer value `text/html; charset=utf-8` is cheaper to encode than `text/html` because the complete value has a predefined table entry. Counting characters would have picked the wrong winner.
 
 Connection setup has similar opportunities. Keeping HTTP/2's default 16,384-byte inbound frame limit lets the server omit a six-byte setting. The limit is enforced: a frame one byte too large is rejected, while larger requests split across valid frames still work. Protocol defaults save bytes only when the implementation actually follows them.
+
+There was also a saving between HTTP/2 and TLS. The page is already compressed and held in memory, but nginx was flushing its response headers before sending the body. Sending both together lets their separate HTTP/2 frames share one TLS record. The measured initial TLS 1.3 response loses one 22-byte record wrapper without changing the page or its HTTP headers. This adds no timer or waiting period: the patch applies only to fully buffered GET responses of at most 1,024 bytes, and headers still leave when flow control blocks the body. Larger or streaming responses keep their existing behavior.
 
 Caching earns its space. The one-day cache policy lets returning visitors use a fresh local copy. Removing that header would give up an explicit freshness period to save a few bytes on the first response.
 

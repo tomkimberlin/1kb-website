@@ -6,12 +6,12 @@ Each cell shows the median of three cold connections, in bytes. Both directions 
 
 | Website | TLS through first document, minus body | Estimated TCP/IP + DNS through connection close, minus body |
 | --- | ---: | ---: |
-| [This website](https://tomkimberlin.com/) | **5,349** | **7,197** |
-| [cv.btxx.org](https://cv.btxx.org/) | 6,735 | 8,947 |
+| [This website](https://tomkimberlin.com/) | **5,327** | **7,070** |
+| [cv.btxx.org](https://cv.btxx.org/) | 6,735 | 9,022 |
 | [hi.mrkrk.me](https://hi.mrkrk.me/) | 6,764 | 8,652 |
-| [5.vg](https://5.vg/) | 7,246 | 9,095 |
-| [pba.im/200B](https://pba.im/200B) | 7,691 | 9,367 |
-| [1k.lom.me](https://1k.lom.me/) | 8,893 | 11,059 |
+| [5.vg](https://5.vg/) | 7,246 | 9,043 |
+| [pba.im/200B](https://pba.im/200B) | 7,692 | 9,616 |
+| [1k.lom.me](https://1k.lom.me/) | 8,893 | 10,943 |
 
 The first column counts encrypted TLS traffic up to completion of the HTML response. The second includes TCP/IP setup, acknowledgments and teardown, an 80 ms idle window, and A/AAAA/HTTPS DNS queries over UDP to 1.1.1.1. It estimates segmentation of offloaded frames at a 1,500-byte MTU. The columns end at different points; subtracting them does not give TCP overhead.
 
@@ -34,7 +34,7 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20260922c -f server/Dockerfile .
+docker build -t onekb-nginx:20260922d -f server/Dockerfile .
 docker build -t onekb-gallery:20260922 -f tools/gallery.Dockerfile .
 ```
 
