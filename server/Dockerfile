@@ -7,12 +7,18 @@ RUN curl -fLsS https://www.openssl.org/source/openssl-3.5.8.tar.gz -o openssl.ta
 WORKDIR /build/openssl-3.5.8
 COPY server/certificate-compression.patch /build/certificate-compression.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-compression.patch
+COPY server/tls-flight.patch /build/tls-flight.patch
+RUN patch --fuzz=0 -p1 < /build/tls-flight.patch
 RUN ./Configure --prefix=/opt/openssl --libdir=lib shared zlib enable-brotli enable-zstd no-tests \
  && make -j4 >/tmp/build.log 2>&1 && make install_sw >/tmp/install.log 2>&1
 FROM build AS compression-test
 COPY tools/verify-certificate-compression.c /build/verify-certificate-compression.c
 RUN cc -Wall -Wextra -Werror -I/opt/openssl/include /build/verify-certificate-compression.c -L/opt/openssl/lib -Wl,-rpath,/opt/openssl/lib -lcrypto -lbrotlienc -lbrotlidec -o /build/verify-certificate-compression \
  && /build/verify-certificate-compression
+
+COPY tools/verify-tls-flight.c /build/verify-tls-flight.c
+RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -DCOALESCE_INTERNAL -DRESUME_COALESCING -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-tls-flight.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-tls-flight \
+ && /build/verify-tls-flight
 
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS headers
 RUN apk add --no-cache build-base curl pcre2-dev zlib-dev openssl-dev linux-headers

@@ -67,6 +67,8 @@ The build compares thousands of Brotli settings and checks that every compressed
 
 Eventually the stock encoder stopped at 320 bytes. Two changes to its internal search found a 318-byte encoding of exactly the same HTML: a shorter window for estimating nearby literal frequencies, and a slightly higher estimated cost for those literals. That nudged the encoder toward different matches. The output is still ordinary Brotli, readable by an unmodified decoder; neither the browser nor the server needs a custom compression library.
 
+The Huffman stage saved another byte. Preserving shorter runs of zero counts and adjusting the bias used to smooth nearby counts made the code trees cheaper to describe. The result is 317 bytes, with the HTML unchanged.
+
 A serialization that wins with Brotli can lose with gzip. This search prioritizes Brotli while checking the fallback sizes too; all encodings still decompress to the same HTML.
 
 All of that work happens before deployment. nginx reads precompressed files; visitors don't wait for a compression search. Brotli is preferred when accepted, with gzip, deflate and plain HTML available according to the request's encoding preferences. Deflate reuses the optimized gzip compression stream with a smaller wrapper.
@@ -106,6 +108,10 @@ Certificate compression reduces the certificate message for clients that support
 Session reuse matters too. Sending one small session ticket allows a later connection to resume. Completely disabling tickets saved a little on the first connection but gave up the larger saving available on a return visit.
 
 Even the compressor settings got another pass. A smaller Brotli window saved one byte on the main domain's certificate, but made both alias certificates larger. The OpenSSL patch tries that alternative and keeps it only when it beats the default. Tests compare both sizes, decompress the result and exercise buffer limits. For the current main certificate, that saves one byte on a full handshake when Brotli certificate compression is negotiated. The certificate and its signature are unchanged.
+
+The handshake messages had their own wrappers. OpenSSL sent EncryptedExtensions, the compressed certificate, CertificateVerify and Finished in four encrypted records. Each added 22 bytes with the cipher used in these measurements. They can share a record because they use the same handshake keys. Combining them removed 66 bytes; combining the two messages in a resumed handshake removed 22.
+
+This needed more care than changing an encoder setting. A small buffer holds the messages, while the existing transcript calculation and record writer keep their jobs. Finished must still leave before the keys change. Tests forced partial writes, exhausted buffers and failed allocations to check that retries neither duplicate a message nor lose it. Oversized flights fall back to ordinary writes, and paths such as QUIC and client authentication keep their original behavior. The patch passed 20 focused cases, 219 selected upstream tests, and address/undefined-behavior sanitizer checks alongside Chromium and WebKit checks. The [delivery reference](TRANSPORT.md#tls-handshake-records) gives the scope and measurements.
 
 HTTP/3 remains available, although the server doesn't spend bytes advertising it in every response. TLS 1.2 and 1.3 remain supported. The [delivery reference](TRANSPORT.md) documents the exact settings and the limits of the measurements.
 

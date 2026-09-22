@@ -6,18 +6,18 @@ Each cell shows the median of three cold connections, in bytes. Both directions 
 
 | Website | TLS through first document, minus body | Estimated TCP/IP + DNS through connection close, minus body |
 | --- | ---: | ---: |
-| [This website](https://tomkimberlin.com/) | **5,327** | **7,070** |
-| [cv.btxx.org](https://cv.btxx.org/) | 6,735 | 9,022 |
-| [hi.mrkrk.me](https://hi.mrkrk.me/) | 6,764 | 8,652 |
-| [5.vg](https://5.vg/) | 7,246 | 9,043 |
-| [pba.im/200B](https://pba.im/200B) | 7,692 | 9,616 |
-| [1k.lom.me](https://1k.lom.me/) | 8,893 | 10,943 |
+| [This website](https://tomkimberlin.com/) | **5,262** | **6,954** |
+| [cv.btxx.org](https://cv.btxx.org/) | 6,735 | 8,947 |
+| [hi.mrkrk.me](https://hi.mrkrk.me/) | 6,762 | 8,702 |
+| [5.vg](https://5.vg/) | 7,246 | 9,095 |
+| [pba.im/200B](https://pba.im/200B) | 7,693 | 9,421 |
+| [1k.lom.me](https://1k.lom.me/) | 8,892 | 11,008 |
 
 The first column counts encrypted TLS traffic up to completion of the HTML response. The second includes TCP/IP setup, acknowledgments and teardown, an 80 ms idle window, and A/AAAA/HTTPS DNS queries over UDP to 1.1.1.1. It estimates segmentation of offloaded frames at a 1,500-byte MTU. The columns end at different points; subtracting them does not give TCP overhead.
 
 ## What accounts for the difference
 
-This server sent a 1,499-byte compressed Certificate handshake message. The other servers sent uncompressed Certificate messages of 3,399–4,124 bytes. It also sent one 57-byte session ticket. Certificate compression and ticket size outweigh the slightly smaller response headers on some other sites.
+This server sent a 1,499-byte compressed Certificate handshake message. The other servers sent uncompressed Certificate messages of 3,399–4,124 bytes. It also sent one 57-byte session ticket. Certificate compression and ticket size outweigh the slightly smaller response headers on some other sites. Combining the encrypted handshake messages also removes 66 bytes of TLS record overhead; the [before/after measurements](measurements/tls-flight-20260922.json) separate that saving from signature-length variation.
 
 All sites received the same representative Chromium request fields and compression preferences from OpenSSL 3.5.8, with certificate compression, hybrid key exchange and certificate verification enabled. Every request used a new TLS context, without session resumption or a browser cache.
 
@@ -25,7 +25,7 @@ All sites received the same representative Chromium request fields and compressi
 
 ## Scope and reproduction
 
-At measurement time, the page was 728 bytes of HTML, 318 bytes with Brotli and 462 bytes with gzip. The [raw measurements](measurements/gallery-20260922.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
+At measurement time, the page was 742 bytes of HTML, 317 bytes with Brotli and 468 bytes with gzip. The [raw measurements](measurements/gallery-20260922.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
 
 The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
@@ -34,7 +34,7 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20260922d -f server/Dockerfile .
+docker build -t onekb-nginx:20260922f -f server/Dockerfile .
 docker build -t onekb-gallery:20260922 -f tools/gallery.Dockerfile .
 ```
 

@@ -24,6 +24,23 @@ The [transport audit](measurements/payload-20260912.json) measured a 63-byte HTT
 
 The [Dockerfile](server/Dockerfile), [nginx configuration](server/nginx.conf) and [request handler](server/site.js) define these settings. [Server configuration](server/README.md) covers certificate renewal and deployment.
 
+## TLS handshake records
+
+Image `onekb-nginx:20260922f` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
+
+| Handshake | Original records | Combined records | Record overhead saved |
+| --- | ---: | ---: | ---: |
+| Full, including Certificate or CompressedCertificate | 4 | 1 | 66 bytes |
+| Resumed, without early data | 2 | 1 | 22 bytes |
+
+These figures count record overhead independently of certificate and ECDSA signature sizes. They apply when the messages fit within the permitted record size; smaller negotiated limits can require more records. They are separate from the 22-byte HTTP/2 response saving above and do not change the page body.
+
+The patch accumulates at most 16 KiB of handshake plaintext and uses OpenSSL's existing record writer. Overflow sends the accumulated prefix and returns to ordinary writes. Each logical message still updates the transcript once. Finished remains the final message under the handshake keys, and the existing flush precedes the switch to application keys. [RFC 8446 §5.1](https://www.rfc-editor.org/rfc/rfc8446.html#section-5.1) permits combining handshake messages while preserving record boundaries at key changes; [§4.4.4](https://www.rfc-editor.org/rfc/rfc8446.html#section-4.4.4) defines Finished authentication and the following application-key records.
+
+QUIC, TLS 1.2, client authentication, early data, asynchronous mode, server message callbacks and handshake mutation callbacks retain their original paths. Pending post-handshake authentication is excluded. The change preserves the negotiated keys, cipher, certificate validation and Finished verification.
+
+The [TLS regression harness](tools/verify-tls-flight.c) passes 20 cases using verified client/server handshakes and application data. It covers Brotli certificate compression, HelloRetryRequest, actual session resumption, record-size limits, oversized certificates, partial-write mode, forced write retries, clear/reuse/free during pending output, and allocation failures that deliver alerts and recover. A resumed test with a negotiated test extension forces retries while the combined buffer is pending; the extension is absent from the server configuration. The patched library also passes 219 tests across 23 selected upstream OpenSSL recipes. These checks establish the tested protocol and lifecycle behavior; they are not a claim of universal client compatibility or a complete browser-load measurement.
+
 ## Alias
 
 `tom.kimberlin.net` and `www.tomkimberlin.com` use DNS-only A records pointing to the same server. Both HTTP and HTTPS return an empty 301 directly to `https://tomkimberlin.com`, preserving the path and query. Their HTTPS listeners use separate ECDSA certificates with automatic renewal and certificate compression. An alias visit still adds a redirect and, for HTTPS, a separate TLS connection.

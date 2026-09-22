@@ -1,0 +1,443 @@
+{
+  "measuredAt": "2026-09-22T20:28:30.907429+00:00",
+  "url": "https://tomkimberlin.com/",
+  "beforeImage": "onekb-nginx:20260922d",
+  "afterImage": "onekb-nginx:20260922f",
+  "afterImageId": "sha256:041c21cf0fe7c4ce05a185505a524dfb453cb8604806706b4261ea9cf1ad6fed",
+  "scope": "Server TLS 1.3 handshake record overhead with certificate verification, Brotli certificate compression and AES-128-GCM. Logical handshake bytes are subtracted so variable ECDSA signature lengths do not alter the wrapper saving. This excludes the page body, response records, DNS and TCP.",
+  "fullHandshakeBytesSaved": 66,
+  "resumedHandshakeBytesSaved": 22,
+  "stagedBefore": [
+    {
+      "connection": "cold",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": false,
+      "handshakeWireBytes": 2942,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 36,
+          "total_bytes": 41
+        },
+        {
+          "type": 23,
+          "payload_bytes": 1516,
+          "total_bytes": 1521
+        },
+        {
+          "type": 23,
+          "payload_bytes": 96,
+          "total_bytes": 101
+        },
+        {
+          "type": 23,
+          "payload_bytes": 53,
+          "total_bytes": 58
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1499
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 79
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 1633,
+      "recordOverheadBytes": 88
+    },
+    {
+      "connection": "resumed",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": true,
+      "handshakeWireBytes": 1326,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 36,
+          "total_bytes": 41
+        },
+        {
+          "type": 23,
+          "payload_bytes": 53,
+          "total_bytes": 58
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 55,
+      "recordOverheadBytes": 44
+    }
+  ],
+  "stagedAfter": [
+    {
+      "connection": "cold",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": false,
+      "handshakeWireBytes": 2875,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 1649,
+          "total_bytes": 1654
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1499
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 78
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 1632,
+      "recordOverheadBytes": 22
+    },
+    {
+      "connection": "resumed",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": true,
+      "handshakeWireBytes": 1304,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 72,
+          "total_bytes": 77
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 55,
+      "recordOverheadBytes": 22
+    }
+  ],
+  "liveAfter": [
+    {
+      "connection": "cold",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": false,
+      "handshakeWireBytes": 2877,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 1651,
+          "total_bytes": 1656
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1499
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 80
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 1634,
+      "recordOverheadBytes": 22
+    },
+    {
+      "connection": "resumed",
+      "tls": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "sessionReused": true,
+      "handshakeWireBytes": 1304,
+      "encryptedRecords": [
+        {
+          "type": 23,
+          "payload_bytes": 72,
+          "total_bytes": 77
+        }
+      ],
+      "logicalMessages": [
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        }
+      ],
+      "plaintextBytes": 55,
+      "recordOverheadBytes": 22
+    }
+  ],
+  "linuxRegressionCases": [
+    {
+      "case": "normal",
+      "records": 1,
+      "max_encrypted_payload": 439,
+      "want_write": 0,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": true
+    },
+    {
+      "case": "brotli-compressed-certificate",
+      "records": 1,
+      "max_encrypted_payload": 735,
+      "want_write": 52,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 1,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "hello-retry-request",
+      "records": 1,
+      "max_encrypted_payload": 437,
+      "want_write": 16,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 2,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "tiny-bio",
+      "records": 1,
+      "max_encrypted_payload": 437,
+      "want_write": 47,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": true
+    },
+    {
+      "case": "large-cert-tiny-bio",
+      "records": 1,
+      "max_encrypted_payload": 8465,
+      "want_write": 42,
+      "pending_flight_retries": 21,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": true
+    },
+    {
+      "case": "large-cert-4k-bio",
+      "records": 1,
+      "max_encrypted_payload": 8465,
+      "want_write": 2,
+      "pending_flight_retries": 1,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "overflow-cert",
+      "records": 5,
+      "max_encrypted_payload": 16401,
+      "want_write": 90,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 110,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": true
+    },
+    {
+      "case": "max-send-fragment-512",
+      "records": 17,
+      "max_encrypted_payload": 529,
+      "want_write": 179,
+      "pending_flight_retries": 127,
+      "wrapper_bytes": 374,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "peer-max-fragment-512",
+      "records": 17,
+      "max_encrypted_payload": 529,
+      "want_write": 179,
+      "pending_flight_retries": 127,
+      "wrapper_bytes": 374,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "partial-write-mode",
+      "records": 1,
+      "max_encrypted_payload": 8466,
+      "want_write": 173,
+      "pending_flight_retries": 87,
+      "wrapper_bytes": 22,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "server-msg-callback",
+      "records": 4,
+      "max_encrypted_payload": 315,
+      "want_write": 48,
+      "pending_flight_retries": 0,
+      "wrapper_bytes": 88,
+      "compressed_certificate_messages": 0,
+      "server_hellos": 1,
+      "verified": true,
+      "reuse": false
+    },
+    {
+      "case": "pending-finished-clear-reuse",
+      "verified": true
+    },
+    {
+      "case": "pending-finished-free",
+      "verified": true
+    },
+    {
+      "case": "excluded-tls12",
+      "verified": true
+    },
+    {
+      "case": "excluded-client-auth",
+      "records": 5,
+      "verified": true
+    },
+    {
+      "case": "resumption",
+      "records": 1,
+      "wrapper_bytes": 22,
+      "verified": true
+    },
+    {
+      "case": "resumed-padded-ee-retry",
+      "records": 1,
+      "pending_flight_retries": 81,
+      "verified": true
+    },
+    {
+      "case": "allocation-fault-1",
+      "fault_fired": true,
+      "client_alert": true,
+      "clear_reuse": true,
+      "fresh_connection": true,
+      "verified": true
+    },
+    {
+      "case": "allocation-fault-2",
+      "fault_fired": true,
+      "client_alert": true,
+      "clear_reuse": true,
+      "fresh_connection": true,
+      "verified": true
+    },
+    {
+      "case": "allocation-fault-3",
+      "fault_fired": true,
+      "client_alert": true,
+      "clear_reuse": true,
+      "fresh_connection": true,
+      "verified": true
+    }
+  ],
+  "upstreamVerification": {
+    "recipes": 23,
+    "tests": 219,
+    "result": "PASS",
+    "scope": "Selected upstream OpenSSL 3.5.8 handshake, record, session, async, API and buffer recipes."
+  },
+  "liveVerification": {
+    "http1Checks": 18,
+    "http2Checks": 15,
+    "http3SessionResumed": true,
+    "browserCases": 12,
+    "certificateFingerprintsUnchangedAtCutover": true
+  },
+  "sanitizerVerification": {
+    "addressSanitizer": true,
+    "undefinedBehaviorSanitizer": true,
+    "cases": 20,
+    "compiler": "Apple clang 21",
+    "result": "PASS",
+    "sanitizerStderrBytes": 0,
+    "leakSanitizer": "Unsupported on the test platform; not run."
+  }
+}

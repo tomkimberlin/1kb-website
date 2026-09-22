@@ -2,12 +2,12 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The published page measured **399 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/9xKeN9Uf/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The published page measured **398 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/JZbnkNJb/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Bytes |
 | --- | ---: |
-| DebugBear page weight | **399** |
-| Brotli response body | 318 |
+| DebugBear page weight | **398** |
+| Brotli response body | 317 |
 | Gzip response body | 468 |
 | Deflate response body | 456 |
 | Raw HTML | 742 |

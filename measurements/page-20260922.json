@@ -1,24 +1,24 @@
 {
-  "measuredAt": "2026-09-22T20:10:58.041711+00:00",
+  "measuredAt": "2026-09-22T20:28:30.907429+00:00",
   "url": "https://tomkimberlin.com/",
   "htmlSha256": "fc06c9f7af02b536a3c579caa26d6ff6a394b97ef02c0869c30a8099d6076b22",
-  "brotliSha256": "d8d0bfe053c32c333cb4cc365283a05f95092b9d99a1f84d37a3e61c37773dbd",
-  "release": "20260922T200715Z-fc06c9f7af02",
+  "brotliSha256": "26a20ca9da90cf2a7418f007ce641e6e7207bc9d8c903e5243c16f1c48b011b2",
+  "release": "20260922T202250Z-fc06c9f7af02",
   "html": 742,
-  "brotli": 318,
+  "brotli": 317,
   "gzip": 468,
   "deflate": 456,
   "css": 104,
   "chromium": {
-    "encodedBodySize": 318,
+    "encodedBodySize": 317,
     "decodedBodySize": 742,
-    "resourceTimingTransferSize": 618
+    "resourceTimingTransferSize": 617
   },
   "debugbear": {
-    "report": "https://www.debugbear.com/test/website-speed/9xKeN9Uf/overview",
-    "pageWeight": 399,
+    "report": "https://www.debugbear.com/test/website-speed/JZbnkNJb/overview",
+    "pageWeight": 398,
     "clubLimit": 1024,
-    "margin": 625,
+    "margin": 626,
     "scope": "Compressed document and response framing; excludes DNS, TCP/TLS setup and request headers."
   },
   "verification": {
@@ -41,11 +41,16 @@
     "http1AndHttp2Checks": 106,
     "aliasChecks": 12,
     "buildBrotliParameterTrials": 5988,
-    "serverImage": "onekb-nginx:20260922d",
+    "serverImage": "onekb-nginx:20260922f",
     "equivalentRenderChecks": 12,
     "liveBrowserChecks": 12,
     "html5Parsing": true,
-    "precompressedBrotliTests": 5
+    "precompressedBrotliTests": 5,
+    "tlsFlightRegressionCases": 20,
+    "selectedOpenSSLTests": 219,
+    "http1PersistenceChecks": 18,
+    "http2ProtocolChecks": 15,
+    "tlsFlightVerification": "measurements/tls-flight-20260922.json"
   },
   "brotliSource": "compression/index.html.br",
   "brotliOptimizer": "optimize-brotli.py"

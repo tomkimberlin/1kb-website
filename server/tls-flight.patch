@@ -1,0 +1,147 @@
+--- a/ssl/ssl_local.h
++++ b/ssl/ssl_local.h
+@@ -1298,6 +1298,9 @@
+     OSSL_STATEM statem;
+     SSL_EARLY_DATA_STATE early_data_state;
+     BUF_MEM *init_buf; /* buffer used during init */
++    /* Plaintext for one bounded initial TLS 1.3 server handshake flight. */
++    BUF_MEM *coalesced_flight;
++    int coalesced_finished;
+     void *init_msg; /* pointer to handshake message body, set by
+                      * tls_get_message_header() */
+     size_t init_num; /* amount read/written */
+--- a/ssl/ssl_lib.c
++++ b/ssl/ssl_lib.c
+@@ -610,6 +610,9 @@
+ 
+     BUF_MEM_free(sc->init_buf);
+     sc->init_buf = NULL;
++    BUF_MEM_free(sc->coalesced_flight);
++    sc->coalesced_flight = NULL;
++    sc->coalesced_finished = 0;
+     sc->first_packet = 0;
+ 
+     sc->key_update = SSL_KEY_UPDATE_NONE;
+@@ -1461,6 +1464,7 @@
+     dane_final(&s->dane);
+ 
+     BUF_MEM_free(s->init_buf);
++    BUF_MEM_free(s->coalesced_flight);
+ 
+     /* add extra stuff */
+     sk_SSL_CIPHER_free(s->cipher_list);
+--- a/ssl/statem/statem_lib.c
++++ b/ssl/statem/statem_lib.c
+@@ -56,6 +56,99 @@
+ }
+ 
+ /*
++ * Coalesce a bounded TLS 1.3 server handshake flight. Return 0 for the ordinary
++ * write path, 1 when
++ * this logical message has been accepted, and -1 for retry/error.
++ *
++ * Logical messages still pass through ssl3_do_write's original transcript
++ * accounting exactly once. Only the initial server flight is accumulated;
++ * the unchanged record writer must accept all bytes before Finished post-work
++ * can flush the BIO and switch traffic keys. The allocation never moves while
++ * the record layer can have a pending write.
++ */
++static int tls13_coalesce_initial_flight(SSL_CONNECTION *s, uint8_t type,
++    size_t *written)
++{
++    BUF_MEM *flight;
++    size_t n, sent = 0;
++    int ret, append = 0;
++    SSL *ssl = SSL_CONNECTION_GET_SSL(s);
++
++    if (s->coalesced_flight == NULL) {
++        if (type != SSL3_RT_HANDSHAKE
++            || s->statem.hand_state != TLS_ST_SW_ENCRYPTED_EXTENSIONS
++            || !s->server || !SSL_CONNECTION_IS_TLS13(s)
++            || SSL_IS_QUIC_HANDSHAKE(s)
++            || s->verify_mode != SSL_VERIFY_NONE
++            || s->ext.early_data != SSL_EARLY_DATA_NOT_SENT
++            || s->post_handshake_auth == SSL_PHA_REQUEST_PENDING
++            || (s->mode & SSL_MODE_ASYNC) != 0
++            || s->msg_callback != NULL
++            || s->statem.mutate_handshake_cb != NULL
++            || s->init_off != 0 || s->init_num <= 0
++            || s->init_num > SSL3_RT_MAX_PLAIN_LENGTH)
++            return 0;
++
++        flight = BUF_MEM_new();
++        if (flight == NULL
++            || !BUF_MEM_grow(flight, SSL3_RT_MAX_PLAIN_LENGTH)) {
++            BUF_MEM_free(flight);
++            SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_MALLOC_FAILURE);
++            return -1;
++        }
++        flight->length = 0;
++        s->coalesced_flight = flight;
++        s->coalesced_finished = 0;
++    }
++
++    flight = s->coalesced_flight;
++    n = (size_t)s->init_num;
++    if (type == SSL3_RT_HANDSHAKE && s->init_off == 0) {
++        switch (s->statem.hand_state) {
++        case TLS_ST_SW_ENCRYPTED_EXTENSIONS:
++        case TLS_ST_SW_CERT:
++        case TLS_ST_SW_COMP_CERT:
++        case TLS_ST_SW_CERT_VRFY:
++        case TLS_ST_SW_FINISHED:
++            append = n <= SSL3_RT_MAX_PLAIN_LENGTH - flight->length;
++            break;
++        default:
++            break;
++        }
++    }
++
++    /* On a Finished retry the message is already in the stable allocation. */
++    if (!s->coalesced_finished && append) {
++        memcpy(flight->data + flight->length,
++            s->init_buf->data + s->init_off, n);
++        flight->length += n;
++        if (s->statem.hand_state != TLS_ST_SW_FINISHED) {
++            *written = n;
++            return 1;
++        }
++        s->coalesced_finished = 1;
++    }
++
++    /* Overflow or an unexpected state flushes the prefix and falls back. */
++    ret = ssl3_write_bytes(ssl, SSL3_RT_HANDSHAKE, flight->data,
++        flight->length, &sent);
++    if (ret <= 0)
++        return -1;
++    if (sent != flight->length) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        return -1;
++    }
++
++    ret = s->coalesced_finished;
++    BUF_MEM_free(flight);
++    s->coalesced_flight = NULL;
++    s->coalesced_finished = 0;
++    if (ret)
++        *written = n;
++    return ret;
++}
++
++/*
+  * send s->init_buf in records of type 'type' (SSL3_RT_HANDSHAKE or
+  * SSL3_RT_CHANGE_CIPHER_SPEC)
+  */
+@@ -92,8 +185,10 @@
+         s->statem.write_in_progress = 1;
+     }
+ 
+-    ret = ssl3_write_bytes(ssl, type, &s->init_buf->data[s->init_off],
+-        s->init_num, &written);
++    ret = tls13_coalesce_initial_flight(s, type, &written);
++    if (ret == 0)
++        ret = ssl3_write_bytes(ssl, type, &s->init_buf->data[s->init_off],
++            s->init_num, &written);
+     if (ret <= 0)
+         return -1;
+     if (type == SSL3_RT_HANDSHAKE)

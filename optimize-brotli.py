@@ -49,6 +49,18 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
 ''' + old)
     path.write_text(text)
 
+    # Preserve shorter zero runs and adjust histogram smoothing so the
+    # resulting Huffman code trees take fewer bits to describe.
+    path = tree / 'c/enc/entropy_encode.c'
+    text = path.read_text()
+    for old, new in (
+        ('symbol == 0 && step >= 5', 'symbol == 0 && step >= 3'),
+        ('limit += 120;', 'limit += 512;'),
+    ):
+        assert text.count(old) == 1
+        text = text.replace(old, new)
+    path.write_text(text)
+
     library = root / 'encoder.so'
     compiler = shlex.split(os.environ.get('CC', 'cc'))
     sources = sorted((tree / 'c/common').glob('*.c')) + sorted((tree / 'c/enc').glob('*.c'))

@@ -2,7 +2,11 @@
 
 This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The server runs in Docker on Unraid. Cloudflare provides DNS; visitors connect directly to nginx.
 
-The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result. The image build runs [compression checks](../tools/verify-certificate-compression.c), including round trips and output-buffer limits, before copying the libraries into the runtime image.
+The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result.
+
+Image `onekb-nginx:20260922f` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
+
+The image build runs [certificate-compression checks](../tools/verify-certificate-compression.c) and the [20-case TLS regression harness](../tools/verify-tls-flight.c) before copying the libraries into the runtime image. The harness verifies complete handshakes and application data, including forced write retries, record-size limits, resumption, pending-buffer cleanup and allocation-failure alerts. The patched OpenSSL library also passed 219 tests across 23 selected upstream recipes; the complete upstream suite is not claimed.
 
 ## Hosting a copy
 
@@ -36,7 +40,7 @@ The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public
 Build the server image on the Docker host from the repository root:
 
 ```sh
-docker build -t onekb-nginx:20260922d -f server/Dockerfile .
+docker build -t onekb-nginx:20260922f -f server/Dockerfile .
 ```
 
 [start.sh](start.sh) launches the container using the configured paths, page files and initial certificates. The supplied [Unraid template](unraid-template.xml) provides the same mounts and port mappings for Unraid's container interface.
