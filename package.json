@@ -11,7 +11,7 @@
     "check": "node --check build.mjs && node --check optimize.mjs && node --check tools/check-measurements.mjs && node --check tools/verify-page.mjs && node --check server/site.js && node --check server/verify.mjs && node --check server/verify-alias.mjs && node --check server/verify-response.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh && sh -n server/cache-certificates.sh && bash -n server/update-dns.sh",
     "verify:live": "node server/verify.mjs",
     "verify:alias": "node server/verify-alias.mjs",
-    "check:measurements": "node --test tools/check-measurements.test.mjs && node tools/check-measurements.mjs measurements/page-20260926-local.json measurements/gallery-20260922.json",
+    "check:measurements": "node --test tools/check-measurements.test.mjs && node tools/check-measurements.mjs --build-only measurements/page-20260926-link-label.json measurements/gallery-20260922.json",
     "check:python": "python3 -m compileall -q optimize-brotli.py optimize-gzip.py tools",
     "test:probes": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
     "test:browser:guards": "node --test tools/verify-page.test.mjs"

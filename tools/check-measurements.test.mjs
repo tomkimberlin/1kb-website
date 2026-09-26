@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {copyFileSync, readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, dirname} from 'node:path';
@@ -15,17 +16,29 @@ function fixture(t) {
     mkdirSync(dirname(target),{recursive:true});
     copyFileSync(new URL('../'+file,import.meta.url),target);
   }
+  // Synthetic validator fixture: rebind the recorded matrix to these test bytes.
+  // This exercises provenance checks; it does not create new browser evidence.
+  const hash=file=>createHash('sha256').update(readFileSync(join(directory,file))).digest('hex');
+  changeJson(directory,page,data=>{
+    for(const [key,file] of Object.entries({html:'index.html',brotli:'index.html.br',gzip:'index.html.gz',deflate:'index.html.deflate'})) {
+      data[key]=readFileSync(join(directory,'public',file)).length;
+      data[key+'Sha256']=hash('public/'+file);
+    }
+    data.verification.browserCandidateSha256=data.htmlSha256;
+  });
+  const readme=join(directory,'README.md');
+  writeFileSync(readme,readFileSync(readme,'utf8')+'\n[Test browser fixture]('+page+')\n');
   return directory;
 }
-function check(directory) {
-  return spawnSync(process.execPath,['tools/check-measurements.mjs',page,gallery],{cwd:directory,encoding:'utf8'});
+function check(directory,buildOnly=false) {
+  return spawnSync(process.execPath,['tools/check-measurements.mjs',...(buildOnly?['--build-only']:[]),page,gallery],{cwd:directory,encoding:'utf8'});
 }
 function changeJson(directory,file,mutate) {
   const path=join(directory,file),data=JSON.parse(readFileSync(path));
   mutate(data);
   writeFileSync(path,JSON.stringify(data));
 }
-test('current local build and dated gallery evidence agree with their Markdown tables',t=>{
+test('valid browser evidence fixture and dated gallery agree with their Markdown tables',t=>{
   const result=check(fixture(t));
   assert.equal(result.status,0,result.stderr);
 });
@@ -156,4 +169,28 @@ test('browser claims require the complete unique successful matrix',t=>{
     assert.notEqual(result.status,0,name);
     assert.match(result.stderr,/Browser matrix|Browser case/);
   }
+});
+
+
+test('build-only mode requires honest scope, rejects browser claims and still checks body hashes',t=>{
+  const directory=fixture(t);
+  changeJson(directory,page,data=>{data.scope='local build';delete data.verification;});
+  const valid=check(directory,true);
+  assert.equal(valid.status,0,valid.stderr);
+  assert.match(valid.stdout,/browser equivalence is not claimed/);
+  const strict=check(directory);
+  assert.notEqual(strict.status,0);
+  assert.match(strict.stderr,/Missing browser verification/);
+  changeJson(directory,page,data=>{data.scope='browser equivalence';});
+  const scope=check(directory,true);
+  assert.notEqual(scope.status,0);
+  assert.match(scope.stderr,/explicitly use local build scope/);
+  changeJson(directory,page,data=>{data.scope='local build';data.verification={};});
+  const claims=check(directory,true);
+  assert.notEqual(claims.status,0);
+  assert.match(claims.stderr,/must not carry browser equivalence/);
+  changeJson(directory,page,data=>{delete data.verification;data.gzipSha256='0'.repeat(64);});
+  const stale=check(directory,true);
+  assert.notEqual(stale.status,0);
+  assert.match(stale.stderr,/Stale gzip measurement/);
 });

@@ -1,0 +1,64 @@
+{
+  "measuredAt": "2026-09-26T18:49:00.835Z",
+  "url": "https://tomkimberlin.com/",
+  "scope": "local build",
+  "deploymentStatus": "not deployed",
+  "baselineCommit": "c4d4839b3a12565dc544cfd0a9d7ade728213239",
+  "change": "Move the existing word my into the GitHub anchor. Visible sentence and destination unchanged; link color, underline and focus extent intentionally expand.",
+  "previousMeasurement": "measurements/page-20260926-local.json",
+  "html": 743,
+  "htmlSha256": "bafb7b3ab3b7a66fd75b752f1ea701281a0e763cfbc48dd531a9d310c64a3763",
+  "brotli": 321,
+  "brotliSha256": "26453dba09e44c867ead3c4ddf122c78daf34e2d29afca3145dfed0ea011111e",
+  "gzip": 468,
+  "gzipSha256": "12f96fab7d73f5de6c6e27becc360baa7d066f78e29a361f9c615fb43386504d",
+  "deflate": 456,
+  "deflateSha256": "f28d8f9267d76c8d5aa0763da185cd275f41953fc0509b16534185f243279486",
+  "browserSpotChecks": [
+    {
+      "engine": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "width": 320,
+      "githubLinkText": "my GitHub",
+      "unchangedVisibleText": true,
+      "unchangedLinkPaths": 9,
+      "horizontalOverflow": false,
+      "focusable": true,
+      "externalRequests": 0
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "151.0.7922.34",
+      "width": 1440,
+      "githubLinkText": "my GitHub",
+      "unchangedVisibleText": true,
+      "unchangedLinkPaths": 9,
+      "horizontalOverflow": false,
+      "focusable": true,
+      "externalRequests": 0
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.5",
+      "width": 320,
+      "githubLinkText": "my GitHub",
+      "unchangedVisibleText": true,
+      "unchangedLinkPaths": 9,
+      "horizontalOverflow": false,
+      "focusable": true,
+      "externalRequests": 0
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.5",
+      "width": 1440,
+      "githubLinkText": "my GitHub",
+      "unchangedVisibleText": true,
+      "unchangedLinkPaths": 9,
+      "horizontalOverflow": false,
+      "focusable": true,
+      "externalRequests": 0
+    }
+  ],
+  "note": "These are focused checks of the intentional link edit, not pixel-equivalence claims against the published page. Existing dated browser, runtime and transport snapshots remain unchanged."
+}

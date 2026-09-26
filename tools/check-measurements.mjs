@@ -1,9 +1,13 @@
-// Browser measurements follow the build; the gallery remains a dated snapshot.
+// Measurements follow the build; the gallery remains a dated snapshot.
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import assert from 'node:assert/strict';
 
-const [browserPath,galleryPath]=process.argv.slice(2);
+const args=process.argv.slice(2);
+const buildOnly=args[0]==='--build-only';
+if(buildOnly)args.shift();
+assert.equal(args.length,2,'Usage: check-measurements.mjs [--build-only] PAGE GALLERY');
+const [browserPath,galleryPath]=args;
 const read=path=>JSON.parse(readFileSync(path,'utf8'));
 const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
 const browser=read(browserPath),gallery=read(galleryPath),build=read('build-report.json');
@@ -23,27 +27,32 @@ const encodings={br:'index.html.br',deflate:'index.html.deflate',gzip:'index.htm
 assert.deepEqual(Object.keys(preloaded).sort(),Object.keys(encodings).sort(),'Preload map must contain exactly four representations');
 for(const [encoding,file] of Object.entries(encodings))
   assert.equal(preloaded[encoding],readFileSync('public/'+file).toString('base64'),'Stale or malformed preloaded '+encoding);
-// Browser evidence belongs to these exact source bytes and verifier/handler
-// versions. Updating only the build hashes must not refresh older browser claims.
-const verification=browser.verification;
-assert.ok(verification,'Missing browser verification');
-assert.equal(verification.browserVerifierSha256,hash('tools/verify-page.mjs'),'Stale browser verifier');
-assert.equal(verification.handlerSha256,hash('server/site.js'),'Stale browser handler');
-assert.equal(verification.browserCandidateSha256,browser.htmlSha256,'Browser candidate hash does not match the measured build');
-assert.match(verification.browserBaselineSha256??'',/^[0-9a-f]{64}$/,'Browser baseline hash is missing or invalid');
-assert.equal(verification.browserBaselineSha256,read(browser.publishedMeasurement).htmlSha256,'Browser baseline hash does not match the dated page snapshot');
-const matrix=['chromium','webkit'].flatMap(engine=>[320,402,768,1440].flatMap(width=>['light','dark'].map(theme=>`${engine}-${width}-${theme}`)));
-const comparisons=verification.browserComparisons;
-assert.ok(Array.isArray(comparisons),'Browser matrix is missing');
-assert.deepEqual(comparisons.map(({engine,width,theme})=>`${engine}-${width}-${theme}`).sort(),matrix.sort(),'Browser matrix must contain all 16 unique cases');
-for(const entry of comparisons) {
-  const name=`${entry.engine}-${entry.width}-${entry.theme}`;
-  const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,
-    keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
-    keyboardProbeRequests:9,unexpectedRequests:0,externalRequestsBlocked:true};
-  for(const [key,value] of Object.entries(expected))assert.equal(entry[key],value,'Browser case '+name+': '+key);
-  assert.ok(typeof entry.browserVersion==='string'&&entry.browserVersion.trim(),'Browser case '+name+': missing browser version');
-  assert.ok(['Tab','Alt+Tab'].includes(entry.focusKey),'Browser case '+name+': unsupported keyboard probe');
+if(buildOnly) {
+  assert.equal(browser.scope,'local build','Build-only evidence must explicitly use local build scope');
+  assert.ok(!Object.hasOwn(browser,'verification'),'Build-only evidence must not carry browser equivalence verification');
+} else {
+  // Browser evidence belongs to these exact source bytes and verifier/handler
+  // versions. Updating only the build hashes must not refresh older browser claims.
+  const verification=browser.verification;
+  assert.ok(verification,'Missing browser verification');
+  assert.equal(verification.browserVerifierSha256,hash('tools/verify-page.mjs'),'Stale browser verifier');
+  assert.equal(verification.handlerSha256,hash('server/site.js'),'Stale browser handler');
+  assert.equal(verification.browserCandidateSha256,browser.htmlSha256,'Browser candidate hash does not match the measured build');
+  assert.match(verification.browserBaselineSha256??'',/^[0-9a-f]{64}$/,'Browser baseline hash is missing or invalid');
+  assert.equal(verification.browserBaselineSha256,read(browser.publishedMeasurement).htmlSha256,'Browser baseline hash does not match the dated page snapshot');
+  const matrix=['chromium','webkit'].flatMap(engine=>[320,402,768,1440].flatMap(width=>['light','dark'].map(theme=>`${engine}-${width}-${theme}`)));
+  const comparisons=verification.browserComparisons;
+  assert.ok(Array.isArray(comparisons),'Browser matrix is missing');
+  assert.deepEqual(comparisons.map(({engine,width,theme})=>`${engine}-${width}-${theme}`).sort(),matrix.sort(),'Browser matrix must contain all 16 unique cases');
+  for(const entry of comparisons) {
+    const name=`${entry.engine}-${entry.width}-${entry.theme}`;
+    const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,
+      keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
+      keyboardProbeRequests:9,unexpectedRequests:0,externalRequestsBlocked:true};
+    for(const [key,value] of Object.entries(expected))assert.equal(entry[key],value,'Browser case '+name+': '+key);
+    assert.ok(typeof entry.browserVersion==='string'&&entry.browserVersion.trim(),'Browser case '+name+': missing browser version');
+    assert.ok(['Tab','Alt+Tab'].includes(entry.focusKey),'Browser case '+name+': unsupported keyboard probe');
+  }
 }
 
 const readme=readFileSync('README.md','utf8'),comparison=readFileSync('COMPARISON.md','utf8');
@@ -92,4 +101,6 @@ for(const summary of gallery.summary) {
   assert.equal(bytes(cells(row)[1]),summary.tls_median,'Stale comparison TLS median: '+summary.url);
   assert.equal(bytes(cells(row)[2]),summary.total_median,'Stale comparison total median: '+summary.url);
 }
-console.log('Page measurements, browser provenance and all 16 comparisons match the build; README and dated gallery hashes, totals, medians, ranges and table are consistent.');
+console.log(buildOnly
+  ? 'Local build measurements, README and dated gallery hashes, totals, medians, ranges and table are consistent; browser equivalence is not claimed.'
+  : 'Page measurements, browser provenance and all 16 comparisons match the build; README and dated gallery hashes, totals, medians, ranges and table are consistent.');
