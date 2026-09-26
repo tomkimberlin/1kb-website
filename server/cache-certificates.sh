@@ -5,7 +5,7 @@ set -eu
 umask 077
 base=/mnt/user/appdata/onekb-website
 release=${1:-$base/tls/current}
-image=onekb-certificate-optimizer:20260922g
+image=onekb-certificate-optimizer:20260926a
 container=onekb-certificate-cache-$$-$(date +%s)
 cleanup() { timeout -k 1 3 docker rm -f "$container" >/dev/null 2>&1 || :; }
 trap cleanup EXIT

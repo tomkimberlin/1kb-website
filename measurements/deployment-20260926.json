@@ -1,0 +1,389 @@
+{
+  "verifiedAt": "2026-09-26T19:01:11.833482+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "Alfred production deployment and public endpoint verification",
+  "pageCommit": "1c25c14c658a9927e5c7747b77f2996f306ead7d",
+  "pageRelease": "releases/20260926T185119Z-bafb7b3ab3b7-onekb-deploy.csU1rb",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 743,
+      "sha256": "bafb7b3ab3b7a66fd75b752f1ea701281a0e763cfbc48dd531a9d310c64a3763",
+      "status": 200,
+      "cacheControl": "max-age=86400"
+    },
+    {
+      "encoding": "br",
+      "bytes": 321,
+      "sha256": "26453dba09e44c867ead3c4ddf122c78daf34e2d29afca3145dfed0ea011111e",
+      "status": 200,
+      "cacheControl": "max-age=86400"
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 468,
+      "sha256": "12f96fab7d73f5de6c6e27becc360baa7d066f78e29a361f9c615fb43386504d",
+      "status": 200,
+      "cacheControl": "max-age=86400"
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 456,
+      "sha256": "f28d8f9267d76c8d5aa0763da185cd275f41953fc0509b16534185f243279486",
+      "status": 200,
+      "cacheControl": "max-age=86400"
+    }
+  ],
+  "runtimeImage": {
+    "tag": "onekb-nginx:20260926a",
+    "id": "sha256:23bb9fbc651c76e8524270066f463ce798a6c15abb13e70b9ed11477ec783691",
+    "startedAt": "2026-09-26T18:57:57.431774787Z",
+    "running": true
+  },
+  "certificateOptimizerImage": {
+    "tag": "onekb-certificate-optimizer:20260926a",
+    "id": "sha256:c522f49d85e03fe8ffda159f1a74caa4a985807411a8d1efa6cefff2d79579b7"
+  },
+  "buildProvenance": {
+    "baseCommit": "1c25c14c658a9927e5c7747b77f2996f306ead7d",
+    "inputSha256": {
+      "server/Dockerfile": "48dff43bc56efdd7a5b171e1cca3c5df80ad92aab1501e520c7ac72a96678325",
+      "server/certificate-compression.patch": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44",
+      "server/tls-flight.patch": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0",
+      "server/small-responses.patch": "08fb57eba519c72f9b73dc96c0c2bff2acebf071cc8760e25b1750a6bffb64e9",
+      "server/certificate-cache.patch": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+      "tools/verify-certificate-compression.c": "76c45a0bd8bd46367a58b981f2aad61d2feb983bd29f4107682b563a9a8a483a",
+      "tools/verify-tls-flight.c": "d1b950344b13338c637329f470e72064c24fee88bc3c62cb77b75627e5d76180",
+      "tools/verify-certificate-cache.c": "69f010d757afeb562af4d9980454788239a2d40467d448317f193c730320f406",
+      "tools/fixtures/certificate-cache.pem": "e5cf549607d0f13e295f103f6b888bafe5a420502298af9dbceee0f5d1a1a399",
+      "tools/fixtures/certificate-cache.br": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+      "tools/optimize-certificates.py": "87927711d4a946e53ebdcc1245f2a8e711e518d654e3840e65d3bba6cd756dec"
+    },
+    "note": "The TLS test harness adds ASYNC_is_capable() gating after the first Alpine build exposed unsupported async jobs. The actual build inputs above were verified against Alfred. Startup and optimizer tags are bound separately below."
+  },
+  "installedFiles": {
+    "server/start.sh": {
+      "sha256": "6edd2577bb72b94fb310c9a505c37c3a43ed2a298ba06ecb4f4532c82d74326a",
+      "destination": "/mnt/user/appdata/onekb-website/bin/start.sh"
+    },
+    "server/cache-certificates.sh": {
+      "sha256": "914921c5883e91646026c05bc553d269b87d32c99cce0aef1eccdd08ac80a532",
+      "destination": "/mnt/user/appdata/onekb-website/bin/cache-certificates.sh"
+    },
+    "server/publish-certificates.sh": {
+      "sha256": "39ea021b90add49b991ea83e69b48c27737d96f325885d16b6a0dc763bf753a3",
+      "destination": "/mnt/user/appdata/onekb-website/bin/publish-certificates.sh"
+    },
+    "server/unraid-template.xml": {
+      "sha256": "fc6147208cf55dde748efc9462fd7bae05a0a462bd55a26feedf65aca1c41167",
+      "destination": "/boot/config/plugins/dockerMan/templates-user/my-onekb-website.xml"
+    }
+  },
+  "checks": {
+    "http11AndHttp2": 118,
+    "aliasRedirects": 12,
+    "aliasFollowExactBrotli": true,
+    "http3": 36,
+    "http1FramingAndPersistence": 21,
+    "certificatePublisherValidation": "passed; current certificate fingerprint unchanged",
+    "nginxConfiguration": "passed before activation and after cache refresh",
+    "publicCertificateTrust": "curl/browser trust validation and aioquic; HTTP/1 framing probe used certifi CA bundle because bundled Python could not find the issuing CA using its default trust paths"
+  },
+  "browserChecks": {
+    "checkedAt": "2026-09-26T18:53:30.421Z",
+    "checks": [
+      {
+        "engine": "chromium",
+        "version": "151.0.7922.34",
+        "url": "https://tomkimberlin.com/",
+        "status": 200,
+        "githubLinkText": "my GitHub",
+        "linkCount": 9,
+        "horizontalOverflow": false,
+        "contentEncoding": "br"
+      },
+      {
+        "engine": "webkit",
+        "version": "26.5",
+        "url": "https://tomkimberlin.com/",
+        "status": 200,
+        "githubLinkText": "my GitHub",
+        "linkCount": 9,
+        "horizontalOverflow": false,
+        "contentEncoding": "br"
+      }
+    ]
+  },
+  "browserCheckTiming": "Fresh browser checks ran after page deployment; protocol checks and exact public representation checks were repeated after runtime activation and certificate-cache refresh.",
+  "linuxImageChecks": {
+    "tls": [
+      {
+        "case": "normal",
+        "records": 1,
+        "max_encrypted_payload": 437,
+        "want_write": 0,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": true
+      },
+      {
+        "case": "brotli-compressed-certificate",
+        "records": 1,
+        "max_encrypted_payload": 727,
+        "want_write": 52,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 1,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "hello-retry-request",
+        "records": 1,
+        "max_encrypted_payload": 436,
+        "want_write": 16,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 2,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "tiny-bio",
+        "records": 1,
+        "max_encrypted_payload": 436,
+        "want_write": 47,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": true
+      },
+      {
+        "case": "large-cert-tiny-bio",
+        "records": 1,
+        "max_encrypted_payload": 8465,
+        "want_write": 42,
+        "pending_flight_retries": 21,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": true
+      },
+      {
+        "case": "large-cert-4k-bio",
+        "records": 1,
+        "max_encrypted_payload": 8464,
+        "want_write": 2,
+        "pending_flight_retries": 1,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "overflow-cert",
+        "records": 5,
+        "max_encrypted_payload": 16401,
+        "want_write": 90,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 110,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": true
+      },
+      {
+        "case": "max-send-fragment-512",
+        "records": 17,
+        "max_encrypted_payload": 529,
+        "want_write": 179,
+        "pending_flight_retries": 127,
+        "wrapper_bytes": 374,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "peer-max-fragment-512",
+        "records": 17,
+        "max_encrypted_payload": 529,
+        "want_write": 179,
+        "pending_flight_retries": 127,
+        "wrapper_bytes": 374,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "partial-write-mode",
+        "records": 1,
+        "max_encrypted_payload": 8465,
+        "want_write": 173,
+        "pending_flight_retries": 87,
+        "wrapper_bytes": 22,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "server-msg-callback",
+        "records": 4,
+        "max_encrypted_payload": 316,
+        "want_write": 48,
+        "pending_flight_retries": 0,
+        "wrapper_bytes": 88,
+        "compressed_certificate_messages": 0,
+        "server_hellos": 1,
+        "verified": true,
+        "reuse": false
+      },
+      {
+        "case": "pending-finished-clear-reuse",
+        "verified": true
+      },
+      {
+        "case": "pending-finished-free",
+        "verified": true
+      },
+      {
+        "case": "excluded-tls12",
+        "verified": true
+      },
+      {
+        "case": "excluded-client-auth",
+        "records": 5,
+        "verified": true
+      },
+      {
+        "case": "excluded-async-mode",
+        "skipped": true,
+        "reason": "OpenSSL async jobs unsupported on this platform"
+      },
+      {
+        "case": "resumption",
+        "records": 1,
+        "wrapper_bytes": 22,
+        "verified": true
+      },
+      {
+        "case": "excluded-early-data-rejected",
+        "records": 2,
+        "early_data_verified": true,
+        "verified": true
+      },
+      {
+        "case": "excluded-early-data-accepted",
+        "records": 2,
+        "early_data_verified": true,
+        "verified": true
+      },
+      {
+        "case": "resumed-padded-ee-retry",
+        "records": 1,
+        "pending_flight_retries": 81,
+        "verified": true
+      },
+      {
+        "case": "allocation-fault-1",
+        "fault_fired": true,
+        "client_alert": true,
+        "clear_reuse": true,
+        "fresh_connection": true,
+        "verified": true
+      },
+      {
+        "case": "allocation-fault-2",
+        "fault_fired": true,
+        "client_alert": true,
+        "clear_reuse": true,
+        "fresh_connection": true,
+        "verified": true
+      },
+      {
+        "case": "allocation-fault-3",
+        "fault_fired": true,
+        "client_alert": true,
+        "clear_reuse": true,
+        "fresh_connection": true,
+        "verified": true
+      }
+    ],
+    "certificateCompressionSyntheticCases": 39,
+    "certificateCompressionAllocationFailures": 2,
+    "certificateCacheAllocationSummary": {
+      "allocation_sites": 41,
+      "fault_checks": 82,
+      "baseline_fallbacks": 80,
+      "safe_candidate_successes": 2,
+      "failed_install_allocations": 4,
+      "decoder_fault_checks": 2
+    },
+    "note": "Compression checks passed in the first build and their successful Docker layer was reused. Final image construction also completed all cache checks. Alpine reports async jobs unsupported; the newly compiled macOS harness still passed all 23 cases."
+  },
+  "certificateCache": {
+    "release": "releases/60fbef93c2d3ea8b8d2ce914d5a030b0325c222dddcecd8f1fd2940ee337b808",
+    "refreshed": [
+      {
+        "output": "/out/7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd.br",
+        "inputBytes": 2215,
+        "brotliBytes": 1478,
+        "brotliSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+        "retainedExisting": true
+      },
+      {
+        "output": "/out/eab3bafa21afe984600b6475da3f891f6453dc4e8efc5e0be6ac0d71fee8ea20.br",
+        "inputBytes": 2220,
+        "brotliBytes": 1497,
+        "brotliSha256": "c652c68be87b893bf5dae28167957d84d3fce02d9fd28ab38d7d9696d6b9e69a",
+        "retainedExisting": false
+      },
+      {
+        "output": "/out/4996c8463f757d001bf3384d757eae8dca72e75eea56c0a18d850b1f4c9b7c1e.br",
+        "inputBytes": 2216,
+        "brotliBytes": 1488,
+        "brotliSha256": "15d216d857b67704d8939e27ef1040de4fc2720b343ff12995eab15a96013693",
+        "retainedExisting": false
+      }
+    ],
+    "nginxReloaded": true,
+    "note": "Only optional compressed public certificate messages changed. Certificates and private keys were preserved."
+  },
+  "rollback": {
+    "previousImage": "onekb-nginx:20260922g",
+    "previousImageId": "sha256:7890a9b34ed3f654415298960d0a48c78293f7b1ede53c289e537b5d11f44fb8",
+    "container": "onekb-website-rollback-20260926a",
+    "containerStatus": "stopped; automatic restart disabled",
+    "backupDirectory": "/mnt/user/appdata/onekb-website/backups/deployment-20260926a",
+    "previousPageRelease": "releases/20260922T211152Z-e7b5ae1a0b13"
+  },
+  "evidenceSha256": {
+    "runtime-build.log": "6f685d1465558ac991fb2ef44217b1a42608f62701bc732a6cb7d1a92ef5f9b6",
+    "runtime-build-first-attempt.log": "6fced3b677dd4b62ac3ee7d4e49bc780ee2f1f85b934cf8dcd468378ff5b073f",
+    "optimizer-build.log": "5a1010ef53152b7250904388fa4658caa6d265e8382e7f5a13560ab01c6af0e1",
+    "certificate-refresh.log": "c93f058daa29f1636eb6c8a984e54af0952147d87849750ecb93c659ab4c4f04",
+    "http12.log": "53aaccef7fa016ab0e4ffab0a328ca07383e5e71d29b4082c2df909aee321696",
+    "alias.log": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9",
+    "http3.json": "e306d684cd2f0968cd37cbf6a7c546490dd04971b7fc33d2fa097982ec80bfef",
+    "http1-framing.json": "6cdb6bb694f090fee3319793191abf362cae5ce9a2d44dc993c334c79cc57e27",
+    "browser.json": "f89a7b899758ed05d8628fd0fba5d33209183115aabac5c2dd5cce7935b4e4db",
+    "activate.sh": "44f0c2354f8ca0e2455182069c2caa1b0249666ecc34035a5d7c4224c2e46815"
+  },
+  "limitations": [
+    "The September 22 DebugBear 400-byte result has not been remeasured.",
+    "The 4.19x throughput result remains a local loopback benchmark, not a production capacity measurement.",
+    "Existing browser caches can retain the previous HTML for up to 86400 seconds; a fresh query string bypasses that cache.",
+    "Certificate publisher validation ran successfully, but this deployment did not force an ACME renewal."
+  ]
+}
