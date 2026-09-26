@@ -52,6 +52,7 @@ RUN python3 /opt/optimize-certificates.py --build-encoder /opt/onekb-encoder.so
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS certificate-optimizer
 RUN apk add --no-cache python3
 COPY --from=certificate-encoder /opt/onekb-encoder.so /opt/onekb-encoder.so
+COPY --from=certificate-encoder /opt/onekb-encoder.so.json /opt/onekb-encoder.so.json
 COPY tools/optimize-certificates.py /opt/optimize-certificates.py
 ENTRYPOINT ["python3","/opt/optimize-certificates.py","--encoder","/opt/onekb-encoder.so"]
 

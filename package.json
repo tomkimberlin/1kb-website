@@ -4,11 +4,16 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node build.mjs && node --test server/site.test.mjs",
+    "test": "node build.mjs && node --test server/site.test.mjs tools/optimize.test.mjs tools/verify-http.test.mjs",
+    "test:optimizers": "python3 tools/test_optimizer_output.py -v",
+    "test:browser": "node tools/verify-page.mjs",
     "deploy": "sh server/deploy.sh",
-    "check": "node --check build.mjs && node --check optimize.mjs && node --check tools/check-measurements.mjs && node --check server/site.js && node --check server/verify.mjs && node --check server/verify-alias.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh && sh -n server/cache-certificates.sh && bash -n server/update-dns.sh",
+    "check": "node --check build.mjs && node --check optimize.mjs && node --check tools/check-measurements.mjs && node --check tools/verify-page.mjs && node --check server/site.js && node --check server/verify.mjs && node --check server/verify-alias.mjs && node --check server/verify-response.mjs && sh -n server/start.sh && sh -n server/deploy.sh && sh -n server/publish-certificates.sh && sh -n server/cache-certificates.sh && bash -n server/update-dns.sh",
     "verify:live": "node server/verify.mjs",
     "verify:alias": "node server/verify-alias.mjs",
-    "check:measurements": "node tools/check-measurements.mjs measurements/page-20260922.json measurements/gallery-20260922.json"
+    "check:measurements": "node --test tools/check-measurements.test.mjs && node tools/check-measurements.mjs measurements/page-20260926-local.json measurements/gallery-20260922.json",
+    "check:python": "python3 -m compileall -q optimize-brotli.py optimize-gzip.py tools",
+    "test:probes": "python3 -m unittest discover -s tools -p 'test_*.py' -v",
+    "test:browser:guards": "node --test tools/verify-page.test.mjs"
   }
 }

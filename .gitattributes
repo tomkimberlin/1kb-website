@@ -1,1 +1,3 @@
 *.patch whitespace=-blank-at-eol
+# The HTML's final space is part of its measured compressed representation.
+index.html whitespace=-blank-at-eol

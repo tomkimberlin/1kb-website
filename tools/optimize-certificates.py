@@ -20,13 +20,28 @@ REVISION = '028fb5a23661f123017c060daa546b55cf4bde29'  # Brotli 1.2.0
 ARCHIVE_SHA256 = '0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f'
 URL = f'https://codeload.github.com/google/brotli/tar.gz/{REVISION}'
 PARAMS = {0: 0, 1: 11, 2: 16, 4: 0, 7: 1, 8: 18}
-MODEL = {'distanceSeed': 1, 'literalScale': 0.91, 'commandScale': 1.1,
+MODEL = {'distanceSeed': 1, 'literalScale': 0.9, 'commandScale': 1.02, 'distanceScale': 1.1,
          'histogramStreakLimit': 1536, 'histogramBias': 128,
          'zeroRunThreshold': 7, 'nonzeroEntryThreshold': 16}
 
 
 def validate_der(der):
-    # OpenSSL's X.509 parser accepts certificates here, never private keys.
+    # OpenSSL permits trailing data and some BER length forms. Certificate
+    # entries must contain exactly one DER SEQUENCE before semantic parsing.
+    invalid = 'Certificate must be one complete DER SEQUENCE with a minimal definite length'
+    if len(der) < 2 or der[0] != 0x30:
+        raise ValueError(invalid)
+    length, offset = der[1], 2
+    if length & 0x80:
+        count = length & 0x7f
+        if not count or offset + count > len(der) or der[offset] == 0:
+            raise ValueError(invalid)
+        length = int.from_bytes(der[offset:offset+count], 'big')
+        offset += count
+        if length < 128:
+            raise ValueError(invalid)
+    if offset + length != len(der):
+        raise ValueError(invalid)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations(cadata=ssl.DER_cert_to_PEM_cert(der))
 
@@ -94,10 +109,12 @@ def build_encoder(root, library, archive_path):
     text = replace(text, old, '''    {
       size_t j;
       for (j = 0; j <= num_bytes; ++j)
-        model->literal_costs_[j] *= 0.91f;
+        model->literal_costs_[j] *= 0.9f;
       for (j = 0; j < BROTLI_NUM_COMMAND_SYMBOLS; ++j)
-        model->cost_cmd_[j] *= 1.1f;
-      model->min_cost_cmd_ *= 1.1f;
+        model->cost_cmd_[j] *= 1.02f;
+      model->min_cost_cmd_ *= 1.02f;
+      for (j = 0; j < params->dist.alphabet_size_limit; ++j)
+        model->cost_dist_[j] *= 1.1f;
     }
 ''' + old)
     path.write_text(text)
@@ -202,13 +219,76 @@ def atomic_write(path, data):
             temporary.unlink(missing_ok=True)
 
 
+def require_distinct_outputs(outputs, inputs):
+    protected = list(inputs)
+    for output in outputs:
+        for source in protected:
+            if output.resolve() == source.resolve() or (output.exists() and source.exists() and output.samefile(source)):
+                raise ValueError(f'Output {output} aliases an input or another output: {source}')
+        protected.append(output)
+
+
+def encoder_provenance(library):
+    return {'brotliRevision': REVISION, 'archiveSha256': ARCHIVE_SHA256,
+            'params': {str(key): value for key, value in PARAMS.items()}, 'model': MODEL,
+            'encoderSha256': hashlib.sha256(library.read_bytes()).hexdigest(),
+            'decoder': 'unmodified Brotli 1.2.0 decoder'}
+
+
+def load_encoder_provenance(library):
+    manifest = Path(str(library) + '.json')
+    try:
+        recorded = json.loads(manifest.read_text())
+    except (OSError, ValueError) as error:
+        raise ValueError('Missing or invalid encoder manifest; use --build-encoder to produce the library and its .json file') from error
+    expected = encoder_provenance(library)
+    if not isinstance(recorded, dict) or any(recorded.get(key) != value for key, value in expected.items()):
+        raise ValueError('Encoder manifest does not match the library checksum or pinned recipe; rebuild with --build-encoder')
+    return recorded
+
+
+def publish_encoded(source, encoded, output, metadata, lib):
+    decode_exact(encoded, source, lib)
+    retained, reproduced = False, True
+    if output.exists():
+        existing = output.read_bytes()
+        if len(existing) <= len(encoded):
+            try:
+                decode_exact(existing, source, lib)
+            except RuntimeError:
+                pass
+            else:
+                reproduced = existing == encoded
+                encoded, retained = existing, True
+    facts = {key: metadata[key] for key in ('inputFormat', 'inputSha256', 'inputBytes', 'certificates')}
+    facts.update(brotliSha256=hashlib.sha256(encoded).hexdigest(), brotliBytes=len(encoded))
+    manifest = output.with_suffix('.json')
+    if retained:
+        try:
+            previous = json.loads(manifest.read_text())
+        except (OSError, ValueError):
+            previous = None
+        if isinstance(previous, dict) and all(previous.get(key) == value for key, value in facts.items()):
+            return encoded, previous, retained
+        # A different encoder may have found the retained bytes. Do not assign
+        # this run's model to them when matching provenance is unavailable.
+        if not reproduced:
+            metadata = {**facts, 'encoderProvenance': 'Unknown; retained an existing exact candidate',
+                        'validatedWithEncoderSha256': metadata['encoderSha256']}
+    metadata = {**metadata, **facts}
+    if not retained:
+        atomic_write(output, encoded)
+    atomic_write(manifest, (json.dumps(metadata, indent=2) + '\n').encode())
+    return encoded, metadata, retained
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('input', nargs='?', type=Path, help='Public Certificate body without its four-byte handshake header.')
     parser.add_argument('--pem', type=Path, help='Public fullchain PEM; constructs a Certificate body with empty context and entry extensions.')
     parser.add_argument('--archive', type=Path, help='Already downloaded pinned Brotli source archive.')
     parser.add_argument('--build-encoder', type=Path, help='Compile the encoder/standard-decoder library once to this path; a C compiler is required.')
-    parser.add_argument('--encoder', type=Path, help='Load a library previously produced by --build-encoder, without compiling or downloading.')
+    parser.add_argument('--encoder', type=Path, help='Load a library and its checksum-bound .json manifest previously produced by --build-encoder, without compiling or downloading.')
     parser.add_argument('--output', '--output-dir', dest='output_dir', type=Path, default=Path(__file__).resolve().parent / 'output', help='Write INPUT_SHA256.br and INPUT_SHA256.json here.')
     args = parser.parse_args()
     if args.input and args.pem:
@@ -221,6 +301,15 @@ def main():
         parser.error('Provide public input or use --build-encoder')
     source = pem_body(args.pem) if args.pem else args.input.read_bytes() if args.input else None
     certificate_count = validate_body(source) if source is not None else None
+    input_sha = hashlib.sha256(source).hexdigest() if source is not None else None
+    output = args.output_dir / (input_sha + '.br') if source is not None else None
+    inputs = [path for path in (args.input, args.pem, args.archive, args.encoder, Path(__file__)) if path is not None]
+    if args.encoder:
+        inputs.append(Path(str(args.encoder.resolve()) + '.json'))
+    outputs = [output, output.with_suffix('.json')] if output is not None else []
+    if args.build_encoder:
+        outputs += [args.build_encoder, Path(str(args.build_encoder.resolve()) + '.json')]
+    require_distinct_outputs(outputs, inputs)
     with tempfile.TemporaryDirectory(prefix='certificate-brotli-') as directory:
         root = Path(directory)
         library = (args.encoder or args.build_encoder or (root / 'encoder.so')).resolve()
@@ -229,27 +318,20 @@ def main():
             temporary_library = root / 'built-encoder.so'
             build_encoder(root, temporary_library, args.archive)
             atomic_write(library, temporary_library.read_bytes())
-        encoder_sha = hashlib.sha256(library.read_bytes()).hexdigest()
-        provenance = {'brotliRevision': REVISION, 'archiveSha256': ARCHIVE_SHA256,
-                      'params': PARAMS, 'model': MODEL, 'encoderSha256': encoder_sha,
-                      'decoder': 'unmodified Brotli 1.2.0 decoder'}
+        provenance = load_encoder_provenance(library) if args.encoder else encoder_provenance(library)
         if args.build_encoder:
             atomic_write(Path(str(library) + '.json'), (json.dumps(provenance, indent=2) + '\n').encode())
         if source is None:
             print(json.dumps({'encoder': str(library), **provenance}))
             return
         encoded = encode(source, library)
-        input_sha = hashlib.sha256(source).hexdigest()
         metadata = {'inputFormat': 'TLS 1.3 Certificate body', 'inputSha256': input_sha,
                     'inputBytes': len(source), 'certificates': certificate_count,
-                    'brotliSha256': hashlib.sha256(encoded).hexdigest(), 'brotliBytes': len(encoded),
                     **provenance}
-        args.output_dir.mkdir(parents=True, exist_ok=True)
-        output = args.output_dir / (input_sha + '.br')
-        atomic_write(output, encoded)
-        atomic_write(args.output_dir / (input_sha + '.json'), (json.dumps(metadata, indent=2) + '\n').encode())
+        encoded, metadata, retained = publish_encoded(source, encoded, output, metadata, c.CDLL(str(library)))
         print(json.dumps({'output': str(output), 'inputBytes': len(source),
-                         'brotliBytes': len(encoded), 'brotliSha256': metadata['brotliSha256']}))
+                         'brotliBytes': len(encoded), 'brotliSha256': metadata['brotliSha256'],
+                         'retainedExisting': retained}))
 
 
 if __name__ == '__main__':

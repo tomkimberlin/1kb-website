@@ -1,7 +1,27 @@
-import socket,struct,json,sys
-name=sys.argv[1];out=sys.argv[2];reports=[]
-for qtype in (1,28,65):
- qid=0x7210+qtype;q=struct.pack('!6H',qid,0x0100,1,0,0,0)+b''.join(bytes([len(p)])+p.encode() for p in name.split('.'))+b'\0'+struct.pack('!HH',qtype,1)
- s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM);s.settimeout(10);s.sendto(q,('1.1.1.1',53));r,_=s.recvfrom(4096);s.close();assert int.from_bytes(r[:2],'big')==qid
- reports.append({'type':qtype,'query_bytes':len(q),'response_bytes':len(r),'ipv4_udp_bytes':len(q)+len(r)+56,'answer_count':int.from_bytes(r[6:8],'big'),'flags':r[2:4].hex()})
-open(out,'w').write(json.dumps({'host':name,'resolver':'1.1.1.1','edns':False,'dnssec':False,'queries':reports},indent=2)+'\n');print(reports)
+"""Count A, AAAA and HTTPS DNS exchanges over IPv4/UDP."""
+import argparse
+import json
+from pathlib import Path
+from dns_measurement import measure_query, RESOLVER
+from probe_response import require_report_outputs
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('host')
+    parser.add_argument('out', type=Path)
+    args = parser.parse_args()
+    try:
+        require_report_outputs([args.out], [Path(__file__), Path(__file__).with_name('dns_measurement.py'),
+                                           Path(__file__).with_name('probe_response.py')])
+    except ValueError as error:
+        parser.error(str(error))
+    reports = [{'type': qtype, **measure_query(args.host, qtype, 0x7210 + qtype)}
+               for qtype in (1, 28, 65)]
+    args.out.write_text(json.dumps({'host': args.host, 'resolver': RESOLVER[0],
+                                  'edns': False, 'dnssec': False, 'queries': reports}, indent=2) + '\n')
+    print(reports)
+
+
+if __name__ == '__main__':
+    main()

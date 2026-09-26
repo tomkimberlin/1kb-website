@@ -140,6 +140,10 @@ static void run(const char *name,size_t pad,size_t capacity,int fragment,int mfl
     handshake(&p);CHECK(!SSL_session_reused(p.c));if(hrr)CHECK(p.stats.server_hellos==2);if(compressed)CHECK(p.stats.compressed_certs==1);
     unsigned rec=p.stats.records,max=p.stats.max_record,ww=p.stats.want_write,pending=p.stats.pending_flight,wrappers=p.stats.encrypted_bytes-p.stats.message_bytes,compressed_count=p.stats.compressed_certs,hellos=p.stats.server_hellos;
     CHECK(p.stats.handshakes>=5);if(fragment||mfl)CHECK(max<=529);
+    /* The byte-saving behavior is a regression invariant, not just a report. */
+    if(fragment||mfl)CHECK(rec==(p.stats.message_bytes+511)/512);
+    else CHECK(rec==(callback?4:pad>16384?5:1));
+    CHECK(wrappers==22*rec);
     if(capacity<=256)CHECK(ww>0);
 #ifdef COALESCE_INTERNAL
     if(pad==8000 && !callback)CHECK(pending>0);
@@ -180,6 +184,11 @@ static void excluded_cases(void) {
     exchange(&p);release(&p);
     printf("{\"case\":\"excluded-client-auth\",\"records\":5,\"verified\":true}\n");
 
+    make(&p,0,32768,0,0,0,0);
+    CHECK(SSL_set_mode(p.s,SSL_MODE_ASYNC)&SSL_MODE_ASYNC);
+    handshake(&p);CHECK(p.stats.records==4);exchange(&p);release(&p);
+    printf("{\"case\":\"excluded-async-mode\",\"records\":4,\"verified\":true}\n");
+
     make(&p,0,32768,0,0,0,0);CHECK(SSL_set_num_tickets(p.s,1));
     handshake(&p);exchange(&p);
     SSL_SESSION *session=SSL_get1_session(p.c);CHECK(session);CHECK(SSL_SESSION_is_resumable(session));
@@ -194,6 +203,30 @@ static void excluded_cases(void) {
     unsigned resumed_records=p.stats.records,resumed_wrappers=p.stats.encrypted_bytes-p.stats.message_bytes;
     exchange(&p);release(&p);
     printf("{\"case\":\"resumption\",\"records\":%u,\"wrapper_bytes\":%u,\"verified\":true}\n",resumed_records,resumed_wrappers);
+}
+static void excluded_early_data(void) {
+    for(int accept=0;accept<=1;accept++) {
+        Pair p;make(&p,0,32768,0,0,0,0);
+        CHECK(SSL_set_num_tickets(p.s,1));CHECK(SSL_set_max_early_data(p.s,1024));
+        /* Only this isolated BIO fixture disables replay tracking for its ticket. */
+        SSL_set_options(p.s,SSL_OP_NO_ANTI_REPLAY);
+        handshake(&p);exchange(&p);
+        SSL_SESSION *session=SSL_get1_session(p.c);
+        CHECK(session&&SSL_SESSION_is_resumable(session)&&SSL_SESSION_get_max_early_data(session)==1024);
+        SSL_set_quiet_shutdown(p.c,1);SSL_set_quiet_shutdown(p.s,1);CHECK(SSL_shutdown(p.c)==1);CHECK(SSL_shutdown(p.s)==1);
+        clear_pair(&p);CHECK(SSL_set_num_tickets(p.s,0));CHECK(SSL_set_session(p.c,session));SSL_SESSION_free(session);
+        if(!accept)CHECK(SSL_set_max_early_data(p.s,0));
+        static const char early[]="fixture early data";unsigned char out[sizeof(early)];size_t written=0,received=0;
+        CHECK(SSL_write_early_data(p.c,early,sizeof(early),&written));CHECK(written==sizeof(early));
+        CHECK(SSL_read_early_data(p.s,out,sizeof(out),&received)==(accept?SSL_READ_EARLY_DATA_SUCCESS:SSL_READ_EARLY_DATA_FINISH));
+        if(accept)CHECK(received==sizeof(early)&&memcmp(out,early,sizeof(early))==0);
+        else CHECK(received==0);
+        handshake(&p);CHECK(SSL_session_reused(p.c)&&SSL_session_reused(p.s));
+        CHECK(SSL_get_early_data_status(p.c)==(accept?SSL_EARLY_DATA_ACCEPTED:SSL_EARLY_DATA_REJECTED));
+        CHECK(SSL_get_early_data_status(p.s)==(accept?SSL_EARLY_DATA_ACCEPTED:SSL_EARLY_DATA_REJECTED));
+        CHECK(p.stats.records==2);exchange(&p);release(&p);
+        printf("{\"case\":\"excluded-early-data-%s\",\"records\":2,\"early_data_verified\":true,\"verified\":true}\n",accept?"accepted":"rejected");
+    }
 }
 #ifdef RESUME_COALESCING
 static void resumed_pending_retry(void){
@@ -237,7 +270,7 @@ int main(void) {
     run("peer-max-fragment-512",8000,64,0,1,0,0,0);
     run("partial-write-mode",8000,64,0,0,1,0,0);
     run("server-msg-callback",0,64,0,0,0,1,0);
-    pending_clear(0);pending_clear(1);excluded_cases();
+    pending_clear(0);pending_clear(1);excluded_cases();excluded_early_data();
 #ifdef RESUME_COALESCING
     resumed_pending_retry();
 #endif

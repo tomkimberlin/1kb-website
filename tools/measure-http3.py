@@ -1,4 +1,4 @@
-import argparse,asyncio,json,ssl,time
+import argparse,asyncio,hashlib,json
 from pathlib import Path
 from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
@@ -7,7 +7,11 @@ from aioquic.h3.events import HeadersReceived,DataReceived
 from aioquic.quic.events import ProtocolNegotiated,HandshakeCompleted
 from aioquic.quic.configuration import QuicConfiguration
 from aioquic.quic.logger import QuicLogger
-p=argparse.ArgumentParser();p.add_argument('--host',default='tomkimberlin.com');p.add_argument('--ip',required=True);p.add_argument('--out',required=True);p.add_argument('--port',type=int,default=443);a=p.parse_args()
+from probe_response import ipv4_address, validate_brotli_response, report_headers, receive_headers, report_qlog, require_distinct_report
+p=argparse.ArgumentParser();p.add_argument('--host',default='tomkimberlin.com');p.add_argument('--ip',type=ipv4_address,required=True);p.add_argument('--out',required=True);p.add_argument('--port',type=int,default=443);p.add_argument('--ca');p.add_argument('--expected-body',type=Path,default=Path(__file__).resolve().parents[1]/'public/index.html.br');a=p.parse_args()
+try:require_distinct_report(a.out,[__file__,Path(__file__).with_name('probe_response.py'),a.expected_body,*([a.ca] if a.ca else [])])
+except ValueError as error:p.error(str(error))
+expected_body=a.expected_body.read_bytes()
 class CountingTransport:
  def __init__(self,real,protocol):self.real=real;self.protocol=protocol
  def sendto(self,data,addr=None):self.protocol.record('sent',len(data));self.real.sendto(data,addr)
@@ -25,22 +29,26 @@ class Client(QuicConnectionProtocol):
   if self.http:
    for e in self.http.handle_event(event):
     if isinstance(e,(HeadersReceived,DataReceived)) and e.stream_id in self.responses:
-     r=self.responses[e.stream_id]
-     if isinstance(e,HeadersReceived):r['headers']=[(k.decode(),v.decode()) for k,v in e.headers]
-     else:r['body']+=e.data
-     if e.stream_ended and not self.waiters[e.stream_id].done():self.waiters[e.stream_id].set_result(r)
+     r=self.responses[e.stream_id];waiter=self.waiters[e.stream_id]
+     if waiter.done():continue
+     if isinstance(e,HeadersReceived):receive_headers(r,[(k.decode(),v.decode()) for k,v in e.headers])
+     else:
+      if len(r['body'])+len(e.data)>len(expected_body):waiter.set_exception(ValueError(f'HTTP/3 stream {e.stream_id}: response body exceeds the local Brotli representation'));continue
+      r['body']+=e.data
+     if e.stream_ended:waiter.set_result(r)
  async def get(self):
   sid=self._quic.get_next_available_stream_id();self.responses[sid]={'body':b'','headers':[]};self.waiters[sid]=asyncio.get_running_loop().create_future()
   headers=[(b':method',b'GET'),(b':scheme',b'https'),(b':authority',a.host.encode()),(b':path',b'/'),(b'accept-encoding',b'br'),(b'user-agent',b'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'),(b'accept',b'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'),(b'sec-fetch-dest',b'document'),(b'sec-fetch-mode',b'navigate'),(b'sec-fetch-site',b'none'),(b'sec-fetch-user',b'?1'),(b'accept-language',b'en-US,en;q=0.9'),(b'priority',b'u=0, i')]
-  self.http.send_headers(sid,headers,end_stream=True);self.transmit();r=await asyncio.wait_for(self.waiters[sid],15);self.snap(f'response_{sid}_complete');assert r['body']==(Path(__file__).resolve().parents[1]/'public/index.html.br').read_bytes();return {'stream':sid,'body_bytes':len(r['body']),'headers':r['headers']}
+  self.http.send_headers(sid,headers,end_stream=True);self.transmit();r=await asyncio.wait_for(self.waiters[sid],15);self.snap(f'response_{sid}_complete');validate_brotli_response(r['headers'],r['body'],expected_body,f'HTTP/3 stream {sid}');return {'stream':sid,'body_bytes':len(r['body']),'headers':report_headers(r['headers']),'trailers':report_headers(r.get('trailers',[]))}
 async def main():
  ticket=None;reports=[]
  def save(t):nonlocal ticket;ticket=t
  for i in range(2):
   log=QuicLogger();config=QuicConfiguration(is_client=True,alpn_protocols=H3_ALPN,server_name=a.host,session_ticket=ticket,quic_logger=log)
+  if a.ca:config.load_verify_locations(cafile=a.ca)
   async with connect(a.ip,a.port,configuration=config,create_protocol=Client,session_ticket_handler=save) as c:
    responses=[await c.get(),await c.get()];await asyncio.sleep(.06);c.snap('after_ack_flush')
-   reports.append({'connection':'resumption_attempt' if i else 'cold','session_reused':c.reused,'snapshots':c.snapshots,'datagrams':c.datagrams,'responses':responses,'h3_events':[e for t in log.to_dict()['traces'] for e in t.get('events',[]) if 'http' in e.get('name','')]})
- Path(a.out).write_text(json.dumps({'host':a.host,'protocol':'h3','scope':'Aioquic client with classical key exchange; IPv4/UDP count includes 28 bytes per datagram, excludes DNS and link-layer overhead.','measurements':reports},indent=2)+'\n')
+   reports.append({'connection':'resumption_attempt' if i else 'cold','session_reused':c.reused,'snapshots':c.snapshots,'datagrams':c.datagrams,'responses':responses,'h3_events':report_qlog([e for t in log.to_dict()['traces'] for e in t.get('events',[]) if 'http' in e.get('name','')])})
+ Path(a.out).write_text(json.dumps({'host':a.host,'protocol':'h3','address_family':'IPv4','certificate_verification':True,'expected_body_bytes':len(expected_body),'expected_body_sha256':hashlib.sha256(expected_body).hexdigest(),'response_validation':'HTTP 200, Brotli encoding and exact local body on every response','cookie_header_values':'redacted, including qlog header events','scope':'Aioquic client with classical key exchange; IPv4/UDP count includes 28 bytes per datagram, excludes DNS and link-layer overhead.','measurements':reports},indent=2)+'\n')
  for r in reports:print(json.dumps({k:r[k] for k in ['connection','session_reused','snapshots']}))
 asyncio.run(main())

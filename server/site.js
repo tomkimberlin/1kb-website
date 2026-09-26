@@ -1,19 +1,11 @@
-import fs from 'fs';
-
-// Loaded together on nginx reload; never sent as JavaScript to the browser.
-const representations = {
-  br: fs.readFileSync('/srv/current/index.html.br'),
-  deflate: fs.readFileSync('/srv/current/index.html.deflate'),
-  gzip: fs.readFileSync('/srv/current/index.html.gz'),
-  identity: fs.readFileSync('/srv/current/index.html')
-};
+// nginx preloads this immutable representation map when loading configuration.
 function selectEncoding(value) {
   const weights = Object.create(null);
   const items = value.toLowerCase().split(',');
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
     const parts = item.trim().split(';');
-    const name = parts.shift();
+    const name = parts.shift().trim();
     if (!name) continue;
     const parameter = parts.find(p => /^\s*q\s*=/.test(p));
     const q = parameter === undefined ? 1 : Number(parameter.split('=')[1]);
@@ -58,10 +50,10 @@ function serve(r) {
   r.headersOut['Content-Type'] = r.httpVersion === '3.0' ? 'text/html; charset=utf-8' : 'text/html';
   r.headersOut['Cache-Control'] = 'max-age=86400';
   if (encoding !== 'identity') r.headersOut['Content-Encoding'] = encoding;
-  r.return(200,representations[encoding]);
+  r.return(200,Buffer.from(onekbRepresentations[encoding], 'base64'));
 }
 function headers(r) {
-  // HTTP/2 and HTTP/3 frame the body themselves; retain length for HTTP/1.1.
-  if (r.httpVersion !== '1.1') delete r.headersOut['Content-Length'];
+  // HTTP/2 and HTTP/3 frame the body themselves; HTTP/1 needs the length for reuse.
+  if (r.httpVersion === '2.0' || r.httpVersion === '3.0') delete r.headersOut['Content-Length'];
 }
 export default {serve, headers};

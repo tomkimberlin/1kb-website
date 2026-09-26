@@ -5,18 +5,23 @@ import socket
 import ssl
 from pathlib import Path
 
+if not __debug__:
+    raise RuntimeError('Transport verification requires Python assertions; remove -O or PYTHONOPTIMIZE')
+
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument('--host', default='tomkimberlin.com')
 p.add_argument('--ip')
 p.add_argument('--port', type=int, default=443)
+p.add_argument('--ca', help='CA PEM for an isolated trusted test server')
 p.add_argument('--expected-body', type=Path, required=True)
 p.add_argument('--mode', choices=['baseline', 'patched'], required=True)
 p.add_argument('--compact-headers', action='store_true', help='Require compact HTTP/1.1 serialization; HTTP/1.0 stays conventional')
+p.add_argument('--legacy-http10-framing', action='store_true', help='Compare older handlers that omit Content-Length for HTTP/1.0 and close GET responses')
 p.add_argument('--upgrade-fixture', help='Optional staging-only path returning 101')
 p.add_argument('--length-fixture', help='Optional staging-only path returning the byte x')
 a = p.parse_args()
 expected = a.expected_body.read_bytes()
-ctx = ssl.create_default_context()
+ctx = ssl.create_default_context(cafile=a.ca)
 ctx.set_alpn_protocols(['http/1.1'])
 report = []
 
@@ -97,7 +102,15 @@ with connect() as s:
 for version, connection in [('1.0', None), ('1.0', 'keep-alive')]:
     with connect() as s:
         h = request(s, version=version, connection=connection)
-        assert h.get('connection') == 'close' and 'content-length' not in h
+        if a.legacy_http10_framing:
+            assert h.get('connection') == 'close' and 'content-length' not in h
+        else:
+            assert h.get('content-length') == str(len(expected)), h
+            assert h.get('connection') == ('keep-alive' if connection else 'close'), h
+            if connection:
+                request(s, version=version, connection='keep-alive')
+                request(s, version=version, connection='keep-alive', path='/b', expect=301, body=b'')
+                request(s, version=version, connection='close')
 # Conventional legacy status phrases and spacing are preserved for every code.
 for method, path, status, encoding in [
     ('GET', '/b', 301, 'br'),
@@ -108,10 +121,11 @@ for method, path, status, encoding in [
     with connect() as s:
         request(s, method=method, version='1.0', connection='close', path=path,
                 expect=status, body=b'', accept_encoding=encoding)
-# HEAD is self-delimited even though the site's H1.0 filter omits Content-Length.
+# HEAD is self-delimited even with the historical length-omitting handler.
 with connect() as s:
     h = request(s, method='HEAD', version='1.0', connection='keep-alive')
     assert h.get('connection') == 'keep-alive'
+    assert h.get('content-length') == (None if a.legacy_http10_framing else str(len(expected))), h
     request(s, method='HEAD', version='1.0', connection='keep-alive')
     request(s, method='HEAD', version='1.0', connection='close')
 if a.length_fixture:
@@ -123,4 +137,4 @@ if a.upgrade_fixture:
     with connect() as s:
         h = request(s, connection='upgrade', path=a.upgrade_fixture, expect=101, body=b'')
         assert h.get('connection') == 'upgrade' and h.get('upgrade') == 'tiny-test'
-print(json.dumps({'mode': a.mode, 'compact_headers': a.compact_headers, 'passed': True, 'checks': len(report), 'responses': report}, indent=2))
+print(json.dumps({'mode': a.mode, 'compact_headers': a.compact_headers, 'legacy_http10_framing': a.legacy_http10_framing, 'passed': True, 'checks': len(report), 'responses': report}, indent=2))
