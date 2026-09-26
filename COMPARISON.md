@@ -29,7 +29,7 @@ At measurement time, the page was 742 bytes of HTML, 317 bytes with Brotli and 4
 
 The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
-The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the selected peer address and TCP source port. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
+The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the connected local address, selected peer address and TCP source port, and requires HTTP 200 before publishing a decoded document. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
@@ -51,3 +51,5 @@ docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
 ```
 
 Repeat with distinct output directories and source-port ranges for additional samples. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
+
+The September 26 probe fixes preserve query strings and reject failed captures, incomplete responses and unrequested HTTP/2 streams; decoding is capped at 1 MiB per layer and each TLS/HTTP exchange at 30 seconds. These checks apply to future runs, leaving the September 22 table unchanged; run the offline regressions with `python3 tools/test_compare_gallery.py` after installing `tools/gallery-requirements.txt` in a Python virtual environment.

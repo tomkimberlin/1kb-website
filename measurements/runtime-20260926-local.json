@@ -1,0 +1,289 @@
+{
+  "measuredAt": "2026-09-26T01:24:43.237149+00:00",
+  "scope": "Local preload prototype benchmark and final-handler verification; no production deployment, on-wire byte saving or browser-load speed claim.",
+  "deploymentStatus": "not deployed",
+  "change": "Read the four response representations from an immutable njs JSON preload at configuration load, then decode only the selected base64 body for synchronous r.return(). Redirects and errors do not decode a body.",
+  "currentFiles": {
+    "server/site.js": {
+      "bytes": 3176,
+      "sha256": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77"
+    },
+    "server/nginx.conf": {
+      "bytes": 3827,
+      "sha256": "5666c4b08949f6698be65fe226f18a10442c38418e3a5c41baf6a1d5f8004a8d"
+    },
+    "server/deploy.sh": {
+      "bytes": 3940,
+      "sha256": "9901fb4aca5426ff9a791cf0fce23cc46077dd4ad734d8a3ffbf35faa3cb6e7d"
+    },
+    "build.mjs": {
+      "bytes": 6959,
+      "sha256": "afb4846a2fa069f868bc0eeed5ba0ba7c2ae2c8b8bf305b96fe21243ccb76be4"
+    },
+    "public/representations.json": {
+      "bytes": 2691,
+      "sha256": "f377890502ced8616e7a5d2f395a8c87662ec78f7bee14811e818cdfa7d4d3d3"
+    }
+  },
+  "baselineHandlerSha256": "3886d1407fb3a3f9927a570ad444df278102f8827b53db20580150b528c82c89",
+  "benchmarkedCandidateSha256": "9808bc138dd551c012a157b9f45c887b794867393890c10af965f7a7c422dadb",
+  "benchmarkCandidateDifference": "The measured candidate adds one probe-only delayed route used to check an old in-flight request across reload. Apart from that route and a comment, its source matches the integrated handler.",
+  "conditions": {
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "cpu": "Apple M5 Max",
+    "physicalCores": 18,
+    "logicalCores": 18,
+    "cpuAffinity": "Not pinned; client and single nginx worker share the same Mac with other tasks.",
+    "nginx": "1.30.4",
+    "njs": "1.0.1",
+    "nginxWorkers": 1,
+    "client": "Apple system ApacheBench 2.3 revision1923142",
+    "address": "IPv4 loopback",
+    "protocol": "HTTP/1.1",
+    "tls": "TLSv1.2,ECDHE-ECDSA-CHACHA20-POLY1305,256,256",
+    "path": "/",
+    "acceptEncoding": "br",
+    "responseBodyBytes": 315,
+    "concurrency": 4,
+    "keepAlive": true,
+    "nginxKeepAliveRequests": 1000,
+    "warmupRequestsPerVariant": 5000,
+    "warmupDiscarded": true,
+    "rounds": 5,
+    "requestsPerVariantPerRound": 100000,
+    "measuredRequests": 1000000,
+    "roundOrder": "Alternating before/after, starting with before; every response succeeded and every run reported a 315-byte document."
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "requestsPerSecond": 18820.71,
+        "meanRequestMs": 0.213,
+        "elapsedSeconds": 5.313,
+        "keepAliveRequests": 99902
+      },
+      "after": {
+        "requestsPerSecond": 74596.86,
+        "meanRequestMs": 0.054,
+        "elapsedSeconds": 1.341,
+        "keepAliveRequests": 99902
+      }
+    },
+    {
+      "round": 2,
+      "order": [
+        "after",
+        "before"
+      ],
+      "before": {
+        "requestsPerSecond": 19154.12,
+        "meanRequestMs": 0.209,
+        "elapsedSeconds": 5.221,
+        "keepAliveRequests": 99900
+      },
+      "after": {
+        "requestsPerSecond": 79531.59,
+        "meanRequestMs": 0.05,
+        "elapsedSeconds": 1.257,
+        "keepAliveRequests": 99902
+      }
+    },
+    {
+      "round": 3,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "requestsPerSecond": 19004.24,
+        "meanRequestMs": 0.21,
+        "elapsedSeconds": 5.262,
+        "keepAliveRequests": 99901
+      },
+      "after": {
+        "requestsPerSecond": 88928.81,
+        "meanRequestMs": 0.045,
+        "elapsedSeconds": 1.124,
+        "keepAliveRequests": 99901
+      }
+    },
+    {
+      "round": 4,
+      "order": [
+        "after",
+        "before"
+      ],
+      "before": {
+        "requestsPerSecond": 18988.72,
+        "meanRequestMs": 0.211,
+        "elapsedSeconds": 5.266,
+        "keepAliveRequests": 99902
+      },
+      "after": {
+        "requestsPerSecond": 81552.9,
+        "meanRequestMs": 0.049,
+        "elapsedSeconds": 1.226,
+        "keepAliveRequests": 99901
+      }
+    },
+    {
+      "round": 5,
+      "order": [
+        "before",
+        "after"
+      ],
+      "before": {
+        "requestsPerSecond": 18891.01,
+        "meanRequestMs": 0.212,
+        "elapsedSeconds": 5.294,
+        "keepAliveRequests": 99902
+      },
+      "after": {
+        "requestsPerSecond": 79354.18,
+        "meanRequestMs": 0.05,
+        "elapsedSeconds": 1.26,
+        "keepAliveRequests": 99902
+      }
+    }
+  ],
+  "medians": {
+    "before": {
+      "requestsPerSecond": 18988.72,
+      "meanRequestMs": 0.211
+    },
+    "after": {
+      "requestsPerSecond": 79531.59,
+      "meanRequestMs": 0.05
+    }
+  },
+  "medianThroughputRatio": 4.188,
+  "verification": {
+    "getAndHeadCases": [
+      {
+        "method": "GET",
+        "encoding": "br",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 315
+      },
+      {
+        "method": "GET",
+        "encoding": "deflate",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 456
+      },
+      {
+        "method": "GET",
+        "encoding": "gzip",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 468
+      },
+      {
+        "method": "GET",
+        "encoding": "identity",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 743
+      },
+      {
+        "method": "HEAD",
+        "encoding": "br",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 0
+      },
+      {
+        "method": "HEAD",
+        "encoding": "deflate",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 0
+      },
+      {
+        "method": "HEAD",
+        "encoding": "gzip",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 0
+      },
+      {
+        "method": "HEAD",
+        "encoding": "identity",
+        "sameHeaders": true,
+        "sameExactBody": true,
+        "bytes": 0
+      }
+    ],
+    "unchangedRedirectAndErrorRoutes": 3,
+    "headersComparison": "Exact HTTP/1.1 headers excluding Date; all four GET body byte sequences and HEAD responses match.",
+    "http2": {
+      "protocol": "TLS1.3/h2",
+      "connectionsPerVariant": 2,
+      "requestsPerConnection": 2,
+      "allBodiesExact": true,
+      "headersPayloadBytes": 63,
+      "dataPayloadBytes": 315,
+      "responseTlsRecordsBytes": [
+        427,
+        418
+      ],
+      "beforeAfterFrameSizesEqual": true,
+      "recordAccounting": "The first 427-byte response record includes a 9-byte SETTINGS acknowledgement; each HEADERS+DATA response otherwise takes one 418-byte TLS record. No change to r.return() coalescing."
+    },
+    "prototypeSnapshot": {
+      "withoutReload": {
+        "filesystemHandlerReadsNewRelease": true,
+        "preloadedHandlerKeepsOldRelease": true
+      },
+      "reload": {
+        "oldInflightRequestKeptOldRelease": true,
+        "newWorkerReadsNewRelease": true
+      },
+      "malformedJson": {
+        "configurationTestFails": true,
+        "existingWorkerUnaffected": true
+      }
+    },
+    "integratedHandler": {
+      "handlerSha256": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+      "preloadSha256": "f377890502ced8616e7a5d2f395a8c87662ec78f7bee14811e818cdfa7d4d3d3",
+      "snapshotChecks": 17,
+      "snapshotChecksPassed": true,
+      "checksPassed": {
+        "http1-before": true,
+        "http1-after": true,
+        "http2": true,
+        "buffering": true,
+        "handler": true
+      },
+      "handlerChecks": "118 live HTTP/1.1 and HTTP/2 checks passed.",
+      "scope": "Actual current handler on isolated nginx: remove body files and change JSON before reload, successful reload, failed malformed-JSON reload, restore original snapshot.",
+      "ownedProcessStopped": true,
+      "ownedProcessGroupStopped": true
+    },
+    "outputSafetyReview": {
+      "scope": "After the benchmark, only build output-path guards changed in the measured production files; all four body files and preload bytes remained identical.",
+      "buildAndSerializerTargetedTests": 63,
+      "aliasesRejectedBeforeSearchOrWrites": true
+    }
+  },
+  "localArtifacts": {
+    "prototype": "optimization/preload-agent/probe.py",
+    "rawBenchmark": "optimization/preload-agent/[0-4]-{before,after}-ab.txt",
+    "fullPrototypeReport": "optimization/preload-agent/report.json",
+    "finalHandlerReport": "optimization/transport-agent/runner-final.json"
+  },
+  "limits": [
+    "This is a same-machine throughput comparison with one worker and four connections; it does not estimate public-server capacity, Internet latency or page-load time.",
+    "ApacheBench mean request time is aggregate elapsed time times concurrency divided by request count. Its whole-millisecond p95 and p99 columns all displayed 0; this does not establish zero latency or precise submillisecond percentiles.",
+    "The benchmark uses HTTP/1.1 over TLS1.2; independent functional and coalescing checks use HTTP/2 over TLS1.3 with explicit test-CA verification.",
+    "Brotli, deflate, gzip and identity response bodies and response headers other than the varying Date value are unchanged. The generated JSON adds 2,691 bytes of server-side build data and is not a public route."
+  ]
+}

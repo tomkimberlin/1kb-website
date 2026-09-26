@@ -8,6 +8,7 @@ https_port=${ONEKB_HTTPS_PORT:-8443}
 image=${ONEKB_IMAGE:-onekb-nginx:20260922g}
 test -f "$base/nginx/nginx.conf"
 test -f "$base/site/current/index.html.br"
+test -f "$base/site/current/representations.json"
 test -f "$base/tls/current/tomkimberlin.com.crt"
 docker run -d --name "$name" --restart unless-stopped \
   --read-only --cap-drop ALL --cap-add NET_BIND_SERVICE --cap-add SETGID \

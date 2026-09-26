@@ -8,6 +8,8 @@ function serve(r) {
         || r.uri === '/_coalesce/no-body'
         || r.uri === '/_coalesce/headonly' || r.uri === '/_coalesce/header-error') {
         r.return(200, small);
+    } else if (/^\/_coalesce\/threshold-(1023|1024|1025)$/.test(r.uri)) {
+        r.return(200, 't'.repeat(Number(r.uri.split('-')[1])));
     } else if (r.uri === '/_coalesce/large') {
         r.return(200, large);
     } else if (r.uri === '/_coalesce/empty') {

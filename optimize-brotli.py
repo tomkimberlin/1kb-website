@@ -11,14 +11,24 @@ import sys
 import tarfile
 import tempfile
 import urllib.request
+from tools.optimizer_output import exact_brotli, publish_candidate, require_distinct_paths
 
 REVISION = '028fb5a23661f123017c060daa546b55cf4bde29'  # Brotli 1.2.0
 ARCHIVE_SHA256 = '0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f'
 URL = f'https://codeload.github.com/google/brotli/tar.gz/{REVISION}'
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--archive', type=Path, help='Use an already downloaded source archive.')
+parser.add_argument('--input', type=Path, default=Path('index.html'), help='HTML source to encode.')
+parser.add_argument('--output', type=Path, default=Path('compression/index.html.br'), help='Candidate path; keeps any smaller valid encoding of the same input.')
 args = parser.parse_args()
-source = Path('index.html').read_bytes()
+try:
+    for protected in (args.input, args.archive, Path(__file__),
+                      Path(__file__).resolve().parent / 'tools/optimizer_output.py'):
+        if protected is not None:
+            require_distinct_paths(protected, args.output)
+except ValueError as error:
+    parser.error(str(error))
+source = args.input.read_bytes()
 archive = args.archive.read_bytes() if args.archive else urllib.request.urlopen(URL, timeout=60).read()
 if hashlib.sha256(archive).hexdigest() != ARCHIVE_SHA256:
     raise SystemExit('Brotli source archive checksum mismatch')
@@ -29,22 +39,27 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
         tar.extractall(root, filter='data')
     tree = root / f'brotli-{REVISION}'
 
-    # Change match-selection estimates, not the Brotli format or dictionary.
-    # A shorter local histogram and a slightly higher estimated literal cost
-    # find a smaller encoding of this page than the stock quality-11 search.
-    path = tree / 'c/enc/literal_cost.c'
-    text = path.read_text()
-    old = 'size_t window_half = 495;'
-    assert text.count(old) == 1
-    path.write_text(text.replace(old, 'size_t window_half = 32;'))
+    # Tune match-selection estimates, leaving the Brotli format and dictionary
+    # unchanged. Literal, command and distance estimates influence which
+    # equivalent sequence the quality-11 search chooses for this page.
     path = tree / 'c/enc/backward_references_hq.c'
     text = path.read_text()
+    old = 'FastLog2(20 + (uint32_t)i)'
+    if text.count(old) != 1:
+        raise RuntimeError('Pinned Brotli source does not match distance seed patch')
+    text = text.replace(old, 'FastLog2(3 + (uint32_t)i)')
     old = '    *num_commands = orig_num_commands;'
-    assert text.count(old) == 1
+    if text.count(old) != 1:
+        raise RuntimeError('Pinned Brotli source does not match cost model patch')
     text = text.replace(old, '''    {
       size_t j;
       for (j = 0; j <= num_bytes; ++j)
-        model->literal_costs_[j] *= 1.23f;
+        model->literal_costs_[j] *= 1.34f;
+      for (j = 0; j < BROTLI_NUM_COMMAND_SYMBOLS; ++j)
+        model->cost_cmd_[j] *= 1.28f;
+      model->min_cost_cmd_ *= 1.28f;
+      for (j = 0; j < params->dist.alphabet_size_limit; ++j)
+        model->cost_dist_[j] *= 0.9f;
     }
 ''' + old)
     path.write_text(text)
@@ -53,11 +68,12 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
     # resulting Huffman code trees take fewer bits to describe.
     path = tree / 'c/enc/entropy_encode.c'
     text = path.read_text()
-    for old, new in (
-        ('symbol == 0 && step >= 5', 'symbol == 0 && step >= 3'),
-        ('limit += 120;', 'limit += 512;'),
+    for old, new, count in (
+        ('symbol == 0 && step >= 5', 'symbol == 0 && step >= 4', 1),
+        ('/ 3 + 420;', '/ 3 + 96;', 2),
     ):
-        assert text.count(old) == 1
+        if text.count(old) != count:
+            raise RuntimeError('Pinned Brotli source does not match histogram patch')
         text = text.replace(old, new)
     path.write_text(text)
 
@@ -88,8 +104,8 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
         raise MemoryError('Cannot create Brotli encoder')
     try:
         # Generic mode, quality 11, 64 KiB window, literal contexts enabled,
-        # three distance postfix bits and eight direct distance codes.
-        for key, value in {0: 0, 1: 11, 2: 16, 4: 0, 7: 3, 8: 8}.items():
+        # two distance postfix bits and no direct distance codes.
+        for key, value in {0: 0, 1: 11, 2: 16, 4: 0, 7: 2, 8: 0}.items():
             if not lib.BrotliEncoderSetParameter(state, key, value):
                 raise RuntimeError(f'Brotli rejected parameter {key}')
         raw = (byte * len(source)).from_buffer_copy(source)
@@ -108,13 +124,5 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
     finally:
         lib.BrotliEncoderDestroyInstance(state)
 
-    # Validate with Node's unmodified decoder before writing the build input.
-    subprocess.run(['node', '--input-type=module', '-e', '''
-import {readFileSync} from 'node:fs';
-import {brotliDecompressSync} from 'node:zlib';
-if (!brotliDecompressSync(readFileSync(process.argv[1])).equals(readFileSync('index.html')))
-  throw Error('Brotli round trip failed');
-''', str(candidate)], check=True)
-    Path('compression').mkdir(exist_ok=True)
-    Path('compression/index.html.br').write_bytes(candidate.read_bytes())
-    print(f'{len(source)} bytes HTML -> {candidate.stat().st_size} bytes Brotli')
+    selected = publish_candidate(source, candidate.read_bytes(), args.output, exact_brotli)
+    print(f'{len(source)} bytes HTML -> {len(selected)} bytes Brotli')

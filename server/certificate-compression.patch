@@ -10,23 +10,30 @@
      ossl_ssize_t ret;
  
      if (ilen == 0)
-@@ -244,6 +245,20 @@
+@@ -244,6 +245,27 @@
  
      if (out_size > OSSL_SSIZE_MAX)
          return -1;
 +    /* A small-window pass can beat maximum quality on short inputs. */
 +    if (out_size > 1) {
++        int mark = ERR_set_mark();
++
 +        trial_size = out_size - 1;
 +        trial = OPENSSL_malloc(trial_size);
-+        if (trial == NULL)
-+            return -1;
-+        if (BrotliEncoderCompress(10, 11, BROTLI_DEFAULT_MODE, ilen, in,
-+                &trial_size, trial) == BROTLI_TRUE
-+            && trial_size < out_size) {
-+            memcpy(out, trial, trial_size);
-+            out_size = trial_size;
++        if (trial != NULL) {
++            if (BrotliEncoderCompress(10, 11, BROTLI_DEFAULT_MODE, ilen, in,
++                    &trial_size, trial) == BROTLI_TRUE
++                && trial_size < out_size) {
++                memcpy(out, trial, trial_size);
++                out_size = trial_size;
++            }
++            OPENSSL_free(trial);
 +        }
-+        OPENSSL_free(trial);
++        /* The optional trial must preserve the successful baseline and errors. */
++        if (mark)
++            ERR_pop_to_mark();
++        else
++            ERR_clear_error();
 +    }
      ret = (ossl_ssize_t)out_size;
      if (ret < 0)

@@ -1,0 +1,1385 @@
+{
+  "measuredAt": "2026-09-26T01:28:09.424943+00:00",
+  "scope": "Isolated macOS loopback integration. Baseline and candidate use the same patched nginx/OpenSSL build and the same current optimized body bytes. The baseline handler reads files per request; the candidate handler uses a preloaded immutable representation snapshot. This is not a production measurement.",
+  "platform": "Darwin arm64",
+  "server": {
+    "nginx": "1.30.4",
+    "openssl": "3.5.8",
+    "njs": "1.0.1",
+    "pcre2": "10.46",
+    "headersMore": "0.40",
+    "archiveSha256": {
+      "njs.tar.gz": "74372cfcbf11eb0a71bc555e19dc785f61d561d5663d254474da6c8c9e50a6a7",
+      "headers.tar.gz": "c14cb5e6c998590c209efbf77bd7637ce2cab02332e4192756a8af5b26ba4284",
+      "nginx.tar.gz": "4261dc90e9e47c1c4041276e9aaa3d48ebe2e664f728e14fa95ae6c67d57a08b",
+      "pcre2.tar.gz": "8d28d7f2c3b970c3a4bf3776bcbb5adfc923183ce74bc8df1ebaad8c1985bd07",
+      "openssl.tar.gz": "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
+    },
+    "brotliArchiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+    "nginxPatches": [
+      "small-responses.patch",
+      "certificate-cache.patch"
+    ],
+    "opensslPatches": [
+      "certificate-compression.patch",
+      "tls-flight.patch"
+    ],
+    "sourceUrls": {
+      "nginxSource": "https://nginx.org/download/nginx-1.30.4.tar.gz",
+      "njsSource": "https://codeload.github.com/nginx/njs/tar.gz/refs/tags/1.0.1",
+      "pcre2Source": "https://github.com/PCRE2Project/pcre2/releases/download/pcre2-10.46/pcre2-10.46.tar.gz"
+    },
+    "stagingDifferences": [
+      "macOS build flags and static modules instead of Linux Docker build",
+      "njs optional crypto/XML/zlib/QuickJS modules excluded; original njs engine used",
+      "No ACME or certificate renewal configured",
+      "Handlers replace only the /srv/current/ filesystem prefix with the isolated fixture directory"
+    ],
+    "compilerAndConfigureManifest": "nginx version: nginx/1.30.4\nbuilt by clang 21.0.0 (clang-2100.3.34.2)\nbuilt with OpenSSL 3.5.8 25 Aug 2026\nTLS SNI support enabled\nconfigure arguments: --prefix=/Users/tomkimberlin/Documents/Codex/2026-09-25/pull-my-1kb-website-repo-on/optimization/transport-agent/nginx-runtime --with-http_ssl_module --with-http_v2_module --with-http_v3_module --with-pcre=../pcre2-10.46 --add-module=../njs-1.0.1/nginx --add-module=../headers-more-nginx-module-0.40 --with-cc-opt='-DNGX_SSL_CERT_BROTLI_CACHE=1 -I/Users/tomkimberlin/Documents/Codex/2026-09-25/pull-my-1kb-website-repo-on/optimization/transport-agent/openssl-3.5.8/include -I/Users/tomkimberlin/Documents/Codex/2026-09-25/pull-my-1kb-website-repo-on/optimization/transport-agent/brotli-028fb5a23661f123017c060daa546b55cf4bde29/c/include' --with-ld-opt='-L/Users/tomkimberlin/Documents/Codex/2026-09-25/pull-my-1kb-website-repo-on/optimization/transport-agent/openssl-3.5.8 -L/Users/tomkimberlin/Documents/Codex/2026-09-25/pull-my-1kb-website-repo-on/optimization/transport-agent/brotli-lib -lbrotlienc -lbrotlidec -lbrotlicommon -lz'\n",
+    "nodeVersion": "v24.19.0"
+  },
+  "trust": "Local self-signed ECDSA certificate with matching subjectAltName; probes receive explicit CA file; no system trust modification.",
+  "representations": {
+    "index.html": {
+      "bytes": 743,
+      "sha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+    },
+    "index.html.br": {
+      "bytes": 315,
+      "sha256": "b73e8fcd34552d99db1a66ec03353142546c168f4726257bd2769eb46df96f0b"
+    },
+    "index.html.gz": {
+      "bytes": 468,
+      "sha256": "785b0742b896f1db36f24fbfdebd5d4ccbf696a8269fec6908ff561465479894"
+    },
+    "index.html.deflate": {
+      "bytes": 456,
+      "sha256": "7e9baca9eed0abb47ed80abbdd6c7888e9a3cbe5f06ff655d95b00c479258ee3"
+    }
+  },
+  "sourceSha256": {
+    "server/site.js": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+    "server/site.test.mjs": "15fadc1d23c8ec18c96d26ae7a9efd5ea37be3c7c95cd40ba98b493de827a4fa",
+    "server/verify.mjs": "ce1954a739f6a36a0dfb3900a5d448357c2ad078bc23bc1c967aaf2eb9ae8c77",
+    "server/small-responses.patch": "08fb57eba519c72f9b73dc96c0c2bff2acebf071cc8760e25b1750a6bffb64e9",
+    "server/certificate-compression.patch": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44",
+    "server/tls-flight.patch": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0",
+    "server/certificate-cache.patch": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+    "tools/verify-http1.py": "a316c715ab70250e7b797a97e8c53db0bc4df378711bf96b66c5196628acb351",
+    "tools/verify-http2.py": "6681dce529f1daaa92dc9ae1b3d031756dd066241d5ebc0aadf575a544e6f6c9",
+    "tools/verify-response-buffering.py": "b4037a0576efdd35a2477b2619ae448ede76730c202a19d42c5c694e798ca5dd",
+    "tools/verify-certificate-compression.c": "76c45a0bd8bd46367a58b981f2aad61d2feb983bd29f4107682b563a9a8a483a",
+    "index.html": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709",
+    "build-report.json": "c018646ebbdc9168e193064b7a2e8ed19ba56c08a4bfefa6ef23ed29cf088869",
+    "tools/run-local-transport.py": "1a24211507213880153c7416fcd0caab05ab3d73e3e2cc668b2cf369d490f7de",
+    "tools/verify-tls-flight.c": "bd162b4e0eb769005be25d9475775790514fc0f46a1d6f89e7b7e97edc61b2a3",
+    "tools/verify-http3.py": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+    "tools/measure-http3.py": "ccb615920192166f930d3495a06cd771ad028214a4e9d3a005ffd764ba73c688",
+    "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa",
+    "server/verify-response.mjs": "3e57f69039e0cf0adfd358888bb17b32eb2c8d034ce4c71be240a28b22e05d06",
+    "server/deploy.sh": "9901fb4aca5426ff9a791cf0fce23cc46077dd4ad734d8a3ffbf35faa3cb6e7d",
+    "server/publish-certificates.sh": "39ea021b90add49b991ea83e69b48c27737d96f325885d16b6a0dc763bf753a3",
+    "tools/test_deployment.py": "0c7a1108108d96cb9f27d096d2d1f30b010e2545a7e7115e30243ad6e330ecd1",
+    "tools/verify-certificate-cache.c": "69f010d757afeb562af4d9980454788239a2d40467d448317f193c730320f406",
+    "tools/verify-header-encoding.py": "0e439a513b7337082b7f38912a86e22ca94571241d32655deafa4744e6603065",
+    "tools/fixtures/header-encoding.js": "3fad4c11fc73cbf4780674be587693768c731cc9b2245ec1911cf25c3f52de1f",
+    "tools/fixtures/header-encoding.conf": "adf065f59a169da0842b251349de0da733ffbf14385e77a39e32b5a578769642",
+    "tools/fixtures/response-buffering.js": "119f3ae550def99b6efb82d4c16c0858c2504dea5edc8ea758188e157c0422e5",
+    "tools/test_http3_verifier.py": "a99c08559ae70dc507bfcf69db69e82fd84e43c7f5148da6dfe6d9782da85dec",
+    "tools/measure-transport.py": "4f1e9f97290ab2c62d63d349642c563745556ba5a59a0b60f9d27fcad9155e77",
+    "tools/test_probe_response.py": "3476b1865e245ae4b1b616bcb9802bf61f87794e81d91dc0adb878c25c118ee5",
+    "server/nginx.conf": "5666c4b08949f6698be65fe226f18a10442c38418e3a5c41baf6a1d5f8004a8d",
+    "server/start.sh": "4c66245ca4cfcb81baeb2e4409f0e586b58f446212a32e882716baa6c8d6ed38",
+    "build.mjs": "afb4846a2fa069f868bc0eeed5ba0ba7c2ae2c8b8bf305b96fe21243ccb76be4",
+    "tools/measure-dns.py": "b0f40659205167948789fc5c12fe777dc43adbe035fa23bdb514e97e6a963f86",
+    "tools/dns_measurement.py": "7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0",
+    "tools/compare-gallery.py": "66c71bc050d90e1dfdaa5109d345c06df59be20b4fa7cbc8f5df175532d14adc",
+    "tools/gallery.Dockerfile": "87b8413f3b31a48999bc5161fce0bf285c69746ac3eabf893436135581cd5bb4",
+    "tools/test_probe_outputs.py": "a26d42f92d80be3e6e7ddd791b17197cf7c0074feaddb81d952ab6deb7de2ed9",
+    "tools/test_compare_gallery.py": "999037f464215026ad151bd0b19f9da4fff147c6336585b21e156bc8d17fc5d6",
+    "tools/test_measure_dns.py": "24a8fcdcea8af0e9a37e58324fe5efd23e0f83eebb40ad48af8d2f8921c22e6f"
+  },
+  "http1": {
+    "before": {
+      "mode": "patched",
+      "compact_headers": true,
+      "legacy_http10_framing": true,
+      "passed": true,
+      "checks": 18,
+      "responses": [
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": "keep-alive",
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET /b HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 301,
+          "status_line": "HTTP/1.1 301 ",
+          "compact": true,
+          "header_bytes": 113,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET /__compact_missing__ HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 404,
+          "status_line": "HTTP/1.1 404 ",
+          "compact": true,
+          "header_bytes": 71,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "POST / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 405,
+          "status_line": "HTTP/1.1 405 ",
+          "compact": true,
+          "header_bytes": 88,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 406,
+          "status_line": "HTTP/1.1 406 ",
+          "compact": true,
+          "header_bytes": 93,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 187,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": null,
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 175,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 175,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET /b HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 301,
+          "status_line": "HTTP/1.1 301 Moved Permanently",
+          "compact": false,
+          "header_bytes": 133,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "GET /__compact_missing__ HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 404,
+          "status_line": "HTTP/1.1 404 Not Found",
+          "compact": false,
+          "header_bytes": 82,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "POST / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 405,
+          "status_line": "HTTP/1.1 405 Not Allowed",
+          "compact": false,
+          "header_bytes": 102,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 406,
+          "status_line": "HTTP/1.1 406 Not Acceptable",
+          "compact": false,
+          "header_bytes": 110,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 180,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 180,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 175,
+          "body_bytes": 0,
+          "closed": true
+        }
+      ]
+    },
+    "after": {
+      "mode": "patched",
+      "compact_headers": true,
+      "legacy_http10_framing": false,
+      "passed": true,
+      "checks": 21,
+      "responses": [
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": "keep-alive",
+          "response_connection": null,
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 169,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET /b HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 301,
+          "status_line": "HTTP/1.1 301 ",
+          "compact": true,
+          "header_bytes": 113,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET /__compact_missing__ HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 404,
+          "status_line": "HTTP/1.1 404 ",
+          "compact": true,
+          "header_bytes": 71,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "POST / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 405,
+          "status_line": "HTTP/1.1 405 ",
+          "compact": true,
+          "header_bytes": 88,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": null,
+          "response_connection": null,
+          "status": 406,
+          "status_line": "HTTP/1.1 406 ",
+          "compact": true,
+          "header_bytes": 93,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.1",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 ",
+          "compact": true,
+          "header_bytes": 187,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": null,
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 196,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 201,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 201,
+          "body_bytes": 315,
+          "closed": false
+        },
+        {
+          "request": "GET /b HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 301,
+          "status_line": "HTTP/1.1 301 Moved Permanently",
+          "compact": false,
+          "header_bytes": 157,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 196,
+          "body_bytes": 315,
+          "closed": true
+        },
+        {
+          "request": "GET /b HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 301,
+          "status_line": "HTTP/1.1 301 Moved Permanently",
+          "compact": false,
+          "header_bytes": 152,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "GET /__compact_missing__ HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 404,
+          "status_line": "HTTP/1.1 404 Not Found",
+          "compact": false,
+          "header_bytes": 101,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "POST / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 405,
+          "status_line": "HTTP/1.1 405 Not Allowed",
+          "compact": false,
+          "header_bytes": 121,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "GET / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 406,
+          "status_line": "HTTP/1.1 406 Not Acceptable",
+          "compact": false,
+          "header_bytes": 129,
+          "body_bytes": 0,
+          "closed": true
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 201,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "keep-alive",
+          "response_connection": "keep-alive",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 201,
+          "body_bytes": 0,
+          "closed": false
+        },
+        {
+          "request": "HEAD / HTTP/1.0",
+          "request_connection": "close",
+          "response_connection": "close",
+          "status": 200,
+          "status_line": "HTTP/1.1 200 OK",
+          "compact": false,
+          "header_bytes": 196,
+          "body_bytes": 0,
+          "closed": true
+        }
+      ]
+    },
+    "interpretation": "The baseline closes HTTP/1.0 GET even when keep-alive is requested. The candidate retains Content-Length and successfully serves repeated GET plus redirect on the same verified TLS socket. With this body, a persistent HTTP/1.0 200 header grows from 175 to 201 bytes; the improvement is connection reuse, not smaller individual HTTP/1.0 headers."
+  },
+  "acceptEncodingWhitespace": {
+    "before": [
+      {
+        "acceptEncoding": "br ; q=1",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      },
+      {
+        "acceptEncoding": "gzip\t; q=1, br ;q=0",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      },
+      {
+        "acceptEncoding": "br ;q=0, * ;q=1",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      },
+      {
+        "acceptEncoding": "identity ;q=1,br;q=0.5",
+        "status": 200,
+        "encoding": "br",
+        "bodyBytes": 315,
+        "bodySha256": "b73e8fcd34552d99db1a66ec03353142546c168f4726257bd2769eb46df96f0b"
+      },
+      {
+        "acceptEncoding": "* ;q=0",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      },
+      {
+        "acceptEncoding": "identity ;q=0, * ;q=0",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      }
+    ],
+    "after": [
+      {
+        "acceptEncoding": "br ; q=1",
+        "status": 200,
+        "encoding": "br",
+        "bodyBytes": 315,
+        "bodySha256": "b73e8fcd34552d99db1a66ec03353142546c168f4726257bd2769eb46df96f0b"
+      },
+      {
+        "acceptEncoding": "gzip\t; q=1, br ;q=0",
+        "status": 200,
+        "encoding": "gzip",
+        "bodyBytes": 468,
+        "bodySha256": "785b0742b896f1db36f24fbfdebd5d4ccbf696a8269fec6908ff561465479894"
+      },
+      {
+        "acceptEncoding": "br ;q=0, * ;q=1",
+        "status": 200,
+        "encoding": "deflate",
+        "bodyBytes": 456,
+        "bodySha256": "7e9baca9eed0abb47ed80abbdd6c7888e9a3cbe5f06ff655d95b00c479258ee3"
+      },
+      {
+        "acceptEncoding": "identity ;q=1,br;q=0.5",
+        "status": 200,
+        "encoding": null,
+        "bodyBytes": 743,
+        "bodySha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709"
+      },
+      {
+        "acceptEncoding": "* ;q=0",
+        "status": 406,
+        "encoding": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "acceptEncoding": "identity ;q=0, * ;q=0",
+        "status": 406,
+        "encoding": null,
+        "bodyBytes": 0,
+        "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "http1AndHttp2HandlerChecks": {
+    "passed": true,
+    "checks": 118,
+    "probe": "server/verify.mjs",
+    "scope": "Exact representations, quality negotiation including whitespace, HEAD, redirects, errors, alias redirects and response headers."
+  },
+  "http2": {
+    "checks": 17,
+    "passed": true,
+    "splitHeaderBlockBytes": 20762,
+    "uploadBytes": 81920,
+    "uploadFrameBytes": [
+      16384,
+      16384,
+      16384,
+      16383,
+      16384,
+      1
+    ],
+    "measurementProbe": {
+      "script": "tools/measure-transport.py",
+      "passed": true,
+      "scope": "After preload adoption, explicit local CA and exact current Brotli bytes on every response. No production latency claim.",
+      "connections": [
+        {
+          "kind": "cold",
+          "sessionReused": false,
+          "responses": 2,
+          "bodyBytes": [
+            315,
+            315
+          ]
+        },
+        {
+          "kind": "resumption_attempt",
+          "sessionReused": true,
+          "responses": 2,
+          "bodyBytes": [
+            315,
+            315
+          ]
+        }
+      ]
+    }
+  },
+  "buffering": {
+    "passed": true,
+    "checks": 24,
+    "cases": [
+      "0:small:GET",
+      "1:small:GET",
+      "2:small:HEAD",
+      "3:empty:GET",
+      "4:redirect:GET",
+      "5:no-body:GET",
+      "6:headonly:GET",
+      "7:large:GET",
+      "8:slow:GET",
+      "threshold:1023",
+      "threshold:1024",
+      "threshold:1025",
+      "zero-window:resume",
+      "zero-window:reset-and-reuse",
+      "connection-window:headers-and-resume",
+      "concurrent:0",
+      "concurrent:1",
+      "concurrent:2",
+      "concurrent:3",
+      "delayed-reader:64-small-responses",
+      "streaming:headers-before-finish",
+      "header-filter-error",
+      "header-filter-error:same-connection-reuse",
+      "header-filter-error:new-connection-health"
+    ],
+    "archivedBaselineComparison": "The 20 original semantic cases retain identical outcomes to measurements/response-records-20260922.json:semanticChecks.stagedBefore. Four additional cases test exhausted connection flow control and fresh-connection response bodies of 1023, 1024 and 1025 bytes.",
+    "connectionWindowCase": {
+      "status": 200,
+      "bytes": 318,
+      "sha256": "437175d4865cefe186400915d49ab1bbb859095ce0df336bd2b71f68cd856fdf",
+      "ended": true,
+      "reset": null
+    },
+    "thresholdRecordChecks": {
+      "expectation_enforced": true,
+      "frames_per_record": {
+        "1023": [
+          [
+            1,
+            0
+          ]
+        ],
+        "1024": [
+          [
+            1,
+            0
+          ]
+        ],
+        "1025": [
+          [
+            1
+          ],
+          [
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "tlsFlight": {
+    "passed": true,
+    "cases": 23,
+    "caseNames": [
+      "normal",
+      "brotli-compressed-certificate",
+      "hello-retry-request",
+      "tiny-bio",
+      "large-cert-tiny-bio",
+      "large-cert-4k-bio",
+      "overflow-cert",
+      "max-send-fragment-512",
+      "peer-max-fragment-512",
+      "partial-write-mode",
+      "server-msg-callback",
+      "pending-finished-clear-reuse",
+      "pending-finished-free",
+      "excluded-tls12",
+      "excluded-client-auth",
+      "excluded-async-mode",
+      "resumption",
+      "excluded-early-data-rejected",
+      "excluded-early-data-accepted",
+      "resumed-padded-ee-retry",
+      "allocation-fault-1",
+      "allocation-fault-2",
+      "allocation-fault-3"
+    ],
+    "recordInvariants": "Combined, overflow, fragmented, callback, async and early-data record counts are asserted, including 22 bytes of AES-GCM framing per normal test record."
+  },
+  "certificateCompression": {
+    "passed": true,
+    "syntheticCases": 39,
+    "allocationFaultCases": 2,
+    "baselineFailedNewAllocationCheck": true,
+    "faultChecks": [
+      "Preserve the successful default Brotli bytes if optional trial allocation fails",
+      "Preserve an initially empty OpenSSL error queue",
+      "Preserve an existing error and its caller-owned mark",
+      "Subsequent compression succeeds"
+    ]
+  },
+  "limitations": [
+    "This run does not validate Linux Docker packaging, production deployment or ACME renewal.",
+    "No end-to-end latency or full wire-byte saving is claimed."
+  ],
+  "earlierUnchangedProtocolChecks": "The certificate allocation-fault tests are independent of page contents and use the same tested library build. The TLS flight harness, buffering and handler tests passed after the final page was adopted.",
+  "baselineHandler": {
+    "commit": "da7b5f58f1aa29f01dd22a3418b19dde6a919065"
+  },
+  "handlerSha256": {
+    "before": "8328871bac0247d702d8cd390d5b9711a7e767b07496dffeb78c93cf22d8ffb0",
+    "after": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77"
+  },
+  "stagingRunner": {
+    "script": "tools/run-local-transport.py",
+    "passed": true,
+    "ownedProcessStoppedAfterSuccess": true,
+    "ownedProcessStoppedAfterInjectedProbeFailure": true,
+    "failureInjection": "A fake Node executable reports a valid version, then exits zero with no handler-check output. The runner rejects this empty result and stops its owned nginx process.",
+    "runManifest": "optimization/transport-agent/runner-final.json",
+    "requestRouting": "All listeners bind 127.0.0.1 and curl proxy routing is disabled.",
+    "guards": {
+      "passed": true,
+      "outputHardlinkCannotOverwriteKey": true,
+      "zeroExitEmptyHandlerRejected": true,
+      "ownedProcessStoppedAfterRejectedHandler": true,
+      "quotedTmpdirPassed": true,
+      "temporaryDirectoryCleaned": true,
+      "backslashTmpdirFallbackPassed": true
+    },
+    "ownedProcessGroupStopped": true
+  },
+  "http3": {
+    "passed": true,
+    "checks": 36,
+    "probe": "tools/verify-http3.py",
+    "sequentialRequests": 20,
+    "concurrentRequests": 16,
+    "scope": "Local loopback QUIC with explicit CA. All four exact representations, HEAD, optional whitespace, errors, redirects and aliases are decoded by aioquic/pylsqpack on one reused connection.",
+    "headerAssertions": [
+      "HTTP/3 text/html; charset=utf-8 static entry",
+      "Content-Encoding br and gzip static entries",
+      "Content-Encoding deflate literal value using static name",
+      "Vary accept-encoding static entry",
+      "Cache-Control max-age=86400 using static name",
+      "No Content-Length or Server header"
+    ],
+    "untrustedCertificateRejected": true,
+    "measurementProbe": {
+      "script": "tools/measure-http3.py",
+      "passed": true,
+      "scope": "After preload adoption, explicit local CA and exact current Brotli bytes on every response. No production latency claim.",
+      "connections": [
+        {
+          "kind": "cold",
+          "sessionReused": false,
+          "responses": 2,
+          "bodyBytes": [
+            315,
+            315
+          ]
+        },
+        {
+          "kind": "resumption_attempt",
+          "sessionReused": true,
+          "responses": 2,
+          "bodyBytes": [
+            315,
+            315
+          ]
+        }
+      ]
+    }
+  },
+  "http2ResponseThreshold": {
+    "passed": true,
+    "scope": "Verified loopback TLS1.3/H2, one fresh connection per size, isolated threshold fixtures; this is not a production latency measurement.",
+    "thresholdBytes": 1024,
+    "checks": 3,
+    "results": [
+      {
+        "bodyBytes": 1023,
+        "responseRecordBytes": [
+          1115
+        ],
+        "responseRecordCount": 1
+      },
+      {
+        "bodyBytes": 1024,
+        "responseRecordBytes": [
+          1116
+        ],
+        "responseRecordCount": 1
+      },
+      {
+        "bodyBytes": 1025,
+        "responseRecordBytes": [
+          83,
+          1056
+        ],
+        "responseRecordCount": 2
+      }
+    ],
+    "interpretation": "The first response combines HEADERS and DATA through the 1024-byte body limit. At 1025 bytes they occupy separate TLS records, adding 22 bytes of TLS 1.3 AES-GCM framing beyond the one-byte larger body. All exact bodies and successful HTTP/2 responses were verified."
+  },
+  "verificationGuards": {
+    "optimizedPythonRejected": true,
+    "modes": [
+      "-O",
+      "PYTHONOPTIMIZE=1"
+    ],
+    "probes": [
+      "tools/verify-http1.py",
+      "tools/verify-http2.py",
+      "tools/verify-http3.py",
+      "tools/verify-response-buffering.py",
+      "tools/run-local-transport.py",
+      "tools/verify-header-encoding.py",
+      "tools/measure-transport.py"
+    ],
+    "checks": 14
+  },
+  "handlerChecks": {
+    "passed": true,
+    "checks": 118,
+    "result": "118 live HTTP/1.1 and HTTP/2 checks passed.",
+    "probes": [
+      "server/verify.mjs",
+      "server/verify-response.mjs"
+    ]
+  },
+  "headerEncoding": {
+    "passed": true,
+    "checks": 24,
+    "probe": "tools/verify-header-encoding.py",
+    "fixtures": [
+      "tools/fixtures/header-encoding.js",
+      "tools/fixtures/header-encoding.conf"
+    ],
+    "scope": "Isolated fixture H2/H3 with certificate verification. QPACK advertises zero dynamic table capacity and zero blocked streams. Fixture HEAD requests test encoder fields without claiming compressed body validity.",
+    "http2": {
+      "checks": 12,
+      "tableSizeSequences": [
+        [
+          4096,
+          0,
+          4096
+        ],
+        [
+          32,
+          65536,
+          1
+        ],
+        [
+          65536,
+          0,
+          65536
+        ],
+        [
+          1,
+          0,
+          4096
+        ]
+      ],
+      "largeLiteralHeaderBytes": 26000,
+      "largeLiteralResponseFrames": [
+        {
+          "length": 16384,
+          "type": 1,
+          "flags": 1,
+          "stream": 13
+        },
+        {
+          "length": 9667,
+          "type": 9,
+          "flags": 4,
+          "stream": 13
+        }
+      ]
+    },
+    "http3": {
+      "checks": 12,
+      "qpackDynamicTableCapacity": 0,
+      "qpackBlockedStreams": 0
+    },
+    "cases": [
+      "static",
+      "gzip",
+      "literal-values",
+      "other-coding",
+      "similar-names",
+      "duplicate-values",
+      "large-literal",
+      "empty-values",
+      "similar-names",
+      "BREW",
+      "CUSTOM_METHOD",
+      "OPTIONS"
+    ]
+  },
+  "certificateCache": {
+    "passed": true,
+    "semanticCases": 12,
+    "allocationPositionsOnSuccessfulPath": 41,
+    "openSSLAllocationFaultChecks": 82,
+    "baselineFallbacks": 80,
+    "safeValidatedCandidateSuccesses": 2,
+    "failedInstallAllocations": 4,
+    "decoderCreationFailures": 2,
+    "queueStates": [
+      "initially empty",
+      "two prior errors, each with a caller-owned mark"
+    ],
+    "eachFaultRetriedSuccessfully": true,
+    "scope": "Actual nginx loader header and OpenSSL callees, with CRYPTO_set_mem_functions failing each observed successful-path allocation once. Counts depend on platform/build. Both decoder-instance creations separately return NULL. No cache patch change was required."
+  },
+  "sanitizers": {
+    "passed": true,
+    "scope": "Isolated native macOS ASan+UBSan build; OpenSSL C sources, Brotli C sources and all three harnesses instrumented. OpenSSL assembly and system libraries are not instrumented. LeakSanitizer not enabled on macOS.",
+    "flags": [
+      "-O1",
+      "-g",
+      "-fsanitize=address,undefined",
+      "-fno-omit-frame-pointer"
+    ],
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin27.0.0\nThread model: posix\nInstalledDir: /Library/Developer/CommandLineTools/usr/bin",
+    "tests": {
+      "verify-certificate-compression": {
+        "exitCode": 0,
+        "sourceSha256": "76c45a0bd8bd46367a58b981f2aad61d2feb983bd29f4107682b563a9a8a483a"
+      },
+      "verify-certificate-cache": {
+        "exitCode": 0,
+        "sourceSha256": "69f010d757afeb562af4d9980454788239a2d40467d448317f193c730320f406"
+      },
+      "verify-tls-flight": {
+        "exitCode": 0,
+        "sourceSha256": "bd162b4e0eb769005be25d9475775790514fc0f46a1d6f89e7b7e97edc61b2a3"
+      }
+    },
+    "runtimeOptions": {
+      "ASAN_OPTIONS": "halt_on_error=1:detect_leaks=0",
+      "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+    },
+    "reportedSanitizerFindings": 0,
+    "runtimeWarning": "The TLS async-mode case emits an ASan __asan_handle_no_return alternate-stack warning referring to sanitizer issue 189; all 23 cases complete successfully. Async stack instrumentation is limited.",
+    "reproductionArtifact": "optimization/transport-agent/build-sanitizers.py",
+    "reproductionArtifactSha256": "c9d05d1615f104f6f168f81e5f44dbb72c8752f9e3bf53c6724bc3ddce686f5f",
+    "buildManifest": "optimization/transport-agent/sanitizers/manifest.json"
+  },
+  "browserInterop": {
+    "scope": "Loopback patched nginx with current page. Browser TLS exceptions limited to these isolated contexts for the generated local test certificate; certificate trust is tested separately by explicit-CA protocol probes. No external requests or production deployment.",
+    "sourceSha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709",
+    "cases": [
+      {
+        "name": "chromium-h2",
+        "browserVersion": "151.0.7922.34",
+        "protocol": "h2",
+        "status": 200,
+        "contentEncoding": "br",
+        "exactDecodedBytes": 743,
+        "initialRequests": 1,
+        "links": 9,
+        "noHorizontalOverflow": true
+      },
+      {
+        "name": "chromium-h1",
+        "browserVersion": "151.0.7922.34",
+        "protocol": "http/1.1",
+        "status": 200,
+        "contentEncoding": "br",
+        "exactDecodedBytes": 743,
+        "initialRequests": 1,
+        "links": 9,
+        "noHorizontalOverflow": true
+      },
+      {
+        "name": "webkit-h2",
+        "browserVersion": "26.5",
+        "protocol": "h2",
+        "status": 200,
+        "contentEncoding": "br",
+        "exactDecodedBytes": 743,
+        "initialRequests": 1,
+        "links": 9,
+        "noHorizontalOverflow": true
+      },
+      {
+        "name": "chromium-h3",
+        "browserVersion": "151.0.7922.34",
+        "protocol": "h3",
+        "status": 200,
+        "contentEncoding": "br",
+        "exactDecodedBytes": 743,
+        "initialRequests": 1,
+        "links": 9,
+        "trustScope": "Local QUIC listener; Chromium explicitly trusts only generated local test-certificate SPKI. No system trust changes or production request."
+      }
+    ],
+    "verifiers": {
+      "optimization/browser-nginx.mjs": "6349244faaa65d57586dde6eafce37f7a573ea1c37f8a54c1df9c9e6089ef123",
+      "optimization/browser-nginx-h3.mjs": "6d8443406bb6b03e5a54787556692cd574ba29322538383db7bdb093e8d45e83"
+    },
+    "byteAccounting": "Browser performance transferSize and encodedBodySize are omitted; protocol probes establish encoded bytes directly."
+  },
+  "deployment": {
+    "passed": true,
+    "scope": "Local mocked SSH/SCP/Docker/ACME/curl commands, no production connections or deployment. Separate local smoke tests used real Node24 build and OpenSSL3.6.4 certificate validation against a generated local CA.",
+    "probe": "tools/test_deployment.py",
+    "checks": 22,
+    "independentAgentRerunPassed": true,
+    "coverage": [
+      "Concurrent runs with different configurations",
+      "Same-second unique immutable releases",
+      "Concurrent builds from a shared checkout",
+      "Private input snapshots",
+      "Exact status, coding and body health checks",
+      "Health checks ignore curlrc and proxies",
+      "Reload, preflight, rename, health and signal rollback",
+      "Certificate copy/validation race",
+      "Fingerprint interruption restores prior or absent state",
+      "Rollback reload failure preserves prior files",
+      "Unchanged validated certificate skips optimizer and reload"
+    ]
+  },
+  "preloadSnapshots": {
+    "passed": true,
+    "checks": 17,
+    "results": [
+      {
+        "stage": "disk-files-removed-before-reload",
+        "encoding": "br",
+        "bytes": 315,
+        "sha256": "b73e8fcd34552d99db1a66ec03353142546c168f4726257bd2769eb46df96f0b",
+        "passed": true
+      },
+      {
+        "stage": "disk-files-removed-before-reload",
+        "encoding": "gzip",
+        "bytes": 468,
+        "sha256": "785b0742b896f1db36f24fbfdebd5d4ccbf696a8269fec6908ff561465479894",
+        "passed": true
+      },
+      {
+        "stage": "disk-files-removed-before-reload",
+        "encoding": "deflate",
+        "bytes": 456,
+        "sha256": "7e9baca9eed0abb47ed80abbdd6c7888e9a3cbe5f06ff655d95b00c479258ee3",
+        "passed": true
+      },
+      {
+        "stage": "disk-files-removed-before-reload",
+        "encoding": "identity",
+        "bytes": 743,
+        "sha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709",
+        "passed": true
+      },
+      {
+        "stage": "redirect-without-body-files",
+        "passed": true
+      },
+      {
+        "stage": "valid-reload-new-snapshot",
+        "encoding": "identity",
+        "bytes": 44,
+        "sha256": "c954afe735ca7a8c2e1af1033f3177d82fa5e1c02934316e82405af9ec833e53",
+        "passed": true
+      },
+      {
+        "stage": "valid-reload-new-snapshot",
+        "encoding": "br",
+        "bytes": 36,
+        "sha256": "defb61f0ffa9b064647cd6dcd8fcd0e1cb5a8e0dfebe01c186ee6efa6c04ab3d",
+        "passed": true
+      },
+      {
+        "stage": "valid-reload-new-snapshot",
+        "encoding": "gzip",
+        "bytes": 60,
+        "sha256": "47f42145dd9ae0a6b5f8de67cc5ceaebe3031dd2d24d102645140176b9c95c13",
+        "passed": true
+      },
+      {
+        "stage": "valid-reload-new-snapshot",
+        "encoding": "deflate",
+        "bytes": 48,
+        "sha256": "070cbb9d20819014cb69cf3c38be354ceba70aee1963818e7cfb190309981e99",
+        "passed": true
+      },
+      {
+        "stage": "invalid-reload-preserves-snapshot",
+        "encoding": "identity",
+        "bytes": 44,
+        "sha256": "c954afe735ca7a8c2e1af1033f3177d82fa5e1c02934316e82405af9ec833e53",
+        "passed": true
+      },
+      {
+        "stage": "invalid-reload-preserves-snapshot",
+        "encoding": "br",
+        "bytes": 36,
+        "sha256": "defb61f0ffa9b064647cd6dcd8fcd0e1cb5a8e0dfebe01c186ee6efa6c04ab3d",
+        "passed": true
+      },
+      {
+        "stage": "invalid-reload-preserves-snapshot",
+        "encoding": "gzip",
+        "bytes": 60,
+        "sha256": "47f42145dd9ae0a6b5f8de67cc5ceaebe3031dd2d24d102645140176b9c95c13",
+        "passed": true
+      },
+      {
+        "stage": "invalid-reload-preserves-snapshot",
+        "encoding": "deflate",
+        "bytes": 48,
+        "sha256": "070cbb9d20819014cb69cf3c38be354ceba70aee1963818e7cfb190309981e99",
+        "passed": true
+      },
+      {
+        "stage": "restored-snapshot",
+        "encoding": "br",
+        "bytes": 315,
+        "sha256": "b73e8fcd34552d99db1a66ec03353142546c168f4726257bd2769eb46df96f0b",
+        "passed": true
+      },
+      {
+        "stage": "restored-snapshot",
+        "encoding": "gzip",
+        "bytes": 468,
+        "sha256": "785b0742b896f1db36f24fbfdebd5d4ccbf696a8269fec6908ff561465479894",
+        "passed": true
+      },
+      {
+        "stage": "restored-snapshot",
+        "encoding": "deflate",
+        "bytes": 456,
+        "sha256": "7e9baca9eed0abb47ed80abbdd6c7888e9a3cbe5f06ff655d95b00c479258ee3",
+        "passed": true
+      },
+      {
+        "stage": "restored-snapshot",
+        "encoding": "identity",
+        "bytes": 743,
+        "sha256": "911498644a401fc4cb81bb19c904e3ffd12ab9c7c039cde9a8bfcd42c41ea709",
+        "passed": true
+      }
+    ],
+    "scope": "Owned loopback nginx PID, real SIGHUP reloads, explicit CA verification; no production state.",
+    "artifact": "public/representations.json",
+    "sha256": "f377890502ced8616e7a5d2f395a8c87662ec78f7bee14811e818cdfa7d4d3d3"
+  },
+  "runtimeOptimizationEvidence": "measurements/runtime-20260926-local.json",
+  "moduleInitializationBefore": {
+    "passed": true,
+    "handlerSha256": "3886d1407fb3a3f9927a570ad444df278102f8827b53db20580150b528c82c89",
+    "moduleExecutionsAtConfigLoad": 0,
+    "results": [
+      {
+        "request": 1,
+        "path": "/g",
+        "status": 301,
+        "moduleExecutions": 1
+      },
+      {
+        "request": 2,
+        "path": "/g",
+        "status": 301,
+        "moduleExecutions": 2
+      },
+      {
+        "request": 3,
+        "path": "/g",
+        "status": 301,
+        "moduleExecutions": 3
+      },
+      {
+        "request": 4,
+        "path": "/g",
+        "status": null,
+        "connectionClosed": true,
+        "moduleExecutions": 5,
+        "removedUnusedRepresentation": "index.html.gz"
+      }
+    ],
+    "scope": "Isolated old-handler probe: append a marker at module initialization; three redirects on one connection trigger three initializations. Removing an unused body file then breaks the redirect. The current preloaded handler is verified separately by preloadSnapshots."
+  },
+  "cleanup": {
+    "passed": true,
+    "ownedMasterStopped": true,
+    "tcpPortsClosed": [
+      19443,
+      19444,
+      18080
+    ],
+    "scope": "Only the task-owned nginx master was signaled. Its worker exited; all runner process groups had already stopped.",
+    "udpPortsClosed": [
+      19443
+    ]
+  },
+  "postMeasurementReviews": [
+    {
+      "reviewedAt": "2026-09-26T01:35:54.623534+00:00",
+      "scope": "An early optimized-Python rejection and its focused regression were added after the network probes. Normal-mode transport behavior is unchanged;14 optimized-mode guards passed and root reported17 probe-response unit tests passed. No network or native-harness rerun is implied.",
+      "files": [
+        {
+          "file": "tools/measure-transport.py",
+          "measuredSourceSha256": "1b215c952025e46b1896176a89092d78637d7a046e08bffde8ae2d22f8827871",
+          "reviewedSourceSha256": "4f1e9f97290ab2c62d63d349642c563745556ba5a59a0b60f9d27fcad9155e77"
+        },
+        {
+          "file": "tools/test_probe_response.py",
+          "measuredSourceSha256": "dce8d81e13a8f53cacc617d7584541cfa39337325fa4c0a19c8ebe282bcf6542",
+          "reviewedSourceSha256": "3476b1865e245ae4b1b616bcb9802bf61f87794e81d91dc0adb878c25c118ee5"
+        }
+      ]
+    },
+    {
+      "reviewedAt": "2026-09-26T01:37:45.873965+00:00",
+      "scope": "Build output-alias preflight guards and their focused tests were added after transport measurements. All four response bodies and the preload JSON remain byte-identical to the measured artifacts. The encoder agent verified 63 targeted build/serializer checks and the default build plus 72 Node checks; no repeated transport or native-harness result is implied.",
+      "files": [
+        {
+          "file": "build.mjs",
+          "measuredSourceSha256": "aef615494623e39a1244c944d41727fb0b10c192e75baa25c4c70b46f32a2f03",
+          "reviewedSourceSha256": "afb4846a2fa069f868bc0eeed5ba0ba7c2ae2c8b8bf305b96fe21243ccb76be4"
+        },
+        {
+          "file": "server/site.test.mjs",
+          "measuredSourceSha256": "4d1c7fa77b737d30e58e729e60b5cb6796979ad3db8847cd463acc9823559856",
+          "reviewedSourceSha256": "15fadc1d23c8ec18c96d26ae7a9efd5ea37be3c7c95cd40ba98b493de827a4fa"
+        }
+      ]
+    },
+    {
+      "reviewedAt": "2026-09-26T01:41:13.212370+00:00",
+      "scope": "Report destination guards were added before requests or writes for DNS, buffering and gallery probes; the runner now protects the imported report helper, and the gallery image includes it. These preflight changes follow the recorded network measurements and imply no new network/native run. The gallery local-address/status and DNS datagram fixes were separately verified offline, with one loopback-only UDP reproduction.",
+      "targetedTests": {
+        "reportOutputTests": 3,
+        "galleryTests": 29,
+        "sharedProbeResponseTests": 17,
+        "dnsTests": 8
+      },
+      "files": [
+        {
+          "file": "tools/probe_response.py",
+          "previousRecordedSourceSha256": "d2cf4c874c0b41cedcbdbfc2ca901bee7ab69a14b408a9f172e0aaa512f4ea6d",
+          "reviewedSourceSha256": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa"
+        },
+        {
+          "file": "tools/verify-response-buffering.py",
+          "previousRecordedSourceSha256": "f12c50f13828ef315d5c2e1f7a6639b8d5e9b65156ff63ec50e62adf65a826aa",
+          "reviewedSourceSha256": "b4037a0576efdd35a2477b2619ae448ede76730c202a19d42c5c694e798ca5dd"
+        },
+        {
+          "file": "tools/run-local-transport.py",
+          "previousRecordedSourceSha256": "8a1c858669c3ab0b633b6d19e794b11da7bb91901e23d1cd2bc8bfaa2902d3b9",
+          "reviewedSourceSha256": "1a24211507213880153c7416fcd0caab05ab3d73e3e2cc668b2cf369d490f7de"
+        },
+        {
+          "file": "tools/measure-dns.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "b0f40659205167948789fc5c12fe777dc43adbe035fa23bdb514e97e6a963f86"
+        },
+        {
+          "file": "tools/dns_measurement.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0"
+        },
+        {
+          "file": "tools/compare-gallery.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "66c71bc050d90e1dfdaa5109d345c06df59be20b4fa7cbc8f5df175532d14adc"
+        },
+        {
+          "file": "tools/gallery.Dockerfile",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "87b8413f3b31a48999bc5161fce0bf285c69746ac3eabf893436135581cd5bb4"
+        },
+        {
+          "file": "tools/test_probe_outputs.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "a26d42f92d80be3e6e7ddd791b17197cf7c0074feaddb81d952ab6deb7de2ed9"
+        },
+        {
+          "file": "tools/test_compare_gallery.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "999037f464215026ad151bd0b19f9da4fff147c6336585b21e156bc8d17fc5d6"
+        },
+        {
+          "file": "tools/test_measure_dns.py",
+          "previousRecordedSourceSha256": null,
+          "reviewedSourceSha256": "24a8fcdcea8af0e9a37e58324fe5efd23e0f83eebb40ad48af8d2f8921c22e6f"
+        }
+      ]
+    }
+  ]
+}

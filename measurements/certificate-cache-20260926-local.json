@@ -1,0 +1,144 @@
+{
+  "measuredAt": "2026-09-26T01:16:44.691004+00:00",
+  "scope": "Local compression of public TLS 1.3 Certificate bodies; no private keys, deployment or new on-wire handshake measurements.",
+  "deploymentStatus": "not deployed",
+  "baselineCommit": "da7b5f5",
+  "publishedMeasurement": "measurements/certificate-cache-20260922.json",
+  "inputFormat": "Certificate body with empty request context and empty per-certificate extensions, excluding the four-byte handshake header",
+  "chains": [
+    {
+      "inputBytes": 2215,
+      "inputSha256": "7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd",
+      "certificates": 3,
+      "baseline": {
+        "bytes": 1478,
+        "sha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8"
+      },
+      "proposed": {
+        "bytes": 1478,
+        "sha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8"
+      },
+      "bytesSaved": 0,
+      "host": "tomkimberlin.com"
+    },
+    {
+      "inputBytes": 2220,
+      "inputSha256": "eab3bafa21afe984600b6475da3f891f6453dc4e8efc5e0be6ac0d71fee8ea20",
+      "certificates": 3,
+      "baseline": {
+        "bytes": 1500,
+        "sha256": "d90debb9d1e6947b6250b4c58947fbf4161835e296bfcc3ed62545e832305bd9"
+      },
+      "proposed": {
+        "bytes": 1497,
+        "sha256": "c652c68be87b893bf5dae28167957d84d3fce02d9fd28ab38d7d9696d6b9e69a"
+      },
+      "bytesSaved": 3,
+      "host": "www.tomkimberlin.com"
+    },
+    {
+      "inputBytes": 2216,
+      "inputSha256": "4996c8463f757d001bf3384d757eae8dca72e75eea56c0a18d850b1f4c9b7c1e",
+      "certificates": 3,
+      "baseline": {
+        "bytes": 1490,
+        "sha256": "05814cc6fc4cc43b2fe62e89f3ed99dc70084480bb717b98dae50f09f8ef4f74"
+      },
+      "proposed": {
+        "bytes": 1488,
+        "sha256": "15d216d857b67704d8939e27ef1040de4fc2720b343ff12995eab15a96013693"
+      },
+      "bytesSaved": 2,
+      "host": "tom.kimberlin.net"
+    }
+  ],
+  "recipe": {
+    "optimizer": "tools/optimize-certificates.py",
+    "optimizerSha256": "87927711d4a946e53ebdcc1245f2a8e711e518d654e3840e65d3bba6cd756dec",
+    "brotliRevision": "028fb5a23661f123017c060daa546b55cf4bde29",
+    "archiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+    "params": {
+      "mode": 0,
+      "quality": 11,
+      "lgwin": 16,
+      "disableLiteralContextModeling": 0,
+      "npostfix": 1,
+      "ndirect": 18
+    },
+    "baselineModel": {
+      "distanceSeed": 1,
+      "literalScale": 0.91,
+      "commandScale": 1.1,
+      "histogramStreakLimit": 1536,
+      "histogramBias": 128,
+      "zeroRunThreshold": 7,
+      "nonzeroEntryThreshold": 16
+    },
+    "model": {
+      "distanceSeed": 1,
+      "literalScale": 0.9,
+      "commandScale": 1.02,
+      "distanceScale": 1.1,
+      "histogramStreakLimit": 1536,
+      "histogramBias": 128,
+      "zeroRunThreshold": 7,
+      "nonzeroEntryThreshold": 16
+    },
+    "otherSettings": "Unmodified pinned encoder defaults; decoder, dictionary and Brotli bitstream unchanged"
+  },
+  "verification": {
+    "freshChecksumPinnedCompilations": true,
+    "finalCliMatchedSearchForAllThreeChains": true,
+    "certificateBodies": 40,
+    "realChains": 3,
+    "archivedPublicFixture": 1,
+    "syntheticFramingVariants": 36,
+    "syntheticConstruction": "For each public chain, use its first 1, 2 or 3 DER certificates; context empty or public-test; entry extensions empty or hex ff010003616263. These exercise framing, not trust or TLS negotiation.",
+    "nativeDecoder": "Unmodified Brotli 1.2.0; all 80 old/new encodings decode exactly with complete input consumption",
+    "independentDecoder": {
+      "checks": 80,
+      "passed": true,
+      "node": "v24.19.0",
+      "brotli": "1.2.0"
+    },
+    "syntheticRegressions": [
+      {
+        "name": "tom.kimberlin.net-framing-1-0-0",
+        "inputSha256": "8d2baba978cb22528e0d07743848f7ab85be99f4945f5d97155b60aba7c8b19d",
+        "baselineBytes": 771,
+        "candidateBytes": 772
+      },
+      {
+        "name": "tom.kimberlin.net-framing-1-0-7",
+        "inputSha256": "3b775fa6adf54b1fa1d0c920e5b6ed3566b600c3765ec6aecceee23c5e02e9a5",
+        "baselineBytes": 777,
+        "candidateBytes": 778
+      }
+    ],
+    "optimizerPublicationTests": 15,
+    "prebuiltCliWithCompilerUnavailable": true,
+    "repeatPublicationPreservedFiles": true,
+    "trailingDataReplaced": true,
+    "smallerPriorRecipePreserved": {
+      "baselineBytes": 771,
+      "candidateBytes": 772,
+      "selectedBytes": 771,
+      "binaryAndMetadataUnchanged": true
+    }
+  },
+  "reproduction": {
+    "compile": "python3 tools/optimize-certificates.py --archive PATH_TO_PINNED_BROTLI_ARCHIVE --build-encoder ENCODER.so",
+    "publicPem": "python3 tools/optimize-certificates.py --pem PUBLIC_FULLCHAIN.pem --encoder ENCODER.so --output OUTPUT_DIRECTORY",
+    "prebuiltManifest": "ENCODER.so.json is emitted by --build-encoder and checked against the library hash and pinned recipe before reuse",
+    "minimumRetention": "An existing exact candidate no larger than the new candidate retains its bytes and matching provenance",
+    "python": "3.12.14",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "platform": "macOS-27.0-arm64-arm-64bit",
+    "encoderSha256": "131350d6fc0cdea2cb4d010bc2650718849f2c1d93874881f1aa4b45e47c580c"
+  },
+  "limits": [
+    "The three complete chain bodies match the earlier published measurement. Savings depend on future certificate bytes and client certificate-compression support.",
+    "Two synthetic one-certificate variants grew one byte; the optimizer preserves an existing smaller exact candidate, and the server loader accepts only candidates smaller than its ordinary compression.",
+    "No production deployment, full client compatibility claim, or renewed-certificate trust test is asserted by these local compression checks."
+  ]
+}
