@@ -69,7 +69,9 @@ Eventually the stock encoder stopped at 320 bytes. Two changes to its internal s
 
 The Huffman stage saved another byte. Preserving shorter runs of zero counts and adjusting the bias used to smooth nearby counts made the code trees cheaper to describe. That version reached 317 bytes, with the HTML unchanged.
 
-The September 26 local build reaches 315 bytes for the current wording. Equivalent CSS values and changes to quoting, whitespace and existing short-link aliases gave the encoder a different input; another pass tuned its literal, command and distance estimates. The result also reduces gzip from 471 to 468 bytes and raw HTML from 746 to 743 bytes. Sixteen Chromium/WebKit comparisons found identical pixels, content, layout and keyboard order. The [local measurements](measurements/page-20260926-local.json) record the exact hashes and encoder recipe; the published DebugBear result remains a separate, dated measurement.
+The earlier September 26 local build reached 315 bytes before “my” was moved inside the GitHub hyperlink. Equivalent CSS values and changes to quoting, whitespace and existing short-link aliases gave the encoder a different input; another pass tuned its literal, command and distance estimates. That result also reduced gzip from 471 to 468 bytes and raw HTML from 746 to 743 bytes. Sixteen Chromium/WebKit comparisons found identical pixels, content, layout and keyboard order. The [local measurements](measurements/page-20260926-local.json) record the exact hashes and encoder recipe; the published DebugBear result remains a separate, dated measurement.
+
+Expanding the link text to “my GitHub” leaves the visible sentence and raw HTML size unchanged. The updated build is 321 bytes with Brotli, 468 with gzip and 456 with deflate; the [new measurements](measurements/page-20260926-link-label.json) keep that edit separate from the earlier visual-equivalence results.
 
 A serialization that wins with Brotli can lose with gzip. This search prioritizes Brotli while checking the fallback sizes too; all encodings still decompress to the same HTML.
 
@@ -79,13 +81,13 @@ The server had another avoidable cost: njs ran the module's four file reads on e
 
 The [build report](build-report.json) records the selected settings or precompressed source. `node optimize.mjs` writes a candidate and a shortlist under `optimization/` for comparison. Its seed, attempt count, input and output paths can be specified, and its default search caps each candidate's Node-gzip size at the source's Node-gzip size. That is an early filter; the final comparison still uses the optimized gzip files and real browsers. The serializer rejects unfamiliar page structure rather than silently dropping it.
 
-`python3 optimize-gzip.py`, with `zopfli==0.4.3` installed, generates the optional gzip candidate. Its `--tuned` mode changes one Huffman histogram threshold in that encoder and reproduces the 468-byte result. `python3 optimize-brotli.py` reproduces the tuned Brotli result. Both tuned encoders compile checksum-verified source archives and need Python 3.12+ and a C compiler; the Brotli validator also needs Node. `--archive` supplies an already downloaded archive.
+`python3 optimize-gzip.py`, with `zopfli==0.4.3` installed, generates the optional gzip candidate. Its `--tuned` mode changes one Huffman histogram threshold in that encoder and reproduces the 468-byte result. `python3 optimize-brotli.py` reproduced the earlier tuned Brotli result; after the link edit, the normal build selects a smaller stock-encoder result. Both tuned encoders compile checksum-verified source archives and need Python 3.12+ and a C compiler; the Brotli validator also needs Node. `--archive` supplies an already downloaded archive.
 
 Both optimizers accept `--input` and `--output` for experiments. They validate the complete compressed stream, retain an existing smaller encoding of the same input and publish replacements atomically. Input and output cannot refer to the same file. The normal build uses either saved candidate only if it is smaller and decodes to the current HTML. An old compressed file cannot override an edit to the page.
 
 ## What the short links cost
 
-All nine links use one-character paths. A link such as `<a href=b>GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.
+All nine links use one-character paths. A link such as `<a href=g>my GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.
 
 This reduces the initial document, but clicking a link adds a request. That's the tradeoff. It suits a small page of outbound links; it would be less attractive for navigation people use repeatedly. Even the choice of letter can affect compression. Redirects retain their destinations as the page evolves, so older bookmarks and cached copies keep working. The email address stays visible and copyable.
 
@@ -133,4 +135,4 @@ Every candidate has to preserve the text, links and layout. Chromium and WebKit 
 
 The [gallery comparison](COMPARISON.md) subtracts each site's response body. That makes it useful for comparing delivery overhead without rewarding a site simply for having less to say. It uses repeated measurements and identifies the clients and stopping points; packet timing and browser behavior still vary.
 
-This is the smallest Brotli result found for the current content and layout, with reproducible measurements and a working rollback. A new idea gets a separate test first. The number has to go down, and the website still has to work.
+The recorded optimization passes found smaller Brotli representations while preserving the content and layout of each baseline, with reproducible measurements and a working rollback. A new idea gets a separate test first. The number has to go down, and the website still has to work.
