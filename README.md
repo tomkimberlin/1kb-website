@@ -4,7 +4,7 @@ Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.co
 
 The published page measured **400 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
-| Measurement | Published September 22 | Local build September 26 |
+| Measurement | Published September 22 | Published September 26 |
 | --- | ---: | ---: |
 | DebugBear page weight | **400 B** | Not measured |
 | Brotli response body | 319 B | **321 B** |
@@ -12,9 +12,9 @@ The published page measured **400 bytes** in [DebugBear](https://www.debugbear.c
 | Deflate response body | 459 B | 456 B |
 | Raw HTML | 746 B | 743 B |
 
-The local build now includes “my” in the GitHub hyperlink. The sentence and link destination are unchanged. It has not been deployed; the published measurements remain the September 22 snapshot.
+The September 26 deployment includes “my” in the GitHub hyperlink. The sentence and link destination are unchanged. The [deployment record](measurements/deployment-20260926.json) verifies the public response bytes and live behavior. The 400-byte DebugBear result remains the September 22 snapshot; it has not been remeasured.
 
-The server changes also remove four synchronous file reads from each request by preloading the representations when nginx loads its configuration. The [local runtime comparison](measurements/runtime-20260926-local.json) records the benchmark and reload checks.
+The server changes also remove four synchronous file reads from each request by preloading the representations when nginx loads its configuration. The [local runtime comparison](measurements/runtime-20260926-local.json) records the benchmark and reload checks. Its throughput results describe a loopback test, not public-server capacity or browser load time.
 
 DebugBear counts the compressed page and response headers. DNS, connection setup, request headers and other network overhead are outside that page-weight number.
 
@@ -54,6 +54,6 @@ The comparison checks pixels, text, comments, layout, link destinations, keyboar
 
 ## Hosting
 
-nginx serves the published website directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it.
+nginx serves the published website from Alfred directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it. Pushing to GitHub does not deploy the site. Finished website edits also require `npm run deploy -- alfred-lan`, followed by a local build and live verification as described in the hosting guide.
 
 The [hosting guide](server/README.md) explains the server configuration, deployment requirements and settings needed to host a copy.

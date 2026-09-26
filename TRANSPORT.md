@@ -2,14 +2,14 @@
 
 The page size in [build-report.json](build-report.json) covers the response body. Total traffic also includes request and response headers, TLS, DNS and network framing. Connection reuse, browser caching and client behavior affect that total.
 
-The September 26 changes are local. The dated September 22 measurements describe the published deployment; the [local transport checks](measurements/transport-20260926-local.json) cover the current handler and optional certificate-compression fallback on an isolated server.
+The September 26 changes are deployed on Alfred; the [deployment record](measurements/deployment-20260926.json) identifies the active release, images and live checks. The dated September 22 measurements remain historical. The [local transport checks](measurements/transport-20260926-local.json) separately cover the current handler and optional certificate-compression fallback on an isolated server.
 
 ## Main website
 
 nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
 
 - **Compression:** nginx serves precompressed Brotli, deflate, gzip or identity bytes according to `Accept-Encoding`, including quality weights, optional whitespace and exclusions.
-- **Preloading:** the local handler uses `js_preload_object` to load the built `representations.json` with its configuration. It decodes only the selected base64 value and returns the same bytes synchronously. This removes four file reads per request and keeps each worker on one release until reload; the JSON file is an internal build artifact.
+- **Preloading:** the handler uses `js_preload_object` to load the built `representations.json` with its configuration. It decodes only the selected base64 value and returns the same bytes synchronously. This removes four file reads per request and keeps each worker on one release until reload; the JSON file is an internal build artifact.
 - **Headers:** normal HTTP/2 responses keep Date, Content-Type, Content-Encoding, Vary and Cache-Control. Server is suppressed. Content-Length is omitted for HTTP/2 and HTTP/3 and retained for HTTP/1 framing. Retaining it for HTTP/1.0 lets clients that request keep-alive reuse the connection; the earlier handler closed GET connections instead.
 - **HTTP/1 persistence:** the redundant `Connection: keep-alive` field is omitted on persistent HTTP/1.1 responses, saving 24 bytes. HTTP/1.0's explicit keep-alive field, close signals and upgrades are preserved. The [before/after checks](measurements/http1-20260922.json) verify framing and actual connection reuse.
 - **HTTP/1 syntax:** HTTP/1.1 responses omit optional spaces after header colons and use an empty reason phrase. The required space after the status code remains. The normal 200 response saves eight more bytes, reducing its headers from 177 to 169 bytes. HTTP/1.0 serialization is unchanged. [RFC 9112 §§4–5](https://www.rfc-editor.org/rfc/rfc9112.html#section-4) defines the permitted syntax.
@@ -20,7 +20,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 - **Caching:** `max-age=86400` allows a fresh browser cache to satisfy repeat visits. Vary keeps cached representations separate.
 - **Certificates:** ECDSA P-256, one hostname per certificate, Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference.
 - **Certificate compression:** the pinned OpenSSL build enables Brotli, zlib and Zstandard. nginx loads static certificates and enables compression for clients that support it. The Brotli encoder compares its default with a quality-10, 2,048-byte-window pass and keeps the smaller output. If the optional pass cannot allocate its buffer, the successful default and the caller's error queue are preserved. This runs during static-certificate precompression; renewal uses the same comparison for the new certificates.
-- **Offline certificate cache:** image `onekb-nginx:20260922g` can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [published comparison](measurements/certificate-cache-20260922.json) saved 9 bytes for the measured main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. The [local September 26 recipe](measurements/certificate-cache-20260926-local.json) keeps the same main chain at 1,478 bytes and saves another 3 and 2 bytes on the two aliases, producing 1,497 and 1,488 bytes. It has not been deployed; renewal may produce different savings.
+- **Offline certificate cache:** image `onekb-nginx:20260926a` can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [September 22 comparison](measurements/certificate-cache-20260922.json) saved 9 bytes for the measured main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. The [September 26 recipe tests](measurements/certificate-cache-20260926-local.json) keep the same main chain at 1,478 bytes and save another 3 and 2 bytes on the two aliases, producing 1,497 and 1,488 bytes. That recipe is now deployed; renewal may produce different savings.
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
 
@@ -34,7 +34,7 @@ The image build runs 12 cache-loader cases covering valid installation, interrup
 
 ## TLS handshake records
 
-Image `onekb-nginx:20260922g` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
+Image `onekb-nginx:20260926a` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
 
 | Handshake | Original records | Combined records | Record overhead saved |
 | --- | ---: | ---: | ---: |
@@ -47,13 +47,17 @@ The patch accumulates at most 16 KiB of handshake plaintext and uses OpenSSL's e
 
 QUIC, TLS 1.2, client authentication, early data, asynchronous mode, server message callbacks and handshake mutation callbacks retain their original paths. Pending post-handshake authentication is excluded. The change preserves the negotiated keys, cipher, certificate validation and Finished verification.
 
-The [TLS regression harness](tools/verify-tls-flight.c) passes 23 cases using verified client/server handshakes and application data. It covers Brotli certificate compression, HelloRetryRequest, actual session resumption, record-size limits, oversized certificates, partial-write mode, forced write retries, clear/reuse/free during pending output, and allocation failures that deliver alerts and recover. Async mode and accepted or rejected early data retain separate handshake records. A resumed test with a negotiated test extension forces retries while the combined buffer is pending; the extension is absent from the server configuration. The September 22 build also passed 219 tests across 23 selected upstream OpenSSL recipes. These checks establish the tested protocol and lifecycle behavior; they are not a claim of universal client compatibility or a complete browser-load measurement.
+The [TLS regression harness](tools/verify-tls-flight.c) passed 23 cases locally on macOS using verified client/server handshakes and application data. It covers Brotli certificate compression, HelloRetryRequest, actual session resumption, record-size limits, oversized certificates, partial-write mode, forced write retries, clear/reuse/free during pending output, and allocation failures that deliver alerts and recover. Async mode and accepted or rejected early data retain separate handshake records. A resumed test with a negotiated test extension forces retries while the combined buffer is pending; the extension is absent from the server configuration. The September 22 build also passed 219 tests across 23 selected upstream OpenSSL recipes. These checks establish the tested protocol and lifecycle behavior; they are not a claim of universal client compatibility or a complete browser-load measurement.
+
+The September 26 Alpine image build passes 22 TLS cases and explicitly skips the async case: its OpenSSL reports `ASYNC_is_capable() == 0`. That platform limit is recorded in the [deployment evidence](measurements/deployment-20260926.json); the earlier macOS async check remains separate evidence. The runtime patch is unchanged by the test's capability check.
 
 ## Alias
 
 `tom.kimberlin.net` and `www.tomkimberlin.com` use DNS-only A records pointing to the same server. Both HTTP and HTTPS return an empty 301 directly to `https://tomkimberlin.com`, preserving the path and query. Their HTTPS listeners use separate ECDSA certificates with automatic renewal and certificate compression. An alias visit still adds a redirect and, for HTTPS, a separate TLS connection.
 
 ## Verification
+
+For this installation, commit and push finished website changes, then deploy with `npm run deploy -- alfred-lan` before running these checks. GitHub pushes alone do not update Alfred; server images and host scripts have a separate activation step in the [hosting guide](server/README.md#build-and-deploy).
 
 ```sh
 npm run build

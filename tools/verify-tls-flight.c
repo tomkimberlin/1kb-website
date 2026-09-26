@@ -1,5 +1,6 @@
 /* Isolated TLS 1.3 BIO-pair regression harness. No sockets or production state. */
 #include <openssl/ssl.h>
+#include <openssl/async.h>
 #include <openssl/err.h>
 #include <openssl/x509.h>
 #include <openssl/ec.h>
@@ -184,10 +185,15 @@ static void excluded_cases(void) {
     exchange(&p);release(&p);
     printf("{\"case\":\"excluded-client-auth\",\"records\":5,\"verified\":true}\n");
 
-    make(&p,0,32768,0,0,0,0);
-    CHECK(SSL_set_mode(p.s,SSL_MODE_ASYNC)&SSL_MODE_ASYNC);
-    handshake(&p);CHECK(p.stats.records==4);exchange(&p);release(&p);
-    printf("{\"case\":\"excluded-async-mode\",\"records\":4,\"verified\":true}\n");
+    /* The mode flag exists even on platforms without async job support. */
+    if(ASYNC_is_capable()) {
+        make(&p,0,32768,0,0,0,0);
+        CHECK(SSL_set_mode(p.s,SSL_MODE_ASYNC)&SSL_MODE_ASYNC);
+        handshake(&p);CHECK(p.stats.records==4);exchange(&p);release(&p);
+        printf("{\"case\":\"excluded-async-mode\",\"records\":4,\"verified\":true}\n");
+    } else {
+        printf("{\"case\":\"excluded-async-mode\",\"skipped\":true,\"reason\":\"OpenSSL async jobs unsupported on this platform\"}\n");
+    }
 
     make(&p,0,32768,0,0,0,0);CHECK(SSL_set_num_tickets(p.s,1));
     handshake(&p);exchange(&p);

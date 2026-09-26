@@ -1,16 +1,18 @@
 # Hosting
 
-This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The server runs in Docker on Unraid. Cloudflare provides DNS; visitors connect directly to nginx.
+This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The server runs in Docker on Alfred's Unraid installation, reached from this Mac with `ssh alfred-lan`. Cloudflare provides DNS; visitors connect directly to nginx.
 
 The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result.
 
-The September 26 changes have been tested locally and are not deployed. They preserve HTTP/1.0 framing for connection reuse, accept optional whitespace in encoding preferences, and retain the default certificate compression if the optional trial cannot allocate memory. The certificate test now injects allocation failures and checks that successful fallback preserves OpenSSL's error queue. The [local results](../measurements/transport-20260926-local.json) identify the build and checks; the [verification guide](../TRANSPORT.md#verification) describes the isolated runner.
+The September 26 changes are deployed; the [deployment record](../measurements/deployment-20260926.json) identifies the active release, images and live checks. They preserve HTTP/1.0 framing for connection reuse, accept optional whitespace in encoding preferences, and retain the default certificate compression if the optional trial cannot allocate memory. The certificate test injects allocation failures and checks that successful fallback preserves OpenSSL's error queue. The separate [local results](../measurements/transport-20260926-local.json) identify the isolated build and checks; the [verification guide](../TRANSPORT.md#verification) describes that runner.
 
-Image `onekb-nginx:20260922g` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
+Image `onekb-nginx:20260926a` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
 
 The image build runs [certificate-compression checks](../tools/verify-certificate-compression.c) and the [23-case TLS regression harness](../tools/verify-tls-flight.c) before copying the libraries into the runtime image. The harness verifies complete handshakes and application data, including forced write retries, record-size limits, resumption, pending-buffer cleanup, allocation-failure alerts, and the separate-record paths for async mode and early data. The September 22 build also passed 219 tests across 23 selected upstream recipes; the complete upstream suite is not claimed.
 
-The [certificate-cache loader](certificate-cache.patch) optionally replaces the normal Brotli result with a smaller offline encoding. It selects the file by the exact Certificate-body hash, fully decompresses it and requires byte-for-byte equality before installation. Missing, stale, malformed or non-improving entries retain ordinary compression. [Published measurements](../measurements/certificate-cache-20260922.json) show 9, 8 and 2 bytes saved for the measured apex, `www` and alternate-host certificates. The [local September 26 recipe](../measurements/certificate-cache-20260926-local.json) retains the 1,478-byte apex result and reduces the two aliases by another 3 and 2 bytes, to 1,497 and 1,488 bytes. This recipe has not been deployed; savings depend on the certificate and client support.
+The September 26 Alpine image passes 22 TLS cases and explicitly skips the async case because that OpenSSL build reports `ASYNC_is_capable() == 0`. The earlier local macOS run passed all 23 cases, including async. The skip records a platform limit; it does not change the runtime patch or establish async behavior on Alpine.
+
+The [certificate-cache loader](certificate-cache.patch) optionally replaces the normal Brotli result with a smaller offline encoding. It selects the file by the exact Certificate-body hash, fully decompresses it and requires byte-for-byte equality before installation. Missing, stale, malformed or non-improving entries retain ordinary compression. [September 22 measurements](../measurements/certificate-cache-20260922.json) show 9, 8 and 2 bytes saved for the measured apex, `www` and alternate-host certificates. The [September 26 recipe tests](../measurements/certificate-cache-20260926-local.json) retain the 1,478-byte apex result and reduce the two aliases by another 3 and 2 bytes, to 1,497 and 1,488 bytes. This recipe is now deployed; savings depend on the certificate and client support.
 
 The Docker build also runs the [cache-loader test](../tools/verify-certificate-cache.c): 12 semantic cases, both decoder-creation failures, and a sweep that fails each observed OpenSSL allocation with an empty queue or caller-owned errors and marks. It verifies exact fallback bytes, error-queue preservation and successful retry, including failed cache installation. Allocation counts depend on the build. Its archived public certificate is a byte-validation fixture; expiration does not affect these loader checks. No production private key is part of the fixture.
 
@@ -44,23 +46,27 @@ The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public
 
 ## Build and deploy
 
-Build the server image on the Docker host from the repository root:
+GitHub pushes do not deploy this installation. Finished website changes must be committed, pushed, deployed to Alfred and verified against the public endpoint. Page deployment and server-image activation are separate steps.
+
+Build changed server images on the Docker host from the repository root, using a new tag for each release and retaining the previous images for rollback:
 
 ```sh
-docker build -t onekb-nginx:20260922g -f server/Dockerfile .
-docker build --target certificate-optimizer -t onekb-certificate-optimizer:20260922g -f server/Dockerfile .
+docker build -t onekb-nginx:20260926a -f server/Dockerfile .
+docker build --target certificate-optimizer -t onekb-certificate-optimizer:20260926a -f server/Dockerfile .
 ```
 
 Install [cache-certificates.sh](cache-certificates.sh) as `bin/cache-certificates.sh` under the configured base directory. The optimizer image compiles its encoder during the image build and receives only public PEM certificates when run. Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` requires Python 3.12+ and a C compiler; `--archive` accepts the pinned source archive for an offline build. Reusing `--encoder ENCODER.so` also requires the emitted `ENCODER.so.json` manifest, which binds the binary hash to the pinned recipe. Rebuild older standalone encoders before reuse.
 
 [start.sh](start.sh) launches the container using the configured paths, page files and initial certificates. The supplied [Unraid template](unraid-template.xml) provides the same mounts and port mappings for Unraid's container interface.
 
+When these files change, install the updated startup and certificate scripts under `bin/` and update the Unraid template as well. Keep backups, install each script atomically, validate the new image against the active configuration, and replace the container with the new image. Verify the live service before removing rollback resources; a page deploy alone does not perform these steps.
+
 Each page release must include the four built body files, `representations.json`, `site.js` and its nginx configuration. The build writes the JSON snapshot as base64 strings; nginx's `js_preload_object` loads it when validating or reloading configuration. The handler decodes only the selected representation and performs no file reads during a request. This requires njs with `js_preload_object` support (0.7.8 or newer).
 
-For an existing installation, deploy a page from the repository root. `YOUR_SSH_HOST` is the target host's SSH name or alias:
+For this installation, deploy a page from the repository root with the configured LAN SSH alias. Another installation must substitute its own host:
 
 ```sh
-npm run deploy -- YOUR_SSH_HOST
+npm run deploy -- alfred-lan
 npm run build
 npm run verify:live
 npm run verify:alias
@@ -69,6 +75,8 @@ npm run verify:alias
 Deployment takes a private snapshot of the page, build script, compression candidates, request handler and configuration, then builds all four representations and their preload JSON there. Each run uploads its own release, so concurrent builds cannot mix files or overwrite another run's configuration. It pins both the handler and preload paths to that immutable release. Under the deployment lock, it validates nginx, switches the release symlink and reloads. Old workers retain their original preloaded bytes while finishing requests. Direct-origin checks require HTTP 200, the selected encoding and exact bytes; failed activation, verification or interruption restores the previous configuration and release. The server image is managed separately.
 
 Deployment leaves the checkout's `public/` directory unchanged. The explicit local build above refreshes the files used by verification; keep the source consistent with the deployed snapshot. Verification covers encoding negotiation, redirects, errors and aliases, and its configured domains must match the target installation. See [verification details](../TRANSPORT.md#verification).
+
+The one-day browser cache can retain an older page after deployment. A fresh query string, such as `?v=20260926`, checks the new version immediately; Cloudflare is DNS-only, so there is no CDN cache to purge.
 
 The [deployment regression tests](../tools/test_deployment.py) exercise concurrent builds, certificate snapshot races and rollback paths with mocked external commands. Run `python3 tools/test_deployment.py`; these tests do not contact a server.
 
