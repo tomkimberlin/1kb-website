@@ -1,0 +1,87 @@
+{
+  "verifiedAt": "2026-10-05T19:45:02.214085+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "Production page deployment and public endpoint verification",
+  "pageCommit": "5ca2b3d9291bd3ebe57435effe1691c90b5d6e0f",
+  "pageRelease": "releases/20261005T194148Z-23b5843000a7-onekb-deploy.nfecfg",
+  "previousPageRelease": "releases/20261005T171324Z-23c466d2b68f-onekb-deploy.hn2l2E",
+  "approvedCopy": "This is the most optimized 1 KB website on the planet. Probably.",
+  "change": "Publish the approved direct HTTPS/mailto links with valid compact HTML serialization, preserving text, appearance, relative heading size and all nine canonical destinations. Existing server aliases remain available.",
+  "claimScope": "Existing approved playful opinion; no verified world record or global optimization ranking is claimed.",
+  "clubLinkText": "1 KB website",
+  "clubDestination": "https://1kb.club/",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1021,
+      "sha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 391,
+      "sha256": "aa25bd3a6714e7854c7b880aef6e3a3bea08796735380401960cf740587b2860",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 536,
+      "sha256": "e11d588c6e148c7e17e7155f938580f70232bc4c915e5d60ae148881fb0ae81a",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 524,
+      "sha256": "dee36162d26646ac9be8880926bcbbcf40422c9b52403cceba985ac3b7617204",
+      "exactLocalAndPublicResponse": true
+    }
+  ],
+  "server": {
+    "image": "onekb-nginx:20260926a",
+    "running": true,
+    "imageChanged": false,
+    "handlerSha256": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+    "activation": "Atomic page-release switch and nginx reload; previous release and configuration retained for rollback.",
+    "configurationSourceSha256": "5666c4b08949f6698be65fe226f18a10442c38418e3a5c41baf6a1d5f8004a8d",
+    "activeConfigurationSha256": "03463474694506920541dfdb27494726ef415b09c2ec1697df450214b67cf14d",
+    "releasedSourceFilesMatchCheckout": true
+  },
+  "verification": {
+    "mainHttp11AndHttp2Checks": 118,
+    "legacyShortLinkAliasesVerified": 13,
+    "aliasRedirectChecks": 12,
+    "followedAliasExactBrotliPage": true,
+    "originRepresentationsExact": true,
+    "liveBrowserCases": 16,
+    "liveBrowserEvidence": "measurements/browser-20261005-direct-links-live.json",
+    "liveBrowserDirectHrefAndCanonicalDestinationCount": 9,
+    "liveBrowserInitialDocumentRequestsPerCase": 1,
+    "liveBrowserSubresourceRequestsPerCase": 0,
+    "localEnterActivationDestinationsPerCase": 9,
+    "localBrowserEvidence": "measurements/browser-20261005-direct-links-local.json",
+    "localEnlargedFontEvidence": "measurements/browser-20261005-font-override-local.json",
+    "browserScriptSha256": "90eb2d1e3359eac89a824ad4984de6f14152026fb994fbde7b7f1325563e87a9",
+    "deploymentScriptSha256": "9901fb4aca5426ff9a791cf0fce23cc46077dd4ad734d8a3ffbf35faa3cb6e7d",
+    "mainVerifierSha256": "ce1954a739f6a36a0dfb3900a5d448357c2ad078bc23bc1c967aaf2eb9ae8c77",
+    "aliasVerifierSha256": "3da19f8a883eeff511374263dba231cc4e9d45476a4c116dce29d02b25edbc79",
+    "localTests": {
+      "siteOptimizerAndHttp": 77,
+      "measurement": 11,
+      "browserGuards": 12
+    }
+  },
+  "gitAttribution": {
+    "authorName": "tomkimberlin",
+    "githubAuthorLogin": "tomkimberlin",
+    "githubCommitterLogin": "tomkimberlin",
+    "verifiedRepositoryIdentity": true
+  },
+  "limitations": [
+    "Body sizes exclude response headers, requests, DNS, TLS and other framing.",
+    "Browser counters are separately recorded and are not a complete connection measurement or a new DebugBear result.",
+    "The September 22 DebugBear 400-byte result has not been remeasured.",
+    "Existing browser caches may retain the previous page for up to 86400 seconds; live browser verification used a fresh query string.",
+    "Live browser checks inspect exact HTML, direct hrefs, canonical destinations and pixels without following external links; trusted Enter activation is verified against the identical local source.",
+    "This page-only deployment preserves the existing server image, transport configuration and certificate machinery."
+  ]
+}

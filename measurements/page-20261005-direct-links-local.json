@@ -2,7 +2,7 @@
   "measuredAt": "2026-10-05T19:21:48.388778+00:00",
   "url": "https://tomkimberlin.com/",
   "scope": "local build and browser equivalence",
-  "deploymentStatus": "publication approved; deployment pending",
+  "deploymentStatus": "deployed and verified",
   "baselineCommit": "00cfe18d3c939efc4247e76cf9f24ff4d3724b1a",
   "publishedMeasurement": "measurements/page-20261005-opening-copy.json",
   "change": "Use explicit HTTPS/mailto destinations, valid equivalent CSS and HTML serialization. Preserve all text, hidden comment, the full 1 KB website anchor, fixed width/padding and relative heading size. All server aliases remain available.",
@@ -12,7 +12,7 @@
   "fontOverrideEvidence": "measurements/browser-20261005-font-override-local.json",
   "compressionEvidence": "measurements/compression-20261005-direct-links-local.json",
   "linkReviewEvidence": "measurements/link-review-20261005-local.json",
-  "note": "Local body sizes exclude headers, DNS, TLS and other framing. No new DebugBear result, public deployment or world-record proof. Direct URLs avoid one uncached same-origin redirect per click. Trusted mailto keyboard activation is intercepted without launching a mail client.",
+  "note": "Local body sizes exclude headers, DNS, TLS and other framing. The linked deployment evidence verifies publication; no new DebugBear result or world-record proof is claimed. Direct URLs avoid one uncached same-origin redirect per click. Trusted mailto keyboard activation is intercepted without launching a mail client.",
   "html": 1021,
   "htmlSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
   "brotli": 391,
@@ -391,5 +391,7 @@
     "brotliBodyPlus128ByteProjectAllowance": 519,
     "allowanceIsMeasurement": false
   },
-  "publicationApprovedOn": "2026-10-05"
+  "publicationApprovedOn": "2026-10-05",
+  "deploymentEvidence": "measurements/deployment-20261005-direct-links.json",
+  "liveBrowserEvidence": "measurements/browser-20261005-direct-links-live.json"
 }

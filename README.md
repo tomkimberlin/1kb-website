@@ -4,7 +4,7 @@ Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.co
 
 The published page measured **400 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
-| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Published October 5 (revised opening) | Local October 5 (direct links; not deployed) |
+| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Published October 5 (revised opening) | Published October 5 (direct links) |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | DebugBear page weight | **400 B** | Not measured | Not measured | Not measured | Not measured |
 | Brotli response body | 319 B | 321 B | 315 B | 326 B | **391 B** |
@@ -14,7 +14,7 @@ The published page measured **400 bytes** in [DebugBear](https://www.debugbear.c
 
 The [published October 5 page](measurements/page-20261005-opening-copy.json) says “This is the most optimized 1 KB website on the planet. Probably.” This is playful opinion; the measurements do not establish a world record. The 1KB Club link covers “1 KB website”. Fresh [browser checks](measurements/browser-20261005-opening-copy.json) verify the exact opening, full anchor, unaffected layout and nine keyboard destinations. The [final deployment record](measurements/deployment-20261005-opening-copy.json) verifies all four exact representations, 118 public HTTP checks, 12 alias checks and 16 live browser comparisons.
 
-The [local direct-link candidate](measurements/page-20261005-direct-links-local.json) keeps that exact copy and is approved for publication; deployment verification is pending. It replaces nine relative redirect paths with explicit HTTPS/mailto destinations and retains every server alias for compatibility. Its 1,021-byte HTML and 391-byte Brotli body both stay below 1,024 bytes. This adds 65 Brotli bytes to the published first load and avoids one uncached same-origin redirect per click. [Sixteen normal browser comparisons](measurements/browser-20261005-direct-links-local.json) and [16 enlarged-font comparisons](measurements/browser-20261005-font-override-local.json) match pixels, layout, focus and all nine destinations. The [redirect review](measurements/link-review-20261005-local.json) confirms the published bodies are unchanged.
+The [published direct-link version](measurements/page-20261005-direct-links-local.json) keeps that exact copy. The [deployment record](measurements/deployment-20261005-direct-links.json) verifies all four representations, 118 public HTTP checks, 12 alternate-domain checks and 16 [live browser comparisons](measurements/browser-20261005-direct-links-live.json). It replaces nine relative redirect paths with explicit HTTPS/mailto destinations and retains every server alias for compatibility. Its 1,021-byte HTML and 391-byte Brotli body both stay below 1,024 bytes. This adds 65 Brotli bytes relative to the earlier 326-byte alias version and avoids one uncached same-origin redirect per click. [Sixteen normal browser comparisons](measurements/browser-20261005-direct-links-local.json) and [16 enlarged-font comparisons](measurements/browser-20261005-font-override-local.json) match pixels, layout, focus and all nine destinations. The dated [redirect review](measurements/link-review-20261005-local.json) preserves the earlier live baseline; the deployment record confirms all 13 compatibility aliases still work.
 
 The [initial approved-copy build](measurements/page-20261005-approved-copy.json) and its [deployment record](measurements/deployment-20261005.json) preserve the earlier 324 B Brotli result and live verification before the link extension. The [intermediate link correction](measurements/deployment-20261005-club-link.json) measured 322 B before the opening changed.
 
@@ -28,7 +28,7 @@ The server changes also remove four synchronous file reads from each request by 
 
 I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
 
-[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current local build measurements](measurements/page-20261005-direct-links-local.json), [September 26 build](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
+[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current build measurements](measurements/page-20261005-direct-links-local.json), [September 26 build](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
 
 ## Build locally
 
