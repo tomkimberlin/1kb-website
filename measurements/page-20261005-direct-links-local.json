@@ -12,7 +12,7 @@
   "fontOverrideEvidence": "measurements/browser-20261005-font-override-local.json",
   "compressionEvidence": "measurements/compression-20261005-direct-links-local.json",
   "linkReviewEvidence": "measurements/link-review-20261005-local.json",
-  "note": "Local body sizes exclude headers, DNS, TLS and other framing. The linked deployment evidence verifies publication; no new DebugBear result or world-record proof is claimed. Direct URLs avoid one uncached same-origin redirect per click. Trusted mailto keyboard activation is intercepted without launching a mail client.",
+  "note": "Local body sizes exclude headers, DNS, TLS and other framing. The linked deployment evidence verifies publication; the separate later DebugBear record measures actual public page weight. No world-record proof is claimed. Direct URLs avoid one uncached same-origin redirect per click. Trusted mailto keyboard activation is intercepted without launching a mail client.",
   "html": 1021,
   "htmlSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
   "brotli": 391,
@@ -393,5 +393,6 @@
   },
   "publicationApprovedOn": "2026-10-05",
   "deploymentEvidence": "measurements/deployment-20261005-direct-links.json",
-  "liveBrowserEvidence": "measurements/browser-20261005-direct-links-live.json"
+  "liveBrowserEvidence": "measurements/browser-20261005-direct-links-live.json",
+  "debugbearEvidence": "measurements/debugbear-20261005.json"
 }

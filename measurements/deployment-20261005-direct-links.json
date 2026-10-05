@@ -78,10 +78,12 @@
   },
   "limitations": [
     "Body sizes exclude response headers, requests, DNS, TLS and other framing.",
-    "Browser counters are separately recorded and are not a complete connection measurement or a new DebugBear result.",
-    "The September 22 DebugBear 400-byte result has not been remeasured.",
+    "Deployment-time browser counters are separately recorded and are not a complete connection measurement. A later real DebugBear test is recorded separately in debugbearFollowupEvidence.",
+    "The September 22 DebugBear 400-byte report remains historical; its original public data was recovered and the current page was scanned separately after this deployment verification.",
     "Existing browser caches may retain the previous page for up to 86400 seconds; live browser verification used a fresh query string.",
     "Live browser checks inspect exact HTML, direct hrefs, canonical destinations and pixels without following external links; trusted Enter activation is verified against the identical local source.",
     "This page-only deployment preserves the existing server image, transport configuration and certificate machinery."
-  ]
+  ],
+  "debugbearFollowupEvidence": "measurements/debugbear-20261005.json",
+  "liveHttpFollowupEvidence": "measurements/http-20261005-debugbear-check.json"
 }

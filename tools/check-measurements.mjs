@@ -67,6 +67,47 @@ for(const [key,label] of Object.entries({html:'Raw HTML',brotli:'Brotli response
   assert.ok(row,'Missing README measurement: '+label);
   assert.equal(bytes(cells(row).at(-1)),build[key],'Stale README size: '+key);
 }
+if(Object.hasOwn(browser,'debugbearEvidence')) {
+  assert.ok(typeof browser.debugbearEvidence==='string'&&browser.debugbearEvidence.trim(),'Missing DebugBear evidence path');
+  const scan=read(browser.debugbearEvidence);
+  assert.equal(scan.schemaVersion,1,'Unsupported DebugBear evidence schema');
+  assert.equal(scan.status,'completed','DebugBear scan is not completed');
+  assert.equal(scan.targetUrl,browser.url,'DebugBear target URL does not match the page');
+  assert.equal(scan.finalUrl,browser.url,'DebugBear final URL does not match the page');
+  assert.equal(scan.sourceSha256,browser.htmlSha256,'Stale DebugBear source hash');
+  assert.equal(scan.sourceMatchesApprovedSha256,browser.htmlSha256,'DebugBear approved source hash does not match the page');
+  assert.match(scan.publicResultSha256??'',/^[0-9a-f]{64}$/,'Missing or invalid DebugBear public result hash');
+  const report=scan.reportUrl?.match(/^https:\/\/www\.debugbear\.com\/test\/website-speed\/([A-Za-z0-9_-]+)\/overview$/);
+  assert.ok(report,'Invalid DebugBear report URL');
+  assert.equal(scan.publicResultUrl,'https://www.debugbear.com/api/oneOffTest/'+report[1],'DebugBear report and public result IDs differ');
+  const metrics=scan.metrics;
+  assert.ok(metrics&&typeof metrics==='object'&&!Array.isArray(metrics),'Missing DebugBear metrics');
+  for(const field of ['networkBytesTotal','requestNetworkBytesTotal','compressedBodyBytes','decodedBodyBytes','lighthouseTotalByteWeight','lighthouseRequestTransferSize'])
+    assert.ok(Number.isSafeInteger(metrics[field])&&metrics[field]>0,'Invalid DebugBear byte counter: '+field);
+  assert.equal(metrics.decodedBodyBytes,browser.html,'Stale DebugBear decoded body size');
+  assert.equal(metrics.compressedBodyBytes,browser.brotli,'Stale DebugBear compressed body size');
+  for(const [field,value] of Object.entries({networkRequestCount:1,contentEncoding:'br',protocol:'h2',statusCode:200,
+    fromDiskCache:false,fromServiceWorker:false,lighthouseCache:'none'}))
+    assert.equal(metrics[field],value,'DebugBear document: '+field);
+  for(const field of ['requestNetworkBytesTotal','lighthouseTotalByteWeight','lighthouseRequestTransferSize'])
+    assert.equal(metrics[field],metrics.networkBytesTotal,'DebugBear/Lighthouse counter mismatch: '+field);
+  assert.ok(Number.isSafeInteger(metrics.networkCounterMinusCompressedBodyBytes)&&metrics.networkCounterMinusCompressedBodyBytes>=0,'Invalid DebugBear counter-minus-body difference');
+  assert.equal(metrics.networkCounterMinusCompressedBodyBytes,metrics.networkBytesTotal-metrics.compressedBodyBytes,'DebugBear counter-minus-body difference mismatch');
+  for(const [field,value] of Object.entries({
+    compressedBodyField:'result.result.resultJson.requestList[0].netlogData.encodedSize',
+    decodedBodyField:'result.result.resultJson.requestList[0].netlogData.decodedSize',
+    networkBytesField:'result.result.resultJson.lhData.totalEncodedBodyLength',
+    requestNetworkBytesField:'result.result.resultJson.requestList[0].encodedDataLength'
+  })) assert.equal(metrics[field],value,'DebugBear counter provenance: '+field);
+  for(const field of ['assertionsPassed','singleFinishedUncachedHttp2Document','explicitNetlogBodyCounts',
+    'sourceHashMatchesApproved','scannerAndLighthouseTransferCountersAgree','allResourceTypesSumToDocumentTotals'])
+    assert.equal(scan.validation?.[field],true,'DebugBear normalization validation: '+field);
+  const row=readme.split('\n').find(line=>line.startsWith('| DebugBear page weight |'));
+  assert.ok(row,'Missing README DebugBear measurement');
+  assert.equal(bytes(cells(row).at(-1)),metrics.networkBytesTotal,'Stale README DebugBear size');
+  assert.ok(readme.includes(`](${scan.reportUrl})`),'Missing README DebugBear report link');
+  assert.ok(readme.includes(`](${browser.debugbearEvidence})`),'Missing README DebugBear evidence link');
+}
 assert.equal(gallery.runs.length,3);
 const summaryUrls=gallery.summary.map(row=>row.url);
 assert.ok(summaryUrls.length>0,'Gallery summary must contain measured sites');
@@ -103,6 +144,7 @@ for(const summary of gallery.summary) {
   assert.equal(bytes(cells(row)[1]),summary.tls_median,'Stale comparison TLS median: '+summary.url);
   assert.equal(bytes(cells(row)[2]),summary.total_median,'Stale comparison total median: '+summary.url);
 }
+if(Object.hasOwn(browser,'debugbearEvidence')) console.log('Completed normalized DebugBear evidence matches the source, body sizes, uncached HTTP/2 document, exact transfer counters and README.');
 console.log(buildOnly
   ? 'Local build measurements, README and dated gallery hashes, totals, medians, ranges and table are consistent; browser equivalence is not claimed.'
   : 'Page measurements, browser provenance and all 16 comparisons match the build; README and dated gallery hashes, totals, medians, ranges and table are consistent.');

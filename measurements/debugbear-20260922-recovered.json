@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "reportUrl": "https://www.debugbear.com/test/website-speed/SqYs6RrN/overview",
+  "publicResultUrl": "https://www.debugbear.com/api/oneOffTest/SqYs6RrN",
+  "publicApplicationSourceUrl": "https://www.debugbear.com/cdn/app.c1f076346ecf04295eea.js",
+  "publicResultSha256": "6eaeb65a87133e0ae8352b356d9732b9b0894e91d09b1348a9c3db03664cc168",
+  "normalizedAt": "2026-10-05T23:10:07.205326+00:00",
+  "fetchTime": "2026-09-22T21:12:33.321Z",
+  "status": "completed",
+  "targetUrl": "https://tomkimberlin.com/",
+  "finalUrl": "https://tomkimberlin.com/",
+  "sourceSha256": "e7b5ae1a0b13812b53f2dedf2eeaa7793cc65e3ed7061cbb60c317ee85dc22cf",
+  "sourceMatchesTrackedRecord": "measurements/page-20260922.json",
+  "metrics": {
+    "networkBytesTotal": 400,
+    "networkRequestCount": 1,
+    "compressedBodyBytes": 319,
+    "decodedBodyBytes": 746,
+    "contentEncoding": "br",
+    "protocol": "h2",
+    "statusCode": 200,
+    "fromDiskCache": false,
+    "fromServiceWorker": false,
+    "lighthouseCache": "none",
+    "compressedBodyField": "result.result.resultJson.requestList[0].netlogData.encodedSize",
+    "networkBytesField": "result.result.resultJson.lhData.totalEncodedBodyLength",
+    "requestNetworkBytesField": "result.result.resultJson.requestList[0].encodedDataLength",
+    "lighthouseTotalByteWeight": 400,
+    "lighthouseRequestTransferSize": 400,
+    "trackedResourceTimingTransferSize": 619,
+    "resourceTimingTransferSizeDefinitionUrl": "https://w3c.github.io/resource-timing/#dom-performanceresourcetiming-transfersize",
+    "reconstructedResponseHeaderTextBytes": 138,
+    "requestNetworkBytesTotal": 400
+  },
+  "scannerConditions": {
+    "formFactor": "mobile",
+    "screenWidth": 412,
+    "screenHeight": 660,
+    "region": "us-east1",
+    "regionDisplayName": "US East",
+    "throttlingMethod": "packetLevel",
+    "cpuSlowdownMultiplier": 2,
+    "configuredThrottlingRttMs": 70,
+    "bandwidthKbps": 12288,
+    "measuredTestRttMs": 90,
+    "measuredRealTestRttMs": 122,
+    "chromeVersion": "154.0.8026.0",
+    "lighthouseVersion": "13.4.0",
+    "puppeteerVersion": "25.8.0",
+    "analysisVersion": "13.0"
+  },
+  "lighthouseProvidedAuditConfiguration": {
+    "formFactor": "mobile",
+    "screenEmulation": {
+      "mobile": true,
+      "width": 412,
+      "height": 660,
+      "deviceScaleFactor": 2.625,
+      "disabled": false
+    },
+    "throttlingMethod": "provided",
+    "throttling": {
+      "rttMs": 150,
+      "throughputKbps": 1638.4,
+      "requestLatencyMs": 0,
+      "downloadThroughputKbps": 0,
+      "uploadThroughputKbps": 0,
+      "cpuSlowdownMultiplier": 2,
+      "method": "provided"
+    },
+    "locale": "en-US"
+  },
+  "provenance": {
+    "apiDiscovery": "The report HTML links the application script. Its checkOneOffTest method requests GET /oneOffTest/{id}; its fetch wrapper prefixes /api. No credentials or cookies were supplied.",
+    "metricImplementation": "The public application getPageWeightBytes method reads resultJson.lhData.totalEncodedBodyLength, falling back to summing each request encodedDataLength.",
+    "regionImplementation": "The public application maps us-east1 to us-east and labels us-east as US East."
+  },
+  "interpretation": [
+    "319 compressed body bytes is explicitly recorded in netlogData.encodedSize; it is not inferred by subtracting headers from the total.",
+    "400 is the saved scanner network byte counter. Its 81-byte excess over the 319-byte body is the excess of the scanner encoded-response counter over the compressed body; it is not the 138-byte reconstructed header string or the Resource Timing fixed allowance.",
+    "The historical 619 Resource Timing transferSize equals the 319-byte encoded body plus the specification fixed 300-byte allowance. It is an estimate, not this DebugBear network result.",
+    "Lighthouse throttlingMethod provided settings are recorded separately; their 150 ms and 1638.4 Kbps values must not replace the actual packetLevel scan profile.",
+    "These are exact historical run conditions. Current website defaults must be checked in the new run instead of assumed identical."
+  ],
+  "snapshotHashScope": "SHA-256 of the saved original public API JSON snapshot; not a website transfer-byte count."
+}

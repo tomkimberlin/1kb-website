@@ -44,6 +44,29 @@ function changeJson(directory,file,mutate) {
   mutate(data);
   writeFileSync(path,JSON.stringify(data));
 }
+const debugbear='measurements/debugbear-20261005.json';
+function debugbearFixture(t) {
+  const directory=fixture(t);
+  copyFileSync(new URL('../'+debugbear,import.meta.url),join(directory,debugbear));
+  const measured=JSON.parse(readFileSync(join(directory,page)));
+  // Synthetic opt-in fixture: bind the normalized scan to these test bytes.
+  // This exercises the validator without claiming a newly performed scan.
+  changeJson(directory,debugbear,data=>{
+    data.targetUrl=data.finalUrl=measured.url;
+    data.sourceSha256=data.sourceMatchesApprovedSha256=measured.htmlSha256;
+    data.metrics.decodedBodyBytes=measured.html;
+    data.metrics.compressedBodyBytes=measured.brotli;
+    data.metrics.networkBytesTotal=measured.brotli+data.metrics.networkCounterMinusCompressedBodyBytes;
+    data.metrics.requestNetworkBytesTotal=data.metrics.lighthouseTotalByteWeight=data.metrics.lighthouseRequestTransferSize=data.metrics.networkBytesTotal;
+  });
+  changeJson(directory,page,data=>data.debugbearEvidence=debugbear);
+  const scan=JSON.parse(readFileSync(join(directory,debugbear)));
+  const path=join(directory,'README.md');
+  const text=readFileSync(path,'utf8').replace(/^(\| DebugBear page weight \|[^\n]*\|)[^|]*\|$/m,
+    (_,prefix)=>prefix+' **'+scan.metrics.networkBytesTotal+' B** |');
+  writeFileSync(path,text+'\n[Test scan report]('+scan.reportUrl+') [Test normalized evidence]('+debugbear+')\n');
+  return directory;
+}
 test('valid browser evidence fixture and dated gallery agree with their Markdown tables',t=>{
   const result=check(fixture(t));
   assert.equal(result.status,0,result.stderr);
@@ -201,4 +224,100 @@ test('build-only mode requires honest scope, rejects browser claims and still ch
   const stale=check(directory,true);
   assert.notEqual(stale.status,0);
   assert.match(stale.stderr,/Stale gzip measurement/);
+});
+
+
+test('completed normalized DebugBear scan agrees with source, exact counters and README',t=>{
+  const directory=debugbearFixture(t);
+  const result=check(directory);
+  assert.equal(result.status,0,result.stderr);
+  assert.match(result.stdout,/Completed normalized DebugBear evidence matches/);
+  changeJson(directory,page,data=>{data.scope='local build';delete data.verification;});
+  const buildOnly=check(directory,true);
+  assert.equal(buildOnly.status,0,buildOnly.stderr);
+  assert.match(buildOnly.stdout,/Completed normalized DebugBear evidence matches/);
+});
+
+test('DebugBear URL, source and completed result provenance cannot drift',t=>{
+  for(const [name,mutate,error] of [
+    ['schema',data=>data.schemaVersion=2,/Unsupported DebugBear evidence schema/],
+    ['unfinished',data=>data.status='running',/scan is not completed/],
+    ['target',data=>data.targetUrl='https://example.invalid/',/DebugBear target URL/],
+    ['final URL',data=>data.finalUrl='https://example.invalid/',/DebugBear final URL/],
+    ['source',data=>data.sourceSha256='0'.repeat(64),/Stale DebugBear source hash/],
+    ['approved source',data=>data.sourceMatchesApprovedSha256='0'.repeat(64),/DebugBear approved source hash/],
+    ['result hash',data=>delete data.publicResultSha256,/invalid DebugBear public result hash/],
+    ['report host',data=>data.reportUrl='https://example.invalid/test/website-speed/run/overview',/Invalid DebugBear report URL/],
+    ['result ID',data=>data.publicResultUrl='https://www.debugbear.com/api/oneOffTest/other',/report and public result IDs differ/]
+  ]) {
+    const directory=debugbearFixture(t);changeJson(directory,debugbear,mutate);
+    const result=check(directory);
+    assert.notEqual(result.status,0,name);
+    assert.match(result.stderr,error);
+  }
+});
+
+test('DebugBear evidence requires exact uncached single-document body measurements',t=>{
+  for(const [name,mutate,error] of [
+    ['decoded body',data=>data.metrics.decodedBodyBytes++,/Stale DebugBear decoded body size/],
+    ['compressed body',data=>data.metrics.compressedBodyBytes++,/Stale DebugBear compressed body size/],
+    ['request count',data=>data.metrics.networkRequestCount=2,/DebugBear document: networkRequestCount/],
+    ['encoding',data=>data.metrics.contentEncoding='gzip',/DebugBear document: contentEncoding/],
+    ['protocol',data=>data.metrics.protocol='http/1.1',/DebugBear document: protocol/],
+    ['status',data=>data.metrics.statusCode=301,/DebugBear document: statusCode/],
+    ['disk cache',data=>data.metrics.fromDiskCache=true,/DebugBear document: fromDiskCache/],
+    ['service worker',data=>data.metrics.fromServiceWorker=true,/DebugBear document: fromServiceWorker/],
+    ['Lighthouse cache',data=>data.metrics.lighthouseCache='disk',/DebugBear document: lighthouseCache/]
+  ]) {
+    const directory=debugbearFixture(t);changeJson(directory,debugbear,mutate);
+    const result=check(directory);
+    assert.notEqual(result.status,0,name);
+    assert.match(result.stderr,error);
+  }
+});
+
+test('DebugBear and Lighthouse counters require exact numeric agreement and explicit provenance',t=>{
+  for(const [name,mutate,error] of [
+    ['network total',data=>data.metrics.networkBytesTotal++,/DebugBear\/Lighthouse counter mismatch/],
+    ['request network total',data=>data.metrics.requestNetworkBytesTotal++,/DebugBear\/Lighthouse counter mismatch/],
+    ['Lighthouse total',data=>data.metrics.lighthouseTotalByteWeight++,/DebugBear\/Lighthouse counter mismatch/],
+    ['Lighthouse request',data=>data.metrics.lighthouseRequestTransferSize++,/DebugBear\/Lighthouse counter mismatch/],
+    ['string counter',data=>data.metrics.networkBytesTotal=String(data.metrics.networkBytesTotal),/Invalid DebugBear byte counter/],
+    ['noninteger',data=>data.metrics.lighthouseRequestTransferSize+=0.5,/Invalid DebugBear byte counter/],
+    ['counter difference',data=>data.metrics.networkCounterMinusCompressedBodyBytes++,/counter-minus-body difference mismatch/],
+    ['negative difference',data=>data.metrics.networkCounterMinusCompressedBodyBytes=-1,/Invalid DebugBear counter-minus-body difference/],
+    ['body provenance',data=>delete data.metrics.compressedBodyField,/DebugBear counter provenance/],
+    ['decoded provenance',data=>delete data.metrics.decodedBodyField,/DebugBear counter provenance/],
+    ['request provenance',data=>delete data.metrics.requestNetworkBytesField,/DebugBear counter provenance/],
+    ['normalization failed',data=>data.validation.scannerAndLighthouseTransferCountersAgree=false,/DebugBear normalization validation/]
+  ]) {
+    const directory=debugbearFixture(t);changeJson(directory,debugbear,mutate);
+    const result=check(directory);
+    assert.notEqual(result.status,0,name);
+    assert.match(result.stderr,error);
+  }
+});
+
+test('README must publish the latest DebugBear count and link its exact report and evidence',t=>{
+  for(const [name,edit,error] of [
+    ['stale row',text=>text.replace(/^(\| DebugBear page weight \|[^\n]*\|)[^|]*\|$/m,(_,prefix)=>prefix+' 1 B |'),/Stale README DebugBear size/],
+    ['report link',(text,scan)=>text.replaceAll(']('+scan.reportUrl+')','](https://www.debugbear.com/test/website-speed/other/overview)'),/Missing README DebugBear report link/],
+    ['evidence link',text=>text.replaceAll(']('+debugbear+')','](measurements/other-scan.json)'),/Missing README DebugBear evidence link/]
+  ]) {
+    const directory=debugbearFixture(t),path=join(directory,'README.md');
+    const before=readFileSync(path,'utf8'),after=edit(before,JSON.parse(readFileSync(join(directory,debugbear))));
+    assert.notEqual(after,before,'fixture must change '+name);
+    writeFileSync(path,after);
+    const result=check(directory);
+    assert.notEqual(result.status,0,name);
+    assert.match(result.stderr,error);
+  }
+});
+
+test('recovered September scan cannot replace current DebugBear evidence',t=>{
+  const directory=debugbearFixture(t);
+  copyFileSync(new URL('../measurements/debugbear-20260922-recovered.json',import.meta.url),join(directory,debugbear));
+  const result=check(directory);
+  assert.notEqual(result.status,0);
+  assert.match(result.stderr,/Stale DebugBear source hash/);
 });

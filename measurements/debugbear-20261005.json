@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "reportUrl": "https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview",
+  "publicResultUrl": "https://www.debugbear.com/api/oneOffTest/Gv3z2tDz",
+  "publicResultSha256": "edcf067dd53a0b28c20f3989603413f57982803d49c8a47cd26ff46eee455583",
+  "normalizedAt": "2026-10-05T23:12:41.695448+00:00",
+  "fetchTime": "2026-10-05T23:07:27.379Z",
+  "apiEndTime": "2026-10-05T23:07:27.379Z",
+  "documentRequestStartTime": "2026-10-05T23:07:32.121Z",
+  "status": "completed",
+  "targetUrl": "https://tomkimberlin.com/",
+  "finalUrl": "https://tomkimberlin.com/",
+  "sourceSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+  "sourceMatchesApprovedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+  "metrics": {
+    "networkBytesTotal": 472,
+    "networkRequestCount": 1,
+    "compressedBodyBytes": 391,
+    "decodedBodyBytes": 1021,
+    "contentEncoding": "br",
+    "protocol": "h2",
+    "statusCode": 200,
+    "fromDiskCache": false,
+    "fromServiceWorker": false,
+    "lighthouseCache": "none",
+    "compressedBodyField": "result.result.resultJson.requestList[0].netlogData.encodedSize",
+    "decodedBodyField": "result.result.resultJson.requestList[0].netlogData.decodedSize",
+    "networkBytesField": "result.result.resultJson.lhData.totalEncodedBodyLength",
+    "requestNetworkBytesField": "result.result.resultJson.requestList[0].encodedDataLength",
+    "lighthouseTotalByteWeight": 472,
+    "lighthouseRequestTransferSize": 472,
+    "reconstructedResponseHeaderTextBytes": 138,
+    "networkCounterMinusCompressedBodyBytes": 81,
+    "requestNetworkBytesTotal": 472
+  },
+  "scannerConditions": {
+    "formFactor": "mobile",
+    "screenWidth": 412,
+    "screenHeight": 660,
+    "region": "us-east1",
+    "throttlingMethod": "packetLevel",
+    "cpuSlowdownMultiplier": 2,
+    "configuredThrottlingRttMs": 70,
+    "bandwidthKbps": 12288,
+    "measuredTestRttMs": 86,
+    "measuredRealTestRttMs": 109,
+    "chromeVersion": "154.0.8037.92",
+    "lighthouseVersion": "13.5.0",
+    "puppeteerVersion": "25.8.0",
+    "analysisVersion": "13.0"
+  },
+  "lighthouseProvidedAuditConfiguration": {
+    "formFactor": "mobile",
+    "screenEmulation": {
+      "mobile": true,
+      "width": 412,
+      "height": 660,
+      "deviceScaleFactor": 2.625,
+      "disabled": false
+    },
+    "throttlingMethod": "provided",
+    "throttling": {
+      "rttMs": 70,
+      "throughputKbps": 12288,
+      "requestLatencyMs": 0,
+      "downloadThroughputKbps": 0,
+      "uploadThroughputKbps": 0,
+      "cpuSlowdownMultiplier": 2,
+      "method": "provided"
+    },
+    "locale": "en-US"
+  },
+  "performance": {
+    "score": 1,
+    "firstContentfulPaintMs": 543,
+    "largestContentfulPaintMs": 543,
+    "totalBlockingTimeMs": 0,
+    "cumulativeLayoutShift": 0
+  },
+  "comparisonWithSeptember22": {
+    "reportUrl": "https://www.debugbear.com/test/website-speed/SqYs6RrN/overview",
+    "fetchTime": "2026-09-22T21:12:33.321Z",
+    "networkBytesTotal": {
+      "september22": 400,
+      "october5": 472,
+      "change": 72,
+      "percentChange": 18
+    },
+    "compressedBodyBytes": {
+      "september22": 319,
+      "october5": 391,
+      "change": 72
+    },
+    "decodedBodyBytes": {
+      "september22": 746,
+      "october5": 1021,
+      "change": 275
+    },
+    "scannerConditionDifferences": {
+      "measuredTestRttMs": {
+        "september22": 90,
+        "october5": 86
+      },
+      "measuredRealTestRttMs": {
+        "september22": 122,
+        "october5": 109
+      },
+      "chromeVersion": {
+        "september22": "154.0.8026.0",
+        "october5": "154.0.8037.92"
+      },
+      "lighthouseVersion": {
+        "september22": "13.4.0",
+        "october5": "13.5.0"
+      }
+    },
+    "lighthouseProvidedAuditThrottling": {
+      "september22": {
+        "rttMs": 150,
+        "throughputKbps": 1638.4,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 2,
+        "method": "provided"
+      },
+      "october5": {
+        "rttMs": 70,
+        "throughputKbps": 12288,
+        "requestLatencyMs": 0,
+        "downloadThroughputKbps": 0,
+        "uploadThroughputKbps": 0,
+        "cpuSlowdownMultiplier": 2,
+        "method": "provided"
+      }
+    },
+    "bodyChangeAttribution": {
+      "september22ToApprovedOpeningAliases": {
+        "from": 319,
+        "to": 326,
+        "netChange": 7,
+        "scope": "Net effect of intervening copy, link-label, serialization and compression changes; not an isolated wording cost."
+      },
+      "approvedOpeningAliasesToDirectLinks": {
+        "from": 326,
+        "to": 391,
+        "netChange": 65,
+        "scope": "Published direct-link source and serialization change, preserving approved opening and canonical destinations."
+      },
+      "scannerCounterMinusBody": {
+        "september22": 81,
+        "october5": 81,
+        "netChange": 0,
+        "scope": "Difference between recorded counters, not an independently measured header length or complete connection size."
+      }
+    }
+  },
+  "validation": {
+    "assertionsPassed": true,
+    "singleFinishedUncachedHttp2Document": true,
+    "explicitNetlogBodyCounts": true,
+    "sourceHashMatchesApproved": true,
+    "scannerAndLighthouseTransferCountersAgree": true,
+    "allResourceTypesSumToDocumentTotals": true
+  },
+  "interpretation": [
+    "391 compressed body bytes is explicitly recorded in netlogData.encodedSize; it is not inferred by subtracting headers.",
+    "472 is DebugBear page weight and the saved encoded network counter. API totalEncodedBodyLength, request encodedDataLength, Lighthouse total-byte-weight and network request transferSize agree.",
+    "The counter is 81 bytes above the 391-byte body. This is the excess of the scanner encoded-response counter over the compressed body; it is not the reconstructed textual header length, ResourceTiming fixed 300-byte allowance or a complete DNS/TCP/TLS/IP exchange.",
+    "400 and 319 are the earlier September22 scanner/body values. Both have risen 72 bytes, leaving the counter-minus-body difference 81 bytes in each run.",
+    "No ResourceTiming transferSize is present in the normalized current scanner evidence. Do not substitute the Lighthouse transferSize for ResourceTiming transferSize.",
+    "Actual packet-level settings are the scan profile. Lighthouse provided audit settings are retained separately. Historical Lighthouse provided defaults differ while actual packet-level configured scan settings match.",
+    "API endTime and Lighthouse fetchTime both report 23:07:27.379Z, while the request startTime reports 23:07:32.121Z. These source timestamps are preserved separately; API endTime is not interpreted as completion of the network request.",
+    "Lighthouse rounded displayValue says Total size was 0 KiB; its exact numericValue is 472 bytes."
+  ],
+  "snapshotHashScope": "SHA-256 of the saved public API JSON snapshot serialized with indentation; not the HTTP response-body byte count.",
+  "pageEvidence": "measurements/page-20261005-direct-links-local.json",
+  "historicalEvidence": "measurements/debugbear-20260922-recovered.json",
+  "liveHttpEvidence": "measurements/http-20261005-debugbear-check.json",
+  "screenshotEvidence": "measurements/debugbear-20261005.png"
+}
