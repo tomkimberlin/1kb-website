@@ -44,11 +44,13 @@ if(buildOnly) {
   const comparisons=verification.browserComparisons;
   assert.ok(Array.isArray(comparisons),'Browser matrix is missing');
   assert.deepEqual(comparisons.map(({engine,width,theme})=>`${engine}-${width}-${theme}`).sort(),matrix.sort(),'Browser matrix must contain all 16 unique cases');
+  const nativeProtocolActivations=[...readFileSync('index.html','utf8').matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
   for(const entry of comparisons) {
     const name=`${entry.engine}-${entry.width}-${entry.theme}`;
     const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,
       keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
-      keyboardProbeRequests:9,unexpectedRequests:0,externalRequestsBlocked:true};
+      keyboardProbeRequests:9-nativeProtocolActivations,unexpectedRequests:0,externalRequestsBlocked:true};
+    assert.equal(entry.nativeProtocolActivations??0,nativeProtocolActivations,'Browser case '+name+': nativeProtocolActivations');
     for(const [key,value] of Object.entries(expected))assert.equal(entry[key],value,'Browser case '+name+': '+key);
     assert.ok(typeof entry.browserVersion==='string'&&entry.browserVersion.trim(),'Browser case '+name+': missing browser version');
     assert.ok(['Tab','Alt+Tab'].includes(entry.focusKey),'Browser case '+name+': unsupported keyboard probe');

@@ -22,7 +22,7 @@ There are three different sizes worth keeping separate:
 | Compressed response body | The Brotli, gzip or deflate bytes carrying that file |
 | Complete exchange | Requests, responses, DNS, connection setup, TLS and network framing |
 
-[1KB Club's submission test](https://1kb.club/submit/) sits between the last two: its linked DebugBear scanner counts page weight, including response headers, but excludes DNS and connection setup. The [README](README.md) shows the current result alongside the raw and compressed sizes.
+[1KB Club's submission test](https://1kb.club/submit/) uses the linked scanner's Network Bytes total. [DebugBear distinguishes compressed transfer size from uncompressed resource size](https://www.debugbear.com/blog/page-weight-website-speed). Its page-weight result is separate from the complete DNS/TLS exchange. The [README](README.md) shows the dated scanner result alongside exact raw and compressed sizes; a local response allowance is not a new scanner measurement.
 
 A page can qualify for the club and still require several kilobytes to establish a secure connection. Getting the HTML smaller helps one part of that exchange. It doesn't shrink a certificate or a browser's request headers.
 
@@ -91,9 +91,9 @@ Both optimizers accept `--input` and `--output` for experiments. They validate t
 
 ## What the short links cost
 
-All nine links use one-character paths. A link such as `<a href=g>my GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.
+The published October 5 page uses nine one-character paths. A link such as `<a href=g>my GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.
 
-This reduces the initial document, but clicking a link adds a request. That's the tradeoff. It suits a small page of outbound links; it would be less attractive for navigation people use repeatedly. Even the choice of letter can affect compression. Redirects retain their destinations as the page evolves, so older bookmarks and cached copies keep working. The email address stays visible and copyable.
+This reduces the initial document, but an uncached click adds a same-origin request and response. All nine current aliases returned empty 301 responses with no explicit freshness duration or cookie in the [read-only review](measurements/link-review-20261005-local.json). A 301 [can be heuristically cached](https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.2), so repeat-click behavior depends on the client. The local candidate uses explicit destinations, including direct mailto, while retaining the old aliases for bookmarks and cached pages. Full URLs also expose the real destination when hovering or copying a link and keep saved-page links usable. The destinations were already public in the redirects and source; aliases did not conceal them.
 
 ## The response has its own overhead
 
@@ -148,3 +148,9 @@ The [corrected deployment](measurements/deployment-20261005-club-link.json) veri
 The final October 5 opening is “This is the most optimized 1 KB website on the planet. Probably.” The [revised build](measurements/page-20261005-opening-copy.json) measures 768 bytes HTML, 326 with Brotli, 481 with gzip and 469 with deflate. The full “1 KB website” anchor and all destinations remain intact. Fresh pinned compression and [16 browser checks](measurements/browser-20261005-opening-copy.json) verify the exact edit; earlier source and deployment measurements remain separate.
 
 The [final October 5 deployment](measurements/deployment-20261005-opening-copy.json) confirms those exact bodies and the final approved sentence on the public website.
+
+The next October 5 pass found a 323-byte standard Brotli representation of the exact published 768-byte alias source, saving three body bytes without a text or layout edit. A fresh pinned build and two independent complete-stream decoders reproduced it. This is an optional local alternative: the selected design uses direct links, so the alias-only compressor recipe is preserved with the local review artifacts rather than installed as the default. The finite custom-encoder search and scoring used 7,984 trials; normal stock build grids and serialization searches are recorded separately.
+
+The [selected direct-link local build](measurements/page-20261005-direct-links-local.json) measures **1,021 bytes HTML, 391 Brotli, 536 gzip and 524 deflate**. It keeps fixed 540px maximum width, 18px padding and a relative 150% heading. Three redundant host-root URL slashes, optional paragraph endings, quotes and whitespace are omitted using valid syntax; all canonical destinations and visible content remain identical. The full-URL baseline measures 1,037/389/546/534 bytes. Choosing the compact source saves 16 raw bytes and ten bytes in each fallback for a two-byte Brotli cost. Compared with the published aliases, the selected document costs 65 Brotli bytes and avoids an uncached redirect on each click. No endpoint or hosting configuration changed.
+
+A fixed 27px heading and a 30em maximum width initially passed normal screenshots but differed under a root-font override. Those candidates were rejected. The final [normal matrix](measurements/browser-20261005-direct-links-local.json) and [24px font-override matrix](measurements/browser-20261005-font-override-local.json) each pass 16 Chromium/WebKit comparisons with identical pixels, content, geometry, focused appearance and nine native Enter destinations. Each case has one document load, eight intercepted HTTP probes and one intercepted trusted mailto click; no mail client or external request is launched. [Compression evidence](measurements/compression-20261005-direct-links-local.json) records stock Brotli settings, a fresh pinned tuned Zopfli run and exact complete consumption with independent decoders. The user approved this candidate for publication; deployment verification is pending. No new DebugBear result or global optimum is claimed.

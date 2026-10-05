@@ -1,0 +1,86 @@
+{
+  "source": {
+    "bytes": 1021,
+    "sha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d"
+  },
+  "selected": {
+    "html": 1021,
+    "brotli": 391,
+    "gzip": 536,
+    "deflate": 524
+  },
+  "brotliParams": {
+    "0": 0,
+    "1": 11,
+    "2": 16,
+    "4": 0,
+    "7": 2,
+    "8": 40
+  },
+  "brotliSource": "node:zlib from a fresh normal build; no custom Brotli C patch",
+  "gzipRecipe": {
+    "tuned": true,
+    "iterations": [
+      1000
+    ],
+    "blockSplitting": [
+      0,
+      1
+    ]
+  },
+  "additionalSearchTrials": 0,
+  "pythonVerification": {
+    "sourceBytes": 1021,
+    "sourceSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+    "gzipRawMemberExact": true,
+    "outputs": [
+      {
+        "encoding": "gzip",
+        "bytes": 536,
+        "sha256": "e11d588c6e148c7e17e7155f938580f70232bc4c915e5d60ae148881fb0ae81a",
+        "decodedBytes": 1021,
+        "exact": true,
+        "completeConsumption": true
+      },
+      {
+        "encoding": "deflate",
+        "bytes": 524,
+        "sha256": "dee36162d26646ac9be8880926bcbbcf40422c9b52403cceba985ac3b7617204",
+        "decodedBytes": 1021,
+        "exact": true,
+        "completeConsumption": true
+      }
+    ]
+  },
+  "pythonBrotliVerification": {
+    "decoder": "Python ctypes with fresh pinned Brotli1.2 C decoder",
+    "bytes": 391,
+    "sha256": "aa25bd3a6714e7854c7b880aef6e3a3bea08796735380401960cf740587b2860",
+    "sourceBytes": 1021,
+    "exact": true,
+    "completeConsumption": true
+  },
+  "outputs": {
+    "brotli": {
+      "path": "index.html.br",
+      "bytes": 391,
+      "sha256": "aa25bd3a6714e7854c7b880aef6e3a3bea08796735380401960cf740587b2860",
+      "exact": true,
+      "completeConsumption": true
+    },
+    "gzip": {
+      "path": "index.html.gz",
+      "bytes": 536,
+      "sha256": "e11d588c6e148c7e17e7155f938580f70232bc4c915e5d60ae148881fb0ae81a",
+      "exact": true,
+      "completeConsumption": true
+    },
+    "deflate": {
+      "path": "index.html.deflate",
+      "bytes": 524,
+      "sha256": "dee36162d26646ac9be8880926bcbbcf40422c9b52403cceba985ac3b7617204",
+      "exact": true,
+      "completeConsumption": true
+    }
+  }
+}

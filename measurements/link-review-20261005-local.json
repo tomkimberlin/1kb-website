@@ -1,0 +1,227 @@
+{
+  "measuredAt": "2026-10-05T19:11:50.968Z",
+  "scope": "Read-only public baseline and redirect checks; proposed direct links are local only",
+  "publishedMeasurement": "measurements/page-20261005-opening-copy.json",
+  "representations": [
+    {
+      "protocol": "1.1",
+      "encoding": "identity",
+      "bodyBytes": 768,
+      "bodySha256": "23c466d2b68fe669ecdd146cb5344e3452a0470f5d936801e40f462e05d8c8d2"
+    },
+    {
+      "protocol": "1.1",
+      "encoding": "br",
+      "bodyBytes": 326,
+      "bodySha256": "f204416167a8fc74fdd75cdfcf0e464071fde9ef33208a100601726d55e5f60e"
+    },
+    {
+      "protocol": "1.1",
+      "encoding": "gzip",
+      "bodyBytes": 481,
+      "bodySha256": "fe8c06dfc974b028675e4d135162416565c9a70b7654d1b11ad1c478548d6d2a"
+    },
+    {
+      "protocol": "1.1",
+      "encoding": "deflate",
+      "bodyBytes": 469,
+      "bodySha256": "9299d03fa8b6ab2effa1baa22c016404810a68ef4dc824bd8075d62c19dc24ae"
+    },
+    {
+      "protocol": "2",
+      "encoding": "identity",
+      "bodyBytes": 768,
+      "bodySha256": "23c466d2b68fe669ecdd146cb5344e3452a0470f5d936801e40f462e05d8c8d2"
+    },
+    {
+      "protocol": "2",
+      "encoding": "br",
+      "bodyBytes": 326,
+      "bodySha256": "f204416167a8fc74fdd75cdfcf0e464071fde9ef33208a100601726d55e5f60e"
+    },
+    {
+      "protocol": "2",
+      "encoding": "gzip",
+      "bodyBytes": 481,
+      "bodySha256": "fe8c06dfc974b028675e4d135162416565c9a70b7654d1b11ad1c478548d6d2a"
+    },
+    {
+      "protocol": "2",
+      "encoding": "deflate",
+      "bodyBytes": 469,
+      "bodySha256": "9299d03fa8b6ab2effa1baa22c016404810a68ef4dc824bd8075d62c19dc24ae"
+    }
+  ],
+  "redirects": [
+    {
+      "protocol": "1.1",
+      "alias": "e",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://euthenics.com/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "p",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://paste.kimberlin.net/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "x",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://xmr.surf/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "m",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/m365-workbench",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "i",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/Save-Image-As",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "k",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://1kb.club/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "s",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/1kb-website",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "g",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "1.1",
+      "alias": "c",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "mailto:tomkimberlin@gmail.com",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "e",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://euthenics.com/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "p",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://paste.kimberlin.net/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "x",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://xmr.surf/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "m",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/m365-workbench",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "i",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/Save-Image-As",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "k",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://1kb.club/",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "s",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin/1kb-website",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "g",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "https://github.com/tomkimberlin",
+      "explicitFreshness": false,
+      "cookieSet": false
+    },
+    {
+      "protocol": "2",
+      "alias": "c",
+      "status": 301,
+      "bodyBytes": 0,
+      "destination": "mailto:tomkimberlin@gmail.com",
+      "explicitFreshness": false,
+      "cookieSet": false
+    }
+  ],
+  "decision": "Use explicit HTTPS/mailto destinations in the local candidate; retain all server aliases for compatibility.",
+  "uncachedClickSaving": "One same-origin redirect request/response per click. Direct mailto requires no HTTP lookup.",
+  "cacheBoundary": "301 responses can be heuristically cached. No explicit freshness duration was observed; repeat-click behavior depends on the client.",
+  "sources": [
+    "https://www.rfc-editor.org/rfc/rfc9110.html#section-15.4.2",
+    "https://www.rfc-editor.org/rfc/rfc9111.html#section-4.2.2"
+  ],
+  "note": "No page, server configuration or remote Git state was changed. Body bytes exclude headers, DNS, TLS and other framing."
+}

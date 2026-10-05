@@ -25,6 +25,12 @@ function fixture(t) {
       data[key+'Sha256']=hash('public/'+file);
     }
     data.verification.browserCandidateSha256=data.htmlSha256;
+    data.verification.browserVerifierSha256=hash('tools/verify-page.mjs');
+    data.verification.handlerSha256=hash('server/site.js');
+    const native=[...readFileSync(join(directory,'index.html'),'utf8').matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
+    for(const entry of data.verification.browserComparisons) {
+      entry.nativeProtocolActivations=native;entry.keyboardProbeRequests=9-native;
+    }
   });
   const readme=join(directory,'README.md');
   writeFileSync(readme,readFileSync(readme,'utf8')+'\n[Test browser fixture]('+page+')\n');
@@ -160,6 +166,8 @@ test('browser claims require the complete unique successful matrix',t=>{
     ['pixels failed',data=>data.verification.browserComparisons[0].identicalPixels=false],
     ['focus missing',data=>delete data.verification.browserComparisons[0].identicalFocusedPixels],
     ['activation missing',data=>data.verification.browserComparisons[0].keyboardEnterDestinations=8],
+    ['HTTP probe count wrong',data=>data.verification.browserComparisons[0].keyboardProbeRequests=99],
+    ['native protocol count wrong',data=>data.verification.browserComparisons[0].nativeProtocolActivations=99],
     ['request leaked',data=>data.verification.browserComparisons[0].unexpectedRequests=1],
     ['wrong viewport mode',data=>data.verification.browserComparisons[0].mobile=false],
     ['missing version',data=>delete data.verification.browserComparisons[0].browserVersion]

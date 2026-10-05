@@ -8,6 +8,25 @@ import {gzipSync,brotliCompressSync} from 'node:zlib';
 
 const optimizer=readFileSync(new URL('../optimize.mjs',import.meta.url));
 const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const anchorPattern=/<a href=(?:"([^"]*)"|'([^']*)'|([^\s>]+))>/g;
+function withHrefs(hrefs,html=page) {
+ let index=0;
+ const changed=html.replace(anchorPattern,()=>'<a href='+hrefs[index++] +'>');
+ assert.equal(index,9,'fixture must replace every real site anchor');
+ assert.equal(hrefs.length,9);
+ return changed;
+}
+const fullHrefs=[
+ 'https://example.test/work', 'https://example.test/paste/', 'https://example.test/node/',
+ 'https://example.test/project-one', 'https://example.test/project-two', 'https://1kb.club/',
+ 'https://example.test/source', 'https://example.test/profile', 'mailto:person@example.test'
+];
+const logicalHrefs=html=>[...html.matchAll(anchorPattern)].map(([,a,b,d])=>(a??b??d)
+ .replace(/&(?:amp|quot|apos|gt|lt|rsquo|CloseCurlyQuote);|&#(?:[0-9]+|x[0-9a-f]+);/gi,reference=>{
+  const named={'&amp;':'&','&quot;':'"','&apos;':"'",'&gt;':'>','&lt;':'<','&rsquo;':'\u2019','&CloseCurlyQuote;':'\u2019'};
+  if(Object.hasOwn(named,reference)) return named[reference];
+  return String.fromCodePoint(Number(reference[2].toLowerCase() === 'x' ? '0'+reference.slice(2,-1) : reference.slice(2,-1)));
+ }));
 function fixture(t,html=page) {
  const directory=mkdtempSync(join(tmpdir(),'onekb-serialization-'));
  t.after(()=>rmSync(directory,{recursive:true,force:true}));
@@ -138,7 +157,7 @@ test('unsupported body markup is rejected before paragraph or link mutations',t=
   page.replace('<p>I','<p><script>let link="<a href=w>"</script>I'),
   page.replace('Tom Kimberlin</h1>','<em>Tom Kimberlin</em></h1>'),
   page.replace('</a>',''),
-  page.replace(/(<a href=[a-z]>)/,'$1<a href=b>')
+  page.replace(anchorPattern,tag=>tag+'<a href=b>')
  ]) {
   const directory=fixture(t,changed);
   const result=run(directory,'--attempts','0');
@@ -260,7 +279,8 @@ test('literal Unicode cannot enter a serialization served without an HTTP/1–2 
 
 test('non-HTML controls cannot be mistaken for removable paragraph whitespace',t=>{
  for(const byte of [0,11,27,127]) {
-  const changed=page.replace('. <p>','.'+String.fromCharCode(byte)+'<p>');
+  const changed=page.replace(/<\/a>\.[\t\n\f\r ]*(?=<p>)/,boundary=>boundary+String.fromCharCode(byte));
+  assert.notEqual(changed,page,'control fixture must alter a real paragraph boundary');
   const directory=fixture(t,changed);
   const result=run(directory,'--attempts','100');
   assert.notEqual(result.status,0,String(byte));
@@ -276,4 +296,113 @@ test('Unicode character references remain intact across all retained serializati
  assert.equal(result.status,0,result.stderr);
  const shortlist=JSON.parse(readFileSync(join(directory,'optimization/shortlist.json')));
  for(const candidate of shortlist) assert(candidate.html.includes(added));
+});
+
+
+test('full HTTPS and mailto hrefs seed a zero-attempt search without source changes',t=>{
+ const fullPage=withHrefs(fullHrefs.map((href,i)=>i%3===0 ? '"'+href+'"' : i%3===1 ? "'"+href+"'" : href));
+ const directory=fixture(t,fullPage);
+ const result=run(directory,'--attempts','0');
+ assert.equal(result.status,0,result.stderr);
+ assert.equal(report(directory).sourceSeeded,true);
+ assert.equal(readFileSync(join(directory,'optimization/candidate.html'),'utf8'),fullPage);
+ const shortlist=JSON.parse(readFileSync(join(directory,'optimization/shortlist.json')));
+ assert.equal(shortlist[0].html,fullPage);
+ assert.deepEqual(logicalHrefs(shortlist[0].html),fullHrefs);
+});
+
+test('deterministic full-URL searches retain destinations and quote query equals',t=>{
+ const destinations=[...fullHrefs];
+ destinations[0]='https://example.test/?one=1&two=2';
+ const fullPage=withHrefs(destinations.map((href,i)=>i===0 ? '"'+href+'"' : href));
+ const directory=fixture(t,fullPage);
+ mkdirSync(join(directory,'server'));
+ // A coincidental path suffix or URL fragment never becomes a one-letter alias.
+ writeFileSync(join(directory,'server/site.js'),"const redirects={'/w':'same','/e':'same','/k':'club','/o':'club'};");
+ for(const output of ['full-a','full-b']) {
+  const result=run(directory,'--seed','117','--attempts','300','--gzip-limit','700','--output',output);
+  assert.equal(result.status,0,result.stderr);
+ }
+ assert.deepEqual(readFileSync(join(directory,'full-a/candidate.html')),readFileSync(join(directory,'full-b/candidate.html')));
+ assert.deepEqual(report(directory,'full-a'),report(directory,'full-b'));
+ const shortlist=JSON.parse(readFileSync(join(directory,'full-a/shortlist.json')));
+ assert(shortlist.length>1);
+ for(const candidate of shortlist) {
+  assert.deepEqual(logicalHrefs(candidate.html),destinations);
+  assert.match(candidate.html,/<a href=(?:"https:\/\/example\.test\/\?one=1&two=2"|'https:\/\/example\.test\/\?one=1&two=2')>/);
+  assert(candidate.html.includes('>1 KB website</a>'));
+ }
+});
+
+test('requotes preserve raw URL entities and both literal quote characters',t=>{
+ const hrefs=[...fullHrefs];
+ hrefs[0]=`'https://example.test/?a="b"&amp;literal=&amp;quot;&rsquo;'`;
+ hrefs[1]=`"https://example.test/?a='b'&amp;c=&#39;"`;
+ hrefs[2]=`'https://example.test/?tag=<p>&gt;&amp;e=&#x2019;'`;
+ const expected=[...fullHrefs];
+ expected[0]='https://example.test/?a="b"&literal=&quot;\u2019';
+ expected[1]="https://example.test/?a='b'&c='";
+ expected[2]='https://example.test/?tag=<p>>&e=\u2019';
+ const fullPage=withHrefs(hrefs);
+ const directory=fixture(t,fullPage);
+ let result=run(directory,'--attempts','0','--output','zero');
+ assert.equal(result.status,0,result.stderr);
+ assert.equal(report(directory,'zero').sourceSeeded,true);
+ assert.equal(readFileSync(join(directory,'zero/candidate.html'),'utf8'),fullPage);
+ result=run(directory,'--seed','42','--attempts','500','--gzip-limit','800');
+ assert.equal(result.status,0,result.stderr);
+ const shortlist=JSON.parse(readFileSync(join(directory,'optimization/shortlist.json')));
+ assert(shortlist.length>1);
+ const forms=new Set();
+ for(const candidate of shortlist) {
+  assert.deepEqual(logicalHrefs(candidate.html),expected);
+  assert(candidate.html.includes('&amp;literal=&amp;quot;&rsquo;'));
+  assert(candidate.html.includes('&amp;e=&#x2019;'));
+  forms.add([...candidate.html.matchAll(anchorPattern)][0][0]);
+ }
+ assert(forms.size>1,'the retained candidates must exercise URL requoting');
+});
+
+test('invalid unquoted hrefs and unsupported or repeated anchor attributes fail closed',t=>{
+ const fullPage=withHrefs(fullHrefs);
+ for(const opening of [
+  '<a href=https://example.test/?q=1>',
+  '<a href=https://example.test/`bad>',
+  '<a href="https://example.test/" href="https://other.test/">',
+  '<a href="https://example.test/" rel=noreferrer>',
+  '<a href="https://example.test/" download>'
+ ]) {
+  const changed=fullPage.replace(anchorPattern,()=>opening);
+  assert.notEqual(changed,fullPage);
+  const directory=fixture(t,changed);
+  const result=run(directory,'--attempts','0');
+  assert.notEqual(result.status,0,opening);
+  assert.match(result.stderr,/anchor attribute|nine links/);
+  assert.equal(existsSync(join(directory,'optimization/candidate.html')),false);
+  assert.equal(readFileSync(join(directory,'index.html'),'utf8'),changed);
+ }
+});
+
+test('only actual one-letter hrefs may use verified equivalent aliases',t=>{
+ const hrefs=[...fullHrefs];
+ hrefs[0]='w';
+ hrefs[1]='https://example.test/w';
+ hrefs[2]='constructor';
+ hrefs[3]='toString';
+ hrefs[4]='__proto__';
+ const fullPage=withHrefs(hrefs);
+ const directory=fixture(t,fullPage);
+ mkdirSync(join(directory,'server'));
+ writeFileSync(join(directory,'server/site.js'),"const redirects={'/w':'same','/e':'same'};");
+ const result=run(directory,'--seed','117','--attempts','300','--gzip-limit','700');
+ assert.equal(result.status,0,result.stderr);
+ const shortlist=JSON.parse(readFileSync(join(directory,'optimization/shortlist.json')));
+ const used=new Set();
+ for(const candidate of shortlist) {
+  const destinations=logicalHrefs(candidate.html);
+  assert(['w','e'].includes(destinations[0]));
+  used.add(destinations[0]);
+  assert.deepEqual(destinations.slice(1),hrefs.slice(1));
+ }
+ assert.deepEqual([...used].sort(),['e','w']);
 });

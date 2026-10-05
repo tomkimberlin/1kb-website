@@ -96,16 +96,26 @@ const remainingHead=head.replace(/<!doctype html>/i,'').replace(/<html style=(?:
  .replace(/<\/?head>|<body>/g,'').trim();
 if(remainingHead) throw Error('Unrecognized head content; update the serializer before searching');
 const tail = source.slice(heading.index+heading[0].length);
-const paragraphMatches=[...tail.matchAll(/<p>[\s\S]*?(?=\s*<p>|$)/g)];
+// Keep quoted hrefs intact while finding paragraph boundaries: a URL may contain
+// literal > or <p> text inside its attribute value.
+const anchorPattern=/<a href=(?:"([^"]*)"|'([^']*)'|([^\s>]+))>/g;
+const paragraphStarts=[...tail.matchAll(new RegExp(anchorPattern.source+'|<p>','g'))]
+ .filter(match=>match[0] === '<p>');
+const paragraphMatches=paragraphStarts.map((match,i)=>{
+ let end=paragraphStarts[i+1]?.index ?? tail.length;
+ if(i+1<paragraphStarts.length) while(end>match.index && /[\t\n\f\r ]/.test(tail[end-1])) end--;
+ return {0:tail.slice(match.index,end),index:match.index};
+});
 const paragraphs = paragraphMatches.map(match=>match[0].trimEnd().replace(/<\/p>$/, ''));
 if(!paragraphs || paragraphs.length !== 5 || tail.includes('<!--') || tail.replace(/<p>[\s\S]*/, '').trim())
  throw Error('Expected the five existing paragraphs after the heading');
-const normalized = paragraphs.map(p=>p.replace(/<a href=(?:"([a-z])"|'([a-z])'|([a-z]))>/g, (_,a,b,d)=>'<a href='+(a||b||d)+'>'));
-if(normalized.join('').match(/<a href=[a-z]>/g)?.length !== 9)
- throw Error('Expected nine one-character links');
-for(const paragraph of normalized) {
+const anchorAttributes=[...paragraphs.join('').matchAll(anchorPattern)];
+if(anchorAttributes.length !== 9) throw Error('Expected nine links with only an href attribute');
+if(anchorAttributes.some(([,a,b,d])=>d !== undefined && unquotedForbidden.test(d)))
+ throw Error('Invalid unquoted anchor attribute');
+for(const paragraph of paragraphs) {
  let open=false;
- const text=paragraph.slice(3).replace(/<a href=[a-z]>|<\/a>/g,tag=>{
+ const text=paragraph.slice(3).replace(new RegExp(anchorPattern.source+'|</a>','g'),tag=>{
   const starts=tag !== '</a>';
   if(starts === open) throw Error('Unsupported or unbalanced anchor markup');
   open=starts;
@@ -133,7 +143,6 @@ const headOrder=[0,1,2,3].sort((a,b)=>head.indexOf(headParts[a])-head.indexOf(he
 const headWs=headOrder.map((part,i)=>head.slice(i ? head.indexOf(headParts[headOrder[i-1]])+headParts[headOrder[i-1]].length : rootTag.index+rootTag[0].length,head.indexOf(headParts[part])).replace('<head>',''));
 const lastHeadPart=headParts[headOrder.at(-1)];
 const headStructure=headParts.reduce((markup,part)=>markup.replace(part,''),head);
-const anchorAttributes=[...paragraphs.join('').matchAll(/<a href=(?:"([a-z])"|'([a-z])'|([a-z]))>/g)];
 const boundaryWs=paragraphMatches.map((match,i)=>tail.slice(i ? paragraphMatches[i-1].index+paragraphMatches[i-1][0].length : 0,match.index));
 boundaryWs.push(paragraphMatches.at(-1)[0].match(/\s*$/)[0]);
 const base = {
@@ -151,7 +160,7 @@ const base = {
  pClose:paragraphMatches.map(match=>match[0].trimEnd().endsWith('</p>')),
  boundaryWs,hrefQuotes:anchorAttributes.map(([,a,b])=>a !== undefined ? '"' : b !== undefined ? "'" : ''),
  entity:tail.match(/&#8217;|&#x2019;|&rsquo;|&CloseCurlyQuote;/)?.[0] || '&#8217;',
- aliases:[['w','e'],['b','g'],['a','s'],['k','o']].map(group=>anchorAttributes.map(([,a,b,d])=>a||b||d).find(href=>group.includes(href)) || group[0]),
+ aliases:[['w','e'],['b','g'],['a','s'],['k','o']].map(group=>anchorAttributes.map(([,a,b,d])=>a??b??d).find(href=>group.includes(href)) || group[0]),
  bodyTag:headStructure.includes('<body>'),headTag:headStructure.includes('<head>'),
  beforeHeading:head.slice(head.indexOf(lastHeadPart)+lastHeadPart.length).replace('</head>','').replace('<body>','')
 };
@@ -163,6 +172,8 @@ const aliasChoices=aliasGroups.map(group=>redirects[group[0]] && redirects[group
 const aliases=Object.fromEntries(aliasChoices.flatMap((group,i)=>group ? group.map(path=>[path,i]) : []));
 const quoted = (value,quote)=>{
  if(!quote && (!value || unquotedForbidden.test(value))) quote='"';
+ // Preserve existing character references; escape only a newly chosen delimiter.
+ if(quote) value=value.replaceAll(quote,quote === '"' ? '&quot;' : '&#39;');
  return quote+value+quote;
 };
 const tag = (name,attrs,order,quote)=>'<'+name+' '+order.map(i=>attrs[i][0]+'='+quoted(attrs[i][1],quote[i])).join(' ')+'>';
@@ -178,11 +189,20 @@ function render(state) {
  if(state.bodyTag) html+='<body>';
  html+=state.beforeHeading+'<h1 style='+quoted('font-size:'+state.heading,state.headingQuote)+'>'+heading[4]+'</h1>';
  let anchor=0;
- html+=normalized.map((p,i)=>{
-  // Keep entities ASCII: HTTP/1 and HTTP/2 omit a charset declaration. Restrict
-  // these substitutions to paragraphs, preserving title and comment literally.
-  p=p.replace(/&#8217;|&#x2019;|&rsquo;|&CloseCurlyQuote;/,state.entity);
-  p=p.replace(/<a href=([a-z])>/g,(_,href)=>'<a href='+quoted(aliases[href] === undefined ? href : state.aliases[aliases[href]],state.hrefQuotes[anchor++])+'>');
+ html+=paragraphs.map((p,i)=>{
+  // Keep text entities ASCII. Consume complete opening anchors first so neither
+  // href character references nor their logical URL values can be mutated.
+  let entityReplaced=false;
+  p=p.replace(new RegExp(anchorPattern.source+'|&#8217;|&#x2019;|&rsquo;|&CloseCurlyQuote;','g'),(value,a,b,d)=>{
+   if(value.startsWith('<a ')) {
+    const href=a??b??d;
+    const target=href.length === 1 && Object.hasOwn(aliases,href) ? state.aliases[aliases[href]] : href;
+    return '<a href='+quoted(target,state.hrefQuotes[anchor++])+'>';
+   }
+   if(entityReplaced) return value;
+   entityReplaced=true;
+   return state.entity;
+  });
   return state.boundaryWs[i]+p+(state.pClose[i]?'</p>':'');
  }).join('')+state.boundaryWs[5];
  return html;

@@ -54,12 +54,18 @@ const code=handlerSource.toString('utf8')
  .replace('export default {serve, headers};','({serve, headers});');
 // Short-link redirects must not require filesystem access or page data.
 const handler=runInNewContext(code,{});
+const directDestinations=new Set([...handlerSource.toString('utf8').matchAll(/'\/[a-z]':'([^']*)'/g)].map(match=>match[1]));
 function destination(href) {
- assert.match(href,/^[a-z]$/,'Each anchor must retain a one-character relative path');
- const request={method:'GET',uri:'/'+href,variables:{scheme:'https',host:'tomkimberlin.com'},headersOut:{},sendHeader(){},finish(){}};
- handler.serve(request);
- assert.equal(request.status,301,'Unrecognized short link: '+href);
- return request.headersOut.Location;
+ if(/^[a-z]$/.test(href)) {
+  const request={method:'GET',uri:'/'+href,variables:{scheme:'https',host:'tomkimberlin.com'},headersOut:{},sendHeader(){},finish(){}};
+  handler.serve(request);
+  assert.equal(request.status,301,'Unrecognized short link: '+href);
+  return request.headersOut.Location;
+ }
+ const url=new URL(href);
+ assert(directDestinations.has(url.href),'Unrecognized direct link: '+href);
+ assert(['https:','mailto:'].includes(url.protocol),'Unsupported direct link protocol');
+ return url.href;
 }
 
 let serverRequests=[];
@@ -140,9 +146,9 @@ try {
       await context.route('**/*',async route=>{
        const request=route.request();
        if(request.url()===documentUrl && request.method()==='GET' && request.isNavigationRequest()) {await route.continue();return;}
-       if(probe && request.url()===`${origin}/${probe.href}` && request.method()==='GET' && request.isNavigationRequest()) {
+       if(probe && request.url()===new URL(probe.href,documentUrl).href && request.method()==='GET' && request.isNavigationRequest()) {
         const current=probe;probe=null;
-        const actual=destination(new URL(request.url()).pathname.slice(1));
+        const actual=destination(current.href);
         activations.push(actual);
         // A 204 verifies native Enter activation while keeping this document open.
         // The real redirect destination is checked without contacting it.
@@ -175,6 +181,22 @@ try {
        assert.deepEqual(state,results.baseline.state,name+' content or layout changed');
        assert(png.equals(results.baseline.png),name+' pixels changed');
       }
+      // Observe trusted native mailto activation without opening a mail client.
+      await page.exposeFunction('onekbVerifyProtocolActivation',payload=>{
+       assert(probe && /^mailto:/i.test(probe.href),name+' unexpected protocol activation');
+       assert.equal(payload.href,probe.href,name+' mailto destination');
+       assert.equal(payload.trusted,true,name+' trusted keyboard activation');
+       const current=probe;probe=null;
+       const actual=destination(payload.href);activations.push(actual);current.resolve(actual);
+      });
+      await page.evaluate(()=>document.addEventListener('click',event=>{
+       const anchor=event.target.closest?.('a');
+       const href=anchor?.getAttribute('href');
+       if(href && /^mailto:/i.test(href)) {
+        event.preventDefault();
+        window.onekbVerifyProtocolActivation({href,trusted:event.isTrusted});
+       }
+      },{capture:true}));
       const focus=[];
       for(let index=0;index<links.length;index++) {
        await page.keyboard.press(focusKey);
@@ -206,21 +228,21 @@ try {
       }
       assert.deepEqual(errors,[],name+' script errors');
       assert.deepEqual(unexpected,[],name+' unexpected requests (blocked before sending)');
-      assert.equal(observed.length,1+links.length,name+' page load plus deliberate Enter probes');
+      assert.equal(observed.length,1+links.filter(link=>!/^mailto:/i.test(link.href)).length,name+' page load plus deliberate HTTP Enter probes');
       assert.deepEqual(serverRequests,[`/?version=${version}`],name+' unexpected local server requests');
       assert.deepEqual(activations,state.links.map(link=>link.destination),name+' keyboard activation destinations');
-      results[version]={state,png,focus,activations};
+      results[version]={state,png,focus,activations,httpProbes:links.filter(link=>!/^mailto:/i.test(link.href)).length,protocolActivations:links.filter(link=>/^mailto:/i.test(link.href)).length};
      } finally {await context.close();}
     }
     assert.deepEqual(results.candidate.activations,results.baseline.activations,name+' activated destinations changed');
     cases.push({engine,browserVersion:browser.version(),width,theme,mobile:width<=402,identicalPixels:true,
      identicalContentAndGeometry:true,keyboardLinks:9,focusKey,identicalFocusedPixels:9,keyboardEnterDestinations:9,
-     pageLoadRequests:1,keyboardProbeRequests:9,unexpectedRequests:0,externalRequestsBlocked:true});
+     pageLoadRequests:1,keyboardProbeRequests:results.candidate.httpProbes,nativeProtocolActivations:results.candidate.protocolActivations,unexpectedRequests:0,externalRequestsBlocked:true});
     console.log(name+': identical pixels, content, geometry, focused appearance and Enter destinations; one page-load request');
    }
   } finally {await browser.close();}
  }
- const report={measuredAt:new Date().toISOString(),verifierSha256,handlerSha256,scope:'Local browser equivalence; all unexpected requests are blocked. Enter probes receive local 204 responses after checking the actual redirect handler. No public deployment or network-weight measurement.',
+ const report={measuredAt:new Date().toISOString(),verifierSha256,handlerSha256,scope:'Local browser equivalence; all unexpected requests are blocked. HTTP Enter probes receive intercepted local 204 responses after verifying each destination; native mailto activation is intercepted synchronously and checked as a trusted keyboard click without launching a mail client. No public deployment or network-weight measurement.',
   baseline:{htmlBytes:sources.baseline.length,htmlSha256:sha256(sources.baseline)},
   candidate:{htmlBytes:sources.candidate.length,htmlSha256:sha256(sources.candidate)},cases};
  writeFileSync(join(output,'report.json'),JSON.stringify(report,null,2)+'\n');

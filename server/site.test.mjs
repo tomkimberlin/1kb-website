@@ -56,14 +56,22 @@ test('unacceptable encodings and methods return empty errors',()=>{
   assert.equal(r.headersOut.Allow,'GET, HEAD');
   assert.equal(r.body.length,0);
 });
-test('aliases and short links preserve their redirect destinations',()=>{
-  const links=[...readFileSync('index.html','utf8').matchAll(/<a href=(?:"([^"]+)"|'([^']+)'|([^ >]+))>/g)];
+test('direct page links and compatibility aliases preserve their destinations',()=>{
+  const links=[...readFileSync('index.html','utf8').matchAll(/<a href=(?:"([^"]+)"|'([^']+)'|([^\s>]+))>/g)];
   assert.equal(links.length,9);
-  for(const match of links) {
-    const path=match[1]??match[2]??match[3];
-    assert.match(path,/^[a-z]$/);
-    assert.equal(call('/'+path).status,301,path);
-  }
+  const destinations=links.map(match=>{
+    const url=new URL(match[1]??match[2]??match[3]);
+    assert(['https:','mailto:'].includes(url.protocol),'Direct links must use HTTPS or mailto');
+    return url.href;
+  });
+  assert.deepEqual(destinations,[
+    'https://euthenics.com/','https://paste.kimberlin.net/','https://xmr.surf/',
+    'https://github.com/tomkimberlin/m365-workbench','https://github.com/tomkimberlin/Save-Image-As',
+    'https://1kb.club/','https://github.com/tomkimberlin/1kb-website','https://github.com/tomkimberlin',
+    'mailto:tomkimberlin@gmail.com'
+  ]);
+  // Keep every previously published short URL working even though the page now
+  // points directly to each canonical destination.
   for(const [url,location] of [
     ['http://tomkimberlin.com/?x=1','https://tomkimberlin.com/?x=1'],
     ['https://www.tomkimberlin.com/g','https://tomkimberlin.com/g'],

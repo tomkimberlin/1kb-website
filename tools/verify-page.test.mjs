@@ -18,6 +18,7 @@ try {await import(module);} catch(error) {
 const optional={skip:available ? false : 'Install Playwright or set PLAYWRIGHT_MODULE to run browser regressions'};
 const verifier=fileURLToPath(new URL('./verify-page.mjs',import.meta.url));
 const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const anchorOpen=/<a href=("[^"]*"|'[^']*'|[^\s>]+)>/;
 const root=fileURLToPath(new URL('../',import.meta.url));
 async function compare(t,candidate=page,prepare) {
  const directory=mkdtempSync(join(tmpdir(),'onekb-browser-test-'));
@@ -39,7 +40,7 @@ async function compare(t,candidate=page,prepare) {
 }
 
 test('equivalent aliases preserve focused pixels and all nine native Enter destinations',optional,async t=>{
- const candidate=page.replace(/<a href=(?:e|w)>/,'<a href=w>');
+ const candidate=page.replace(anchorOpen,'<a href=w>');
  const result=await compare(t,candidate);
  assert.equal(result.code,0,result.stderr);
  const report=JSON.parse(readFileSync(join(result.directory,'report/report.json')));
@@ -47,8 +48,24 @@ test('equivalent aliases preserve focused pixels and all nine native Enter desti
  assert.equal(report.cases[0].identicalFocusedPixels,9);
  assert.equal(report.cases[0].keyboardEnterDestinations,9);
  assert.equal(report.cases[0].pageLoadRequests,1);
- assert.equal(report.cases[0].keyboardProbeRequests,9);
+ assert.equal(report.cases[0].keyboardProbeRequests,8);
+ assert.equal(report.cases[0].nativeProtocolActivations,1);
  assert.equal(report.cases[0].unexpectedRequests,0);
+});
+
+test('canonical host-root URL spellings preserve destinations and native Enter activation',optional,async t=>{
+ const candidate=page.replace(anchorOpen,'<a href=https://EUTHENICS.com>').replace('href=mailto:','href=MAILTO:');
+ assert.notEqual(candidate,page);
+ const result=await compare(t,candidate);
+ assert.equal(result.code,0,result.stderr);
+});
+
+test('unknown direct destinations are rejected before any Enter activation',optional,async t=>{
+ const candidate=page.replace(anchorOpen,'<a href=https://example.invalid/>');
+ assert.notEqual(candidate,page);
+ const result=await compare(t,candidate);
+ assert.notEqual(result.code,0);
+ assert.match(result.stderr,/Unrecognized direct link/);
 });
 
 test('a hidden cross-origin image is rejected without sending its request',optional,async t=>{
@@ -71,7 +88,7 @@ test('removing keyboard outlines fails even while :focus-visible remains true',o
 });
 
 test('an inline click blocker cannot pass as a script-free page',optional,async t=>{
- const candidate=page.replace(/<a href=([a-z])>/,'<a href=$1 onclick="return false">');
+ const candidate=page.replace(anchorOpen,'<a href=$1 onclick="return false">');
  const result=await compare(t,candidate);
  assert.notEqual(result.code,0);
  assert.match(result.stderr,/unexpected inline event handlers/);
@@ -84,7 +101,7 @@ test('nonbreaking spaces remain distinct from serialization whitespace',optional
 });
 
 test('changing a link target is rejected before opening a new tab',optional,async t=>{
- const result=await compare(t,page.replace(/<a href=([a-z])>/,'<a href=$1 target=_blank>'));
+ const result=await compare(t,page.replace(anchorOpen,'<a href=$1 target=_blank>'));
  assert.notEqual(result.code,0);
  assert.match(result.stderr,/content or layout changed/);
 });

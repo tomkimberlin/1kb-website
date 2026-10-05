@@ -21,7 +21,7 @@ for(const path of outputPaths) {
  protectedPaths.push(path);
 }
 const data=readFileSync('index.html');
-// 1KB Club measures transferred bytes, including response headers, not raw HTML.
+// 1KB Club uses its linked scanner's Network Bytes total, not raw HTML.
 // Reserve 128 bytes for response headers/framing; the measured HTTP/2 cost is 81.
 // Confirm the published page with the club's linked DebugBear scanner as well.
 const limit=1024, overheadAllowance=128;
