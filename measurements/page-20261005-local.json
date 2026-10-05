@@ -357,5 +357,5 @@
       "note": "Independent broader and narrower compressor tuning and serialization shortlist review found no encoding below 315 B. Finite search, not proof of an optimum."
     }
   ],
-  "note": "All size savings are local. The live page remains the September 26 source. Historical DebugBear and gallery measurements have not been refreshed. Browser comparisons bind to source bytes and apply unchanged after lossless recompression."
+  "note": "All size savings are local. At this measurement, the live page was the September 26 source. Historical DebugBear and gallery measurements have not been refreshed. Browser comparisons bind to source bytes and apply unchanged after lossless recompression."
 }

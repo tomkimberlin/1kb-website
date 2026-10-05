@@ -4,6 +4,8 @@ The page size in [build-report.json](build-report.json) covers the response body
 
 The September 26 changes are deployed on the production host; the [deployment record](measurements/deployment-20260926.json) identifies the active release, images and live checks. The dated September 22 measurements remain historical. The [local transport checks](measurements/transport-20260926-local.json) separately cover the current handler and optional certificate-compression fallback on an isolated server.
 
+The [October 5 page deployment](measurements/deployment-20261005.json) serves 760-byte HTML, 324-byte Brotli, 478-byte gzip and 466-byte deflate bodies. Its 118 public HTTP checks, 12 alias checks and 16 live browser comparisons passed. The server image and transport configuration remain the September 26 version.
+
 ## Main website
 
 nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.
