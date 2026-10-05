@@ -146,3 +146,5 @@ The later October 5 link correction extends the 1KB Club anchor to “1 KB websi
 The [corrected deployment](measurements/deployment-20261005-club-link.json) verifies those exact bodies and the extended link on the public website.
 
 The final October 5 opening is “This is the most optimized 1 KB website on the planet. Probably.” The [revised build](measurements/page-20261005-opening-copy.json) measures 768 bytes HTML, 326 with Brotli, 481 with gzip and 469 with deflate. The full “1 KB website” anchor and all destinations remain intact. Fresh pinned compression and [16 browser checks](measurements/browser-20261005-opening-copy.json) verify the exact edit; earlier source and deployment measurements remain separate.
+
+The [final October 5 deployment](measurements/deployment-20261005-opening-copy.json) confirms those exact bodies and the final approved sentence on the public website.

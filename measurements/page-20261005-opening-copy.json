@@ -2,7 +2,7 @@
   "measuredAt": "2026-10-05T17:11:11.963754+00:00",
   "url": "https://tomkimberlin.com/",
   "scope": "local build",
-  "deploymentStatus": "not deployed",
+  "deploymentStatus": "deployed and verified",
   "baselineCommit": "712af26cbe0ae28a7ae403399f3f001b0f2178c5",
   "previousMeasurement": "measurements/page-20261005-club-link.json",
   "approvedCopy": "This is the most optimized 1 KB website on the planet. Probably.",
@@ -52,5 +52,6 @@
       "gzip": "99f95b957aa5fc2e20ea47dae869ff2a8eba26555429107d992f216783d97989"
     },
     "freshPinnedCompilationAndExactCompleteDecode": true
-  }
+  },
+  "deploymentEvidence": "measurements/deployment-20261005-opening-copy.json"
 }
