@@ -8,7 +8,7 @@ This project minimizes the bytes needed to deliver a useful personal page over H
 | --- | ---: | ---: |
 | TLS through first document, median | 5,251 B | 5,253 B |
 | Estimated TCP/IP + DNS through close, median | 6,995 B | 6,945 B |
-| HTTP/2 plaintext framing, every run | 105 B | **105 B** |
+| HTTP/2 plaintext minus body, every run | 105 B | **105 B** |
 
 The two-byte TLS difference exactly tracks variable CertificateVerify message lengths. The packet/DNS sample ranges overlap, so the lower median is not evidence of a repeatable optimization. The HTTP/2 header block is 63 B in both samples, and framing is unchanged. Each total subtracts its own complete encoded body: 317 B in the gallery, 391 B now; these are not the separate DebugBear snapshots below.
 
