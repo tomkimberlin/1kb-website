@@ -1,0 +1,74 @@
+{
+  "verifiedAt": "2026-10-05T17:02:09.759087+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "Production page deployment and public endpoint verification",
+  "pageCommit": "96f49f5874554688b5c7dda305635e7f47aee895",
+  "pageRelease": "releases/20261005T165816Z-1f966fd131cc-onekb-deploy.41wvws",
+  "previousPageRelease": "releases/20261005T164410Z-c2a58819bef7-onekb-deploy.DYcqpM",
+  "approvedCopy": "The most optimized 1 KB website on the planet. Probably.",
+  "claimScope": "Playful opinion with an explicit qualifier; no verified world record or global optimization ranking is claimed.",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 760,
+      "sha256": "1f966fd131ccfebb2f2b98004787e9d779184b4e37b304eb632dc0660c769357",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 322,
+      "sha256": "9dbeec06d021541e643ca9de0e8c348a1dc3399bd183e12a7d81c7016456d633",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 477,
+      "sha256": "c954b28bcf04c3de0f993a864fac128094cacf50932e5014fe30451bcbfc1a58",
+      "exactLocalAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 465,
+      "sha256": "ff265ee2246b68056c5a615fe1c04e402081ed6c36aad80aa69c5faf0af4234a",
+      "exactLocalAndPublicResponse": true
+    }
+  ],
+  "server": {
+    "image": "onekb-nginx:20260926a",
+    "running": true,
+    "imageChanged": false,
+    "handlerSha256": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+    "configurationSha256": "5666c4b08949f6698be65fe226f18a10442c38418e3a5c41baf6a1d5f8004a8d",
+    "activation": "Atomic page-release switch and nginx reload; prior release and configuration retained for rollback."
+  },
+  "verification": {
+    "mainHttp11AndHttp2Checks": 118,
+    "aliasRedirectChecks": 12,
+    "followedAliasExactBrotliPage": true,
+    "originRepresentationsExact": true,
+    "liveBrowserCases": 16,
+    "liveBrowserEvidence": "measurements/browser-20261005-club-link-live.json",
+    "browserScriptSha256": "0c5e8b998b14fd6bc77d2b4d31288fa94f729ff4a7668f7cbe4e28e83604ee22",
+    "deploymentScriptSha256": "9901fb4aca5426ff9a791cf0fce23cc46077dd4ad734d8a3ffbf35faa3cb6e7d",
+    "mainVerifierSha256": "ce1954a739f6a36a0dfb3900a5d448357c2ad078bc23bc1c967aaf2eb9ae8c77",
+    "aliasVerifierSha256": "3da19f8a883eeff511374263dba231cc4e9d45476a4c116dce29d02b25edbc79",
+    "localTests": {
+      "siteOptimizerAndHttp": 72,
+      "measurement": 11
+    },
+    "localBrowserEvidence": "measurements/browser-20261005-club-link.json"
+  },
+  "gitAttribution": {
+    "authorName": "tomkimberlin",
+    "verifiedRepositoryIdentity": true
+  },
+  "limitations": [
+    "Body sizes exclude response headers, requests, DNS, TLS and network framing.",
+    "The September 22 DebugBear 400-byte result has not been remeasured.",
+    "Existing browser caches may retain the previous page for up to 86400 seconds; live browser verification used a fresh query string.",
+    "This page-only deployment preserves the existing server image, transport configuration and certificate machinery."
+  ],
+  "change": "Extend the 1KB Club anchor to 1 KB website, preserving visible wording and all destinations.",
+  "clubLinkText": "1 KB website",
+  "clubDestination": "https://1kb.club/"
+}

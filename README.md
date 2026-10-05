@@ -4,7 +4,7 @@ Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.co
 
 The published page measured **400 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
-| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | October 5 extended link (pending deployment) |
+| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Published October 5 (extended link) |
 | --- | ---: | ---: | ---: | ---: |
 | DebugBear page weight | **400 B** | Not measured | Not measured | Not measured |
 | Brotli response body | 319 B | 321 B | 315 B | **322 B** |
@@ -12,7 +12,7 @@ The published page measured **400 bytes** in [DebugBear](https://www.debugbear.c
 | Deflate response body | 459 B | 456 B | 455 B | 465 B |
 | Raw HTML | 746 B | 743 B | 744 B | 760 B |
 
-The [current October 5 page](measurements/page-20261005-club-link.json) says “The most optimized 1 KB website on the planet. Probably.” This is playful opinion; the measurements do not establish a world record. The 1KB Club link now covers “1 KB website”; the visible sentence and all destinations are unchanged. Fresh [browser checks](measurements/browser-20261005-club-link.json) verify the intended anchor boundary, text, layout and nine keyboard destinations. Publication verification for this correction is pending.
+The [current October 5 page](measurements/page-20261005-club-link.json) says “The most optimized 1 KB website on the planet. Probably.” This is playful opinion; the measurements do not establish a world record. The 1KB Club link now covers “1 KB website”; the visible sentence and all destinations are unchanged. Fresh [browser checks](measurements/browser-20261005-club-link.json) verify the intended anchor boundary, text, layout and nine keyboard destinations. The [corrected deployment record](measurements/deployment-20261005-club-link.json) confirms all four exact representations, 118 public HTTP checks, 12 alias checks and 16 live browser comparisons.
 
 The [initial approved-copy build](measurements/page-20261005-approved-copy.json) and its [deployment record](measurements/deployment-20261005.json) preserve the earlier 324 B Brotli result and live verification before the link extension.
 

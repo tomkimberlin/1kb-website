@@ -6,6 +6,8 @@ The September 26 changes are deployed on the production host; the [deployment re
 
 The [October 5 page deployment](measurements/deployment-20261005.json) serves 760-byte HTML, 324-byte Brotli, 478-byte gzip and 466-byte deflate bodies. Its 118 public HTTP checks, 12 alias checks and 16 live browser comparisons passed. The server image and transport configuration remain the September 26 version.
 
+The later [October 5 hyperlink correction](measurements/deployment-20261005-club-link.json) serves 760-byte HTML, 322-byte Brotli, 477-byte gzip and 465-byte deflate bodies. Its public HTTP, alias and 16 live browser checks passed; the transport settings are unchanged.
+
 ## Main website
 
 nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this hostname.

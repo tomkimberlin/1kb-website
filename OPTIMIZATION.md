@@ -142,3 +142,5 @@ The [gallery comparison](COMPARISON.md) subtracts each site's response body. Tha
 The recorded optimization passes found smaller Brotli representations while preserving the content and layout of each baseline, with reproducible measurements and a working rollback. A new idea gets a separate test first. The number has to go down, and the website still has to work.
 
 The later October 5 link correction extends the 1KB Club anchor to “1 KB website” while preserving the sentence, layout and all destinations. The [new build](measurements/page-20261005-club-link.json) is 760 bytes HTML, 322 with Brotli, 477 with gzip and 465 with deflate. Fresh compilation uses the existing compressor recipes. Sixteen [browser checks](measurements/browser-20261005-club-link.json) verify the intentional anchor boundary and all nine keyboard activations; pixel equality to the shorter anchor is not claimed.
+
+The [corrected deployment](measurements/deployment-20261005-club-link.json) verifies those exact bodies and the extended link on the public website.
