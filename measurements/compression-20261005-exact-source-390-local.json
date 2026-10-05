@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "measuredAt": "2026-10-05T23:21:28.658539+00:00",
+  "scope": "local-only compression of exact approved current HTML; no product edits or publication",
+  "source": {
+    "bytes": 1021,
+    "sha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+    "matchesCurrentCheckout": true
+  },
+  "before": {
+    "brotliBodyBytes": 391,
+    "brotliBodySha256": "aa25bd3a6714e7854c7b880aef6e3a3bea08796735380401960cf740587b2860",
+    "actualDebugBearPageWeightBytes": 472,
+    "actualDebugBearReport": "https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview"
+  },
+  "after": {
+    "brotliBodyBytes": 390,
+    "brotliBodySha256": "7c47ae3da0cfdb1db12695a373dde1d826aaff7b6d03f5166e260ffdc6ea17e3",
+    "localBodyBytesSaved": 1,
+    "actualDebugBearPageWeightBytes": null,
+    "actualDebugBearReport": null,
+    "gzipAndDeflateInputsUnchanged": true
+  },
+  "recipe": {
+    "brotliRevision": "028fb5a23661f123017c060daa546b55cf4bde29",
+    "brotliVersion": "1.2.0",
+    "archiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+    "archiveUrl": "https://codeload.github.com/google/brotli/tar.gz/028fb5a23661f123017c060daa546b55cf4bde29",
+    "patch": {
+      "file": "c/enc/entropy_encode.c",
+      "old": "symbol == 0 && step >= 5",
+      "new": "symbol == 0 && step >= 4",
+      "expectedOccurrences": 1,
+      "originalFileSha256": "ea15125ed036547e57553a56b04ac50eb91a48424ccc5cf29d13433419fa4723",
+      "patchedFileSha256": "f1a4a197f5b07d0a9915b8941dcb2545bc642c96fc98f2ee5e00b09fb5ec691d",
+      "onlyEncoderSourceChange": true
+    },
+    "params": {
+      "0": 0,
+      "1": 11,
+      "2": 16,
+      "4": 0,
+      "7": 2,
+      "8": 40
+    },
+    "parameterMeaning": "generic mode, quality11,64KiB window, literal contexts enabled, NPOSTFIX2,NDIRECT40; same parameters as current stock body",
+    "scriptSha256": "99645df54750460835388aa3f279efd1056a14a07c0c789a885454436e1d0459",
+    "helperSha256": "69666d086243baf0027ec038862358bd8df7a09b655559a8ddada3ec77204f52",
+    "runtimeRequirements": "Python3.12+ for original tar filter=data; Node independent decoder; native C compiler",
+    "nativeCompilerFlags": [
+      "-O2",
+      "-fPIC",
+      "-dynamiclib",
+      "-Ic/include",
+      "c/common/*.c",
+      "c/enc/*.c",
+      "-lm"
+    ],
+    "preservedFreshEncoderSha256": "3b0504a4dd5665348a32a989ced8e17361a92162850e46349f837aeb35cf45d3",
+    "command": [
+      "python3",
+      "optimize-brotli390.py",
+      "--archive",
+      "brotli-source.tar.gz",
+      "--input",
+      "index.html",
+      "--output",
+      "candidate.br"
+    ]
+  },
+  "search": {
+    "actualEncoderTrials": 197,
+    "cap": 256,
+    "bounded": true,
+    "sourceBytes": 1021,
+    "sourceSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+    "baselineMatchedDeployedStream": true,
+    "phases": [
+      "exact-current-stock-baseline",
+      "fixed-recipe-cost-window-zero-grid",
+      "nearby-window-context-quality",
+      "previous-models-near-current-distance-codes",
+      "targeted-coordinate-ablation"
+    ],
+    "searchEncoderSha256": "891aa2060d674e6a5828f12f68d7450db278f51fd428d2c7e186a1249e2ff1da"
+  },
+  "freshCompile": {
+    "minimalPinnedCompiles": 2,
+    "bothReproducedExpectedStream": true,
+    "thirdStreamFromPrecompiledSearchEncoderMatches": true,
+    "sourceChecksumVerified": true,
+    "originalTarFilterDataPreserved": true,
+    "atomicOutputPublicationAndIndependentNodeValidationPreserved": true
+  },
+  "verification": {
+    "node": [
+      {
+        "inputBytes": 390,
+        "consumedBytes": 390,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      },
+      {
+        "inputBytes": 390,
+        "consumedBytes": 390,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      },
+      {
+        "inputBytes": 390,
+        "consumedBytes": 390,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      }
+    ],
+    "pythonIndependentCDecoder": [
+      {
+        "decoder": "Python ctypes / independently compiled pinned unmodified Brotli C decoder",
+        "resultCode": 1,
+        "finished": true,
+        "inputBytes": 390,
+        "remainingInputBytes": 0,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      },
+      {
+        "decoder": "Python ctypes / independently compiled pinned unmodified Brotli C decoder",
+        "resultCode": 1,
+        "finished": true,
+        "inputBytes": 390,
+        "remainingInputBytes": 0,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      },
+      {
+        "decoder": "Python ctypes / independently compiled pinned unmodified Brotli C decoder",
+        "resultCode": 1,
+        "finished": true,
+        "inputBytes": 390,
+        "remainingInputBytes": 0,
+        "decodedBytes": 1021,
+        "decodedSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+        "exact": true
+      }
+    ],
+    "independentDecoderSha256": "1488be280f4c8fe1455d7d144c87366dc6bd8a18f8ce380a6d354f14813e790a",
+    "allOutputsIdentical": true,
+    "exactDecodedSource": true,
+    "completeInputConsumption": true
+  },
+  "browserEvidence": {
+    "unchangedDecodedSourceThereforeCurrentEvidenceApplies": true,
+    "normalCases": 16,
+    "fontOverrideCases": 16,
+    "normalRecord": "measurements/browser-20261005-direct-links-local.json",
+    "fontOverrideRecord": "measurements/browser-20261005-font-override-local.json",
+    "sourceSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d"
+  },
+  "interpretation": [
+    "390 is a local compressed body measurement, not a measured DebugBear page weight.",
+    "If the same 81-byte counter/body difference recurred, the arithmetic prediction would be 471 bytes; this requires a future authorized scan and is not claimed measured.",
+    "Current 472/391 is the only measured DebugBear result for the current source.",
+    "No HTML wording, direct links, CSS, browser behavior, gzip/deflate inputs, shared scripts or deployment were changed.",
+    "Only one local Brotli body byte was saved. This is an option for parent/user review, not an adopted product change."
+  ],
+  "candidateStatus": "Local review option only; not selected or deployed. Actual DebugBear result remains unknown."
+}

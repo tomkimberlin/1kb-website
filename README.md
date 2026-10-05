@@ -32,6 +32,8 @@ The 72-byte increase is entirely reflected in the compressed-body difference: 31
 
 [Eight independent live HTTP checks](measurements/http-20261005-debugbear-check.json) confirmed all four exact representations over both HTTP/1.1 and HTTP/2 and decoded each to the same HTML. Their header dumps have a different scope: the HTTP/1.1 Brotli body plus textual status/headers is 560 B; HTTP/2 dumps are decoded text, not wire framing. The separately recorded browser Resource Timing transfer estimate is 691 B (391 + the specification's fixed 300-byte allowance), rather than DebugBear's 472 B. The local 128-byte response allowance is a build policy, not a scanner measurement.
 
+A later [local compression-only option](measurements/compression-20261005-exact-source-390-local.json) reproduces the exact current HTML in **390 B Brotli**, saving one body byte without changing the approved wording, direct links or design. Two fresh pinned builds and independent complete-stream decoders verify it. It remains local and has no DebugBear result; the deployed page is still **391 B body /472 B page weight**.
+
 I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
 
 [Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current build measurements](measurements/page-20261005-direct-links-local.json), [September 26 build](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
