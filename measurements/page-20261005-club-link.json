@@ -1,0 +1,56 @@
+{
+  "measuredAt": "2026-10-05T16:56:52.123089+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "local build",
+  "deploymentStatus": "not deployed",
+  "baselineCommit": "db58908a9b6e91de1f70f1e2af583e662003d277",
+  "previousMeasurement": "measurements/page-20261005-approved-copy.json",
+  "approvedCopy": "The most optimized 1 KB website on the planet. Probably.",
+  "change": "Extend the existing 1KB Club anchor text from 1 KB to 1 KB website. Visible text and all destinations remain unchanged.",
+  "clubLinkText": "1 KB website",
+  "clubDestination": "https://1kb.club/",
+  "browserEvidence": "measurements/browser-20261005-club-link.json",
+  "note": "The intentional hyperlink extension changes link color/underline for website; no pixel equivalence to the prior anchor boundary is claimed. Body sizes exclude headers, DNS, TLS and network framing.",
+  "html": 760,
+  "htmlSha256": "1f966fd131ccfebb2f2b98004787e9d779184b4e37b304eb632dc0660c769357",
+  "brotli": 322,
+  "brotliSha256": "9dbeec06d021541e643ca9de0e8c348a1dc3399bd183e12a7d81c7016456d633",
+  "gzip": 477,
+  "gzipSha256": "c954b28bcf04c3de0f993a864fac128094cacf50932e5014fe30451bcbfc1a58",
+  "deflate": 465,
+  "deflateSha256": "ff265ee2246b68056c5a615fe1c04e402081ed6c36aad80aa69c5faf0af4234a",
+  "compressionRecipes": {
+    "brotli": {
+      "revision": "028fb5a23661f123017c060daa546b55cf4bde29",
+      "archiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+      "distanceCostMultiplier": 1.3,
+      "literalWindow": 256,
+      "params": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 2,
+        "8": 28
+      }
+    },
+    "gzip": {
+      "archiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+      "tuned": true,
+      "iterations": [
+        15,
+        100,
+        1000
+      ],
+      "blockSplitting": [
+        0,
+        1
+      ]
+    },
+    "scriptHashes": {
+      "brotli": "9200a4933889558a71f79df6b2a12f29b155eae9c148e92a2a22863df4d00f36",
+      "gzip": "99f95b957aa5fc2e20ea47dae869ff2a8eba26555429107d992f216783d97989"
+    },
+    "freshPinnedCompilationAndExactCompleteDecode": true
+  }
+}
