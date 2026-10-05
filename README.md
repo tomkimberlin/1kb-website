@@ -2,10 +2,21 @@
 
 Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
 
-The current published page measured **472 bytes** in a real [DebugBear test](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) on October 5, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/). The [original September 22 report](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) recorded **400 bytes**. The current first-load page weight is **72 bytes larger (+18%)**; the local compression savings did not make the final page smaller than that original published version.
+This project minimizes the bytes needed to deliver a useful personal page over HTTPS. The [delivery comparison](COMPARISON.md) subtracts each page's entire compressed response body from the traffic total, so adding useful text or direct destinations does not count against its overhead ranking. It measures cold TLS traffic and, separately, estimated TCP/IP plus DNS traffic, with explicit clients and stopping points. The original September 22 six-site sample remains dated. A [fresh October 5 check](measurements/overhead-20261005.json) repeats three cold connections to this website using the same methodology; it does not rescan the five peers.
+
+| Body-subtracted measurement | September 22 gallery | October 5 current page |
+| --- | ---: | ---: |
+| TLS through first document, median | 5,251 B | 5,253 B |
+| Estimated TCP/IP + DNS through close, median | 6,995 B | 6,945 B |
+| HTTP/2 plaintext framing, every run | 105 B | **105 B** |
+
+The two-byte TLS difference exactly tracks variable CertificateVerify message lengths. The packet/DNS sample ranges overlap, so the lower median is not evidence of a repeatable optimization. The HTTP/2 header block is 63 B in both samples, and framing is unchanged. Each total subtracts its own complete encoded body: 317 B in the gallery, 391 B now; these are not the separate DebugBear snapshots below.
+
+The current [October 5 DebugBear test](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) records **472 B** page weight and a **391 B** Brotli body; their difference is **81 B**. The [original September 22 report](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) records 400 B and 319 B, also a difference of **81 B**. This narrower encoded-response overhead is **unchanged**. It does not count request traffic or the complete DNS/TCP/TLS exchange. Both pages satisfy [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
 | Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Published October 5 (revised opening) | Published October 5 (direct links) |
 | --- | ---: | ---: | ---: | ---: | ---: |
+| DebugBear counter minus Brotli body | **81 B** | Not measured | Not measured | Not measured | **81 B** |
 | DebugBear page weight | **400 B** | Not measured | Not measured | Not measured | **472 B** |
 | Brotli response body | 319 B | 321 B | 315 B | 326 B | **391 B** |
 | Gzip response body | 471 B | 468 B | 467 B | 481 B | 536 B |
@@ -28,11 +39,13 @@ The server changes also remove four synchronous file reads from each request by 
 
 [1KB Club's submission instructions](https://1kb.club/submit/) use the linked scanner's Network Bytes total. The saved DebugBear page-weight counter (`lhData.totalEncodedBodyLength`) is **472 B**, agreeing with the request's encoded-response counter and Lighthouse's exact transfer total. The explicit compressed body (`netlogData.encodedSize`) is **391 B**, and decoded HTML is **1,021 B**. There is one uncached HTTP/2 document request and no subresources. The counter exceeds the body by 81 B in both the original and current scans; this difference is not an independently measured header length or the complete DNS/TCP/TLS exchange. [DebugBear explains compressed and decoded resource sizes](https://www.debugbear.com/blog/page-weight-website-speed).
 
-The 72-byte increase is entirely reflected in the compressed-body difference: 319 → 326 → 391 B. The direct-link version accounts for 65 B relative to the approved opening with aliases; the remaining 7 B is the net result of preceding copy, link-label, serialization and compression changes, not an isolated wording cost. Both scans use Mobile 412×660, US East, packet-level 70 ms RTT /12,288 Kbps and CPU 2×. Chrome and Lighthouse versions changed, so these byte counts do not establish a load-time improvement.
+The total page-weight increase of 72 B (+18%) is entirely reflected in the compressed-body difference: 319 → 326 → 391 B; it did not increase the measured 81 B residual. The direct-link version accounts for 65 B relative to the approved opening with aliases; the remaining 7 B is the net result of preceding copy, link-label, serialization and compression changes, not an isolated wording cost. Both scans use Mobile 412×660, US East, packet-level 70 ms RTT /12,288 Kbps and CPU 2×. Chrome and Lighthouse versions changed, so these byte counts do not establish a load-time improvement.
 
 [Eight independent live HTTP checks](measurements/http-20261005-debugbear-check.json) confirmed all four exact representations over both HTTP/1.1 and HTTP/2 and decoded each to the same HTML. Their header dumps have a different scope: the HTTP/1.1 Brotli body plus textual status/headers is 560 B; HTTP/2 dumps are decoded text, not wire framing. The separately recorded browser Resource Timing transfer estimate is 691 B (391 + the specification's fixed 300-byte allowance), rather than DebugBear's 472 B. The local 128-byte response allowance is a build policy, not a scanner measurement.
 
 A later [local compression-only option](measurements/compression-20261005-exact-source-390-local.json) reproduces the exact current HTML in **390 B Brotli**, saving one body byte without changing the approved wording, direct links or design. Two fresh pinned builds and independent complete-stream decoders verify it. It remains local and has no DebugBear result; the deployed page is still **391 B body /472 B page weight**.
+
+HTML-only edits do not require rerunning the body-subtracted comparison. Changes to headers, TLS or server configuration do; a newer sample can also be collected. This is the [established measurement policy](https://github.com/tomkimberlin/1kb-website/commit/17bc5df6dcd2e01a9c44971c6e6b62d2936b775e). Incidental framing and packetization can still vary with body length, so body subtraction does not establish a universal fixed cost.
 
 I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
 

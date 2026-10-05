@@ -17,7 +17,7 @@ The first column counts encrypted TLS traffic up to completion of the HTML respo
 
 ## What accounts for the difference
 
-This server sent a 1,499-byte compressed Certificate handshake message. The other servers sent uncompressed Certificate messages of 3,399–4,124 bytes. It also sent one 57-byte session ticket. Certificate compression and ticket size outweigh the slightly smaller response headers on some other sites. Combining the encrypted handshake messages also removes 66 bytes of TLS record overhead; the [before/after measurements](measurements/tls-flight-20260922.json) separate that saving from signature-length variation.
+This server sent a 1,490-byte compressed Certificate handshake message. The other servers sent uncompressed Certificate messages of 3,399–4,124 bytes. It also sent one 57-byte session ticket. Certificate compression and ticket size outweigh the slightly smaller response headers on some other sites. Combining the encrypted handshake messages also removes 66 bytes of TLS record overhead; the [before/after measurements](measurements/tls-flight-20260922.json) separate that saving from signature-length variation.
 
 All sites received the same representative Chromium request fields and compression preferences from OpenSSL 3.5.8, with certificate compression, hybrid key exchange and certificate verification enabled. Every request used a new TLS context, without session resumption or a browser cache.
 
@@ -28,6 +28,12 @@ All sites received the same representative Chromium request fields and compressi
 At measurement time, the page was 742 bytes of HTML, 317 bytes with Brotli and 468 bytes with gzip. The [raw measurements](measurements/gallery-20260922.json) identify that HTML and Brotli by SHA-256 and include all three runs, ranges, response headers, TLS message lengths and packet metadata. The live Brotli hash matched in every run. Packet payloads, peer HTML and TLS secrets are not included.
 
 The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
+
+HTML-only edits do not require refreshing this body-subtracted comparison. Rerun it when headers, TLS or server configuration change, or to collect a newer sample. The October 5 direct-link and copy edits preserve the September 26 transport configuration; the fresh DebugBear counter-minus-body check is 81 B in both its September 22 and October 5 reports. That narrower counter does not update the full TLS/TCP/IP/DNS results above.
+
+The [October 5 own-site check](measurements/overhead-20261005.json) uses three fresh cold connections and verifies the current 1,021-byte HTML / 391-byte Brotli body. TLS overhead is 5,253 B median (5,252–5,253), versus 5,251 B (5,251–5,252) above; its two-byte change exactly matches variable CertificateVerify message lengths. Estimated TCP/IP + DNS overhead is 6,945 B median (6,945–7,048), versus 6,995 B (6,943–6,996); overlapping packet ranges do not establish a repeatable saving. HTTP/2 plaintext minus body remains 105 B in every old and new run, with the same 63-byte header block and control frames. This checks the current server, not a new six-site ranking.
+
+The rebuilt client uses the existing historical OpenSSL 3.5.8 base, identical request fields, a 1,547-byte ClientHello and 2,157 sent TLS bytes. The Python/package layer was rebuilt; historical package versions were not recorded, so the historical client image is not claimed bit-for-bit identical. The evidence records versions, tool hashes, source/body hashes, all three samples and measurement boundaries.
 
 The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the connected local address, selected peer address and TCP source port, and requires HTTP 200 before publishing a decoded document. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 
