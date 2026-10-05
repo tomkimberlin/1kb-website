@@ -1,0 +1,56 @@
+{
+  "measuredAt": "2026-10-05T17:11:11.963754+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "local build",
+  "deploymentStatus": "not deployed",
+  "baselineCommit": "712af26cbe0ae28a7ae403399f3f001b0f2178c5",
+  "previousMeasurement": "measurements/page-20261005-club-link.json",
+  "approvedCopy": "This is the most optimized 1 KB website on the planet. Probably.",
+  "change": "Start the approved sentence with This is the most optimized. Retain the full 1 KB website anchor and all destinations.",
+  "clubLinkText": "1 KB website",
+  "clubDestination": "https://1kb.club/",
+  "browserEvidence": "measurements/browser-20261005-opening-copy.json",
+  "note": "Fresh browser checks verify only the approved opening edit and preserve all link text and destinations. No pixel equality to the shorter sentence is claimed. Body sizes exclude headers, DNS, TLS and network framing.",
+  "html": 768,
+  "htmlSha256": "23c466d2b68fe669ecdd146cb5344e3452a0470f5d936801e40f462e05d8c8d2",
+  "brotli": 326,
+  "brotliSha256": "f204416167a8fc74fdd75cdfcf0e464071fde9ef33208a100601726d55e5f60e",
+  "gzip": 481,
+  "gzipSha256": "fe8c06dfc974b028675e4d135162416565c9a70b7654d1b11ad1c478548d6d2a",
+  "deflate": 469,
+  "deflateSha256": "9299d03fa8b6ab2effa1baa22c016404810a68ef4dc824bd8075d62c19dc24ae",
+  "compressionRecipes": {
+    "brotli": {
+      "revision": "028fb5a23661f123017c060daa546b55cf4bde29",
+      "archiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+      "distanceCostMultiplier": 1.3,
+      "literalWindow": 256,
+      "params": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 2,
+        "8": 28
+      }
+    },
+    "gzip": {
+      "archiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+      "tuned": true,
+      "iterations": [
+        15,
+        100,
+        1000
+      ],
+      "blockSplitting": [
+        0,
+        1
+      ]
+    },
+    "scriptHashes": {
+      "brotli": "9200a4933889558a71f79df6b2a12f29b155eae9c148e92a2a22863df4d00f36",
+      "gzip": "99f95b957aa5fc2e20ea47dae869ff2a8eba26555429107d992f216783d97989"
+    },
+    "freshPinnedCompilationAndExactCompleteDecode": true
+  }
+}
