@@ -1,0 +1,64 @@
+{
+  "measuredAt": "2026-10-05T16:34:54.765585+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "local build",
+  "deploymentStatus": "not deployed",
+  "baselineCommit": "9324fd32ae2f6160ef51ee94555ca927dfefccef",
+  "approvedCopy": "The most optimized 1 KB website on the planet. Probably.",
+  "claimScope": "Playful opinion with an explicit qualifier; no verified world record or global optimization ranking is claimed.",
+  "initialApprovedCopy": {
+    "html": 761,
+    "brotli": 328,
+    "gzip": 487,
+    "deflate": 475
+  },
+  "browserEvidence": "measurements/browser-20261005-approved-copy.json",
+  "browserBaseline": "measurements/page-20261005-approved-baseline.json",
+  "browserScope": "Fresh 16-case comparison against the intended approved-copy baseline; the comparison does not claim pixel/content equality to the older published sentence.",
+  "serializationSearch": {
+    "attempts": 30000,
+    "measured": 23995,
+    "seed": 202610052
+  },
+  "note": "Body sizes exclude response headers, requests, DNS, TLS and network framing. The historical 315 B unchanged-copy result is separate.",
+  "html": 760,
+  "htmlSha256": "c2a58819bef778ee4bf46f69a6b9d94e4bbe5abc1d824f4e71c80c2d1e63320e",
+  "brotli": 324,
+  "brotliSha256": "d22000b2af0811162b1e3455285fe35a84819afb205c4b30ae462989ca2ccb49",
+  "gzip": 478,
+  "gzipSha256": "2fc8e499e1cacca16007b486d4cf9d7eeedd547a0ce0df95304615f35b494384",
+  "deflate": 466,
+  "deflateSha256": "2c9419b2c9a35cb94d27c5e0d981faba57a9afa3bb46ced3220ce83e9f3a5bbb",
+  "compressionRecipes": {
+    "brotli": {
+      "script": "optimize-brotli.py",
+      "scriptSha256": "9200a4933889558a71f79df6b2a12f29b155eae9c148e92a2a22863df4d00f36",
+      "archiveSha256": "0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f",
+      "recipe": {
+        "distanceCostScale": 1.3,
+        "literalWindowHalf": 256
+      },
+      "parameters": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 2,
+        "8": 28
+      },
+      "freshCompilationExactOutput": true
+    },
+    "gzip": {
+      "script": "optimize-gzip.py",
+      "arguments": [
+        "--tuned",
+        "--iterations",
+        "15",
+        "100",
+        "1000"
+      ],
+      "archiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+      "freshCompilationExactOutput": true
+    }
+  }
+}

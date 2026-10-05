@@ -1,6 +1,6 @@
 # Hosting
 
-This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The server runs in Docker on Alfred's Unraid installation, reached from this Mac with `ssh alfred-lan`. Cloudflare provides DNS; visitors connect directly to nginx.
+This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The origin server runs in Docker on an Unraid installation. Use the configured hostname or local SSH alias for deployment. Cloudflare provides DNS; visitors connect directly to nginx.
 
 The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result.
 
@@ -46,7 +46,7 @@ The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public
 
 ## Build and deploy
 
-GitHub pushes do not deploy this installation. Finished website changes must be committed, pushed, deployed to Alfred and verified against the public endpoint. Page deployment and server-image activation are separate steps.
+GitHub pushes do not deploy this installation. Finished website changes must be committed, pushed, deployed to the origin server and verified against the public endpoint. Page deployment and server-image activation are separate steps.
 
 Build changed server images on the Docker host from the repository root, using a new tag for each release and retaining the previous images for rollback:
 
@@ -63,10 +63,10 @@ When these files change, install the updated startup and certificate scripts und
 
 Each page release must include the four built body files, `representations.json`, `site.js` and its nginx configuration. The build writes the JSON snapshot as base64 strings; nginx's `js_preload_object` loads it when validating or reloading configuration. The handler decodes only the selected representation and performs no file reads during a request. This requires njs with `js_preload_object` support (0.7.8 or newer).
 
-For this installation, deploy a page from the repository root with the configured LAN SSH alias. Another installation must substitute its own host:
+For this installation, deploy a page from the repository root using the configured SSH host. Replace `YOUR_SSH_HOST` with its hostname or local SSH alias:
 
 ```sh
-npm run deploy -- alfred-lan
+npm run deploy -- YOUR_SSH_HOST
 npm run build
 npm run verify:live
 npm run verify:alias

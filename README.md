@@ -4,13 +4,17 @@ Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.co
 
 The published page measured **400 bytes** in [DebugBear](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) on September 22, 2026, below [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
 
-| Measurement | Published September 22 | Published September 26 |
-| --- | ---: | ---: |
-| DebugBear page weight | **400 B** | Not measured |
-| Brotli response body | 319 B | **321 B** |
-| Gzip response body | 471 B | 468 B |
-| Deflate response body | 459 B | 456 B |
-| Raw HTML | 746 B | 743 B |
+| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Approved October 5 (pending deployment) |
+| --- | ---: | ---: | ---: | ---: |
+| DebugBear page weight | **400 B** | Not measured | Not measured | Not measured |
+| Brotli response body | 319 B | 321 B | 315 B | **324 B** |
+| Gzip response body | 471 B | 468 B | 467 B | 478 B |
+| Deflate response body | 459 B | 456 B | 455 B | 466 B |
+| Raw HTML | 746 B | 743 B | 744 B | 760 B |
+
+The [approved October 5 page](measurements/page-20261005-approved-copy.json) says “The most optimized 1 KB website on the planet. Probably.” This is playful opinion; the measurements document this page’s bytes and do not establish a world record. Fresh [browser checks](measurements/browser-20261005-approved-copy.json) preserve the approved text, appearance and all nine destinations through serialization changes. Publication verification is pending.
+
+The [earlier October 5 unchanged-copy experiment](measurements/page-20261005-local.json) saved 6 Brotli bytes and one byte in each fallback body. Its 315 B result uses the old sentence and remains distinct from the approved copy.
 
 The September 26 deployment includes “my” in the GitHub hyperlink. The sentence and link destination are unchanged. The [deployment record](measurements/deployment-20260926.json) verifies the public response bytes and live behavior. The 400-byte DebugBear result remains the September 22 snapshot; it has not been remeasured.
 
@@ -20,7 +24,7 @@ DebugBear counts the compressed page and response headers. DNS, connection setup
 
 I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
 
-[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current build measurements](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
+[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current build measurements](measurements/page-20261005-approved-copy.json), [September 26 build](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
 
 ## Build locally
 
@@ -34,7 +38,7 @@ npm run check
 
 `index.html` is the page source. The build writes HTML, Brotli, gzip and deflate files to `public/` and records their sizes in `build-report.json`. It also writes `public/representations.json` for nginx to preload. The source stays ASCII because HTTP/1 and HTTP/2 omit the charset parameter; character references such as `&#233;` preserve Unicode text across protocols. The build and serializer reject literal non-ASCII bytes and non-HTML control characters.
 
-`npm run check:measurements` checks the current build sizes, hashes, preloaded representations and Markdown tables against the dated gallery. This build-only check does not claim visual equivalence to the earlier page, whose hyperlink covered only “GitHub”.
+`npm run check:measurements` checks the current build sizes, hashes, preloaded representations and Markdown tables against the dated gallery. The current build-only check verifies the approved-copy files and keeps the dated gallery separate. The separate October 5 browser record binds 16 fresh comparisons to the intended-copy baseline; it does not claim visual equality to the older published sentence. The September 26 hyperlink edit remains a separate historical measurement.
 
 `npm run test:optimizers` checks compression-candidate validation and atomic publication. It also requires Python 3, but no compiler or optional compressor packages. `npm run check:python` checks the Python tools' syntax.
 
@@ -54,6 +58,6 @@ The comparison checks pixels, text, comments, layout, link destinations, keyboar
 
 ## Hosting
 
-nginx serves the published website from Alfred directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it. Pushing to GitHub does not deploy the site. Finished website edits also require `npm run deploy -- alfred-lan`, followed by a local build and live verification as described in the hosting guide.
+nginx serves the published website from the origin server directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it. Pushing to GitHub does not deploy the site. Finished website edits also require `npm run deploy -- YOUR_SSH_HOST`, using the configured hostname or local SSH alias, followed by a local build and live verification as described in the hosting guide.
 
 The [hosting guide](server/README.md) explains the server configuration, deployment requirements and settings needed to host a copy.

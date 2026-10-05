@@ -190,14 +190,13 @@ console.log(JSON.stringify([encode(source,11),encode(source,0),encode(Buffer.fro
         original = (ROOT / script.name).read_text()
         revision = '028fb5a23661f123017c060daa546b55cf4bde29'
         pinned_sha = '0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f'
-        seed = 'FastLog2(20 + (uint32_t)i)'
         cost = '    *num_commands = orig_num_commands;'
-        histogram = 'symbol == 0 && step >= 5'
-        for missing in (seed, cost, histogram):
+        literal_window = 'size_t window_half = 495;'
+        for missing in (cost, literal_window):
             buffer = io.BytesIO()
             with tarfile.open(fileobj=buffer, mode='w:gz') as tar:
-                for name, text in (('backward_references_hq.c', seed + '\n' + cost),
-                                   ('entropy_encode.c', histogram + '\n/ 3 + 420;\n/ 3 + 420;')):
+                for name, text in (('backward_references_hq.c', cost),
+                                   ('literal_cost.c', literal_window)):
                     data = text.replace(missing, 'unmatched fixture').encode()
                     info = tarfile.TarInfo(f'brotli-{revision}/c/enc/{name}')
                     info.size = len(data)

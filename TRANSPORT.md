@@ -2,7 +2,7 @@
 
 The page size in [build-report.json](build-report.json) covers the response body. Total traffic also includes request and response headers, TLS, DNS and network framing. Connection reuse, browser caching and client behavior affect that total.
 
-The September 26 changes are deployed on Alfred; the [deployment record](measurements/deployment-20260926.json) identifies the active release, images and live checks. The dated September 22 measurements remain historical. The [local transport checks](measurements/transport-20260926-local.json) separately cover the current handler and optional certificate-compression fallback on an isolated server.
+The September 26 changes are deployed on the production host; the [deployment record](measurements/deployment-20260926.json) identifies the active release, images and live checks. The dated September 22 measurements remain historical. The [local transport checks](measurements/transport-20260926-local.json) separately cover the current handler and optional certificate-compression fallback on an isolated server.
 
 ## Main website
 
@@ -57,7 +57,7 @@ The September 26 Alpine image build passes 22 TLS cases and explicitly skips the
 
 ## Verification
 
-For this installation, commit and push finished website changes, then deploy with `npm run deploy -- alfred-lan` before running these checks. GitHub pushes alone do not update Alfred; server images and host scripts have a separate activation step in the [hosting guide](server/README.md#build-and-deploy).
+For this installation, commit and push finished website changes, then deploy with `npm run deploy -- YOUR_SSH_HOST`, using the configured hostname or local SSH alias, before running these checks. GitHub pushes alone do not update the origin server; server images and host scripts have a separate activation step in the [hosting guide](server/README.md#build-and-deploy).
 
 ```sh
 npm run build

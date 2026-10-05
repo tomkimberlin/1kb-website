@@ -1,0 +1,9 @@
+{
+  "measuredAt": "2026-10-05T16:29:19.687071+00:00",
+  "scope": "local intended-copy baseline before further serialization/compression",
+  "deploymentStatus": "not deployed",
+  "approvedCopy": "The most optimized 1 KB website on the planet. Probably.",
+  "html": 761,
+  "htmlSha256": "049b8dd5a536aeaf8890f3489fd58e67670455a0302dba2d1df1b6040aa61a92",
+  "note": "Baseline fixture contains the exact user-approved copy and existing appearance. It is not the earlier published page. Any pixel equivalence comparison against it concerns serialization only."
+}

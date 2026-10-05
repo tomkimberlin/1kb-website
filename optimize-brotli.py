@@ -40,42 +40,28 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
     tree = root / f'brotli-{REVISION}'
 
     # Tune match-selection estimates, leaving the Brotli format and dictionary
-    # unchanged. Literal, command and distance estimates influence which
-    # equivalent sequence the quality-11 search chooses for this page.
+    # unchanged. Distance estimates influence which equivalent sequence the
+    # quality-11 search chooses; literal and command costs stay unchanged.
     path = tree / 'c/enc/backward_references_hq.c'
     text = path.read_text()
-    old = 'FastLog2(20 + (uint32_t)i)'
-    if text.count(old) != 1:
-        raise RuntimeError('Pinned Brotli source does not match distance seed patch')
-    text = text.replace(old, 'FastLog2(3 + (uint32_t)i)')
     old = '    *num_commands = orig_num_commands;'
     if text.count(old) != 1:
         raise RuntimeError('Pinned Brotli source does not match cost model patch')
     text = text.replace(old, '''    {
       size_t j;
-      for (j = 0; j <= num_bytes; ++j)
-        model->literal_costs_[j] *= 1.34f;
-      for (j = 0; j < BROTLI_NUM_COMMAND_SYMBOLS; ++j)
-        model->cost_cmd_[j] *= 1.28f;
-      model->min_cost_cmd_ *= 1.28f;
       for (j = 0; j < params->dist.alphabet_size_limit; ++j)
-        model->cost_dist_[j] *= 0.9f;
+        model->cost_dist_[j] *= 1.3f;
     }
 ''' + old)
     path.write_text(text)
 
-    # Preserve shorter zero runs and adjust histogram smoothing so the
-    # resulting Huffman code trees take fewer bits to describe.
-    path = tree / 'c/enc/entropy_encode.c'
+    # The shorter literal window changes match estimates, not decoded bytes.
+    path = tree / 'c/enc/literal_cost.c'
     text = path.read_text()
-    for old, new, count in (
-        ('symbol == 0 && step >= 5', 'symbol == 0 && step >= 4', 1),
-        ('/ 3 + 420;', '/ 3 + 96;', 2),
-    ):
-        if text.count(old) != count:
-            raise RuntimeError('Pinned Brotli source does not match histogram patch')
-        text = text.replace(old, new)
-    path.write_text(text)
+    old = 'size_t window_half = 495;'
+    if text.count(old) != 1:
+        raise RuntimeError('Pinned Brotli source does not match literal window patch')
+    path.write_text(text.replace(old, 'size_t window_half = 256;'))
 
     library = root / 'encoder.so'
     compiler = shlex.split(os.environ.get('CC', 'cc'))
@@ -104,8 +90,8 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
         raise MemoryError('Cannot create Brotli encoder')
     try:
         # Generic mode, quality 11, 64 KiB window, literal contexts enabled,
-        # two distance postfix bits and no direct distance codes.
-        for key, value in {0: 0, 1: 11, 2: 16, 4: 0, 7: 2, 8: 0}.items():
+        # two distance postfix bits and 28 direct distance codes.
+        for key, value in {0: 0, 1: 11, 2: 16, 4: 0, 7: 2, 8: 28}.items():
             if not lib.BrotliEncoderSetParameter(state, key, value):
                 raise RuntimeError(f'Brotli rejected parameter {key}')
         raw = (byte * len(source)).from_buffer_copy(source)
