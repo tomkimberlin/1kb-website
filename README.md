@@ -4,24 +4,35 @@ My personal page at [tomkimberlin.com](https://tomkimberlin.com/), and an experi
 
 Certificates and connection setup cost more than the page itself. Precompressed bodies and patched nginx/OpenSSL builds reduce those bytes while preserving certificate validation and connection reuse. I built the original page years ago; Astra helped optimize it. [How it works](OPTIMIZATION.md).
 
-## Measurements
+## Delivery overhead
 
-**Delivery overhead = measured traffic − the entire encoded page body.** Useful content growth does not itself count as added overhead. Each test defines its client and stopping point; framing can still vary with body length.
+**Delivery overhead = measured traffic − the entire encoded page body.** Text and direct links belong to the body. The goal is to reduce the cost around it; framing can still vary with body length.
 
-This site had the lowest overhead in the [six-site September 22, 2026 sample](COMPARISON.md). The [October 5 own-site check](measurements/overhead-20261005.json) found unchanged HTTP/2 plaintext overhead of **105 B**; it did not rescan the peers.
-
-DebugBear measures a narrower response counter:
-
-| Measurement | Published September 22, 2026 | Published October 5, 2026 |
+| Body-subtracted response measure | September 22, 2026 | October 5, 2026 |
 | --- | ---: | ---: |
-| DebugBear page weight | 400 B | **472 B** |
-| DebugBear counter minus Brotli body | 81 B | **81 B** |
-| Brotli response body | 319 B | **391 B** |
-| Gzip response body | 471 B | 536 B |
-| Deflate response body | 459 B | 524 B |
-| Raw HTML | 746 B | 1,021 B |
+| HTTP/2 plaintext minus body | **105 B** | **105 B** |
+| DebugBear response counter minus Brotli body | **81 B** | **81 B** |
 
-The [October 5 report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) and [saved evidence](measurements/debugbear-20261005.json) confirm the [1KB Club limit](https://1kb.club/submit/) is met. The 72 B increase is in the body; the 81 B residual is unchanged. That residual is neither literal header length nor full connection overhead. Direct links cost 65 Brotli bytes over the 326 B alias version, avoiding an uncached redirect per click. [Historical results and experiments](OPTIMIZATION.md#actual-october-5-scanner-check).
+The 72 B increase in DebugBear's total came entirely from its Brotli body growing 319 → 391 B after copy and direct-link updates.
+
+The [HTTP/2 measurement](measurements/overhead-20261005.json) includes headers, control frames and DATA framing. The [DebugBear residual](measurements/debugbear-20261005.json) is a separate counter difference, not literal header length. Neither covers a full connection.
+
+The [cold-connection comparison](COMPARISON.md) separately counts TLS and estimated TCP/IP + DNS traffic in both directions, subtracting each response's body. This site had the lowest overhead in that six-site September 22 sample. October 5 checked this site only; signature and packet variation do not establish a repeatable saving.
+
+<details>
+<summary>Page sizes and 1KB Club qualification</summary>
+
+| Measurement | Scope | Published October 5, 2026 |
+| --- | --- | ---: |
+| DebugBear page weight | Encoded-response counter | 472 B |
+| Brotli response body | Encoded page body | 391 B |
+| Gzip response body | Encoded page body | 536 B |
+| Deflate response body | Encoded page body | 524 B |
+| Raw HTML | Decoded page | 1,021 B |
+
+The [saved report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) meets the [1KB Club limit](https://1kb.club/submit/). [Historical sizes and experiments](OPTIMIZATION.md#actual-october-5-scanner-check).
+
+</details>
 
 ## Build
 
