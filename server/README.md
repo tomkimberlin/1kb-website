@@ -1,77 +1,43 @@
 # Hosting
 
-This directory contains the nginx configuration and deployment scripts for [tomkimberlin.com](https://tomkimberlin.com/). The origin server runs in Docker on an Unraid installation. Use the configured hostname or local SSH alias for deployment. Cloudflare provides DNS; visitors connect directly to nginx.
+nginx serves [tomkimberlin.com](https://tomkimberlin.com/) from Docker on an Unraid host. Cloudflare provides DNS only. This directory contains the image, configuration and scripts for that installation.
 
-The custom image includes nginx 1.30.4, OpenSSL 3.5.8, certificate compression and the headers-more module. [Dockerfile](Dockerfile) pins the source versions. The [response-encoding patch](small-responses.patch) compacts HTTP/1.1 headers, combines small buffered HTTP/2 responses into fewer TLS records, and reduces HTTP/2 setup and HPACK/QPACK overhead. The [certificate-compression patch](certificate-compression.patch) compares two Brotli settings and keeps the smaller result.
+The [Dockerfile](Dockerfile) pins nginx 1.30.4 and OpenSSL 3.5.8, with headers-more, certificate compression and patches for small responses and TLS records. The page representations are preloaded when nginx loads its configuration. [Delivery settings](../TRANSPORT.md) explains the patches, client-dependent savings and regression coverage, including the Alpine async-test limitation.
 
-The September 26 changes are deployed; the [deployment record](../measurements/deployment-20260926.json) identifies the active release, images and live checks. They preserve HTTP/1.0 framing for connection reuse, accept optional whitespace in encoding preferences, and retain the default certificate compression if the optional trial cannot allocate memory. The certificate test injects allocation failures and checks that successful fallback preserves OpenSSL's error queue. The separate [local results](../measurements/transport-20260926-local.json) identify the isolated build and checks; the [verification guide](../TRANSPORT.md#verification) describes that runner.
+The latest recorded deployments are the [September 26 server release](../measurements/deployment-20260926.json) and [October 5 direct-link page release](../measurements/deployment-20261005-direct-links.json). Page deployment does not replace the server image or host scripts.
 
-The [October 5 page release](../measurements/deployment-20261005.json) publishes the approved copy and smaller serialization. All four response representations match the finished source; public HTTP, alias and live browser checks passed. The page release preserves the existing server image and certificate configuration.
+## Prepare an installation
 
-The later [October 5 link correction](../measurements/deployment-20261005-club-link.json) extends the 1KB Club anchor to “1 KB website”. Exact public representations and the intended browser rendering are verified, with the same server image and configuration.
+These scripts target an existing Linux/Docker installation, with nginx configuration, an initial page release and certificates already in place. They are not a general installer.
 
-The final [October 5 opening edit](../measurements/deployment-20261005-opening-copy.json) publishes “This is the most optimized 1 KB website on the planet. Probably.” Exact representations and 16 live browser comparisons verify the final sentence and full anchor, with the existing server image and configuration.
+The build/deploy client needs Node.js 22+, `sh`, SSH/SCP and `shasum`. Public verification also needs curl with HTTP/2. The Docker host needs curl, OpenSSL, a CA bundle, `flock`, `timeout` and GNU utilities including `mv -T`, `readlink -f`, `stat` and `sha256sum`; DNS updates also need Bash and jq.
 
-The subsequent [October 5 direct-link release](../measurements/deployment-20261005-direct-links.json) keeps the approved copy and uses explicit HTTPS/mailto destinations. The live page measures 1,021 bytes HTML, 391 Brotli, 536 gzip and 524 deflate. All 13 compatibility aliases remain available; public responses and 16 fresh live browser comparisons match the tested source, with one initial document request and no subresources. The existing image and transport configuration remain in use.
+Adapt these deployment-specific settings before hosting a copy:
 
-Image `onekb-nginx:20260926a` includes the [TLS flight patch](tls-flight.patch). It combines eligible encrypted TLS 1.3 server handshake records, saving 66 bytes on the tested full handshake and 22 bytes on resumption. It preserves message contents, transcript updates, negotiated keys and Finished verification. A 16 KiB plaintext cap and the existing record writer preserve fragmentation limits; overflow returns to ordinary writes. QUIC, TLS 1.2, client authentication, early data, asynchronous mode and server message callbacks retain their original paths. See [scope and measurements](../TRANSPORT.md#tls-handshake-records).
-
-The image build runs [certificate-compression checks](../tools/verify-certificate-compression.c) and the [23-case TLS regression harness](../tools/verify-tls-flight.c) before copying the libraries into the runtime image. The harness verifies complete handshakes and application data, including forced write retries, record-size limits, resumption, pending-buffer cleanup, allocation-failure alerts, and the separate-record paths for async mode and early data. The September 22 build also passed 219 tests across 23 selected upstream recipes; the complete upstream suite is not claimed.
-
-The September 26 Alpine image passes 22 TLS cases and explicitly skips the async case because that OpenSSL build reports `ASYNC_is_capable() == 0`. The earlier local macOS run passed all 23 cases, including async. The skip records a platform limit; it does not change the runtime patch or establish async behavior on Alpine.
-
-The [certificate-cache loader](certificate-cache.patch) optionally replaces the normal Brotli result with a smaller offline encoding. It selects the file by the exact Certificate-body hash, fully decompresses it and requires byte-for-byte equality before installation. Missing, stale, malformed or non-improving entries retain ordinary compression. [September 22 measurements](../measurements/certificate-cache-20260922.json) show 9, 8 and 2 bytes saved for the measured apex, `www` and alternate-host certificates. The [September 26 recipe tests](../measurements/certificate-cache-20260926-local.json) retain the 1,478-byte apex result and reduce the two aliases by another 3 and 2 bytes, to 1,497 and 1,488 bytes. This recipe is now deployed; savings depend on the certificate and client support.
-
-The Docker build also runs the [cache-loader test](../tools/verify-certificate-cache.c): 12 semantic cases, both decoder-creation failures, and a sweep that fails each observed OpenSSL allocation with an empty queue or caller-owned errors and marks. It verifies exact fallback bytes, error-queue preservation and successful retry, including failed cache installation. Allocation counts depend on the build. Its archived public certificate is a byte-validation fixture; expiration does not affect these loader checks. No production private key is part of the fixture.
-
-## Hosting a copy
-
-The scripts target an existing installation. They require Docker, SSH, curl, `timeout`, `flock` and a prepared directory layout with nginx configuration and initial certificates. Building the page requires Node.js 22+, `sh` and Bash.
-
-The following settings are specific to this deployment:
-
-| Setting | Configuration |
+| Setting | Files |
 | --- | --- |
-| Domains and short-link destinations | [nginx.conf](nginx.conf), [site.js](site.js) |
-| Host paths, container ports and image | [start.sh](start.sh), [deploy.sh](deploy.sh), [Unraid template](unraid-template.xml) |
-| Cloudflare zones and DNS record IDs | [update-dns.sh](update-dns.sh) |
-| Certificate paths and hostnames | [publish-certificates.sh](publish-certificates.sh) |
-| Public URLs checked after deployment | [verify.mjs](verify.mjs), [verify-alias.mjs](verify-alias.mjs) |
+| Domains, redirects and link destinations | [nginx.conf](nginx.conf), [site.js](site.js) |
+| Base paths, LAN address, ports, container name and image tags | [start.sh](start.sh), [deploy.sh](deploy.sh), [publish-certificates.sh](publish-certificates.sh), [cache-certificates.sh](cache-certificates.sh), [Unraid template](unraid-template.xml) |
+| Cloudflare zones and record IDs | [update-dns.sh](update-dns.sh) |
+| Certificate hostnames and trust-bundle path | [publish-certificates.sh](publish-certificates.sh), [cache-certificates.sh](cache-certificates.sh) |
+| Public verification targets | [verify.mjs](verify.mjs), [verify-alias.mjs](verify-alias.mjs) |
 
-A separate installation needs its own values in these files. The default base directory is `/mnt/user/appdata/onekb-website`:
+The scripts use `/mnt/user/appdata/onekb-website`. Several hardcode the container name `onekb-website`; changing `ONEKB_CONTAINER` in the startup script alone is insufficient. Startup and deployment checks use LAN address `192.168.0.2`.
 
-| Path | Contents |
+| Path under the base directory | Contents |
 | --- | --- |
-| `nginx/nginx.conf` | Active nginx configuration |
-| `site/releases/`, `site/current` | Immutable page releases and the active-release symlink |
-| `acme/` | ACME account state and renewed certificates |
-| `tls/releases/`, `tls/current` | Validated certificates and keys used by public listeners |
-| `tls/compressed/` | Optional Brotli certificate messages keyed by the exact Certificate-body SHA256 |
-| `bin/` | Startup, certificate publishing and DNS scripts |
-| `backups/` | Previous configuration and release pointers |
+| `nginx/nginx.conf` | Active configuration |
+| `site/releases/`, `site/current` | Immutable page releases and active symlink |
+| `acme/` | ACME state and renewed certificates |
+| `tls/releases/`, `tls/current` | Validated certificate/key releases |
+| `tls/compressed/` | Optional public certificate encodings keyed by Certificate-body hash |
+| `bin/`, `state/`, `backups/` | Host scripts, locks/state and rollback records |
 
-The container publishes HTTP on host port 8080 and HTTPS on TCP/UDP 8443. Public ports 80 and 443 must reach those ports. The certificate-management listener on 9443 is internal to the container. DNS records must be unproxied to use nginx's minimal responses directly.
+Forward public port 80 to host TCP 8080, and 443 to host TCP/UDP 8443. The certificate-management listener on 9443 stays internal. DNS records must be unproxied. The container mounts site, configuration and published certificates read-only; ACME state is writable and temporary files use tmpfs. Docker uses `restart=unless-stopped`; Unraid autostart is separate.
 
-## Build and deploy
+## Deploy a page
 
-GitHub pushes do not deploy this installation. Finished website changes must be committed, pushed, deployed to the origin server and verified against the public endpoint. Page deployment and server-image activation are separate steps.
-
-Build changed server images on the Docker host from the repository root, using a new tag for each release and retaining the previous images for rollback:
-
-```sh
-docker build -t onekb-nginx:20260926a -f server/Dockerfile .
-docker build --target certificate-optimizer -t onekb-certificate-optimizer:20260926a -f server/Dockerfile .
-```
-
-Install [cache-certificates.sh](cache-certificates.sh) as `bin/cache-certificates.sh` under the configured base directory. The optimizer image compiles its encoder during the image build and receives only public PEM certificates when run. Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` requires Python 3.12+ and a C compiler; `--archive` accepts the pinned source archive for an offline build. Reusing `--encoder ENCODER.so` also requires the emitted `ENCODER.so.json` manifest, which binds the binary hash to the pinned recipe. Rebuild older standalone encoders before reuse.
-
-[start.sh](start.sh) launches the container using the configured paths, page files and initial certificates. The supplied [Unraid template](unraid-template.xml) provides the same mounts and port mappings for Unraid's container interface.
-
-When these files change, install the updated startup and certificate scripts under `bin/` and update the Unraid template as well. Keep backups, install each script atomically, validate the new image against the active configuration, and replace the container with the new image. Verify the live service before removing rollback resources; a page deploy alone does not perform these steps.
-
-Each page release must include the four built body files, `representations.json`, `site.js` and its nginx configuration. The build writes the JSON snapshot as base64 strings; nginx's `js_preload_object` loads it when validating or reloading configuration. The handler decodes only the selected representation and performs no file reads during a request. This requires njs with `js_preload_object` support (0.7.8 or newer).
-
-For this installation, deploy a page from the repository root using the configured SSH host. Replace `YOUR_SSH_HOST` with its hostname or local SSH alias:
+GitHub pushes do not deploy this installation. Commit and push finished website changes, then run these commands from the repository root, replacing `YOUR_SSH_HOST` with the configured hostname or SSH alias:
 
 ```sh
 npm run deploy -- YOUR_SSH_HOST
@@ -80,40 +46,43 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment takes a private snapshot of the page, build script, compression candidates, request handler and configuration, then builds all four representations and their preload JSON there. Each run uploads its own release, so concurrent builds cannot mix files or overwrite another run's configuration. It pins both the handler and preload paths to that immutable release. Under the deployment lock, it validates nginx, switches the release symlink and reloads. Old workers retain their original preloaded bytes while finishing requests. Direct-origin checks require HTTP 200, the selected encoding and exact bytes; failed activation, verification or interruption restores the previous configuration and release. The server image is managed separately.
+Deployment snapshots the source, build inputs, handler and configuration, builds all four representations plus `representations.json`, and uploads one immutable release. Under the certificate/deployment lock it validates nginx, switches the page symlink and reloads. Direct-origin checks require HTTP 200, the selected encoding and exact bytes; activation or verification failure restores the previous configuration and release. Old workers finish requests using their original preload snapshot.
 
-Deployment leaves the checkout's `public/` directory unchanged. The explicit local build above refreshes the files used by verification; keep the source consistent with the deployed snapshot. Verification covers encoding negotiation, redirects, errors and aliases, and its configured domains must match the target installation. See [verification details](../TRANSPORT.md#verification).
+Deployment leaves local `public/` unchanged. The explicit build refreshes it for verification; keep the checkout consistent with the deployed snapshot. The verifiers target the configured public domains. See [verification details](../TRANSPORT.md#verification).
 
-The one-day browser cache can retain an older page after deployment. A fresh query string, such as `?v=20260926`, checks the new version immediately; Cloudflare is DNS-only, so there is no CDN cache to purge.
+The one-day browser cache may retain an older page. A fresh query string such as `?v=RELEASE_ID` checks the new version. Run `python3 tools/test_deployment.py` for mocked concurrency and rollback regressions without contacting a server.
 
-The [deployment regression tests](../tools/test_deployment.py) exercise concurrent builds, certificate snapshot races and rollback paths with mocked external commands. Run `python3 tools/test_deployment.py`; these tests do not contact a server.
+## Build and deploy
 
-## Certificates
+Build on the Docker host from the repository root. Choose a fresh tag and retain previous images for rollback:
 
-nginx's native ACME module issues and renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. Internal listeners manage renewal; public listeners load static certificates so OpenSSL can precompress certificate messages.
+```sh
+release_tag=YOUR_NEW_RELEASE_TAG
+docker build -t "onekb-nginx:$release_tag" -f server/Dockerfile .
+docker build --target certificate-optimizer \
+  -t "onekb-certificate-optimizer:$release_tag" -f server/Dockerfile .
+```
 
-[publish-certificates.sh](publish-certificates.sh) validates trust, hostname, remaining validity and matching keys. Before publishing a new release, it calls [cache-certificates.sh](cache-certificates.sh) with a 45-second deadline and five-second forced-stop grace. The isolated optimizer has no network access and mounts only public certificate PEM files, never their private keys. It atomically writes optional hash-named entries into `tls/compressed/`, retains smaller exact existing candidates with their matching provenance, and rejects output paths that alias its inputs. The [optimizer regression tests](../tools/test_certificate_optimizer.py) cover publication and provenance without native compilation or network access.
+Install changed host scripts atomically under `bin/`, with backups. Set the runtime image in [start.sh](start.sh) or `ONEKB_IMAGE`, the optimizer image in [cache-certificates.sh](cache-certificates.sh), and the image/mount settings in the Unraid template. Validate the new image against the active configuration before replacing the container; verify the live service before removing rollback resources. A page deploy does not perform this activation.
 
-Optimizer absence, failure or timeout does not block certificate publication: nginx uses its normal compressed certificate wherever no validated smaller entry exists. The publisher then switches the complete certificate release, tests and reloads nginx, restoring the previous release on activation failure. It publishes and reloads only when the certificate fingerprint changes. Refreshing compression for unchanged certificates requires running the helper and explicitly testing/reloading nginx.
+Each page release includes the four body files, `representations.json`, `site.js` and `nginx.conf`. A replacement image needs njs with `js_preload_object` support (0.7.8+), alongside the required modules and patches.
 
-The publishing script runs every five minutes. On Unraid, its schedule is `/boot/config/plugins/user.scripts/onekb-certificates.cron`.
+## Certificates and DNS
 
-## Dynamic DNS
+nginx's native ACME module renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. Public listeners load static certificates so OpenSSL can precompress them.
 
-[update-dns.sh](update-dns.sh) checks the public IPv4 address every five minutes and updates the configured Cloudflare A records only when the address changes. A second HTTPS lookup confirms a new address. The updater preserves other record fields and rejects unexpected names, record types or proxied records.
+[publish-certificates.sh](publish-certificates.sh) validates trust, hostname, at least one day's remaining validity and matching keys before atomically publishing a complete release. It tests/reloads nginx and restores the previous release on activation failure. It runs the optional certificate optimizer with a 45-second deadline and five-second forced-stop grace. Failure retains normal compression and does not block renewal.
 
-The credential file is `secrets/cloudflare-dns-token` under the base directory, owned by root with mode 600 inside a mode-700 directory. The token needs Zone / DNS / Edit access for the configured zones and must allow requests after the host's public IP changes. It stays outside the web container and is passed to curl through stdin.
+[cache-certificates.sh](cache-certificates.sh) gives its isolated container only public PEM files, with no network or private-key mount. The runtime loader accepts a smaller cached encoding only after complete decompression and exact byte comparison. Missing, stale or invalid entries fall back to ordinary compression. The optimizer image includes the pinned encoder and provenance manifest. See [certificate-cache details](../TRANSPORT.md#main-website) for validation details. Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` needs Python 3.12+ and a C compiler; reusing `--encoder ENCODER.so` also needs its emitted `ENCODER.so.json` manifest. `--archive` supplies the pinned source archive for an offline build.
 
-The Unraid schedule is `/boot/config/plugins/user.scripts/onekb-dns.cron`. A lock prevents concurrent runs. Changes and failures use the `onekb-dns` system-log tag; no-change runs are silent. The script's `--verify-write` option checks write access by submitting the current address without changing it.
+The publisher reloads only when certificate fingerprints change. Refreshing compression for unchanged certificates requires running the cache helper, then explicitly testing/reloading nginx.
 
-## Container isolation
+[update-dns.sh](update-dns.sh) checks the public IPv4 address, confirms changes with a second HTTPS lookup and updates configured unproxied Cloudflare A records. Its token belongs at `secrets/cloudflare-dns-token`, root-owned with mode 600 in a mode-700 directory, outside the web container. It needs Zone / DNS / Edit access for the configured zones and must remain usable after an IP change.
 
-The root filesystem, site, configuration and published certificate mounts are read-only. ACME state is writable, and temporary files use tmpfs. Linux capabilities are limited to binding ports and the group initialization required by nginx's manager process.
-
-The container uses `restart=unless-stopped`. Unraid autostart is configured separately from Docker's restart policy.
+The recorded Unraid setup runs both host jobs every five minutes, using `/boot/config/plugins/user.scripts/onekb-certificates.cron` and `onekb-dns.cron`. Locks prevent overlapping runs. DNS changes/failures use syslog tag `onekb-dns`; `--verify-write` submits the current address to check write access. The scripts do not install these schedules.
 
 ## Recovery
 
-A page release can be restored by pointing `site/current` to a previous release and restoring its matching `backups/nginx.conf-*` file. nginx validates the configuration with `nginx -t` and loads it with `nginx -s reload`. Certificate state is independent of page releases.
+To undo a page deployment, use its matching `backups/nginx.conf-RELEASE_ID` and `backups/previous-RELEASE_ID`: they hold the configuration and symlink target from **before that deployment**. Under the same `state/certificates.lock`, restore both, run `docker exec onekb-website nginx -t`, then `docker exec onekb-website nginx -s reload`. Certificate releases are independent of page releases.
 
-For a server-image rollback, [start.sh](start.sh) accepts `ONEKB_IMAGE=PREVIOUS_IMAGE`. The startup script and Unraid template must reference compatible mounts and configuration for that image.
+For an image rollback, recreate the container with `ONEKB_IMAGE=PREVIOUS_IMAGE` and compatible startup/template settings. Keep the previous image, scripts and configuration until live verification passes.

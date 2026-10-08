@@ -1,88 +1,67 @@
 # 1kb website
 
-Source code and size measurements for [tomkimberlin.com](https://tomkimberlin.com/).
+My personal page at [tomkimberlin.com](https://tomkimberlin.com/), and an experiment in how few bytes it takes to deliver it over HTTPS. One document contains the text, CSS and direct links, with light/dark appearance and keyboard navigation. No scripts, fonts or other resources need downloading.
 
-This project minimizes the bytes needed to deliver a useful personal page over HTTPS. The [delivery comparison](COMPARISON.md) subtracts each page's entire compressed response body from the traffic total, so adding useful text or direct destinations does not count against its overhead ranking. It measures cold TLS traffic and, separately, estimated TCP/IP plus DNS traffic, with explicit clients and stopping points. The original September 22 six-site sample remains dated. A [fresh October 5 check](measurements/overhead-20261005.json) repeats three cold connections to this website using the same methodology; it does not rescan the five peers.
+The interesting part is outside the HTML. A tiny page still needs headers, certificates and a connection. This project uses precompressed bodies and patched nginx/OpenSSL builds to reduce that cost while preserving certificate validation, protocol behavior and connection reuse. I built the original page years ago; Astra helped with the optimization. [Making a tiny website smaller](OPTIMIZATION.md) explains the work and tradeoffs.
+
+## What the measurements show
+
+**Delivery overhead = measured traffic − the entire encoded page body.** Adding useful content does not itself count against the overhead ranking. Each result names its client and stopping point; body length can still affect framing and packetization.
+
+In the [September 22, 2026 six-site comparison](COMPARISON.md), this website had the lowest overhead in the sample. The [October 5 check](measurements/overhead-20261005.json) repeats three cold connections to this site; it does not rescan the five peers.
 
 | Body-subtracted measurement | September 22 gallery | October 5 current page |
 | --- | ---: | ---: |
 | TLS through first document, median | 5,251 B | 5,253 B |
 | Estimated TCP/IP + DNS through close, median | 6,995 B | 6,945 B |
-| HTTP/2 plaintext minus body, every run | 105 B | **105 B** |
+| HTTP/2 plaintext minus body, every run | 105 B | 105 B |
 
-The two-byte TLS difference exactly tracks variable CertificateVerify message lengths. The packet/DNS sample ranges overlap, so the lower median is not evidence of a repeatable optimization. The HTTP/2 header block is 63 B in both samples, and framing is unchanged. Each total subtracts its own complete encoded body: 317 B in the gallery, 391 B now; these are not the separate DebugBear snapshots below.
+Both traffic totals count both directions. Their stopping points differ. The TLS change tracks variable CertificateVerify lengths; overlapping packet/DNS ranges do not establish a repeatable saving. HTTP/2 framing is unchanged. These samples subtract their own bodies: 317 B in the gallery and 391 B on October 5.
 
-The current [October 5 DebugBear test](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) records **472 B** page weight and a **391 B** Brotli body; their difference is **81 B**. The [original September 22 report](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) records 400 B and 319 B, also a difference of **81 B**. This narrower encoded-response overhead is **unchanged**. It does not count request traffic or the complete DNS/TCP/TLS exchange. Both pages satisfy [1KB Club's 1,024-byte limit](https://1kb.club/submit/).
+The narrower DebugBear page-weight counter gives a separate view:
 
-| Measurement | Published September 22 | Published September 26 | Local October 5 (unchanged copy) | Published October 5 (revised opening) | Published October 5 (direct links) |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| DebugBear counter minus Brotli body | **81 B** | Not measured | Not measured | Not measured | **81 B** |
-| DebugBear page weight | **400 B** | Not measured | Not measured | Not measured | **472 B** |
-| Brotli response body | 319 B | 321 B | 315 B | 326 B | **391 B** |
-| Gzip response body | 471 B | 468 B | 467 B | 481 B | 536 B |
-| Deflate response body | 459 B | 456 B | 455 B | 469 B | 524 B |
-| Raw HTML | 746 B | 743 B | 744 B | 768 B | 1,021 B |
+| Measurement | Published September 22, 2026 | Published October 5, 2026 |
+| --- | ---: | ---: |
+| DebugBear page weight | 400 B | **472 B** |
+| DebugBear counter minus Brotli body | 81 B | **81 B** |
+| Brotli response body | 319 B | **391 B** |
+| Gzip response body | 471 B | 536 B |
+| Deflate response body | 459 B | 524 B |
+| Raw HTML | 746 B | 1,021 B |
 
-The intermediate columns have no saved DebugBear scans; their scanner results remain unknown. Their body sizes are independently measured and are not substituted for page weight. [Recovered September evidence](measurements/debugbear-20260922-recovered.json), [current scan evidence](measurements/debugbear-20261005.json) and the [completed report screenshot](measurements/debugbear-20261005.png) preserve the actual results.
+The [original report](https://www.debugbear.com/test/website-speed/SqYs6RrN/overview) and [October 5 report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) have [historical](measurements/debugbear-20260922-recovered.json) and [current](measurements/debugbear-20261005.json) evidence. The 72 B increase is entirely in the compressed body; the 81 B residual is unchanged. That residual measures neither literal header length nor the full DNS/TCP/TLS exchange. The September scanner and gallery used different page snapshots.
 
-The [published October 5 page](measurements/page-20261005-opening-copy.json) says “This is the most optimized 1 KB website on the planet. Probably.” This is playful opinion; the measurements do not establish a world record. The 1KB Club link covers “1 KB website”. Fresh [browser checks](measurements/browser-20261005-opening-copy.json) verify the exact opening, full anchor, unaffected layout and nine keyboard destinations. The [final deployment record](measurements/deployment-20261005-opening-copy.json) verifies all four exact representations, 118 public HTTP checks, 12 alias checks and 16 live browser comparisons.
-
-The [published direct-link version](measurements/page-20261005-direct-links-local.json) keeps that exact copy. The [deployment record](measurements/deployment-20261005-direct-links.json) verifies all four representations, 118 public HTTP checks, 12 alternate-domain checks and 16 [live browser comparisons](measurements/browser-20261005-direct-links-live.json). It replaces nine relative redirect paths with explicit HTTPS/mailto destinations and retains every server alias for compatibility. Its 1,021-byte HTML and 391-byte Brotli body both stay below 1,024 bytes. This adds 65 Brotli bytes relative to the earlier 326-byte alias version and avoids one uncached same-origin redirect per click. [Sixteen normal browser comparisons](measurements/browser-20261005-direct-links-local.json) and [16 enlarged-font comparisons](measurements/browser-20261005-font-override-local.json) match pixels, layout, focus and all nine destinations. The dated [redirect review](measurements/link-review-20261005-local.json) preserves the earlier live baseline; the deployment record confirms all 13 compatibility aliases still work.
-
-The [initial approved-copy build](measurements/page-20261005-approved-copy.json) and its [deployment record](measurements/deployment-20261005.json) preserve the earlier 324 B Brotli result and live verification before the link extension. The [intermediate link correction](measurements/deployment-20261005-club-link.json) measured 322 B before the opening changed.
-
-The [earlier October 5 unchanged-copy experiment](measurements/page-20261005-local.json) saved 6 Brotli bytes and one byte in each fallback body. Its 315 B result uses the old sentence and remains distinct from the approved copy.
-
-The September 26 deployment includes “my” in the GitHub hyperlink. The sentence and link destination are unchanged. The [deployment record](measurements/deployment-20260926.json) verifies the public response bytes and live behavior. The September 22 scanner result remains a historical snapshot. Its original public data was recovered, and the current direct-link page was scanned separately on October 5.
-
-The server changes also remove four synchronous file reads from each request by preloading the representations when nginx loads its configuration. The [local runtime comparison](measurements/runtime-20260926-local.json) records the benchmark and reload checks. Its throughput results describe a loopback test, not public-server capacity or browser load time.
-
-[1KB Club's submission instructions](https://1kb.club/submit/) use the linked scanner's Network Bytes total. The saved DebugBear page-weight counter (`lhData.totalEncodedBodyLength`) is **472 B**, agreeing with the request's encoded-response counter and Lighthouse's exact transfer total. The explicit compressed body (`netlogData.encodedSize`) is **391 B**, and decoded HTML is **1,021 B**. There is one uncached HTTP/2 document request and no subresources. The counter exceeds the body by 81 B in both the original and current scans; this difference is not an independently measured header length or the complete DNS/TCP/TLS exchange. [DebugBear explains compressed and decoded resource sizes](https://www.debugbear.com/blog/page-weight-website-speed).
-
-The total page-weight increase of 72 B (+18%) is entirely reflected in the compressed-body difference: 319 → 326 → 391 B; it did not increase the measured 81 B residual. The direct-link version accounts for 65 B relative to the approved opening with aliases; the remaining 7 B is the net result of preceding copy, link-label, serialization and compression changes, not an isolated wording cost. Both scans use Mobile 412×660, US East, packet-level 70 ms RTT /12,288 Kbps and CPU 2×. Chrome and Lighthouse versions changed, so these byte counts do not establish a load-time improvement.
-
-[Eight independent live HTTP checks](measurements/http-20261005-debugbear-check.json) confirmed all four exact representations over both HTTP/1.1 and HTTP/2 and decoded each to the same HTML. Their header dumps have a different scope: the HTTP/1.1 Brotli body plus textual status/headers is 560 B; HTTP/2 dumps are decoded text, not wire framing. The separately recorded browser Resource Timing transfer estimate is 691 B (391 + the specification's fixed 300-byte allowance), rather than DebugBear's 472 B. The local 128-byte response allowance is a build policy, not a scanner measurement.
-
-A later [local compression-only option](measurements/compression-20261005-exact-source-390-local.json) reproduces the exact current HTML in **390 B Brotli**, saving one body byte without changing the approved wording, direct links or design. Two fresh pinned builds and independent complete-stream decoders verify it. It remains local and has no DebugBear result; the deployed page is still **391 B body /472 B page weight**.
-
-HTML-only edits do not require rerunning the body-subtracted comparison. Changes to headers, TLS or server configuration do; a newer sample can also be collected. This is the [established measurement policy](https://github.com/tomkimberlin/1kb-website/commit/17bc5df6dcd2e01a9c44971c6e6b62d2936b775e). Incidental framing and packetization can still vary with body length, so body subtraction does not establish a universal fixed cost.
-
-I built the foundation years ago, then let Astra push the optimization. [Making a tiny website smaller](OPTIMIZATION.md) covers the experiments, decisions and tradeoffs.
-
-[Delivery settings](TRANSPORT.md), [gallery comparison](COMPARISON.md), [build sizes](build-report.json), [current build measurements](measurements/page-20261005-direct-links-local.json), [September 26 build](measurements/page-20260926-link-label.json), [earlier browser comparison](measurements/page-20260926-local.json), [published browser measurements](measurements/page-20260922.json).
+The current scan meets [1KB Club's 1,024-byte limit](https://1kb.club/submit/). Direct destinations add 65 Brotli bytes relative to the earlier alias version and avoid an uncached redirect on each click. [Deployment evidence](measurements/deployment-20261005-direct-links.json) records exact response and browser checks. A [390 B compression candidate](measurements/compression-20261005-exact-source-390-local.json) remains local and unscanned. These byte counts establish neither a world record nor faster load times.
 
 ## Build locally
 
-Requires Node.js 22+, curl, `sh` and Bash. From the repository root:
+Requires Node.js 22+ with npm, `sh` and Bash. From the repository root:
 
 ```sh
 npm ci
 npm test
 npm run check
+npm run check:measurements
 ```
 
-`index.html` is the page source. The build writes HTML, Brotli, gzip and deflate files to `public/` and records their sizes in `build-report.json`. It also writes `public/representations.json` for nginx to preload. The source stays ASCII because HTTP/1 and HTTP/2 omit the charset parameter; character references such as `&#233;` preserve Unicode text across protocols. The build and serializer reject literal non-ASCII bytes and non-HTML control characters.
+`index.html` is the source. The build writes HTML, Brotli, gzip, deflate and nginx's preload snapshot to `public/`, with sizes in [build-report.json](build-report.json). Saved compression candidates are accepted only when smaller and decoding exactly to the source. Keep the source ASCII; use character references for Unicode because HTTP/1 and HTTP/2 omit a charset. The build's 128 B response allowance is a budget, not a scanner measurement.
 
-`npm run check:measurements` checks the current build sizes, hashes, preloaded representations and Markdown tables against the dated gallery. The current check binds the local direct-link build to all 16 normal browser comparisons, exact source/encoder/verifier hashes and the dated published baseline. It also binds the current DebugBear record to the same source/body sizes and checks the final scanner table cell against that completed report. It verifies eight intercepted HTTP Enter probes and one intercepted trusted mailto activation in each case. The separate enlarged-font record uses explicitly augmented fixtures; historical opening and hyperlink edits remain dated evidence.
-
-`npm run test:optimizers` checks compression-candidate validation and atomic publication. It also requires Python 3, but no compiler or optional compressor packages. `npm run check:python` checks the Python tools' syntax.
-
-For browser comparisons of equivalent serializations, install the optional test tools and save the original page before editing:
+The measurement check binds the build, README tables and [browser evidence](measurements/page-20261005-direct-links-local.json) to saved hashes and dated results. It does not collect a new live measurement. For browser comparisons, install the optional tools and save the source before editing:
 
 ```sh
 npm install --no-save --package-lock=false playwright
 npx playwright install chromium webkit
 mkdir -p optimization
 cp index.html optimization/baseline.html
-# Make equivalent serialization changes before running the comparison.
+# Make equivalent serialization changes, then compare.
 npm run test:browser -- --baseline optimization/baseline.html
 npm run test:browser:guards
 ```
 
-The comparison checks pixels, text, comments, layout, link destinations, keyboard order, focused appearance and Enter activation in Chromium and WebKit at four widths and in both themes. Unexpected requests are blocked. HTTP keyboard probes receive intercepted local responses after destination checks; trusted native mailto clicks are prevented and inspected without launching a mail client. Reports and screenshots stay in `optimization/`.
+Compare equivalent serializations against that baseline. Python optimizer tests (`npm run test:optimizers`) require Python 3. See [optimization tools](OPTIMIZATION.md#let-the-compressor-settle-arguments) and [verification](TRANSPORT.md#verification) for additional dependencies and protocol probes.
 
 ## Hosting
 
-nginx serves the published website from the origin server directly; Cloudflare provides DNS only. [tom.kimberlin.net](https://tom.kimberlin.net/) redirects to it. Pushing to GitHub does not deploy the site. Finished website edits also require `npm run deploy -- YOUR_SSH_HOST`, using the configured hostname or local SSH alias, followed by a local build and live verification as described in the hosting guide.
+Docker on an Unraid host serves the site directly through nginx; Cloudflare provides DNS only. This gives control over delivery bytes and requires maintaining the host, certificates and patches. Availability depends on home power and connectivity.
 
-The [hosting guide](server/README.md) explains the server configuration, deployment requirements and settings needed to host a copy.
+Pushing to GitHub does not deploy the site. The [hosting guide](server/README.md) covers configuration, page and image deployment, certificates and rollback. [Delivery settings](TRANSPORT.md) documents the patches and protocol checks.
