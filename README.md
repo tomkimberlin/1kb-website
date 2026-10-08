@@ -6,23 +6,14 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 ## Delivery overhead
 
-**Delivery overhead = measured traffic − the entire encoded page body.** Text and direct links belong to the body. The goal is to reduce the cost around it; framing can still vary with body length.
+**Delivery overhead = measured traffic − the entire encoded page body.**
 
-| Body-subtracted response measure | September 22, 2026 | October 5, 2026 |
-| --- | ---: | ---: |
-| HTTP/2 plaintext minus body | **105 B** | **105 B** |
-| DebugBear response counter minus Brotli body | **81 B** | **81 B** |
-
-The 72 B increase in DebugBear's total came entirely from its Brotli body growing 319 → 391 B after copy and direct-link updates.
-
-The [HTTP/2 measurement](measurements/overhead-20261005.json) includes headers, control frames and DATA framing. The [DebugBear residual](measurements/debugbear-20261005.json) is a separate counter difference, not literal header length. Neither covers a full connection.
-
-The [cold-connection comparison](COMPARISON.md) separately counts TLS and estimated TCP/IP + DNS traffic in both directions, subtracting each response's body. This site had the lowest overhead in that six-site September 22 sample. October 5 checked this site only; signature and packet variation do not establish a repeatable saving.
+**Latest verified result: 6,945 B estimated overhead, October 5, 2026.** Median of three cold first-document exchanges, counting IPv4 TCP/IP traffic through connection close plus DNS queries to the selected resolver, in both directions, then subtracting each response's complete encoded body. [Measurement and methodology](measurements/overhead-20261005.json).
 
 <details>
-<summary>Page sizes and 1KB Club qualification</summary>
+<summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Published October 5, 2026 |
+| Measurement | Scope | Verified October 5, 2026 |
 | --- | --- | ---: |
 | DebugBear page weight | Encoded-response counter | 472 B |
 | Brotli response body | Encoded page body | 391 B |
@@ -30,7 +21,7 @@ The [cold-connection comparison](COMPARISON.md) separately counts TLS and estima
 | Deflate response body | Encoded page body | 524 B |
 | Raw HTML | Decoded page | 1,021 B |
 
-The [saved report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) meets the [1KB Club limit](https://1kb.club/submit/). [Historical sizes and experiments](OPTIMIZATION.md#actual-october-5-scanner-check).
+The [saved report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview) and [scan evidence](measurements/debugbear-20261005.json) confirm the [1KB Club limit](https://1kb.club/submit/) is met.
 
 </details>
 
