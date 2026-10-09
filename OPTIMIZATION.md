@@ -51,7 +51,7 @@ There is a cost to that control: the site depends on home power and connectivity
 
 The page had a detour through animated backgrounds, tilted rows and a waving hand. It was possible to fit quite a lot of CSS into the budget. Eventually I preferred a quiet page and a lower byte count.
 
-The current CSS buys a narrow centered column, padding, 18px text, a larger heading and comfortable line spacing. Native fonts avoid a font download. `color-scheme:light dark` lets the browser supply matching page, text and link colors without a theme script or toggle.
+The current CSS buys a narrow centered column, padding, 18px text, a larger heading and comfortable line spacing. Native serif fonts avoid a font download. `color-scheme:light dark` lets the browser supply matching page, text and link colors without a theme script or toggle.
 
 Those are deliberate constraints on the optimization. Removing the viewport declaration can break mobile sizing. Removing the doctype can change layout rules. Removing a style declaration can make a narrow screenshot look unchanged while breaking the desktop layout. A smaller result has to survive both.
 

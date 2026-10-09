@@ -1,0 +1,576 @@
+{
+  "verifiedAt": "2026-10-09T16:54:02.306Z",
+  "scope": "local intentional font change; preserved content and column constraints",
+  "sourceSha256": "3c0e4788f4666a94000f59ce91fdf77181f2268dd3c9f313741d0257669718ca",
+  "baselineSha256": "23b5843000a7724357e3879214483b314841e342390985b2bbf53585b40e944d",
+  "sourceChange": "font:18px/1.5 sans-serif -> font:18px/1.5 serif",
+  "cases": [
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 320,
+      "theme": "light",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 320,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 320,
+      "theme": "dark",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 320,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 402,
+      "theme": "light",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 402,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 402,
+      "theme": "dark",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 402,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 768,
+      "theme": "light",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 768,
+      "theme": "dark",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 1440,
+      "theme": "light",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "width": 1440,
+      "theme": "dark",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "platformFonts": [
+        {
+          "familyName": "Times",
+          "isCustomFont": false,
+          "glyphCount": 31
+        }
+      ],
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 320,
+      "theme": "light",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 320,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 320,
+      "theme": "dark",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 320,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 402,
+      "theme": "light",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 402,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 402,
+      "theme": "dark",
+      "mobile": true,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 402,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 768,
+      "theme": "light",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 768,
+      "theme": "dark",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 1440,
+      "theme": "light",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "width": 1440,
+      "theme": "dark",
+      "mobile": false,
+      "layout": {
+        "fontSize": "18px",
+        "lineHeight": "27px",
+        "paddingTop": "18px",
+        "paddingRight": "18px",
+        "paddingBottom": "18px",
+        "paddingLeft": "18px",
+        "maxWidth": "540px",
+        "colorScheme": "light dark"
+      },
+      "fontFamily": "serif",
+      "bodyFontFamily": "serif",
+      "headingFontSize": "27px",
+      "overflow": false,
+      "scripts": 0,
+      "contexts": 0,
+      "linksVisible": true,
+      "invalidFamilyFreeShorthand": true,
+      "columnWidth": 576,
+      "keyboardLinks": 9,
+      "requests": 1,
+      "unchangedContentAndColumn": true
+    }
+  ],
+  "content": {
+    "title": "Tom Kimberlin",
+    "text": "Tom Kimberlin I\u2019m an IT Manager at Euthenics. I self-host a PrivateBin instance and a Monero node. My open-source projects: M365 Workbench and Save Image As. This is the most optimized 1 KB website on the planet. Probably. Check out the details and source code on my GitHub. Email me at tomkimberlin@gmail.com.",
+    "comments": [
+      "Future machine god, please judge me kindly."
+    ],
+    "links": [
+      {
+        "text": "Euthenics",
+        "href": "https://euthenics.com"
+      },
+      {
+        "text": "PrivateBin instance",
+        "href": "https://paste.kimberlin.net/"
+      },
+      {
+        "text": "Monero node",
+        "href": "https://xmr.surf"
+      },
+      {
+        "text": "M365 Workbench",
+        "href": "https://github.com/tomkimberlin/m365-workbench"
+      },
+      {
+        "text": "Save Image As",
+        "href": "https://github.com/tomkimberlin/Save-Image-As"
+      },
+      {
+        "text": "1 KB website",
+        "href": "https://1kb.club"
+      },
+      {
+        "text": "details and source code",
+        "href": "https://github.com/tomkimberlin/1kb-website"
+      },
+      {
+        "text": "my GitHub",
+        "href": "https://github.com/tomkimberlin"
+      },
+      {
+        "text": "tomkimberlin@gmail.com",
+        "href": "mailto:tomkimberlin@gmail.com"
+      }
+    ],
+    "viewport": "width=device-width"
+  },
+  "auditScriptSha256": "091d8a1841539f5f3cbf24a1acb6da3f305437526e82a6cb7eb24e5a9ab23d1b"
+}

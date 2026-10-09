@@ -62,8 +62,12 @@ function debugbearFixture(t) {
   changeJson(directory,page,data=>data.debugbearEvidence=debugbear);
   const scan=JSON.parse(readFileSync(join(directory,debugbear)));
   const path=join(directory,'README.md');
-  const text=readFileSync(path,'utf8').replace(/^(\| DebugBear page weight \|[^\n]*\|)[^|]*\|$/m,
-    (_,prefix)=>prefix+' **'+scan.metrics.networkBytesTotal+' B** |');
+  const source=readFileSync(path,'utf8');
+  const row=/^(\| DebugBear page weight \|[^\n]*\|)[^|]*\|$/m;
+  // A local-build README may have no current scanner row; supply this fixture's own.
+  const text=row.test(source)
+    ? source.replace(row,(_,prefix)=>prefix+' **'+scan.metrics.networkBytesTotal+' B** |')
+    : source+'\n| DebugBear page weight | Synthetic scan | **'+scan.metrics.networkBytesTotal+' B** |\n';
   writeFileSync(path,text+'\n[Test scan report]('+scan.reportUrl+') [Test normalized evidence]('+debugbear+')\n');
   return directory;
 }

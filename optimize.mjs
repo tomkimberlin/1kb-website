@@ -62,7 +62,7 @@ if(!headingSizes.includes(heading.slice(1,4).find(Boolean)))
  throw Error('The heading font size changed; review the equivalent sizes before searching');
 const cssOptions = [
  ['padding:18px','padding:1em','padding:1rem'],
- ['font:18px/1.5 sans-serif','font:18px/1.50 sans-serif'],
+ ['font:18px/1.5 serif','font:18px/1.50 serif'],
  ['max-width:540px','max-width:30em','max-width:30rem'],
  ['margin:auto','margin:0 auto'],
  ['color-scheme:light dark']

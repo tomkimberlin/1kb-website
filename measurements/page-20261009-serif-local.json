@@ -1,0 +1,19 @@
+{
+  "measuredAt": "2026-10-09T16:56:01.265897+00:00",
+  "scope": "local build",
+  "url": "https://tomkimberlin.com/",
+  "change": "Native generic serif; preserve 18px text and 1.5 line height.",
+  "buildReport": "build-report.json",
+  "html": 1016,
+  "htmlSha256": "3c0e4788f4666a94000f59ce91fdf77181f2268dd3c9f313741d0257669718ca",
+  "brotli": 394,
+  "brotliSha256": "1d22c4a2185b47bd61964d9fded2f4138737acefea6cd9331f009fec13294d38",
+  "gzip": 547,
+  "gzipSha256": "01be225647c86168b4dbbf9137cdd6d10b83edc6e87c77c940f2601a99d5c3d8",
+  "deflate": 535,
+  "deflateSha256": "1c1433f4ccc99850f71dd4b2f5de0e4511dd5008ebab96ff3f3b96b39b036f93",
+  "limitations": [
+    "Response-body sizes only; this build is not a scanner result or a full connection measurement.",
+    "The font change intentionally changes glyphs and line wrapping; pixel equivalence to the old sans-serif page is not claimed."
+  ]
+}
