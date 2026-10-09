@@ -1,0 +1,77 @@
+{
+  "verifiedAt": "2026-10-09T17:02:06.865238+00:00",
+  "url": "https://tomkimberlin.com/",
+  "scope": "Production page deployment and exact public HTTP/browser verification",
+  "pageCommit": "6e0ff7e4087d75c0419cf354fcb9ab21fd8dfa02",
+  "pageRelease": "releases/20261009T165814Z-3c0e4788f466-onekb-deploy.UfL4t7",
+  "previousPageRelease": "releases/20261005T194148Z-23b5843000a7-onekb-deploy.nfecfg",
+  "change": "Replace only font:18px/1.5 sans-serif with font:18px/1.5 serif, preserving text, destinations, text size, line spacing, column width, padding and native light/dark styling.",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1016,
+      "sha256": "3c0e4788f4666a94000f59ce91fdf77181f2268dd3c9f313741d0257669718ca",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 394,
+      "sha256": "1d22c4a2185b47bd61964d9fded2f4138737acefea6cd9331f009fec13294d38",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 547,
+      "sha256": "01be225647c86168b4dbbf9137cdd6d10b83edc6e87c77c940f2601a99d5c3d8",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 535,
+      "sha256": "1c1433f4ccc99850f71dd4b2f5de0e4511dd5008ebab96ff3f3b96b39b036f93",
+      "exactLocalOriginAndPublicResponse": true
+    }
+  ],
+  "font": {
+    "computedGenericFamily": "serif",
+    "chromiumNativeFamily": "Times",
+    "textSize": "18px",
+    "lineHeight": "27px",
+    "headingSize": "27px",
+    "fontDownloads": 0
+  },
+  "server": {
+    "image": "onekb-nginx:20260926a",
+    "running": true,
+    "imageChanged": false,
+    "handlerSha256": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+    "configurationSourceSha256": "5666c4b08949f6698be65fe226f18a10442c38418e3a5c41baf6a1d5f8004a8d",
+    "activeConfigurationSha256": "8e9f8931be3bfb4e8c34eac079ea1aa846afff601a7b7cfed152e40bf1dd5f97",
+    "allReleasedSourceAndRepresentationFilesMatchPageCommit": true,
+    "activation": "Immutable release, configuration validation, atomic activation and nginx reload; prior release/configuration retained for rollback."
+  },
+  "verification": {
+    "localApplicationTests": 77,
+    "localMeasurementTests": 17,
+    "mainHttp11AndHttp2Checks": 118,
+    "aliasRedirectChecks": 12,
+    "followedAliasExactBrotliPage": true,
+    "originRepresentationsExact": 4,
+    "localBrowserCases": 16,
+    "liveBrowserCases": 16,
+    "localAndLivePixelMatches": 16,
+    "keyboardLinksPerCase": 9,
+    "pageLoadRequestsPerCase": 1,
+    "subresourceRequestsPerCase": 0,
+    "localBrowserEvidence": "measurements/browser-20261009-serif-local.json",
+    "liveBrowserEvidence": "measurements/browser-20261009-serif-live.json",
+    "localBuildEvidence": "measurements/page-20261009-serif-local.json",
+    "overheadEvidence": "measurements/overhead-20261009-serif.json"
+  },
+  "limitations": [
+    "The serif change intentionally changes glyphs and line wrapping; pixel equivalence to the old sans-serif page is not claimed.",
+    "The saved October 5 scanner result is a dated earlier result; no new scanner run is claimed.",
+    "Body sizes exclude delivery overhead; the separate three-run record measures it explicitly.",
+    "Existing browser caches may retain the previous page for up to 86400 seconds; live browser checks used fresh query strings."
+  ]
+}

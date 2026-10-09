@@ -8,7 +8,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 **Delivery overhead = measured traffic − the entire encoded page body.**
 
-**Latest verified result: 6,945 B estimated overhead, October 5, 2026.** Median of three cold first-document exchanges, counting IPv4 TCP/IP traffic through connection close plus DNS queries to the selected resolver, in both directions, then subtracting each response's complete encoded body. [Measurement and methodology](measurements/overhead-20261005.json).
+**Latest verified result: 6,945 B estimated overhead, October 9, 2026.** Median of three cold first-document exchanges, counting IPv4 TCP/IP traffic through connection close plus DNS queries to the selected resolver, in both directions, then subtracting each response's complete encoded body. [Measurement and methodology](measurements/overhead-20261009-serif.json).
 
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>

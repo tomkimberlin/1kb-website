@@ -1,6 +1,6 @@
 # Hosting
 
-Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; [server](../measurements/deployment-20260926.json) and [page](../measurements/deployment-20261005-direct-links.json) records identify the latest verified deployments.
+Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; [server](../measurements/deployment-20260926.json) and [page](../measurements/deployment-20261009-serif.json) records identify the latest verified deployments.
 
 ## Prepare an installation
 
