@@ -1,0 +1,17 @@
+{
+  "measuredAt": "2026-10-16T16:43:52.319705+00:00",
+  "scope": "local build",
+  "url": "https://tomkimberlin.com/",
+  "change": "Role article only: an -> the; existing capitalization, punctuation, content and serif CSS preserved.",
+  "html": 1017,
+  "htmlSha256": "af7c917d9083c9a5bfcc0cfde5ebc1c8e94b0aeaa8b512629bc60e69e012917a",
+  "brotli": 397,
+  "brotliSha256": "53afa42b3397d241fbd6c05048bb229eec0f3c913f04e73912cf8fd10e296083",
+  "gzip": 546,
+  "gzipSha256": "6dfe84889e8f0566fe8bc586c3e55887eca5e1d7e519a5e97318d2b97d437dd4",
+  "deflate": 534,
+  "deflateSha256": "3d370a7962bb267a6abcab78fcdfe2ea6034aa79a8e843dd62b5eb6746706bf9",
+  "limitations": [
+    "Response-body sizes only; no new scanner or complete-exchange measurement is claimed."
+  ]
+}
