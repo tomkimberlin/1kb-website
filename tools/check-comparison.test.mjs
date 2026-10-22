@@ -1,11 +1,12 @@
 // Real saved evidence is copied into disposable ignored fixtures. No live calls.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,copyFileSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,existsSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {execFileSync} from 'node:child_process';
 import {dirname,resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {brotliCompressSync,gzipSync,deflateRawSync} from 'node:zlib';
+import {brotliCompressSync,brotliDecompressSync,gzipSync,gunzipSync,deflateSync,inflateSync} from 'node:zlib';
 import {checkComparison,renderCurrent,renderCandidate} from './check-comparison.mjs';
 
 const here=dirname(fileURLToPath(import.meta.url));
@@ -18,12 +19,12 @@ const files={html:'index.html',brotli:'index.html.br',gzip:'index.html.gz',defla
 const actualOverhead='measurements/overhead-20261022-openssl359.json';
 const actualDeployment='measurements/deployment-20261022-openssl359.json';
 
-function fixture(t) {
+function fixture(t,project=repo) {
   mkdirSync(scratch,{recursive:true});
   const root=mkdtempSync(join(scratch,'fixture-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
   mkdirSync(join(root,'measurements'));mkdirSync(join(root,'public'));
   const names={overhead:'measurements/overhead-current.json',deployment:'measurements/deployment-current.json',page:'measurements/page-current.json',gallery:'measurements/gallery-20260922.json'};
-  const data={overhead:json(resolve(repo,actualOverhead)),deployment:json(resolve(repo,actualDeployment)),page:json(resolve(repo,'measurements/page-20261022-accessibility-local.json')),gallery:json(resolve(repo,'measurements/gallery-20260922.json'))};
+  const data={overhead:json(resolve(project,actualOverhead)),deployment:json(resolve(project,actualDeployment)),page:json(resolve(project,'measurements/page-20261022-accessibility-local.json')),gallery:json(resolve(project,'measurements/gallery-20260922.json'))};
   const config={schemaVersion:1,targetUrl:'https://tomkimberlin.com/',current:{},historicalGallery:null};
   const put=(name,value)=>writeFileSync(resolve(root,name),JSON.stringify(value,null,2)+'\n');
   function save(kind) {
@@ -31,9 +32,18 @@ function fixture(t) {
     if(kind==='gallery')config.historicalGallery=ref;else config.current[kind]=ref;
   }
   for(const k of Object.keys(data))save(k);
-  for(const file of Object.values(files))copyFileSync(resolve(repo,'public',file),resolve(root,'public',file));
-  copyFileSync(resolve(repo,'index.html'),resolve(root,'index.html'));copyFileSync(resolve(repo,'build-report.json'),resolve(root,'build-report.json'));
-  writeFileSync(resolve(root,'README.md'),readFileSync(resolve(repo,'README.md'),'utf8').replaceAll(actualOverhead,names.overhead));
+  // Freeze bytes to this dated deployed commit, not a future working candidate.
+  const committed=name=>execFileSync('git',['show',data.deployment.pageCommit+':'+name],{cwd:project});
+  const source=committed('index.html'),br=committed('compression/index.html.br'),gzip=committed('compression/index.html.gz');
+  let a=1,b=0;for(const byte of source){a=(a+byte)%65521;b=(b+a)%65521;}
+  const checksum=Buffer.alloc(4);checksum.writeUInt32BE(((b<<16)|a)>>>0);
+  const frozen={html:source,brotli:br,gzip,deflate:Buffer.concat([Buffer.from([120,218]),gzip.subarray(10,-8),checksum])};
+  assert.deepEqual(brotliDecompressSync(br),source);assert.deepEqual(gunzipSync(gzip),source);assert.deepEqual(inflateSync(frozen.deflate),source);
+  const build={};
+  for(const [key,bytes] of Object.entries(frozen)){writeFileSync(resolve(root,'public',files[key]),bytes);build[key]=bytes.length;assert.equal(hash(bytes),data.page[key+'Sha256']);}
+  writeFileSync(resolve(root,'index.html'),source);put('build-report.json',build);
+  const s=data.overhead.summary.estimatedTcpPlusDnsMinusBody,n=value=>value.toLocaleString('en-US');
+  writeFileSync(resolve(root,'README.md'),`**Latest verified result: ${n(s.median)} B estimated overhead, October 22, 2026.** Median (${n(s.minimum)}–${n(s.maximum)} B). [Evidence](${names.overhead}).\n`);
   function document() {
     const old=data.gallery.summary.map(r=>`| [Site](${r.url}) | ${r.tls_median.toLocaleString('en-US')} | ${r.total_median.toLocaleString('en-US')} |`).join('\n');
     const candidate=config.candidate?renderCandidate(json(resolve(root,config.candidate.page.path)),config.candidate.page)+'\n\n':'';
@@ -42,7 +52,7 @@ function fixture(t) {
   function flush({doc=true}={}) {put('measurements/comparison-current.json',config);if(doc)document();}
   function candidate() {
     const source=Buffer.concat([readFileSync(resolve(root,'index.html')),Buffer.from('\n')]);
-    const representations={html:source,brotli:brotliCompressSync(source),gzip:gzipSync(source),deflate:deflateRawSync(source)};
+    const representations={html:source,brotli:brotliCompressSync(source),gzip:gzipSync(source),deflate:deflateSync(source)};
     const page={scope:'local build'},build={};
     for(const [key,bytes] of Object.entries(representations)) {writeFileSync(resolve(root,'public',files[key]),bytes);page[key]=build[key]=bytes.length;page[key+'Sha256']=hash(bytes);}
     writeFileSync(resolve(root,'index.html'),source);put('build-report.json',build);put('measurements/page-candidate.json',page);
@@ -87,3 +97,12 @@ test('object key ordering is not a measurement change',t=>{const f=fixture(t);co
 test('README latest evidence link must advance with the pointer',t=>{const f=fixture(t);const p=join(f.root,'README.md');writeFileSync(p,readFileSync(p,'utf8').replace('](measurements/overhead-current.json)','](measurements/overhead-20261005.json)'));assert.throws(f.check,/Stale README latest/);});
 test('README latest median cannot drift',t=>{const f=fixture(t);const p=join(f.root,'README.md');writeFileSync(p,readFileSync(p,'utf8').replace('Latest verified result: 6,945 B','Latest verified result: 6,944 B'));assert.throws(f.check,/Stale README latest/);});
 test('README latest range cannot drift',t=>{const f=fixture(t);const p=join(f.root,'README.md');writeFileSync(p,readFileSync(p,'utf8').replace('(6,894–6,996 B)','(6,895–6,996 B)'));assert.throws(f.check,/Stale README latest/);});
+test('dated fixtures stay valid when the project working bodies and README change',t=>{
+  const project=fixture(t);project.candidate();
+  writeFileSync(join(project.root,'README.md'),'Different pending working-copy documentation.\n');
+  for(const path of [actualOverhead,actualDeployment,'measurements/page-20261022-accessibility-local.json','measurements/gallery-20260922.json'])
+    writeFileSync(resolve(project.root,path),readFileSync(resolve(repo,path)));
+  const frozen=fixture(t,project.root);
+  assert.deepEqual(frozen.check(),{liveDate:'2026-10-22',localCandidate:false});
+  assert.notEqual(hash(readFileSync(join(project.root,'index.html'))),hash(readFileSync(join(frozen.root,'index.html'))));
+});
