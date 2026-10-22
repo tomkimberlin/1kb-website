@@ -1,0 +1,162 @@
+{
+  "verifiedAt": "2026-10-22T13:25:28.339403+00:00",
+  "url": "https://tomkimberlin.com/",
+  "pageCommit": "57deda632000d2d22ea66510ebf761574f0f5856",
+  "pageRelease": "releases/20261022T132104Z-aa9d6af64c9d-onekb-deploy.BCJNct",
+  "previousPageRelease": "releases/20261016T164517Z-af7c917d9083-onekb-deploy.omwn1f",
+  "change": "Equivalent serif-page serialization, compact TLS ticket counter encoding, verified page-generation and served-certificate activation, and CI regression coverage.",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1021,
+      "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 389,
+      "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 536,
+      "sha256": "fe61ae0c9d6c5676d5c12e35d87152dc45aaa1ae1c974d5aa8b1baf945799b81",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 524,
+      "sha256": "8e245b57c5006ca243a6914bca524f97152e1cd041c520da0a09ee356466e9a4",
+      "exactLocalOriginAndPublicResponse": true
+    }
+  ],
+  "server": {
+    "image": "onekb-nginx:20261022a",
+    "imageId": "sha256:def39fdc09777585b6f4179fc6b2cf14fc5df24d31b5f3a4a2cbb3c285a8b6f6",
+    "running": true,
+    "activeConfigurationSha256": "d13b2dc8ac45c3a965a1ee1015b73f8e072722ce1d04b9ded0320fd4baa26694",
+    "sourceFileHashes": {
+      "server/Dockerfile": "20f2154b4fb6cf1c6eab8b8900835fec4d3a39e7c6c87a0ac467e1cd85be2e06",
+      "server/nginx.conf": "b64de2d313610d2e4e0b7cc10eabb74885f2240e15daa136c39ae09d1d2b77e6",
+      "server/site.js": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+      "server/start.sh": "9214e920f4b568bfda3103c760c220dd045e38073acb73fe516efa920a38f17e",
+      "server/publish-certificates.sh": "ffd467bd21731e9d45fbf8e5360cf313e356f8289a80aa1152af746171955f35",
+      "server/unraid-template.xml": "5099897f944a979785aeeab2de3bf758e03c06c2d3620e74eaa5beeb72cb5d1d",
+      "server/ticket-nonce.patch": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289",
+      "tools/verify-ticket-nonce.c": "9c223c3dfbc8ba067a027d23ca7d83912fae4be2d1cccc4bfb8fceb59596c395"
+    },
+    "trustedPrivateReadinessExactRelease": true,
+    "publicReadinessEmpty404BothHttpVersions": true,
+    "installedHostFilesMatchCommit": true,
+    "runtimePortsMountsCapabilitiesTrustAndCertificateSettingsPreserved": true,
+    "certificatePublisherFreshFullChainCheckPassed": true,
+    "privateCertificateCapturesRemaining": 0
+  },
+  "verification": {
+    "applicationTests": 78,
+    "measurementTests": 17,
+    "deploymentAndRenewalRegressions": 34,
+    "ticketNonceCases": 28,
+    "certificateCompressionChecksPassed": true,
+    "tlsFlightCasesPassed": 22,
+    "tlsFlightSkipped": "OpenSSL async jobs unsupported on Alpine; existing explicit capability skip.",
+    "mainHttp11AndHttp2Checks": 120,
+    "aliasRedirectChecks": 12,
+    "followedAliasExactBrotliPage": true,
+    "http1PersistenceAndFramingChecks": 21,
+    "http2ProtocolChecks": 17,
+    "http3Checks": 36,
+    "localBrowserComparisons": 48,
+    "liveBrowserComparisons": 16,
+    "liveBrowserEvidence": "measurements/browser-20261022-live.json",
+    "localBuildEvidence": "measurements/page-20261022-local.json",
+    "localNonceEvidence": "measurements/ticket-nonce-20261022-local.json",
+    "realCertificateChainFixtures": {
+      "scope": "Real loopback TLS with ephemeral test CA/keys; no production connections or system trust changes. Exact candidate verification function; wrappers only map fixed origin/CA paths and supply a local timeout equivalent.",
+      "openssl": "OpenSSL 3.6.5 29 Sep 2026 (Library: OpenSSL 3.6.5 29 Sep 2026)",
+      "pythonSsl": "LibreSSL 2.8.3",
+      "candidateSha256": "ffd467bd21731e9d45fbf8e5360cf313e356f8289a80aa1152af746171955f35",
+      "sameLeafForOldAndNewChain": true,
+      "cases": [
+        {
+          "case": "new",
+          "expectedAccepted": true,
+          "exitCode": 0,
+          "elapsedSeconds": 0.478,
+          "successfulTlsHandshakes": 3,
+          "failedTlsHandshakes": 0,
+          "privateCapturesCleaned": true
+        },
+        {
+          "case": "old",
+          "expectedAccepted": false,
+          "exitCode": 1,
+          "elapsedSeconds": 2.326,
+          "successfulTlsHandshakes": 3,
+          "failedTlsHandshakes": 0,
+          "privateCapturesCleaned": true
+        },
+        {
+          "case": "bad-host",
+          "expectedAccepted": false,
+          "exitCode": 1,
+          "elapsedSeconds": 2.253,
+          "successfulTlsHandshakes": 0,
+          "failedTlsHandshakes": 3,
+          "privateCapturesCleaned": true
+        }
+      ]
+    },
+    "ci": [
+      {
+        "url": "https://github.com/tomkimberlin/1kb-website/actions/runs/39785393063",
+        "headSha": "57deda632000d2d22ea66510ebf761574f0f5856",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "url": "https://github.com/tomkimberlin/1kb-website/actions/runs/39785850405",
+        "headSha": "57deda632000d2d22ea66510ebf761574f0f5856",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ]
+  },
+  "deliveryOverhead": {
+    "evidence": "measurements/overhead-20261022.json",
+    "definition": "Measured traffic minus the entire actual encoded response body.",
+    "currentEstimatedTcpPlusDnsMedian": 6946,
+    "currentEstimatedTcpPlusDnsRange": [
+      6896,
+      6998
+    ],
+    "freshBaselineMedian": 6955,
+    "freshBaselineRange": [
+      6903,
+      7007
+    ],
+    "firstTicketBytesBefore": 57,
+    "firstTicketBytesAfter": 49,
+    "interpretation": "The eight-byte ticket reduction is directly observed. Broad-exchange samples overlap; the median difference is descriptive, not a fixed nine-byte savings claim."
+  },
+  "rollback": {
+    "previousImage": "onekb-nginx:20260926a",
+    "previousImageId": "sha256:23bb9fbc651c76e8524270066f463ce798a6c15abb13e70b9ed11477ec783691",
+    "container": "onekb-website-rollback-runtime-20261022-132040",
+    "containerStopped": true,
+    "containerAutomaticRestartDisabled": true,
+    "hostBackupDirectoryBasename": "runtime-20261022-132040",
+    "previousPageReleaseAndPairedConfigurationRetained": true,
+    "previousHostScriptsAndTemplateRetained": true
+  },
+  "limitations": [
+    "Three cold samples on one client/network path; no repeatable whole-network saving or browser timing improvement established.",
+    "Native WebKit resumption remains unverified: both isolated baseline and candidate controls loaded successfully but did not resume.",
+    "No new DebugBear scanner submission; October 5 scanner evidence remains dated."
+  ],
+  "warnings": [
+    "An optional non-improving Brotli certificate cache entry was ignored; exact validation retained ordinary compression.",
+    "Bounded readiness retries observed the previous worker before confirming the new release; activation did not report success until exact checks passed."
+  ]
+}

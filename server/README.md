@@ -1,6 +1,6 @@
 # Hosting
 
-Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; [server](../measurements/deployment-20260926.json) and [page](../measurements/deployment-20261016-role-article.json) records identify the latest verified deployments.
+Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; the [deployment record](../measurements/deployment-20261022.json) identifies the latest verified page, image and host scripts.
 
 ## Prepare an installation
 
@@ -35,7 +35,7 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then requires the exact release marker over the existing private TLS listener and checks all four bodies and encodings; failure restores the previous configuration/release. Server images and host scripts need separate activation.
+Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then requires the exact release marker over the existing private TLS listener and checks all four bodies and encodings; failure restores the previous configuration/release. The private ACME vhost must have a valid trusted certificate for readiness to pass. Server images and host scripts need separate activation.
 
 Deployment leaves local `public/` unchanged; the subsequent build refreshes it for [public verification](../TRANSPORT.md#verification). Keep the checkout consistent with the deployed snapshot. A fresh query such as `?v=RELEASE_ID` bypasses the one-day browser cache. Offline deployment regressions: `python3 tools/test_deployment.py`.
 

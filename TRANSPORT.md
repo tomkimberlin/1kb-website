@@ -2,13 +2,7 @@
 
 The page size in [build-report.json](build-report.json) covers the response body. Total traffic also includes request and response headers, TLS, DNS and network framing. Connection reuse, browser caching and client behavior affect that total.
 
-The September 26 changes are deployed on the production host; the [deployment record](measurements/deployment-20260926.json) identifies the active release, images and live checks. The dated September 22 measurements remain historical. The [local transport checks](measurements/transport-20260926-local.json) separately cover the current handler and optional certificate-compression fallback on an isolated server.
-
-The [October 5 page deployment](measurements/deployment-20261005.json) serves 760-byte HTML, 324-byte Brotli, 478-byte gzip and 466-byte deflate bodies. Its 118 public HTTP checks, 12 alias checks and 16 live browser comparisons passed. The server image and transport configuration remain the September 26 version.
-
-The later [October 5 hyperlink correction](measurements/deployment-20261005-club-link.json) serves 760-byte HTML, 322-byte Brotli, 477-byte gzip and 465-byte deflate bodies. Its public HTTP, alias and 16 live browser checks passed; the transport settings are unchanged.
-
-The final [October 5 opening edit](measurements/deployment-20261005-opening-copy.json) serves 768-byte HTML, 326-byte Brotli, 481-byte gzip and 469-byte deflate bodies. Its public HTTP, alias and 16 live browser checks passed; transport settings remain unchanged.
+The [October 22 deployment](measurements/deployment-20261022.json) verifies the current page, runtime image and host scripts. It serves 1,021-byte HTML and a 389-byte Brotli body. The first TLS ticket is eight bytes smaller; [fresh cold-exchange measurements](measurements/overhead-20261022.json) subtract the full encoded body and keep signature and packet variation visible. Historical September/October records remain dated evidence.
 
 ## Main website
 
@@ -26,7 +20,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 - **Caching:** `max-age=86400` allows a fresh browser cache to satisfy repeat visits. Vary keeps cached representations separate.
 - **Certificates:** ECDSA P-256, one hostname per certificate, Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference.
 - **Certificate compression:** the pinned OpenSSL build enables Brotli, zlib and Zstandard. nginx loads static certificates and enables compression for clients that support it. The Brotli encoder compares its default with a quality-10, 2,048-byte-window pass and keeps the smaller output. If the optional pass cannot allocate its buffer, the successful default and the caller's error queue are preserved. This runs during static-certificate precompression; renewal uses the same comparison for the new certificates.
-- **Offline certificate cache:** image `onekb-nginx:20260926a` can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [September 22 comparison](measurements/certificate-cache-20260922.json) saved 9 bytes for the measured main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. The [September 26 recipe tests](measurements/certificate-cache-20260926-local.json) keep the same main chain at 1,478 bytes and save another 3 and 2 bytes on the two aliases, producing 1,497 and 1,488 bytes. That recipe is now deployed; renewal may produce different savings.
+- **Offline certificate cache:** the runtime can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [September 22 comparison](measurements/certificate-cache-20260922.json) saved 9 bytes for the measured main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. The [September 26 recipe tests](measurements/certificate-cache-20260926-local.json) keep the same main chain at 1,478 bytes and save another 3 and 2 bytes on the two aliases, producing 1,497 and 1,488 bytes. That recipe is now deployed; renewal may produce different savings.
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
 
@@ -40,7 +34,7 @@ The image build runs 12 cache-loader cases covering valid installation, interrup
 
 ## TLS handshake records
 
-Image `onekb-nginx:20260926a` includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
+The runtime includes the [TLS flight patch](server/tls-flight.patch). The patch combines the server's encrypted TLS 1.3 handshake messages into fewer records. With the tested AES-128-GCM cipher and no padding, each record adds 22 bytes: a five-byte header, one inner content-type byte and a 16-byte authentication tag.
 
 | Handshake | Original records | Combined records | Record overhead saved |
 | --- | ---: | ---: | ---: |
