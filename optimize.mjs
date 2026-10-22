@@ -57,13 +57,14 @@ const css = source.match(/<html style=(?:"([^"]*)"|'([^']*)')>/)?.slice(1).find(
 const heading = source.match(/<h1 style=(?:"font-size:([^"]+)"|'font-size:([^']+)'|font-size:([^ >]+))>([\s\S]*?)<\/h1>/);
 if(!css || !heading) throw Error('Expected the page root style and inline h1 font size');
 if(heading[4].includes('<')) throw Error('Unsupported markup inside the heading');
-const headingSizes=['1.5em','150%','27px','1.5rem'];
+// Preserve dimensions and parent-relative heading behavior under user font overrides.
+const headingSizes=['1.5em','150%'];
 if(!headingSizes.includes(heading.slice(1,4).find(Boolean)))
  throw Error('The heading font size changed; review the equivalent sizes before searching');
 const cssOptions = [
- ['padding:18px','padding:1em','padding:1rem'],
+ ['padding:18px'],
  ['font:18px/1.5 serif','font:18px/1.50 serif'],
- ['max-width:540px','max-width:30em','max-width:30rem'],
+ ['max-width:540px'],
  ['margin:auto','margin:0 auto'],
  ['color-scheme:light dark']
 ];

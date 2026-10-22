@@ -13,6 +13,7 @@ next="$base/tls/next-$run"
 rollback_link="$base/tls/rollback-$run"
 state_next="$base/state/certificate-fingerprint-$run"
 state_previous="$base/state/certificate-fingerprint-previous-$run"
+verification=
 activation_started=false
 reload_requested=false
 committed=false
@@ -40,11 +41,67 @@ cleanup() {
         if ! rollback; then printf 'Certificate rollback failed; inspect the previous release.\n' >&2; status=1; fi
     fi
     if test -n "$snapshot"; then rm -rf "$snapshot"; fi
+    if test -n "$verification"; then rm -rf "$verification"; fi
     rm -f "$next" "$rollback_link" "$state_next" "$state_previous"
     exit "$status"
 }
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
+# A successful reload command only sends a signal. Check fresh, verified TLS
+# connections before recording that nginx serves this complete certificate set.
+verify_certificates() {
+    expected=$1
+    if test -z "$verification"; then
+        verification=$(mktemp -d "$base/state/.certificate-check.XXXXXX") || return 1
+    fi
+    for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
+        # Canonical DER compares all certificates, including a changed chain
+        # whose leaf certificate is unchanged. No private keys enter this step.
+        openssl crl2pkcs7 -nocrl -certfile "$expected/$domain.crt" -outform DER \
+            -out "$verification/$domain.expected.der" >/dev/null 2>&1 || return 1
+    done
+    for attempt in 1 2 3; do
+        verified=true
+        for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
+            # The transcript may contain session material. Keep it private,
+            # extract only certificate PEM blocks, then remove it immediately.
+            if ! timeout -k 1 4 openssl s_client -connect 192.168.0.2:8443 \
+                -servername "$domain" -verify_hostname "$domain" \
+                -verify_return_error -CAfile /etc/ssl/certs/ca-certificates.crt \
+                -showcerts </dev/null >"$verification/peer.txt" 2>"$verification/peer.err"; then
+                rm -f "$verification/peer.txt" "$verification/peer.err"
+                verified=false
+                break
+            fi
+            if ! awk '
+                /^-----BEGIN CERTIFICATE-----$/ {
+                    if (inside) { invalid=1; exit 1 }
+                    inside=1; count++
+                }
+                inside { print }
+                /^-----END CERTIFICATE-----$/ {
+                    if (!inside) { invalid=1; exit 1 }
+                    inside=0
+                }
+                END { if (invalid || inside || !count) exit 1 }
+            ' "$verification/peer.txt" >"$verification/peer.pem"; then
+                rm -f "$verification/peer.txt" "$verification/peer.err"
+                verified=false
+                break
+            fi
+            rm -f "$verification/peer.txt" "$verification/peer.err"
+            if ! openssl crl2pkcs7 -nocrl -certfile "$verification/peer.pem" -outform DER \
+                -out "$verification/peer.der" >/dev/null 2>&1 || \
+                ! cmp -s "$verification/peer.der" "$verification/$domain.expected.der"; then
+                verified=false
+                break
+            fi
+        done
+        if "$verified"; then return 0; fi
+        if test "$attempt" != 3; then sleep 1; fi
+    done
+    return 1
+}
 for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
     set -- "$base/acme/$domain-"*.crt
     test "$#" -eq 1
@@ -65,7 +122,9 @@ for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do
 done
 rm -f "$snapshot/cert.pub" "$snapshot/cert.der" "$snapshot/key.der"
 fingerprint=$(cat "$snapshot/tomkimberlin.com.crt" "$snapshot/www.tomkimberlin.com.crt" "$snapshot/tom.kimberlin.net.crt" | sha256sum | cut -d' ' -f1)
-if test -f "$base/state/certificate-fingerprint" && test "$fingerprint" = "$(cat "$base/state/certificate-fingerprint")"; then exit 0; fi
+if test -f "$base/state/certificate-fingerprint" && test "$fingerprint" = "$(cat "$base/state/certificate-fingerprint")"; then
+    if test "${ONEKB_PREPARE_ONLY:-0}" = 1 || verify_certificates "$snapshot"; then exit 0; fi
+fi
 # A unique immutable directory also avoids rewriting an older active release.
 release="$base/tls/releases/$fingerprint-$run"
 mv "$snapshot" "$release"
@@ -85,6 +144,10 @@ if test "${ONEKB_PREPARE_ONLY:-0}" != 1; then
     docker exec onekb-website nginx -t
     reload_requested=true
     docker exec onekb-website nginx -s reload
+    if ! verify_certificates "$release"; then
+        printf 'Published website certificate verification failed.\n' >&2
+        exit 1
+    fi
 fi
 printf '%s\n' "$fingerprint" > "$state_next"
 mv "$state_next" "$base/state/certificate-fingerprint"

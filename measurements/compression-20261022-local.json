@@ -1,0 +1,164 @@
+{
+  "baseline": {
+    "raw": 1017,
+    "brotli": 397,
+    "gzip": 546,
+    "deflate": 534,
+    "sha256": "af7c917d9083c9a5bfcc0cfde5ebc1c8e94b0aeaa8b512629bc60e69e012917a"
+  },
+  "exactSourceOption": {
+    "sourceSha256": "af7c917d9083c9a5bfcc0cfde5ebc1c8e94b0aeaa8b512629bc60e69e012917a",
+    "html": 1017,
+    "brotli": 396,
+    "gzip": 535,
+    "deflate": 523,
+    "completeInputConsumption": true,
+    "exactDecodedSource": true,
+    "node": "v24.21.0"
+  },
+  "selectedSerialization": {
+    "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+    "html": 1021,
+    "brotli": 389,
+    "gzip": 536,
+    "deflate": 524,
+    "completeInputConsumption": true,
+    "exactDecodedSource": true,
+    "node": "v24.21.0"
+  },
+  "stockBrotliParams": {
+    "0": 0,
+    "1": 11,
+    "2": 16,
+    "4": 0,
+    "7": 1,
+    "8": 30
+  },
+  "serializationSearches": [
+    {
+      "name": "seed129811",
+      "attempts": 18000,
+      "distinctMeasured": 14799,
+      "best": {
+        "html": 1019,
+        "brotli": 389,
+        "gzip": 544,
+        "brotliParams": {
+          "0": 0,
+          "1": 11,
+          "2": 16,
+          "7": 3,
+          "8": 8
+        },
+        "brotliSource": "node:zlib"
+      }
+    },
+    {
+      "name": "seed20261022",
+      "attempts": 18000,
+      "distinctMeasured": 14809,
+      "best": {
+        "html": 1022,
+        "brotli": 389,
+        "gzip": 546,
+        "brotliParams": {
+          "0": 0,
+          "1": 11,
+          "2": 16,
+          "7": 3,
+          "8": 8
+        },
+        "brotliSource": "node:zlib"
+      }
+    },
+    {
+      "name": "fixed-seed129811",
+      "attempts": 24000,
+      "distinctMeasured": 18433,
+      "best": {
+        "html": 1022,
+        "brotli": 391,
+        "gzip": 544,
+        "brotliParams": {
+          "0": 0,
+          "1": 11,
+          "2": 16,
+          "7": 3,
+          "8": 8
+        },
+        "brotliSource": "node:zlib"
+      }
+    },
+    {
+      "name": "fixed-seed20261022",
+      "attempts": 14000,
+      "distinctMeasured": 11231,
+      "best": {
+        "html": 1023,
+        "brotli": 391,
+        "gzip": 545,
+        "brotliParams": {
+          "0": 0,
+          "1": 11,
+          "2": 16,
+          "4": 0,
+          "7": 1,
+          "8": 14
+        },
+        "brotliSource": "node:zlib"
+      }
+    },
+    {
+      "name": "refined",
+      "attempts": 16000,
+      "distinctMeasured": 12422,
+      "best": {
+        "html": 1021,
+        "brotli": 389,
+        "gzip": 546,
+        "brotliParams": {
+          "0": 0,
+          "1": 11,
+          "2": 16,
+          "4": 0,
+          "7": 1,
+          "8": 30
+        },
+        "brotliSource": "node:zlib"
+      }
+    }
+  ],
+  "fullGridReranking": {
+    "uniqueCandidates": 127,
+    "settingsPerCandidate": 5988
+  },
+  "fallbackRecipe": {
+    "tool": "optimize-gzip.py",
+    "mode": "--tuned",
+    "archiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+    "iterations": [
+      15,
+      100,
+      1000
+    ],
+    "splittingModes": [
+      0,
+      1
+    ]
+  },
+  "rejections": [
+    "Unrestricted search winners used max-width:30em, a documented enlarged-font regression; rejected before selection.",
+    "Fixed width/padding searches preserve 540px/18px and relative heading behavior.",
+    "Historical threshold4 Brotli library did not improve selected stock 389-byte result, so it is unnecessary.",
+    "Final 16000-attempt continuation using discovered distance parameters did not beat selected 389-byte body."
+  ],
+  "limits": [
+    "Body compression measurements only; no delivery-overhead reduction is inferred.",
+    "Selected serialization grows raw HTML by 4 bytes but reduces Brotli by 8 bytes and gzip/deflate by 10 bytes relative to current live build."
+  ],
+  "browserEvidence": "measurements/page-20261022-local.json",
+  "fontOverrideEvidence": [
+    "measurements/browser-20261022-root-font-local.json",
+    "measurements/browser-20261022-body-font-local.json"
+  ]
+}

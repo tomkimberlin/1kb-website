@@ -1,0 +1,195 @@
+{
+  "date": "2026-10-22",
+  "scope": "Local regression and component measurements, production-configuration Docker build tests, and loopback browser comparison. No live-site traffic or timing result.",
+  "source": {
+    "project": "OpenSSL",
+    "version": "3.5.8",
+    "archiveUrl": "https://www.openssl.org/source/openssl-3.5.8.tar.gz",
+    "archiveSha256": "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2"
+  },
+  "patchesInOrder": [
+    {
+      "path": "server/certificate-compression.patch",
+      "sha256": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44"
+    },
+    {
+      "path": "server/tls-flight.patch",
+      "sha256": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0"
+    },
+    {
+      "path": "server/ticket-nonce.patch",
+      "sha256": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289"
+    }
+  ],
+  "application": {
+    "fuzz": 0,
+    "offsets": 0,
+    "allFiveAffectedSourcesMatchCombinedTestedTree": true
+  },
+  "protocol": {
+    "reference": "https://www.rfc-editor.org/rfc/rfc8446.html#section-4.6.1",
+    "rationale": "TLS1.3 permits a zero-length ticket nonce and requires distinct nonces for tickets on the same connection. The nonce is the HKDF resumption context.",
+    "encoding": "Counter 0 is empty; positive counters use shortest unsigned big-endian encoding. This mapping is injective.",
+    "keyDerivation": "The same nonce bytes and length are serialized and passed to HKDF. PSK values change consistently with the new context.",
+    "entropy": "The nonce remains a public counter. Random ticket generation, 32-byte stateful identity and resumption-master-secret entropy are unchanged.",
+    "exhaustion": "UINT64_MAX is reserved. A TLS1.3 fatal error precedes ticket/session construction at that value, preventing counter wrap and repeated construction retries."
+  },
+  "regression": {
+    "harness": {
+      "path": "tools/verify-ticket-nonce.c",
+      "sha256": "9c223c3dfbc8ba067a027d23ca7d83912fae4be2d1cccc4bfb8fceb59596c395"
+    },
+    "passed": 28,
+    "failed": 0,
+    "cases": {
+      "counterAndRealResumption": 16,
+      "extraTicketAndSslClearLifecycle": 2,
+      "initialAndExtraTicketFatalExhaustion": 4,
+      "tinyBioWriteRetry": 1,
+      "clientPacketParser": 4,
+      "tls12TicketAndResumption": 1
+    },
+    "counterCoverage": [
+      "0",
+      "255/256",
+      "65535/65536",
+      "UINT64_MAX-1",
+      "UINT64_MAX rejection"
+    ],
+    "ticketModes": [
+      "stateful",
+      "stateless"
+    ],
+    "hashes": [
+      "SHA256",
+      "SHA384"
+    ],
+    "assertions": "Minimal distinct nonce encodings, distinct per-ticket PSKs, matching client/server PSKs and actual resumption from every captured counter-suite ticket. Parser cases include legal 255-byte nonce and malformed/truncated/empty-ticket/trailing-body rejection.",
+    "parserScope": "Direct internal packet-parser fixtures; not malformed encrypted network traffic.",
+    "negativeControl": {
+      "scope": "Exact final harness linked to otherwise identical combined library with only statem_srvr.c restored to pinned upstream source.",
+      "exitCode": 1,
+      "failure": "First-ticket 8-byte nonce fails canonical empty encoding assertion."
+    },
+    "localBuild": {
+      "platform": "Darwin arm64",
+      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "configure": [
+        "no-shared",
+        "no-tests",
+        "no-docs"
+      ],
+      "make": "make -j2 build_libs",
+      "installed": false
+    },
+    "dockerBuild": {
+      "platform": "linux-x86_64",
+      "dockerfile": "server/Dockerfile",
+      "dockerfileSha256": "20f2154b4fb6cf1c6eab8b8900835fec4d3a39e7c6c87a0ac467e1cd85be2e06",
+      "configure": "--prefix=/opt/openssl --libdir=lib shared zlib enable-brotli enable-zstd no-tests",
+      "stage": "compression-test",
+      "passed": 28,
+      "failed": 0,
+      "imageId": "sha256:def39fdc09777585b6f4179fc6b2cf14fc5df24d31b5f3a4a2cbb3c285a8b6f6",
+      "buildLogSha256": "d063e8391da307adaebcf3fe2828a3f5381f366ad1effa00f7b8f4bedb255ce9"
+    }
+  },
+  "componentMeasurement": {
+    "scope": "Complete first NewSessionTicket handshake message, including handshake header; excludes TLS record wrappers, TCP/IP, DNS and document body.",
+    "control": "Same combined source and headers; only statem_srvr.c restored to pinned upstream source.",
+    "fresh": {
+      "baselineBytes": 57,
+      "candidateBytes": 49
+    },
+    "resumedReplacement": {
+      "baselineBytes": 57,
+      "candidateBytes": 49
+    },
+    "nonceBytes": {
+      "baseline": 8,
+      "candidate": 0
+    },
+    "unchangedOpaqueStatefulTicketBytes": 32,
+    "reductionBytesPerFirstTicket": 8,
+    "baselineLibsslSha256": "8699f7727bfccbcd5026d06b410de5846c46ed8a3206d76c3aa136fef8ba44c5",
+    "candidateLibsslSha256": "35a03cd7d4a41bb12eec746b8deaa4ae631fc528c5fb6474745eb6c9da30778f",
+    "sharedLibcryptoSha256": "9d4bc0aec3c96c1562378eb066f683c77d6a70df0e1b1b102eb17f7c97cb7d2c"
+  },
+  "nativeBrowsers": {
+    "scope": "macOS arm64; Playwright 1.63.0; loopback TLS1.3 HTTP/1.1, Connection:close, one stateful ticket; ephemeral in-memory certificate/key; no system trust changes.",
+    "chromium": {
+      "version": "153.0.8010.12",
+      "trust": "Launch-scoped exact SPKI allowlist; ignoreHTTPSErrors=false.",
+      "baseline": {
+        "documentLoads": 3,
+        "successfulHandshakes": 3,
+        "resumedHandshakes": 2
+      },
+      "candidate": {
+        "documentLoads": 3,
+        "successfulHandshakes": 3,
+        "resumedHandshakes": 2
+      },
+      "finding": "Empty-nonce ticket parsing and PSK-based resumption observed."
+    },
+    "webkit": {
+      "version": "26.6",
+      "trust": "Temporary context with ignoreHTTPSErrors=true.",
+      "baseline": {
+        "documentLoads": 3,
+        "successfulHandshakes": 6,
+        "resumedHandshakes": 0
+      },
+      "candidate": {
+        "documentLoads": 3,
+        "successfulHandshakes": 6,
+        "resumedHandshakes": 0
+      },
+      "finding": "Document delivery succeeds with both variants; ticket-resumption compatibility remains unestablished."
+    },
+    "comparisonSha256": "56df8fc5f9c142aef790c93be87ded541a5eb6f1e39172ed5d78a1c12ec7f562"
+  },
+  "retainedLocalEvidence": [
+    {
+      "path": "optimization/20261022/transport/ticket-nonce-apply-check.json",
+      "sha256": "14a9d21159a41852d0e7c8aee0616686fbc4b42ee277e641c5e78b6db7332855"
+    },
+    {
+      "path": "optimization/20261022/transport/ticket-nonce-combined-tests.jsonl",
+      "sha256": "0a071c7ba9403817ab967b1fbb9364a61c4360a79107f51505ffee305a33dc5c"
+    },
+    {
+      "path": "optimization/20261022/transport/ticket-nonce-combined-negative-control.stderr",
+      "sha256": "53f38f000de64c6578d5349cd3a44086ba777bab9f0df5ae81ab0defcdb8bd48"
+    },
+    {
+      "path": "optimization/20261022/transport/ticket-nonce-size-combined-baseline.jsonl",
+      "sha256": "1121d0e500d8ac4efd44ab204c8e493a53f76b65ceb108ae50f1f971592a36cb"
+    },
+    {
+      "path": "optimization/20261022/transport/ticket-nonce-size-combined.jsonl",
+      "sha256": "22710e0b14cb1d8473f6498fe2650f1f33e88d80cfe8c428f1c409ba2b1c835d"
+    },
+    {
+      "path": "optimization/20261022/server-build.log",
+      "sha256": "d063e8391da307adaebcf3fe2828a3f5381f366ad1effa00f7b8f4bedb255ce9"
+    },
+    {
+      "path": "optimization/20261022/reliability/browser-nonce/compatibility-comparison.json",
+      "sha256": "56df8fc5f9c142aef790c93be87ded541a5eb6f1e39172ed5d78a1c12ec7f562"
+    },
+    {
+      "path": "optimization/20261022/reliability/browser-nonce/browser-session-results-spki.json",
+      "sha256": "e6e8224143179dba3fa465f5476e9df8898b4cbce96ec3869b9318f590defbb8"
+    },
+    {
+      "path": "optimization/20261022/reliability/browser-nonce/browser-session-results-control.json",
+      "sha256": "bf82860eafabe0bb433fea3c4d508ea93b119ba1c6cb50f7069564695c3a9605"
+    }
+  ],
+  "limitations": [
+    "One OpenSSL version and one native version per browser engine; not universal client compatibility.",
+    "The 8-byte component reduction does not establish complete-exchange delivery-overhead savings or browser speed improvements.",
+    "Production activation and live measurements are separate evidence."
+  ]
+}

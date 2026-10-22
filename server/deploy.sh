@@ -64,8 +64,18 @@ mv -Tf "$next_link" site/current
 mv "$next" nginx/nginx.conf
 docker exec onekb-website nginx -s reload
 verified=false
+expected_ready=$(printf '/srv/releases/%s/\n200' "$release")
 for attempt in 1 2 3 4 5; do
   verified=true
+  # A successful reload command only sends a signal. Require the new generation,
+  # including when the handler/configuration changes but all page bodies match.
+  if ! ready=$(docker exec onekb-website curl -q -fsS --max-time 2 --noproxy '*' \
+    --connect-to tomkimberlin.com:443:127.0.0.1:9443 -w '\n%{http_code}' \
+    https://tomkimberlin.com/.well-known/onekb-release) || test "$ready" != "$expected_ready"; then
+    verified=false
+    sleep 1
+    continue
+  fi
   for pair in br:br gzip:gz deflate:deflate identity:html; do
     encoding=${pair%:*}; suffix=${pair#*:}
     case "$suffix" in html) file=index.html;; *) file=index.html.$suffix;; esac
@@ -88,7 +98,10 @@ for attempt in 1 2 3 4 5; do
   if "$verified"; then break; fi
   sleep 1
 done
-if ! "$verified"; then exit 1; fi
+if ! "$verified"; then
+  printf 'New page release did not pass readiness and representation checks; rolling back.\n' >&2
+  exit 1
+fi
 committed=true
 printf 'Active release: %s\n' "$release"
 REMOTE

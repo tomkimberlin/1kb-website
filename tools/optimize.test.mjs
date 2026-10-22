@@ -64,6 +64,23 @@ test('the same seed and attempt count reproduce the candidate and measurements',
  assert(report(directory,'a').best.gzip<=report(directory,'a').gzipLimit);
 });
 
+test('search candidates preserve fixed dimensions and parent-relative heading under font enlargement',t=>{
+ for(const seed of ['42','129811']) {
+  const directory=fixture(t);
+  const result=run(directory,'--seed',seed,'--attempts','1000','--gzip-limit','700');
+  assert.equal(result.status,0,result.stderr);
+  const candidates=JSON.parse(readFileSync(join(directory,'optimization/shortlist.json')));
+  assert(candidates.length>1,'exercise generated serializations');
+  for(const {html} of candidates) {
+   const css=html.match(/<html style=(?:"([^"]*)"|'([^']*)')>/)?.slice(1).find(Boolean);
+   assert(css.split(';').includes('padding:18px'),'padding must not scale with a font override');
+   assert(css.split(';').includes('max-width:540px'),'column width must not scale with a font override');
+   const heading=html.match(/<h1 style=(?:"font-size:([^"]+)"|'font-size:([^']+)'|font-size:([^ >]+))>/)?.slice(1).find(Boolean);
+   assert(['150%','1.5em'].includes(heading),'heading must follow its parent font size');
+  }
+ }
+});
+
 test('unknown head content and metadata attributes fail instead of disappearing',t=>{
  for(const changed of [
   page.replace('<title>','<script>window.siteChanged=true</script><title>'),

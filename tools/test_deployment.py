@@ -36,6 +36,12 @@ if name=='mv':
   (base/'stamp-interrupted').touch();os.kill(os.getppid(),signal.SIGTERM)
  sys.exit(0)
 if name=='timeout':
+ if len(args)>3 and args[3]=='openssl':
+  assert args[:3]==['-k','1','4'],'certificate handshakes must have a bounded deadline'
+  event('certificate-probe-timeout',seconds=4)
+  if os.environ.get('MOCK_CERT_PROBE_INTERRUPT')=='1':os.kill(os.getppid(),signal.SIGTERM);sys.exit(1)
+  if os.environ.get('MOCK_CERT_PROBE_TIMEOUT')=='1':sys.exit(124)
+  sys.exit(subprocess.run(args[3:]).returncode)
  event('optimizer');sys.exit(127 if os.environ.get('MOCK_OPTIMIZER_FAIL','1')=='1' else 0)
 if name=='ssh':
  if args[1]=='sh':
@@ -72,12 +78,62 @@ if name=='curl':
 if name=='sleep':sys.exit(0)
 if name=='docker':
  command=' '.join(args);event('docker',command=command,current=os.readlink(base/'site/current') if (base/'site/current').is_symlink() else '',config=(base/'nginx/nginx.conf').read_text() if (base/'nginx/nginx.conf').exists() else '',tls_current=os.readlink(base/'tls/current') if (base/'tls/current').is_symlink() else '')
+ if 'curl' in args:
+  if '--noproxy' not in args or args[args.index('--noproxy')+1]!='*' or '-q' not in args:raise RuntimeError('readiness must ignore curlrc and proxies')
+  if args[args.index('--connect-to')+1]!='tomkimberlin.com:443:127.0.0.1:9443' or args[-1]!='https://tomkimberlin.com/.well-known/onekb-release' or any(x in args for x in ['-k','--insecure']):raise RuntimeError('readiness must verify the existing private TLS listener with the public hostname')
+  probes=base/'readiness-probes';count=int(probes.read_text())+1 if probes.exists() else 1;probes.write_text(str(count))
+  pending=base/'pending-generation';active=base/'active-generation'
+  if pending.exists() and count>=int(os.environ.get('MOCK_APPLY_AFTER_PROBES','1')):
+   active.write_text(pending.read_text());pending.unlink()
+  if os.environ.get('MOCK_READINESS_HTTP_FAIL')=='1':sys.exit(22)
+  value=active.read_text() if active.exists() else 'releases/old'
+  print(os.environ.get('MOCK_READINESS_BODY','/srv/'+value+'/'),end='')
+  if '-w' in args:print('\n'+os.environ.get('MOCK_READINESS_STATUS','200'),end='')
+  sys.exit(0)
  if '-s reload' in command and os.environ.get('MOCK_RELOAD_FAIL_ALWAYS')=='1':sys.exit(1)
  if '-s reload' in command and os.environ.get('MOCK_RELOAD_FAIL_ONCE')=='1' and not (base/'reload-failed').exists():
   (base/'reload-failed').touch();sys.exit(1)
  if '-t' in args and os.environ.get('MOCK_PREFLIGHT_FAIL')=='1':sys.exit(1)
+ if '-s reload' in command and os.environ.get('MOCK_RELOAD_NOT_APPLIED')!='1':
+  (base/'pending-generation').write_text(os.readlink(base/'site/current'))
+ if '-s reload' in command and os.environ.get('MOCK_CERT_RELOAD_NOT_APPLIED')!='1':
+  target=os.readlink(base/'tls/current') if (base/'tls/current').is_symlink() else ''
+  marker='pending-tls-release' if os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES') else 'served-tls-release'
+  (base/'state'/marker).write_text(target)
  sys.exit(0)
 if name=='openssl':
+ if args[0]=='crl2pkcs7':
+  text=Path(args[args.index('-certfile')+1]).read_text()
+  if text.startswith('VALID:'):canonical=text.encode()
+  else:
+   import re
+   blocks=re.findall(r'-----BEGIN CERTIFICATE-----\n(.*?)\n-----END CERTIFICATE-----',text,re.S)
+   if not blocks:sys.exit(1)
+   try:canonical=b''.join(base64.b64decode(''.join(block.split()),validate=True) for block in blocks)
+   except ValueError:sys.exit(1)
+  assert args[args.index('-outform')+1]=='DER'
+  Path(args[args.index('-out')+1]).write_bytes(canonical);sys.exit(0)
+ if args[0]=='s_client':
+  domain=args[args.index('-servername')+1]
+  assert args[args.index('-verify_hostname')+1]==domain
+  assert '-verify_return_error' in args and '-showcerts' in args
+  assert args[args.index('-connect')+1]=='192.168.0.2:8443'
+  assert args[args.index('-CAfile')+1]=='/etc/ssl/certs/ca-certificates.crt'
+  event('certificate-probe',domain=domain)
+  if os.environ.get('MOCK_CERT_PROBE_FAIL')=='1' or os.environ.get('MOCK_CERT_PROBE_FAIL_DOMAIN')==domain:sys.exit(1)
+  counter=base/'state/tls-probe-count';count=int(counter.read_text())+1 if counter.exists() else 1;counter.write_text(str(count))
+  pending=base/'state/pending-tls-release'
+  if pending.exists() and count>=int(os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES','0')):
+   (base/'state/served-tls-release').write_text(pending.read_text());pending.unlink()
+  target=(base/'state/served-tls-release').read_text()
+  data=(base/'tls'/target/(domain+'.crt')).read_bytes()
+  print('Session diagnostics that must not be compared or retained.')
+  if os.environ.get('MOCK_CERT_PEER_EMPTY')=='1':sys.exit(0)
+  print('-----BEGIN CERTIFICATE-----')
+  print(base64.b64encode(data).decode())
+  if os.environ.get('MOCK_CERT_PEER_MALFORMED')!='1':print('-----END CERTIFICATE-----')
+  print('Session diagnostics after the public certificate.')
+  sys.exit(0)
  if args[0]=='verify':sys.exit(0 if Path(args[-1]).read_text().startswith('VALID:') else 1)
  if args[0]=='x509':
   cert=Path(args[args.index('-in')+1]);data=cert.read_text();domain=cert.name[:-4]
@@ -103,10 +159,12 @@ class DeploymentTests(unittest.TestCase):
   self.env=dict(os.environ,PATH=str(self.bin)+os.pathsep+os.environ['PATH'],MOCK_BASE=str(self.base),MOCK_LOG=str(self.log))
   for directory in ['site/releases/old','nginx','backups','state','acme','tls/releases/old','bin']:(self.base/directory).mkdir(parents=True,exist_ok=True)
   (self.base/'site/current').symlink_to('releases/old');(self.base/'tls/current').symlink_to('releases/old');(self.base/'nginx/nginx.conf').write_text('OLD-CONFIG')
+  (self.base/'state/served-tls-release').write_text('releases/old')
   for domain in ['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net']:
    # Match ACME's issued-file glob while copied filenames retain the domain.
    (self.base/'acme'/(domain+'-issued.crt')).write_text('VALID:'+domain)
    (self.base/'acme'/(domain+'-issued.key')).write_text('KEY:'+domain)
+   (self.base/'tls/releases/old'/(domain+'.crt')).write_text('VALID:OLD:'+domain)
  def tearDown(self):self.tmp.cleanup()
  def script(self,name,label='A',body=None):
   client=self.root/label;(client/'server').mkdir(parents=True,exist_ok=True);(client/'public').mkdir(exist_ok=True)
@@ -172,6 +230,24 @@ class DeploymentTests(unittest.TestCase):
   self.assertNotEqual(result.returncode,0)
   self.assertEqual(os.readlink(self.base/'site/current'),'releases/old')
   self.assertEqual((self.base/'nginx/nginx.conf').read_text(),'OLD-CONFIG')
+ def test_reload_signal_without_new_generation_cannot_commit_matching_bodies(self):
+  for suffix in ['', '.br','.gz','.deflate']:(self.base/'site/releases/old'/('index.html'+suffix)).write_text('unchanged'+suffix)
+  result=self.run_script('deploy.sh',{'MOCK_RELOAD_NOT_APPLIED':'1'},body='unchanged')
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('readiness',result.stderr)
+  self.assertEqual(os.readlink(self.base/'site/current'),'releases/old')
+  self.assertEqual((self.base/'nginx/nginx.conf').read_text(),'OLD-CONFIG')
+ def test_readiness_waits_for_delayed_new_generation(self):
+  result=self.run_script('deploy.sh',{'MOCK_APPLY_AFTER_PROBES':'3'})
+  self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertEqual((self.base/'readiness-probes').read_text(),'3')
+ def test_wrong_empty_or_failed_readiness_rolls_back(self):
+  for extra in [{'MOCK_READINESS_BODY':'/srv/releases/wrong/'},{'MOCK_READINESS_BODY':''},{'MOCK_READINESS_HTTP_FAIL':'1'},{'MOCK_READINESS_STATUS':'301'}]:
+   with self.subTest(extra=extra):
+    result=self.run_script('deploy.sh',extra)
+    self.assertNotEqual(result.returncode,0)
+    self.assertEqual(os.readlink(self.base/'site/current'),'releases/old')
+    self.assertEqual((self.base/'nginx/nginx.conf').read_text(),'OLD-CONFIG')
  def test_interrupted_deploy_rolls_back(self):
   result=self.run_script('deploy.sh',{'MOCK_INTERRUPT':'1'})
   self.assertNotEqual(result.returncode,0)
@@ -293,4 +369,73 @@ class DeploymentTests(unittest.TestCase):
   self.assertIn('Deployment rollback failed',result.stderr)
   self.assertEqual(os.readlink(self.base/'site/current'),'releases/old')
   self.assertEqual((self.base/'nginx/nginx.conf').read_text(),'OLD-CONFIG')
+ def assert_certificate_probe_cleanup(self):
+  self.assertFalse(list((self.base/'state').glob('.certificate-check.*')))
+ def test_certificate_unapplied_reload_restores_state_and_allows_retry(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_RELOAD_NOT_APPLIED':'1'})
+  self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assert_certificate_probe_cleanup()
+  result=self.run_script('publish-certificates.sh')
+  self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertNotEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assert_certificate_probe_cleanup()
+ def test_certificate_same_leaf_changed_chain_requires_actual_application(self):
+  for domain in ['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net']:
+   (self.base/'acme'/(domain+'-issued.crt')).write_text('VALID:LEAF:'+domain+'\nCHAIN:new')
+   (self.base/'tls/releases/old'/(domain+'.crt')).write_text('VALID:LEAF:'+domain+'\nCHAIN:old')
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_RELOAD_NOT_APPLIED':'1'})
+  self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assert_certificate_probe_cleanup()
+ def test_certificate_checks_every_sni_hostname(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_PROBE_FAIL_DOMAIN':'www.tomkimberlin.com'})
+  self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+  domains=[x['domain'] for x in self.events() if x['kind']=='certificate-probe']
+  self.assertEqual(domains,['tomkimberlin.com','www.tomkimberlin.com']*3)
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assert_certificate_probe_cleanup()
+ def test_certificate_delayed_reload_retries_until_all_chains_match(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_APPLY_AFTER_PROBES':'2'})
+  self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+  domains=[x['domain'] for x in self.events() if x['kind']=='certificate-probe']
+  self.assertEqual(domains,['tomkimberlin.com','tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'])
+  self.assert_certificate_probe_cleanup()
+ def test_certificate_empty_or_malformed_peer_chain_rolls_back(self):
+  for flag in ['MOCK_CERT_PEER_EMPTY','MOCK_CERT_PEER_MALFORMED']:
+   with self.subTest(flag=flag):
+    result=self.run_script('publish-certificates.sh',{flag:'1'})
+    self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+    self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+    self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+    self.assert_certificate_probe_cleanup()
+ def test_certificate_handshake_deadline_is_bounded(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_PROBE_TIMEOUT':'1'})
+  self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertEqual(len([x for x in self.events() if x['kind']=='certificate-probe-timeout']),3)
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assert_certificate_probe_cleanup()
+ def test_certificate_probe_interruption_restores_state_and_cleans_capture(self):
+  (self.base/'state/certificate-fingerprint').write_text('previous-fingerprint\n')
+  result=self.run_script('publish-certificates.sh',{'MOCK_CERT_PROBE_INTERRUPT':'1'})
+  self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assertEqual((self.base/'state/certificate-fingerprint').read_text(),'previous-fingerprint\n')
+  self.assert_certificate_probe_cleanup()
+ def test_unchanged_fingerprint_with_wrong_served_chain_recovers(self):
+  data=b''.join((self.base/'acme'/(domain+'-issued.crt')).read_bytes() for domain in ['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'])
+  (self.base/'state/certificate-fingerprint').write_text(hashlib.sha256(data).hexdigest()+'\n')
+  result=self.run_script('publish-certificates.sh')
+  self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+  reloads=[x for x in self.events() if x['kind']=='docker' and '-s reload' in x['command']]
+  self.assertEqual(len(reloads),1)
+  self.assertNotEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assert_certificate_probe_cleanup()
+ def test_prepare_only_does_not_probe_a_service(self):
+  result=self.run_script('publish-certificates.sh',{'ONEKB_PREPARE_ONLY':'1'})
+  self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+  self.assertFalse(any(x['kind']=='certificate-probe-timeout' for x in self.events()))
+  self.assert_certificate_probe_cleanup()
 if __name__=='__main__':unittest.main(verbosity=2)

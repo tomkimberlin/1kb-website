@@ -9,6 +9,8 @@ COPY server/certificate-compression.patch /build/certificate-compression.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-compression.patch
 COPY server/tls-flight.patch /build/tls-flight.patch
 RUN patch --fuzz=0 -p1 < /build/tls-flight.patch
+COPY server/ticket-nonce.patch /build/ticket-nonce.patch
+RUN patch --fuzz=0 -p1 < /build/ticket-nonce.patch
 RUN ./Configure --prefix=/opt/openssl --libdir=lib shared zlib enable-brotli enable-zstd no-tests \
  && make -j4 >/tmp/build.log 2>&1 && make install_sw >/tmp/install.log 2>&1
 FROM build AS compression-test
@@ -19,6 +21,10 @@ RUN cc -Wall -Wextra -Werror -I/opt/openssl/include /build/verify-certificate-co
 COPY tools/verify-tls-flight.c /build/verify-tls-flight.c
 RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -DCOALESCE_INTERNAL -DRESUME_COALESCING -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-tls-flight.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-tls-flight \
  && /build/verify-tls-flight
+
+COPY tools/verify-ticket-nonce.c /build/verify-ticket-nonce.c
+RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-ticket-nonce.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-ticket-nonce \
+ && /build/verify-ticket-nonce
 
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS headers
 RUN apk add --no-cache build-base curl pcre2-dev zlib-dev brotli-dev linux-headers

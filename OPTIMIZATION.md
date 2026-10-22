@@ -89,6 +89,14 @@ The [build report](build-report.json) records the selected settings or precompre
 
 Both optimizers accept `--input` and `--output` for experiments. They validate the complete compressed stream, retain an existing smaller encoding of the same input and publish replacements atomically. Input and output cannot refer to the same file. The normal build uses either saved candidate only if it is smaller and decodes to the current HTML. An old compressed file cannot override an edit to the page.
 
+## October 22: smaller bodies and reliable activation
+
+An equivalent serialization of the current direct-link serif page reduces Brotli from 397 to 389 bytes, gzip from 546 to 536 and deflate from 534 to 524. Raw HTML grows from 1,017 to 1,021 bytes. Stock Brotli wins this pass; the historical custom encoder adds no saving. A 127-candidate comparison used 5,988 encoder settings per candidate, with longer serialization and gzip searches. These are bounded searches, not proof of a global minimum. [Build and browser evidence](measurements/page-20261022-local.json).
+
+All 48 Chromium/WebKit comparisons preserve pixels, content, geometry, keyboard focus and all nine destinations, including separate 24px root/body font overrides. Search candidates must retain 18px padding, a 540px maximum width and a heading relative to its parent font. Relative widths and fixed heading sizes could look equivalent at default settings but fail enlarged-font behavior; the optimizer now excludes them.
+
+Body savings alone do not reduce delivery overhead after subtracting the entire encoded body. A separate [TLS ticket change](TRANSPORT.md#compact-ticket-nonces) removes eight bytes from the first ticket's public counter encoding. Deployment and certificate publication now verify the actually served generation and full chains rather than treating a successful reload signal as proof of activation. The [hosting guide](server/README.md) describes those checks.
+
 ## What the short links cost
 
 The earlier October 5 opening version used nine one-character paths. A link such as `<a href=g>my GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.

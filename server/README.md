@@ -6,7 +6,7 @@ Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare pr
 
 Start with an existing Linux/Docker host, initial page release, nginx configuration and certificates.
 
-The deploy client needs Node.js 22+ with npm, `sh`, SSH/SCP and `shasum`; public verification needs curl with HTTP/2. The host needs curl, OpenSSL, `/etc/ssl/certs/ca-certificates.crt`, `flock`, `timeout` and GNU utilities (`mv -T`, `readlink -f`, `stat`, `sha256sum`). DNS updates also need Bash and jq.
+The deploy client needs Node.js 22+ with npm, `sh`, SSH/SCP and `shasum`; public verification needs curl with HTTP/2. The runtime image needs curl with CA trust for its existing private TLS listener. The host needs curl, OpenSSL, `/etc/ssl/certs/ca-certificates.crt`, `flock`, `timeout` and GNU utilities (`mv -T`, `readlink -f`, `stat`, `sha256sum`). DNS updates also need Bash and jq.
 
 Adapt these installation-specific values:
 
@@ -35,7 +35,7 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then checks exact bytes and encodings; failure restores the previous configuration/release. Server images and host scripts need separate activation.
+Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then requires the exact release marker over the existing private TLS listener and checks all four bodies and encodings; failure restores the previous configuration/release. Server images and host scripts need separate activation.
 
 Deployment leaves local `public/` unchanged; the subsequent build refreshes it for [public verification](../TRANSPORT.md#verification). Keep the checkout consistent with the deployed snapshot. A fresh query such as `?v=RELEASE_ID` bypasses the one-day browser cache. Offline deployment regressions: `python3 tools/test_deployment.py`.
 
@@ -54,7 +54,7 @@ Set the runtime tag through `ONEKB_IMAGE` or `start.sh`, the optimizer tag in `c
 
 ## Certificates and DNS
 
-Native nginx ACME renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. The publisher checks trust, hostname, at least one day's validity and matching keys before atomically activating a complete release; failed activation rolls back.
+Native nginx ACME renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. The publisher checks trust, hostname, at least one day's validity and matching keys before atomically activating a complete release. Fresh trusted handshakes must then serve the exact full chains for all three hostnames before the publisher records success, including on unchanged-fingerprint runs; failed activation rolls back.
 
 Optional compression receives public PEM files only, without network or private keys, with a 45-second deadline and five-second stop grace. Failure permits renewal with normal compression. The runtime accepts cached encodings only after complete decompression and exact comparison. Refreshing unchanged certificates' compression requires running the helper, testing and reloading nginx.
 

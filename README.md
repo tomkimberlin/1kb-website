@@ -13,12 +13,12 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Built October 16, 2026 |
+| Measurement | Scope | Built October 22, 2026 |
 | --- | --- | ---: |
-| Brotli response body | Encoded page body | 397 B |
-| Gzip response body | Encoded page body | 546 B |
-| Deflate response body | Encoded page body | 534 B |
-| Raw HTML | Decoded page | 1,017 B |
+| Brotli response body | Encoded page body | 389 B |
+| Gzip response body | Encoded page body | 536 B |
+| Deflate response body | Encoded page body | 524 B |
+| Raw HTML | Decoded page | 1,021 B |
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 
@@ -35,7 +35,7 @@ npm run check
 npm run check:measurements
 ```
 
-`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261016-role-article-local.json), not a new live result.
+`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261022-local.json), not a new live result.
 
 Optional browser comparisons need Playwright (`npm install --no-save --package-lock=false playwright`) and Chromium/WebKit (`npx playwright install chromium webkit`). Save the original HTML before editing, then run `npm run test:browser -- --baseline PATH_TO_ORIGINAL_HTML`. Python optimizer tests (`npm run test:optimizers`) need Python 3.
 

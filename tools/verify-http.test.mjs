@@ -28,8 +28,8 @@ function verify(t,name,scenario='ordinary') {
 test('both live verifiers retain their successful checks and local port mappings',t=>{
  const main=verify(t,'verify.mjs');
  assert.equal(main.status,0,main.stderr);
- assert.match(main.stdout,/118 live HTTP\/1.1 and HTTP\/2 checks passed/);
- assert.equal(main.calls.length,118);
+ assert.match(main.stdout,/120 live HTTP\/1.1 and HTTP\/2 checks passed/);
+ assert.equal(main.calls.length,120);
  assert(main.calls.every(args=>args.includes('tomkimberlin.com:443:127.0.0.1:18443')&&args.includes('tomkimberlin.com:80:127.0.0.1:18080')));
  const alias=verify(t,'verify-alias.mjs');
  assert.equal(alias.status,0,alias.stderr);

@@ -57,6 +57,14 @@ The [TLS regression harness](tools/verify-tls-flight.c) passed 23 cases locally 
 
 The September 26 Alpine image build passes 22 TLS cases and explicitly skips the async case: its OpenSSL reports `ASYNC_is_capable() == 0`. That platform limit is recorded in the [deployment evidence](measurements/deployment-20260926.json); the earlier macOS async check remains separate evidence. The runtime patch is unchanged by the test's capability check.
 
+## Compact ticket nonces
+
+The [ticket nonce patch](server/ticket-nonce.patch) encodes OpenSSL's existing public ticket counter in its shortest unsigned big-endian form, with zero represented by an empty value. [RFC 8446 §4.6.1](https://www.rfc-editor.org/rfc/rfc8446.html#section-4.6.1) permits a zero-length nonce and requires uniqueness across tickets on the same connection. The encoding is injective; the counter fails before wrap. The exact transmitted bytes also feed HKDF, so both endpoints derive the same PSK. Random ticket generation, secret entropy, cipher suites, certificate verification and replay settings are unchanged.
+
+For this site's stateful configuration, the first NewSessionTicket shrinks from 57 to 49 bytes while retaining its 32-byte random ticket identity. This is a component measurement, separate from complete-exchange overhead. The [28-case harness](tools/verify-ticket-nonce.c) exercises full/resumed stateful and stateless handshakes, SHA-256/SHA-384, counter boundaries and exhaustion, retries, lifecycle reuse, parser limits and TLS 1.2. It runs against the combined production-feature OpenSSL build. Chromium resumed sessions with both nonce formats in isolated tests. WebKit loaded both variants but resumed neither control, so WebKit resumption remains unverified. [Local evidence](measurements/ticket-nonce-20261022-local.json).
+
+Deployment readiness uses the existing private TLS listener with normal hostname and CA verification, and requires the exact immutable release path before checking the four public representations. The readiness URI returns an empty 404 publicly. Certificate publication similarly verifies the full served chains, including intermediates, before stamping success. Both paths have bounded probes and rollback coverage; a reload command alone only confirms signal delivery.
+
 ## Alias
 
 `tom.kimberlin.net` and `www.tomkimberlin.com` use DNS-only A records pointing to the same server. Both HTTP and HTTPS return an empty 301 directly to `https://tomkimberlin.com`, preserving the path and query. Their HTTPS listeners use separate ECDSA certificates with automatic renewal and certificate compression. An alias visit still adds a redirect and, for HTTPS, a separate TLS connection.

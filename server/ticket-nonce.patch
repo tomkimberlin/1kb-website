@@ -1,0 +1,112 @@
+--- a/ssl/statem/statem_srvr.c
++++ b/ssl/statem/statem_srvr.c
+@@ -3932,7 +3932,7 @@
+ #endif
+ 
+ static int create_ticket_prequel(SSL_CONNECTION *s, WPACKET *pkt,
+-    uint32_t age_add, unsigned char *tick_nonce)
++    uint32_t age_add, const unsigned char *tick_nonce, size_t tick_nonce_len)
+ {
+     uint32_t timeout = (uint32_t)ossl_time2seconds(s->session->timeout);
+ 
+@@ -3960,7 +3960,7 @@
+ 
+     if (SSL_CONNECTION_IS_TLS13(s)) {
+         if (!WPACKET_put_bytes_u32(pkt, age_add)
+-            || !WPACKET_sub_memcpy_u8(pkt, tick_nonce, TICKET_NONCE_SIZE)) {
++            || !WPACKET_sub_memcpy_u8(pkt, tick_nonce, tick_nonce_len)) {
+             SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
+             return 0;
+         }
+@@ -3978,7 +3978,7 @@
+ static CON_FUNC_RETURN construct_stateless_ticket(SSL_CONNECTION *s,
+     WPACKET *pkt,
+     uint32_t age_add,
+-    unsigned char *tick_nonce)
++    const unsigned char *tick_nonce, size_t tick_nonce_len)
+ {
+     unsigned char *senc = NULL;
+     EVP_CIPHER_CTX *ctx = NULL;
+@@ -4136,7 +4136,7 @@
+             sizeof(tctx->ext.tick_key_name));
+     }
+ 
+-    if (!create_ticket_prequel(s, pkt, age_add, tick_nonce)) {
++    if (!create_ticket_prequel(s, pkt, age_add, tick_nonce, tick_nonce_len)) {
+         /* SSLfatal() already called */
+         goto err;
+     }
+@@ -4185,9 +4185,9 @@
+ 
+ static int construct_stateful_ticket(SSL_CONNECTION *s, WPACKET *pkt,
+     uint32_t age_add,
+-    unsigned char *tick_nonce)
+-{
+-    if (!create_ticket_prequel(s, pkt, age_add, tick_nonce)) {
++    const unsigned char *tick_nonce, size_t tick_nonce_len)
++{
++    if (!create_ticket_prequel(s, pkt, age_add, tick_nonce, tick_nonce_len)) {
+         /* SSLfatal() already called */
+         return 0;
+     }
+@@ -4220,11 +4220,20 @@
+ {
+     SSL_CTX *tctx = s->session_ctx;
+     unsigned char tick_nonce[TICKET_NONCE_SIZE];
++    const unsigned char *tick_nonce_data = tick_nonce;
++    size_t tick_nonce_len = 0;
+     union {
+         unsigned char age_add_c[sizeof(uint32_t)];
+         uint32_t age_add;
+     } age_add_u;
+     CON_FUNC_RETURN ret = CON_FUNC_ERROR;
++
++    /* Reserve the terminal counter value rather than reuse a nonce on wrap. */
++    if (SSL_CONNECTION_IS_TLS13(s)
++        && s->next_ticket_nonce == UINT64_MAX) {
++        SSLfatal(s, SSL_AD_INTERNAL_ERROR, ERR_R_INTERNAL_ERROR);
++        goto err;
++    }
+ 
+     age_add_u.age_add = 0;
+ 
+@@ -4279,11 +4288,18 @@
+             nonce >>= 8;
+         }
+ 
++        /* Canonical big-endian counter: zero has an empty encoding. */
++        tick_nonce_len = sizeof(tick_nonce);
++        while (tick_nonce_len > 0 && *tick_nonce_data == 0) {
++            tick_nonce_data++;
++            tick_nonce_len--;
++        }
++
+         if (!tls13_hkdf_expand(s, md, s->resumption_master_secret,
+                 nonce_label,
+                 sizeof(nonce_label),
+-                tick_nonce,
+-                TICKET_NONCE_SIZE,
++                tick_nonce_data,
++                tick_nonce_len,
+                 s->session->master_key,
+                 hashlen, 1)) {
+             /* SSLfatal() already called */
+@@ -4319,7 +4335,8 @@
+         && ((s->options & SSL_OP_NO_TICKET) != 0
+             || (s->max_early_data > 0
+                 && (s->options & SSL_OP_NO_ANTI_REPLAY) == 0))) {
+-        if (!construct_stateful_ticket(s, pkt, age_add_u.age_add, tick_nonce)) {
++        if (!construct_stateful_ticket(s, pkt, age_add_u.age_add,
++                tick_nonce_data, tick_nonce_len)) {
+             /* SSLfatal() already called */
+             goto err;
+         }
+@@ -4327,7 +4344,7 @@
+         CON_FUNC_RETURN tmpret;
+ 
+         tmpret = construct_stateless_ticket(s, pkt, age_add_u.age_add,
+-            tick_nonce);
++            tick_nonce_data, tick_nonce_len);
+         if (tmpret != CON_FUNC_SUCCESS) {
+             if (tmpret == CON_FUNC_DONT_SEND) {
+                 /* Non-fatal. Abort construction but continue */
