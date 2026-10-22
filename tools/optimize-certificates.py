@@ -14,12 +14,16 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import time
 import urllib.request
 
-REVISION = '028fb5a23661f123017c060daa546b55cf4bde29'  # Brotli 1.2.0
-ARCHIVE_SHA256 = '0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe360f'
+REVISION = 'db24a98aed38a16de78cc05ca15cdd8dc2a0d92d'  # Brotli 1.2.1
+ARCHIVE_SHA256 = '113b9685dfc14dd2f3360d077283266eec2fbdfb0fe3e5600f11be151da0d68e'
 URL = f'https://codeload.github.com/google/brotli/tar.gz/{REVISION}'
 PARAMS = {0: 0, 1: 11, 2: 16, 4: 0, 7: 1, 8: 18}
+DISTANCE_CANDIDATES = tuple((postfix, direct << postfix)
+                            for postfix in range(4) for direct in range(16))
+PARAMETER_SEARCH_SECONDS = 5.0
 MODEL = {'distanceSeed': 1, 'literalScale': 0.9, 'commandScale': 1.02, 'distanceScale': 1.1,
          'histogramStreakLimit': 1536, 'histogramBias': 128,
          'zeroRunThreshold': 7, 'nonzeroEntryThreshold': 16}
@@ -137,8 +141,7 @@ def build_encoder(root, library, archive_path):
                     '-o', str(library)], check=True)
 
 
-def encode(source, library):
-    lib = c.CDLL(str(library))
+def encode_candidate(source, lib, params):
     byte = c.c_ubyte
     pointer = c.POINTER(byte)
     size = c.c_size_t
@@ -157,7 +160,7 @@ def encode(source, library):
     if not state:
         raise MemoryError('Cannot create Brotli encoder')
     try:
-        for key, value in PARAMS.items():
+        for key, value in params.items():
             if not lib.BrotliEncoderSetParameter(state, key, value):
                 raise RuntimeError(f'Brotli rejected parameter {key}')
         raw = (byte * len(source)).from_buffer_copy(source)
@@ -176,6 +179,39 @@ def encode(source, library):
         lib.BrotliEncoderDestroyInstance(state)
     decode_exact(encoded, source, lib)
     return encoded
+
+
+def select_encoding(source, library):
+    lib = c.CDLL(str(library))
+    # The deployed recipe is mandatory and wins ties. Optional trials cannot
+    # replace a valid baseline with larger, invalid or incomplete output.
+    best = encode_candidate(source, lib, PARAMS)
+    selected = dict(PARAMS)
+    attempted, failed = 1, 0
+    deadline = time.monotonic() + PARAMETER_SEARCH_SECONDS
+    deadline_reached = False
+    for postfix, direct in DISTANCE_CANDIDATES:
+        if (postfix, direct) == (PARAMS[7], PARAMS[8]):
+            continue
+        if time.monotonic() >= deadline:
+            deadline_reached = True
+            break
+        params = {**PARAMS, 7: postfix, 8: direct}
+        attempted += 1
+        try:
+            candidate = encode_candidate(source, lib, params)
+        except (MemoryError, RuntimeError):
+            failed += 1
+            continue
+        if len(candidate) < len(best):
+            best, selected = candidate, params
+    return best, {'params': {str(key): value for key, value in selected.items()},
+                  'parameterSearchResult': {'attempted': attempted, 'failed': failed,
+                                            'deadlineReached': deadline_reached}}
+
+
+def encode(source, library):
+    return select_encoding(source, library)[0]
 
 
 def decode_exact(encoded, source, lib):
@@ -231,8 +267,10 @@ def require_distinct_outputs(outputs, inputs):
 def encoder_provenance(library):
     return {'brotliRevision': REVISION, 'archiveSha256': ARCHIVE_SHA256,
             'params': {str(key): value for key, value in PARAMS.items()}, 'model': MODEL,
+            'parameterSearch': {'distanceCandidates': [list(pair) for pair in DISTANCE_CANDIDATES],
+                                'baselineFirst': True, 'trialLaunchBudgetSeconds': PARAMETER_SEARCH_SECONDS},
             'encoderSha256': hashlib.sha256(library.read_bytes()).hexdigest(),
-            'decoder': 'unmodified Brotli 1.2.0 decoder'}
+            'decoder': 'unmodified Brotli 1.2.1 decoder'}
 
 
 def load_encoder_provenance(library):
@@ -324,10 +362,10 @@ def main():
         if source is None:
             print(json.dumps({'encoder': str(library), **provenance}))
             return
-        encoded = encode(source, library)
+        encoded, selection = select_encoding(source, library)
         metadata = {'inputFormat': 'TLS 1.3 Certificate body', 'inputSha256': input_sha,
                     'inputBytes': len(source), 'certificates': certificate_count,
-                    **provenance}
+                    **provenance, **selection}
         encoded, metadata, retained = publish_encoded(source, encoded, output, metadata, c.CDLL(str(library)))
         print(json.dumps({'output': str(output), 'inputBytes': len(source),
                          'brotliBytes': len(encoded), 'brotliSha256': metadata['brotliSha256'],

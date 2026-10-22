@@ -17,7 +17,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 24.21.0
+          node-version: 24.22.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.13'
@@ -25,14 +25,34 @@ jobs:
       - run: npm test
       - run: npm run check
       - run: npm run check:measurements
-      - run: python3 tools/test_deployment.py
+      - run: python3 -m pip install --disable-pip-version-check --no-input -r tools/requirements.txt -r tools/gallery-requirements.txt
+      - run: npm run test:probes
       - run: npm run check:python
 
-  tls:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.22.1
+      - run: npm ci
+      - run: npm install --no-save --package-lock=false playwright@1.63.0
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser:guards
+        env:
+          PLAYWRIGHT_MODULE: playwright
+
+  runtime:
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: docker build --target compression-test -f server/Dockerfile .
+      - run: docker build -t onekb-nginx:20261022a -f server/Dockerfile .
+      - run: docker build --target certificate-optimizer -f server/Dockerfile .
+      - run: docker build -f tools/gallery.Dockerfile .

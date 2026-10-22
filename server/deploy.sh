@@ -38,7 +38,8 @@ activation_started=false
 committed=false
 cleanup() {
   status=$?
-  trap - EXIT HUP INT TERM
+  trap - EXIT
+  trap '' HUP INT TERM
   if "$activation_started" && ! "$committed"; then
     if ! rollback; then printf 'Deployment rollback failed; inspect the saved release and configuration.\n' >&2; status=1; fi
   fi
@@ -52,53 +53,78 @@ docker exec onekb-website nginx -t -c "/etc/nginx/${next##*/}"
 previous=$(readlink site/current)
 cp nginx/nginx.conf "backups/nginx.conf-$release"
 printf '%s\n' "$previous" > "backups/previous-$release"
+case "$previous" in /*) previous_directory=$previous;; *) previous_directory=site/$previous;; esac
+# Only the known exact readiness location is evidence of a generation marker.
+# Legacy configurations still get restored and their bodies checked, but cannot
+# provide a worker-generation proof.
+previous_marker=$(awk '
+  /location = \/\.well-known\/onekb-release[[:space:]]*\{/ {
+    if (match($0, /return[[:space:]]+200[[:space:]]+"[^"]+"/)) {
+      value=substr($0, RSTART, RLENGTH)
+      sub(/^return[[:space:]]+200[[:space:]]+"/, "", value)
+      sub(/"$/, "", value)
+      marker=value; count++
+    }
+  }
+  END { if (count == 1) print marker }
+' "backups/nginx.conf-$release")
+# Run probes in a subshell so retry/encoding variables cannot change activation state.
+verify_release() (
+  trap - EXIT HUP INT TERM
+  expected_directory=$1
+  expected_marker=$2
+  for attempt in 1 2 3 4 5; do
+    verified=true
+    if test -n "$expected_marker"; then
+      expected_ready=$(printf '%s\n200' "$expected_marker")
+      if ! ready=$(docker exec onekb-website curl -q -fsS --max-time 2 --noproxy '*' \
+        --connect-to tomkimberlin.com:443:127.0.0.1:9443 -w '\n%{http_code}' \
+        https://tomkimberlin.com/.well-known/onekb-release) || test "$ready" != "$expected_ready"; then
+        sleep 1
+        continue
+      fi
+    fi
+    for pair in br:br gzip:gz deflate:deflate identity:html; do
+      encoding=${pair%:*}; suffix=${pair#*:}
+      case "$suffix" in html) file=index.html;; *) file=index.html.$suffix;; esac
+      if ! status=$(curl -q -fsS --max-time 20 --noproxy '*' --connect-to tomkimberlin.com:443:192.168.0.2:8443 \
+        -H "Accept-Encoding: $encoding" https://tomkimberlin.com/ -D "backups/headers-$release" \
+        -o "backups/check-$release" -w '%{http_code}') || test "$status" != 200 || \
+        ! cmp -s "backups/check-$release" "$expected_directory/$file"; then verified=false; break; fi
+      received_encoding=$(awk '
+        /^HTTP\/[0-9.]+[[:space:]]/ { value=""; count=0 }
+        tolower($0) ~ /^content-encoding:/ {
+          sub(/^[^:]*:[[:space:]]*/, ""); sub(/[[:space:]]*$/, "")
+          value=value (count++ ? "\n" : "") tolower($0)
+        }
+        END { print count ":" value }
+      ' "backups/headers-$release")
+      expected_encoding=1:$encoding
+      if test "$encoding" = identity; then expected_encoding=0:; fi
+      if test "$received_encoding" != "$expected_encoding"; then verified=false; break; fi
+    done
+    if "$verified"; then exit 0; fi
+    sleep 1
+  done
+  exit 1
+)
 rollback() {
   cp "backups/nginx.conf-$release" nginx/nginx.conf || return 1
   ln -s "$previous" "$rollback_link" || return 1
   mv -Tf "$rollback_link" site/current || return 1
-  docker exec onekb-website nginx -s reload
+  docker exec onekb-website nginx -s reload || return 1
+  if ! verify_release "$previous_directory" "$previous_marker"; then return 1; fi
+  if test -z "$previous_marker"; then
+    printf 'Previous configuration and page bodies were restored; its worker generation cannot be verified because it has no recognized readiness marker.\n' >&2
+    return 1
+  fi
 }
 ln -s "releases/$release" "$next_link"
 activation_started=true
 mv -Tf "$next_link" site/current
 mv "$next" nginx/nginx.conf
 docker exec onekb-website nginx -s reload
-verified=false
-expected_ready=$(printf '/srv/releases/%s/\n200' "$release")
-for attempt in 1 2 3 4 5; do
-  verified=true
-  # A successful reload command only sends a signal. Require the new generation,
-  # including when the handler/configuration changes but all page bodies match.
-  if ! ready=$(docker exec onekb-website curl -q -fsS --max-time 2 --noproxy '*' \
-    --connect-to tomkimberlin.com:443:127.0.0.1:9443 -w '\n%{http_code}' \
-    https://tomkimberlin.com/.well-known/onekb-release) || test "$ready" != "$expected_ready"; then
-    verified=false
-    sleep 1
-    continue
-  fi
-  for pair in br:br gzip:gz deflate:deflate identity:html; do
-    encoding=${pair%:*}; suffix=${pair#*:}
-    case "$suffix" in html) file=index.html;; *) file=index.html.$suffix;; esac
-    if ! status=$(curl -q -fsS --max-time 20 --noproxy '*' --connect-to tomkimberlin.com:443:192.168.0.2:8443 \
-      -H "Accept-Encoding: $encoding" https://tomkimberlin.com/ -D "backups/headers-$release" \
-      -o "backups/check-$release" -w '%{http_code}') || test "$status" != 200 || \
-      ! cmp -s "backups/check-$release" "site/current/$file"; then verified=false; break; fi
-    received_encoding=$(awk '
-      /^HTTP\/[0-9.]+[[:space:]]/ { value=""; count=0 }
-      tolower($0) ~ /^content-encoding:/ {
-        sub(/^[^:]*:[[:space:]]*/, ""); sub(/[[:space:]]*$/, "")
-        value=value (count++ ? "\n" : "") tolower($0)
-      }
-      END { print count ":" value }
-    ' "backups/headers-$release")
-    expected_encoding=1:$encoding
-    if test "$encoding" = identity; then expected_encoding=0:; fi
-    if test "$received_encoding" != "$expected_encoding"; then verified=false; break; fi
-  done
-  if "$verified"; then break; fi
-  sleep 1
-done
-if ! "$verified"; then
+if ! verify_release "site/releases/$release" "/srv/releases/$release/"; then
   printf 'New page release did not pass readiness and representation checks; rolling back.\n' >&2
   exit 1
 fi

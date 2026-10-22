@@ -45,6 +45,7 @@ test('equivalent aliases preserve focused pixels and all nine native Enter desti
  assert.equal(result.code,0,result.stderr);
  const report=JSON.parse(readFileSync(join(result.directory,'report/report.json')));
  assert.equal(report.cases.length,1);
+ assert.equal(report.cases[0].identicalAccessibilityAttributes,true);
  assert.equal(report.cases[0].identicalFocusedPixels,9);
  assert.equal(report.cases[0].keyboardEnterDestinations,9);
  assert.equal(report.cases[0].pageLoadRequests,1);
@@ -165,4 +166,57 @@ test('output symlinks, nonfiles, and collisions fail before writing any browser 
   if(kind==='regular symlink')assert.equal(readFileSync(join(result.directory,'sentinel'),'utf8'),'untouched');
   if(kind==='dangling symlink')assert(!existsSync(join(result.directory,'missing')));
  }
+});
+
+
+test('semantic attributes reject invisible accessibility regressions',optional,async t=>{
+ const cases=[
+  ['hidden heading',page.replace('<h1 ','<h1 aria-hidden=true ')],
+  ['relabelled link',page.replace(anchorOpen,'<a href=$1 aria-label="Unrelated label">')],
+  ['different document language',page.replace('<html ','<html lang=fr ')],
+  ['automatic text direction',page.replace('<html ','<html dir=auto ')],
+  ['inert heading',page.replace('<h1 ','<h1 inert ')],
+ ];
+ for(const [name,candidate] of cases) {
+  assert.notEqual(candidate,page,name);
+  const result=await compare(t,candidate);
+  assert.notEqual(result.code,0,name);
+  assert.match(result.stderr,/accessibility attributes changed/,name);
+ }
+});
+
+test('harmless metadata reordering preserves accessibility attributes',optional,async t=>{
+ const metadata=page.match(/<meta[^>]*>/)?.[0];
+ const title=page.match(/<title>[\s\S]*?<\/title>/)?.[0];
+ assert(metadata&&title);
+ const candidate=page.replace(metadata,'').replace(title,title+metadata);
+ assert.notEqual(candidate,page);
+ const result=await compare(t,candidate);
+ assert.equal(result.code,0,result.stderr);
+ const report=JSON.parse(readFileSync(join(result.directory,'report/report.json')));
+ assert.equal(report.cases[0].identicalAccessibilityAttributes,true);
+});
+
+test('semantic attribute ordering is compared independently of serialization order',optional,async t=>{
+ const result=await compare(t,page,directory=>{
+  writeFileSync(join(directory,'baseline.html'),page.replace('<h1 ','<h1 role=heading aria-label="Tom Kimberlin" '));
+  writeFileSync(join(directory,'candidate.html'),page.replace('<h1 ','<h1 aria-label="Tom Kimberlin" role=heading '));
+ });
+ assert.equal(result.code,0,result.stderr);
+ const report=JSON.parse(readFileSync(join(result.directory,'report/report.json')));
+ assert.equal(report.cases[0].identicalAccessibilityAttributes,true);
+});
+
+
+test('accessibility labels remain bound to the same paragraph',optional,async t=>{
+ const label=' aria-label="Paragraph label"';
+ const paragraphs=[...page.matchAll(/<p>/g)];assert(paragraphs.length>=2);
+ const first=paragraphs[0].index,second=paragraphs[1].index;
+ const labelled=index=>page.slice(0,index)+'<p'+label+'>'+page.slice(index+3);
+ const result=await compare(t,page,directory=>{
+  writeFileSync(join(directory,'baseline.html'),labelled(first));
+  writeFileSync(join(directory,'candidate.html'),labelled(second));
+ });
+ assert.notEqual(result.code,0);
+ assert.match(result.stderr,/accessibility attributes changed/);
 });

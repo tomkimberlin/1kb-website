@@ -97,6 +97,8 @@ All 48 Chromium/WebKit comparisons preserve pixels, content, geometry, keyboard 
 
 Body savings alone do not reduce delivery overhead after subtracting the entire encoded body. A separate [TLS ticket change](TRANSPORT.md#compact-ticket-nonces) removes eight bytes from the first ticket's public counter encoding. Deployment and certificate publication now verify the actually served generation and full chains rather than treating a successful reload signal as proof of activation. The [hosting guide](server/README.md) describes those checks.
 
+The next pass strengthens the measurement itself: an H1 hidden from screen readers could pass the old pixel/focus comparison. The checker now compares semantic attributes as well, and all 48 normal/enlarged-font cases were rerun. [Updated verification](measurements/page-20261022-accessibility-local.json). Rollback now proves the prior generation and chains were restored. CI covers the full runtime/cache build, offline Python fixtures and adversarial browser checks. A separate bounded certificate search finds another two-byte main-certificate candidate without changing trust or key material; its [local evidence](measurements/certificate-distance-pool-20261022-local.json) keeps that result separate from live overhead.
+
 ## What the short links cost
 
 The earlier October 5 opening version used nine one-character paths. A link such as `<a href=g>my GitHub</a>` leaves the long destination URL on the server. Following it returns an empty redirect with the destination in its `Location` header.

@@ -30,6 +30,7 @@ function fixture(t) {
     const native=[...readFileSync(join(directory,'index.html'),'utf8').matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
     for(const entry of data.verification.browserComparisons) {
       entry.nativeProtocolActivations=native;entry.keyboardProbeRequests=9-native;
+      entry.identicalAccessibilityAttributes=true;
     }
   });
   const readme=join(directory,'README.md');
@@ -324,4 +325,18 @@ test('recovered September scan cannot replace current DebugBear evidence',t=>{
   const result=check(directory);
   assert.notEqual(result.status,0);
   assert.match(result.stderr,/Stale DebugBear source hash/);
+});
+
+test('browser evidence must include the actual accessibility-attribute comparison',t=>{
+  for(const value of [undefined,false]) {
+    const directory=fixture(t);
+    changeJson(directory,page,data=>{
+      const entry=data.verification.browserComparisons[0];
+      if(value===undefined)delete entry.identicalAccessibilityAttributes;
+      else entry.identicalAccessibilityAttributes=value;
+    });
+    const result=check(directory);
+    assert.notEqual(result.status,0);
+    assert.match(result.stderr,/identicalAccessibilityAttributes/);
+  }
 });

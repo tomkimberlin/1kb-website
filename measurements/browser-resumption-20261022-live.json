@@ -1,0 +1,112 @@
+{
+  "scope": "Read-only native browser TLS1.3 resumption investigation against the owned public site, normal HTTPS trust, end-to-end TLS through a loopback proxy, no server/system/trust changes. No ticket identities, binders, keys, session secrets or certificate contents retained.",
+  "sourceCommitAtStart": "e870450235cea398bb4d2d09a133b15376efadf9",
+  "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+  "findings": [
+    {
+      "evidence": "public-all-forced.json",
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "closure": "forced",
+      "context": "ephemeral",
+      "interception": "routed",
+      "visits": 3,
+      "connections": 3,
+      "pskOffers": 2,
+      "pskSelections": 2,
+      "allExactDecodedSource": true,
+      "naturalIdleWaitMilliseconds": 0,
+      "pskModesOffered": "not recorded in first parser"
+    },
+    {
+      "evidence": "public-all-forced.json",
+      "engine": "webkit",
+      "version": "26.6",
+      "closure": "forced",
+      "context": "ephemeral",
+      "interception": "routed",
+      "visits": 3,
+      "connections": 3,
+      "pskOffers": 0,
+      "pskSelections": 0,
+      "allExactDecodedSource": true,
+      "naturalIdleWaitMilliseconds": 0,
+      "pskModesOffered": "not recorded in first parser"
+    },
+    {
+      "evidence": "public-webkit-natural.json",
+      "engine": "webkit",
+      "version": "26.6",
+      "closure": "natural",
+      "context": "ephemeral",
+      "interception": "routed",
+      "visits": 2,
+      "connections": 2,
+      "pskOffers": 0,
+      "pskSelections": 0,
+      "allExactDecodedSource": true,
+      "naturalIdleWaitMilliseconds": 73305,
+      "pskModesOffered": "not recorded in first parser"
+    },
+    {
+      "evidence": "public-webkit-forced-persistent.json",
+      "engine": "webkit",
+      "version": "26.6",
+      "closure": "forced",
+      "context": "persistent",
+      "interception": "routed",
+      "visits": 3,
+      "connections": 3,
+      "pskOffers": 0,
+      "pskSelections": 0,
+      "allExactDecodedSource": true,
+      "naturalIdleWaitMilliseconds": 0,
+      "pskModesOffered": "not recorded in first parser"
+    },
+    {
+      "evidence": "public-webkit-forced-persistent-passive.json",
+      "engine": "webkit",
+      "version": "26.6",
+      "closure": "forced",
+      "context": "persistent",
+      "interception": "passive",
+      "visits": 3,
+      "connections": 3,
+      "pskOffers": 0,
+      "pskSelections": 0,
+      "allExactDecodedSource": true,
+      "naturalIdleWaitMilliseconds": 0,
+      "pskModesOffered": true
+    }
+  ],
+  "conclusion": "Public Chromium TLS1.3 PSK resumption is observed on the second and third connections. WebKit 26.6 offers no PSK in tested follow-up connections, including after a natural 73.3-second server idle close, with persistent context, and without request interception. Its ClientHello does advertise PSK key-exchange modes. WebKit empty-nonce resumption compatibility remains unestablished.",
+  "parserRegressionCases": 7,
+  "parserRegressionStatus": "passed",
+  "evidenceSha256": {
+    "public-all-forced.json": "f909f2e323b12d9b0e953ea50f614fbc0b770b7db521b2602b222d168ab7ef88",
+    "public-webkit-natural.json": "404da806afef7eac209c0619737a72d78d0a55e579736259487b81525d85ea32",
+    "public-webkit-forced-persistent.json": "3f85a8985d514f78480e33b8575570e41ebc399888f7736d2fc3ac19a9002db4",
+    "public-webkit-forced-persistent-passive.json": "43860e3103575b41fd9c919e3acd159bfd879a2fbf5e2fe1e2ef2baac3695ab4"
+  },
+  "codeSha256": {
+    "observe-public-resumption-contexts.mjs": "d1699db59223d20cc8681fbec26bc0f7e6a3d6eed0be2cfeca38ef965414ccf8",
+    "observe-public-resumption-capabilities.mjs": "3333885c5a576f246de54c4811293edba1b59614cba07292c6627d27e8e75c72",
+    "tls-metadata.mjs": "7bbad1efeac4eb7589948dd49f52aa0311815752a558045160938cc55a174022",
+    "tls-metadata-capabilities.mjs": "d978ac59fb737e3ef3d505edf777f0709a7c56db0b273ce184c6691a5da35cc3",
+    "tls-metadata.test.mjs": "e6e865f03618071397efd19b43d55b6711596fcede3ff89bdd0ed3e969472756",
+    "tls-metadata-capabilities.test.mjs": "c031293d206a9af02cdefd8b113a08e7b7197d0e3bb863e57c7ea9b436be02f0",
+    "observe-public-resumption.mjs": "1d2b4a19e9a2098392c818f898c5b08c93206a64037b11a09d374dfb0f57bf12"
+  },
+  "limits": [
+    "The observed ClientHello contains no PSK identity offer; this cannot distinguish ticket-content rejection from retention, proxy or platform policy.",
+    "Public production currently uses the compact nonce. No otherwise identical ordinary-trust eight-byte-nonce public control was deployed for this investigation.",
+    "Earlier self-signed WebKit controls did not resume either nonce variant and therefore do not establish ordinary-trust baseline behavior.",
+    "TLS1.3 NewSessionTicket is encrypted. The proxy does not inspect ticket contents or independently identify its nonce.",
+    "Forced TCP half-close controls are paired with a natural server idle closure to avoid interpreting a premature close as ticket rejection."
+  ],
+  "worthwhileNextChecks": [
+    "Keep a PSK capability/offer/selection distinction in future browser regressions, including fragmented Hello parsing and no-secret-report checks.",
+    "For a decisive WebKit nonce comparison, use otherwise identical ordinary-trust endpoints with eight-byte, empty and optionally one-byte first nonces; do not substitute successful page rendering for observed resumption.",
+    "A one-byte first nonce would retain seven of eight saved bytes while avoiding the empty-vector edge case, but it also needs ordinary-trust WebKit evidence before compatibility claims."
+  ]
+}

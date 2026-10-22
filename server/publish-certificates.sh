@@ -6,7 +6,14 @@ umask 077
 base=/mnt/user/appdata/onekb-website
 mkdir -p "$base/tls/releases" "$base/state"
 exec 9>"$base/state/certificates.lock"
-flock -n 9 || exit 0
+if flock -n 9; then
+    :
+else
+    lock_status=$?
+    if test "$lock_status" = 1; then exit 0; fi
+    printf 'Certificate publication lock failed (exit %s).\n' "$lock_status" >&2
+    exit "$lock_status"
+fi
 snapshot=$(mktemp -d "$base/tls/releases/.pending.XXXXXX")
 run=${snapshot##*/}
 next="$base/tls/next-$run"
@@ -19,24 +26,38 @@ reload_requested=false
 committed=false
 previous=
 rollback() {
+    rollback_ok=true
+    rollback_pointer_ok=true
     if test -n "$previous"; then
-        ln -s "$previous" "$rollback_link" || return 1
-        mv -Tf "$rollback_link" "$base/tls/current" || return 1
+        if ln -s "$previous" "$rollback_link"; then
+            mv -Tf "$rollback_link" "$base/tls/current" || rollback_pointer_ok=false
+        else
+            rollback_pointer_ok=false
+        fi
     else
-        rm -f "$base/tls/current" || return 1
+        rm -f "$base/tls/current" || rollback_pointer_ok=false
     fi
     if test -f "$state_previous"; then
-        mv "$state_previous" "$base/state/certificate-fingerprint" || return 1
+        mv "$state_previous" "$base/state/certificate-fingerprint" || rollback_ok=false
     else
-        rm -f "$base/state/certificate-fingerprint" || return 1
+        rm -f "$base/state/certificate-fingerprint" || rollback_ok=false
     fi
-    if test -n "$previous" && "$reload_requested"; then
+    if ! "$rollback_pointer_ok"; then return 1; fi
+    if "$reload_requested"; then
+        if test -z "$previous"; then
+            printf 'No previous certificate release exists; live recovery cannot be verified.\n' >&2
+            return 1
+        fi
         docker exec onekb-website nginx -s reload || return 1
+        case "$previous" in /*) rollback_expected=$previous;; *) rollback_expected=$base/tls/$previous;; esac
+        verify_certificates "$rollback_expected" || return 1
     fi
+    "$rollback_ok"
 }
 cleanup() {
     status=$?
-    trap - EXIT HUP INT TERM
+    trap - EXIT
+    trap '' HUP INT TERM
     if "$activation_started" && ! "$committed"; then
         if ! rollback; then printf 'Certificate rollback failed; inspect the previous release.\n' >&2; status=1; fi
     fi

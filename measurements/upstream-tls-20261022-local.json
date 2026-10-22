@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "scope": "Local upstream compatibility regression of deployed OpenSSL 3.5.8 patches on Darwin arm64. Separate ignored test-enabled trees; no installation or production configuration/service changes.",
+  "source": {
+    "version": "3.5.8",
+    "archiveSha256": "a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2",
+    "patchesInOrder": [
+      {
+        "path": "server/certificate-compression.patch",
+        "sha256": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44"
+      },
+      {
+        "path": "server/tls-flight.patch",
+        "sha256": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0"
+      },
+      {
+        "path": "server/ticket-nonce.patch",
+        "sha256": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289"
+      }
+    ],
+    "affectedSourcesMatchExistingCombinedTree": {
+      "crypto/comp/c_brotli.c": true,
+      "ssl/ssl_local.h": true,
+      "ssl/ssl_lib.c": true,
+      "ssl/statem/statem_lib.c": true,
+      "ssl/statem/statem_srvr.c": true
+    },
+    "affectedSourceSha256": {
+      "crypto/comp/c_brotli.c": "443cc7a17a8c6a348fab771f2e35abe6d2f1797a3741797afa66522291c01b6a",
+      "ssl/ssl_local.h": "eaa2bc3f7e3e4b5a2a43be2a2a42a2ecfdb7b414b0c340508f62825c89e2347e",
+      "ssl/ssl_lib.c": "91a61c8f2583e34957b3d065714abaee94552acdad12c429584a04d2ff10aafb",
+      "ssl/statem/statem_lib.c": "f587e75b92eb8dda73b2a6bbda6346fabfd8a5bd0b2306ce78512166affb240e",
+      "ssl/statem/statem_srvr.c": "9f4824962b0b86c3baf8ee2834adea7993c09d4c98b2744f965cfb8cb163d9e1"
+    },
+    "bothNativeBuildsUseIdenticalPatchedSources": true,
+    "allSelectedUpstreamRecipesAndExpectedTraceFixturesMatchPinnedArchive": true
+  },
+  "builds": {
+    "zlib": {
+      "configure": [
+        "darwin64-arm64",
+        "shared",
+        "zlib",
+        "no-docs",
+        "--prefix=<ignored-local-test-only>"
+      ],
+      "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+      "buildExitCode": 0,
+      "buildJobs": 2,
+      "installed": false
+    },
+    "brotli": {
+      "scope": "Second independent test-enabled native build with stock production-version Brotli1.2.1 and SDK zlib; Zstd unavailable.",
+      "brotliSourceCommit": "db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+      "brotliStaticLibrarySha256": {
+        "libbrotlienc.a": "b971bba4bfbdc991adec7201bdd2ac62072870c6b00cbaddcb662da96f113d68",
+        "libbrotlidec.a": "46b339affa13c3d2c28259e2473817dff4430b3f29e15ff6aac0c047081bf62b",
+        "libbrotlicommon.a": "f9f509c64ddfff872b01218e0386da8715309ccf0af7ae4fc8d0568923872a95"
+      },
+      "configure": [
+        "darwin64-arm64",
+        "shared",
+        "zlib",
+        "enable-brotli",
+        "no-docs",
+        "--with-brotli-include=<ignored-stock-source>/c/include",
+        "--with-brotli-lib=<ignored-stock-build>",
+        "--prefix=<not-installed>"
+      ],
+      "installed": false,
+      "buildExitCode": 0,
+      "buildLogSha256": "99951c9abb0b4fa59ec0c40df74eeaad58020b9476031ee61b244f448e54dd6d"
+    }
+  },
+  "selectedRecipes": [
+    "90-test_sslapi.t",
+    "80-test_ssl_new.t",
+    "70-test_tls13ticket.t",
+    "70-test_sslsessiontick.t",
+    "70-test_tls13psk.t",
+    "70-test_tls13kexmodes.t",
+    "70-test_tls13hrr.t",
+    "70-test_tls13groupselection.t",
+    "70-test_tls13cookie.t",
+    "70-test_tls13alerts.t",
+    "70-test_tls13messages.t",
+    "70-test_sslmessages.t",
+    "70-test_sslrecords.t",
+    "70-test_sslextension.t",
+    "70-test_tls13certcomp.t",
+    "80-test_sslcorrupt.t",
+    "70-test_sslversions.t",
+    "90-test_tls13encryption.t",
+    "90-test_tls13secrets.t",
+    "90-test_tls13ccs.t",
+    "70-test_recordlen.t",
+    "90-test_sslbuffers.t",
+    "71-test_ssl_ctx.t",
+    "70-test_sslcertstatus.t",
+    "70-test_sslsignature.t",
+    "70-test_sslsigalgs.t",
+    "70-test_tlsextms.t",
+    "70-test_sslcbcpadding.t",
+    "70-test_servername.t",
+    "70-test_sslvertol.t",
+    "70-test_tls13downgrade.t",
+    "75-test_quicapi.t",
+    "70-test_quic_tserver.t",
+    "70-test_quic_record.t",
+    "70-test_quic_wire.t",
+    "70-test_quic_multistream.t",
+    "90-test_quicfaults.t",
+    "70-test_quic_srtm.t",
+    "70-test_quic_stream.t",
+    "70-test_quic_txp.t",
+    "70-test_quic_txpim.t",
+    "70-test_quic_fc.t"
+  ],
+  "outcomes": {
+    "zlibOnly": {
+      "selectedRecipes": 42,
+      "passedRecipes": 40,
+      "representationSensitiveRecipeFailures": 2,
+      "resultAssembly": "Initial run plus retry of the 22 socket-affected recipes. Initial sandbox EPERM failures are not protocol results.",
+      "failedOriginalRecipes": [
+        "70-test_sslsignature.t",
+        "90-test_sslapi.t"
+      ]
+    },
+    "zlibAndBrotli": {
+      "selectedRecipes": 42,
+      "passedRecipes": 41,
+      "originalProxyRecipeFailures": 1,
+      "failedOriginalRecipe": "70-test_sslsignature.t",
+      "harnessOuterAssertions": {
+        "total": 260,
+        "passed": 237,
+        "failed": 1,
+        "skipped": 22,
+        "countScope": "TAP outer recipe assertions, not the number of nested C test iterations."
+      },
+      "skipReasons": {
+        "not running CI tests": 1,
+        "DTLS only record tests": 1,
+        "Record tests not intended for dtls": 18,
+        "Skipping FIPS tests": 2
+      },
+      "sslApiNamedGroups": 111,
+      "sslApiNamedGroupFailures": 0,
+      "sslTraceRegistration": "Upstream deliberately excludes the exact trace fixture when Brotli or Zstd is enabled."
+    }
+  },
+  "diagnosis": {
+    "path": "optimization/20261022/pass2-upstream/failure-diagnosis.json",
+    "sha256": "25a8ad3059c85a073a3ede2851bbbb04e462607ed6f1db494c298e79c8022844",
+    "signatureProxy": "Original no-corruption repack changes a valid coalesced record because first-fragment bookkeeping belongs to an earlier message. Diagnostic-only bookkeeping correction preserves exact plaintext and passes all four assertions, including corruption rejection.",
+    "sslTrace": "Successful handshake followed by expected-text mismatch at coalesced encrypted record length. Control restoring upstream flight implementation passes unchanged reference; nonce-only revert retains mismatch."
+  },
+  "retainedPrivateLogs": [
+    {
+      "path": "optimization/20261022/pass2-upstream/configure.log",
+      "sha256": "b70863a232ba3f61ed3c42e9dc67f2df0fc6f0505ccf9416e39141b4bbece233"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/build.log",
+      "sha256": "fd6cecc19208a97f7c5ee49b6cb9fcaee6a19cb51215e3d46c6de6a47ced868e"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/selected-tests.log",
+      "sha256": "fa3e06cc8eb58c3e1e542541437c078f30ddc579c48b64c224d9b4c501004751"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/socket-retry.log",
+      "sha256": "921ec927e6e323f81d8145da64c2883d598d9213878df4883c4596b020188bca"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/signature-nonce-control.log",
+      "sha256": "f1c0ab79e3b47a88df49c96961863da7e81a24c47c9adba803352e750e6efcdd"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/signature-flight-control.log",
+      "sha256": "9faf730e7eff8f1eb34328b603d5f3ef8a085ded59b5748190bda964dbf0685b"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/test_sslsignature_probe.log",
+      "sha256": "564ebe001daa5b3503d3fb78e521feda1297060febaaec7aa41c78779843f366"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/test_sslsignature_bookkeeping.log",
+      "sha256": "924c89c96266f2cfa39cd5d87c0706883d4f2845f6d68a3426f311837933d0fa"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/brotli-configure.log",
+      "sha256": "b70863a232ba3f61ed3c42e9dc67f2df0fc6f0505ccf9416e39141b4bbece233"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/brotli-build.log",
+      "sha256": "99951c9abb0b4fa59ec0c40df74eeaad58020b9476031ee61b244f448e54dd6d"
+    },
+    {
+      "path": "optimization/20261022/pass2-upstream/brotli-selected-tests.log",
+      "sha256": "8bbacd88b483542a640ab786f803eb9be66a4451bc9ca392d80ec7dbbf666f75"
+    }
+  ],
+  "limits": [
+    "Selected upstream recipes on one native platform/version; not universal compatibility.",
+    "Brotli 1.2.1 and SDK zlib enabled in the second build; production Zstd feature and Linux platform are not represented by this native pass.",
+    "Original upstream tests and expected fixtures remain unchanged; diagnostic copies exist only in the ignored test tree.",
+    "Raw logs can contain local fixture session/key/token traces and stay private. Only counts, hashes and source references are suitable for publication.",
+    "No byte-saving or timing result is established by compatibility tests."
+  ]
+}

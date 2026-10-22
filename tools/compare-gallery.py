@@ -32,10 +32,18 @@ EXCHANGE_SECONDS = 30
 
 
 def require_bounded_brotli():
+    # Version 1.2.1 fixes malformed block-switch parsing in the native decoder;
+    # output limits alone do not protect that internal parser.
+    try:
+        version = tuple(int(part) for part in brotli.__version__.split('.'))
+    except (AttributeError, TypeError, ValueError):
+        version = ()
+    if len(version) != 3 or version < (1, 2, 1):
+        raise RuntimeError('Gallery decoding requires brotli >= 1.2.1')
     try:
         brotli.Decompressor().process(b'', output_buffer_limit=1)
     except TypeError as error:
-        raise RuntimeError('Gallery decoding requires brotli >= 1.2.0') from error
+        raise RuntimeError('Gallery decoding requires brotli >= 1.2.1 with output limits') from error
 
 
 def decode_body(data, encoding, limit=MAX_BODY_BYTES):
@@ -187,8 +195,9 @@ def validate_outputs(urls,outdir):
 
 def run(url,port,outdir,curve=None):
     validate_outputs([url],outdir)
-    host,path=url_parts(url);ip=socket.gethostbyname(host)
+    host,path=url_parts(url)
     require_bounded_brotli()
+    ip=socket.gethostbyname(host)
     dns_results=dns(host)
     packets=[];capture_errors=[];stop=threading.Event()
     deadline=time.monotonic()+EXCHANGE_SECONDS

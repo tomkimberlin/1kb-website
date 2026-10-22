@@ -5,14 +5,21 @@ set -eu
 umask 077
 base=/mnt/user/appdata/onekb-website
 release=${1:-$base/tls/current}
-image=onekb-certificate-optimizer:20260926a
+image=onekb-certificate-optimizer:20261022b
 container=onekb-certificate-cache-$$-$(date +%s)
 cleanup() { timeout -k 1 3 docker rm -f "$container" >/dev/null 2>&1 || :; }
 trap cleanup EXIT
 trap 'exit 1' HUP INT TERM
 mkdir -p "$base/tls/compressed" "$base/state"
 exec 8>"$base/state/certificate-optimizer.lock"
-flock -n 8 || exit 0
+if flock -n 8; then
+    :
+else
+    lock_status=$?
+    if test "$lock_status" = 1; then exit 0; fi
+    printf 'Certificate optimizer lock failed (exit %s).\n' "$lock_status" >&2
+    exit "$lock_status"
+fi
 timeout -k 1 5 docker image inspect "$image" >/dev/null
 status=0
 for domain in tomkimberlin.com www.tomkimberlin.com tom.kimberlin.net; do

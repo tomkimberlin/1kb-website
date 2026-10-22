@@ -47,7 +47,7 @@ if(buildOnly) {
   const nativeProtocolActivations=[...readFileSync('index.html','utf8').matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
   for(const entry of comparisons) {
     const name=`${entry.engine}-${entry.width}-${entry.theme}`;
-    const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,
+    const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,identicalAccessibilityAttributes:true,
       keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
       keyboardProbeRequests:9-nativeProtocolActivations,unexpectedRequests:0,externalRequestsBlocked:true};
     assert.equal(entry.nativeProtocolActivations??0,nativeProtocolActivations,'Browser case '+name+': nativeProtocolActivations');

@@ -1,0 +1,242 @@
+{
+  "date": "2026-10-22",
+  "scope": "Local source-build, native compression and regression evidence; production activation and live overhead are separate measurements.",
+  "patch": {
+    "path": "optimization/20261022/pass2-transport/certificate-distance-pool.patch",
+    "sha256": "315abdc1d715161df595e5cfbfc0000b75c7d1e9c0c0c2a9da25b4c4ea1b5cd9",
+    "application": {
+      "fuzz": 0,
+      "offsets": 0,
+      "output": "patching file 'tools/optimize-certificates.py'\npatching file 'tools/test_certificate_optimizer.py'",
+      "bothResultingFilesMatchTestedCopies": true
+    }
+  },
+  "files": [
+    {
+      "target": "tools/optimize-certificates.py",
+      "baseSha256": "87927711d4a946e53ebdcc1245f2a8e711e518d654e3840e65d3bba6cd756dec",
+      "candidateSha256": "5ace05e851ea88c80bf0cde39bec03a608ea1665494f475c5ad17362a9bcb6ad"
+    },
+    {
+      "target": "tools/test_certificate_optimizer.py",
+      "baseSha256": "069ce49ab8fe800c76d160ab035168cd4e0a0e76ecea70e1023e099d879cda35",
+      "candidateSha256": "cc9666d2072f6fe5ececa2347bb572d27e490791dcbc4e15124689d0bd064571"
+    }
+  ],
+  "source": {
+    "version": "Brotli 1.2.1",
+    "revision": "db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "archiveSha256": "113b9685dfc14dd2f3360d077283266eec2fbdfb0fe3e5600f11be151da0d68e",
+    "archiveUrl": "https://codeload.github.com/google/brotli/tar.gz/db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "securityRelease": "https://github.com/google/brotli/releases/tag/v1.2.1",
+    "sourceChecks": "SHA256 must match before extraction. Every encoder source replacement requires the exact expected occurrence count; mismatches stop before compilation. Verified with normal and optimized-Python tests."
+  },
+  "selection": {
+    "candidates": 64,
+    "baselineFirst": {
+      "postfix": 1,
+      "direct": 18
+    },
+    "distancePool": "postfix in 0..3; direct = n << postfix for n in 0..15. All other deployed encoder model/quality/window settings retained.",
+    "ties": "Deployed baseline wins equal lengths; saved exact output no larger than the selected encoding retains its own matching metadata.",
+    "optionalFailure": "MemoryError or RuntimeError skips that trial and retains the validated best output. Baseline failure still fails the optional optimizer without publishing new output.",
+    "deadline": "Five-second soft budget for launching optional trials. The existing external helper/container deadline remains the hard bound; an individual C call is not interrupted by the soft budget.",
+    "provenance": "The library checksum and manifest bind source/model/baseline/pool/budget. New output records actual selected params, attempts, failures and deadline state. Retained bytes keep matching previous provenance; otherwise they are marked unknown rather than assigned the new recipe."
+  },
+  "currentPublicChains": [
+    {
+      "site": "main",
+      "inputBytes": 2218,
+      "inputSha256": "06775c21de30195f66bf5f991e73fe3b5ab59c3195b46f620ee5b1119701e0d7",
+      "baselineBytes": 1489,
+      "candidateBytes": 1487,
+      "candidateSha256": "057d4aa15c5a77924d5e3a0f4620d0479b15014eea969ff377dc98ed997655d6",
+      "selectedParams": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 1,
+        "8": 6
+      }
+    },
+    {
+      "site": "www",
+      "inputBytes": 2220,
+      "inputSha256": "10d003a9fcefe2199c69d4a16f8916b3343947c88c83f254afbd558f5810b91f",
+      "baselineBytes": 1495,
+      "candidateBytes": 1493,
+      "candidateSha256": "88b66d588589cb7a4c2b874377484aaa95eccd7dd54c439b5c01d0faf7586f1d",
+      "selectedParams": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 0,
+        "8": 2
+      }
+    },
+    {
+      "site": "alternate",
+      "inputBytes": 2217,
+      "inputSha256": "be23241b52bfdc46078d8e59a7bf704d6fac9e351b4437eacbcc4aeffbe402f1",
+      "baselineBytes": 1495,
+      "candidateBytes": 1491,
+      "candidateSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+      "selectedParams": {
+        "0": 0,
+        "1": 11,
+        "2": 16,
+        "4": 0,
+        "7": 2,
+        "8": 12
+      }
+    }
+  ],
+  "validation": {
+    "unitTests": 24,
+    "unitTestsWithPythonOptimization": 24,
+    "independentReview": "No actionable blockers; reviewed baseline/ties, cleanup, deadlines, manifest and retained provenance.",
+    "corpusCases": 40,
+    "uniqueCorpusBodies": 37,
+    "corpus": "Three current public chains, 36 synthetic context/extension/chain-length cases and archived public fixture. Synthetic cases test framing, not certificate trust.",
+    "allCandidateLengthsNoGreaterThanBaseline": true,
+    "outputEncodingsChecked": 80,
+    "independentDecoders": [
+      "Unmodified stock Brotli 1.2.1 C streaming decoder with complete input consumption",
+      "Official Python Brotli 1.2.1 wheel"
+    ],
+    "independentDecodeCalls": 160,
+    "archivedFixture": {
+      "baselineBytes": 1478,
+      "candidateBytes": 1478,
+      "sameOutputSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8"
+    },
+    "prebuiltCli": {
+      "scope": "Actual prebuilt candidate CLI; public chains and archived fixture only.",
+      "runs": [
+        {
+          "site": "main",
+          "bytes": 1487,
+          "elapsedSeconds": 0.15856320806778967,
+          "noCompilerOrDownloadRequired": true,
+          "outputSha256": "057d4aa15c5a77924d5e3a0f4620d0479b15014eea969ff377dc98ed997655d6"
+        },
+        {
+          "site": "www",
+          "bytes": 1493,
+          "elapsedSeconds": 0.1725112919230014,
+          "noCompilerOrDownloadRequired": true,
+          "outputSha256": "88b66d588589cb7a4c2b874377484aaa95eccd7dd54c439b5c01d0faf7586f1d"
+        },
+        {
+          "site": "alternate",
+          "bytes": 1491,
+          "elapsedSeconds": 0.16262254118919373,
+          "noCompilerOrDownloadRequired": true,
+          "outputSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288"
+        },
+        {
+          "site": "archived",
+          "bytes": 1478,
+          "elapsedSeconds": 0.16387329110875726,
+          "noCompilerOrDownloadRequired": true,
+          "outputSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8"
+        }
+      ],
+      "smallerExactSavedBytesAndProvenanceUnchanged": true,
+      "trailingBytesReplaced": true,
+      "wrongRecipeManifestRejectedWithoutOutputMutation": true
+    }
+  },
+  "build": {
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "platform": "Darwin arm64",
+    "globalInstall": false,
+    "freshBuildCommand": "python3 candidate/tools/optimize-certificates.py --archive brotli-1.2.1.tar.gz --build-encoder candidate-encoder.dylib",
+    "workingDirectory": "optimization/20261022/pass2-transport",
+    "encoderSha256": "6da86f75d3848d1a041eb8a8c75a3c218aabb27907a14d1102b3436338db4010"
+  },
+  "localEvidence": [
+    {
+      "path": "optimization/20261022/pass2-transport/certificate-distance-pool-code.patch",
+      "sha256": "4a5251d2961c34666d7132437dc6fe1dd565565e8da98e93786595b394f27ec4"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/certificate-distance-pool-tests.patch",
+      "sha256": "78e600b8fcce823af90cda0d06206280e0bd2e010f70a65d407cd8dbbe969a46"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/candidate-unit-tests.log",
+      "sha256": "8706b41f27326c89bc2f33a5607681296b75a33153c34de5672520767515717e"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/candidate-unit-tests-optimized.log",
+      "sha256": "e3a7d9c41a1824456492798dbc13ebdc7b5da6d2f205d400fd38944160408b37"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/candidate-corpus.json",
+      "sha256": "2d1508381c148167c731811810f9cd28bacf184757a6ceea48e946fb889e2f5e"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/candidate-cli-checks.json",
+      "sha256": "b757128bef09b100ad5655ad2486be33888b0a3c0b590ddfe77a75e90332fff7"
+    },
+    {
+      "path": "optimization/20261022/pass2-transport/candidate-encoder.dylib.json",
+      "sha256": "95cb8fff3af0c48cd216242f1e11dbd2e72f6e5736269c43eea79dbbb1d6fd05"
+    }
+  ],
+  "integrationRequirements": [
+    "Build and test the certificate-optimizer Docker target with the fixed source; macOS output does not establish Alpine binary/bitstream reproducibility.",
+    "Retain the external timeout, read-only public-cert input, old exact cache candidates, and runtime full-decode/byte-equality loader gate.",
+    "Refresh measured input/body hashes and fresh before/after measurements if the public certificate chain changes."
+  ],
+  "limits": [
+    "The main-domain payload reduction is 2 bytes; aliases reduce by 2 and 4 bytes for these inputs. These are local component results, not measured complete-exchange savings.",
+    "The pool is bounded and retains the deployed recipe; no global minimum is claimed.",
+    "Historical measurement records and their client versions remain unchanged."
+  ],
+  "dockerValidation": {
+    "image": "onekb-certificate-optimizer:20261022b",
+    "imageId": "sha256:12e8f18864c8fb4de90e7272aa6f4ec987e067281e38f456a3e4753073d35f33",
+    "network": "none",
+    "privateKeysMounted": false,
+    "productionCacheChanged": false,
+    "cpus": 1,
+    "memoryBytes": 134217728,
+    "timeoutSeconds": 10,
+    "perChainResults": [
+      {
+        "site": "main",
+        "bytes": 1487,
+        "sha256": "057d4aa15c5a77924d5e3a0f4620d0479b15014eea969ff377dc98ed997655d6",
+        "search": {
+          "attempted": 64,
+          "failed": 0,
+          "deadlineReached": false
+        }
+      },
+      {
+        "site": "www",
+        "bytes": 1493,
+        "sha256": "88b66d588589cb7a4c2b874377484aaa95eccd7dd54c439b5c01d0faf7586f1d",
+        "search": {
+          "attempted": 64,
+          "failed": 0,
+          "deadlineReached": false
+        }
+      },
+      {
+        "site": "alternate",
+        "bytes": 1491,
+        "sha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+        "search": {
+          "attempted": 64,
+          "failed": 0,
+          "deadlineReached": false
+        }
+      }
+    ]
+  }
+}

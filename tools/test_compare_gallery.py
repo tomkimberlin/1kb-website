@@ -286,9 +286,20 @@ class GalleryTests(unittest.TestCase):
         class UnboundedDecoder:
             def process(self, data): return b''
         with patch.object(gallery.brotli, 'Decompressor', UnboundedDecoder):
-            with self.assertRaisesRegex(RuntimeError, 'brotli >= 1.2.0'):
+            with self.assertRaisesRegex(RuntimeError, 'brotli >= 1.2.1'):
                 self.run_probe()
         self.assertFalse(self.thread.started)
+
+    def test_unfixed_or_unknown_brotli_versions_fail_before_dns_or_capture(self):
+        for version in ['1.2.0', '1.1.0', 'unknown']:
+            with self.subTest(version=version), tempfile.TemporaryDirectory() as directory, \
+                 patch.object(gallery.brotli, '__version__', version), \
+                 patch.object(gallery.socket, 'gethostbyname') as dns_lookup, \
+                 patch.object(gallery.socket, 'socket') as capture:
+                with self.assertRaisesRegex(RuntimeError, 'brotli >= 1.2.1'):
+                    gallery.run('https://example.com/', 46240, Path(directory))
+                dns_lookup.assert_not_called()
+                capture.assert_not_called()
 
     def test_intermediate_encoding_is_bounded_even_when_final_body_is_small(self):
         inner = gzip.compress(self.source)

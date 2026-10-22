@@ -13,6 +13,13 @@ def wait(path):
  while not path.exists():
   if time.monotonic()>end:raise RuntimeError('fixture barrier timed out: '+str(path))
   time.sleep(.01)
+def apply_page_generation():
+ pending=base/'pending-generation'
+ if pending.exists():
+  progress=base/'pending-generation-probes';count=int(progress.read_text())+1 if progress.exists() else 1;progress.write_text(str(count))
+  reloads=int((base/'reload-count').read_text()) if (base/'reload-count').exists() else 0
+  limit=os.environ.get('MOCK_ROLLBACK_APPLY_AFTER_PROBES','1') if reloads>1 else os.environ.get('MOCK_APPLY_AFTER_PROBES','1')
+  if count>=int(limit):(base/'active-generation').write_text(pending.read_text());pending.unlink()
 if name=='node':
  data=Path('index.html').read_text();Path('public').mkdir(exist_ok=True)
  for suffix in ['', '.br','.gz','.deflate']:Path('public', 'index.html'+suffix).write_text(data+suffix)
@@ -24,12 +31,16 @@ if name=='node':
   for p in Path(os.environ['MOCK_MUTATE_SHARED_PUBLIC']).iterdir():p.write_text('changed-by-another-build')
  if os.environ.get('MOCK_MUTATE_SHARED_HANDLER'):Path(os.environ['MOCK_MUTATE_SHARED_HANDLER']).write_text('changed-after-build')
  sys.exit(0)
-if name=='flock':sys.exit(0)
+if name=='flock':sys.exit(int(os.environ.get('MOCK_LOCK_EXIT','0')))
 if name=='date':print('20260926T000000Z');sys.exit(0)
 if name=='sha256sum':print(hashlib.sha256(sys.stdin.buffer.read()).hexdigest()+'  -');sys.exit(0)
 if name=='mv':
  paths=[x for x in args if not x.startswith('-')];src,dst=map(Path,paths)
  if dst.name=='nginx.conf' and src.name.startswith('nginx.conf.next') and os.environ.get('MOCK_ACTIVATION_FAIL')=='1':sys.exit(1)
+ if dst.name=='certificate-fingerprint' and src.name.startswith('certificate-fingerprint-previous-') and os.environ.get('MOCK_STAMP_RESTORE_FAIL')=='1':
+  event('stamp-restore-failed');sys.exit(1)
+ if dst==base/'tls/current' and src.name.startswith('rollback-') and os.environ.get('MOCK_TLS_POINTER_RESTORE_FAIL')=='1':
+  event('pointer-restore-failed');sys.exit(1)
  if dst.is_dir() and not dst.is_symlink():dst=dst/src.name
  os.replace(src,dst)
  if dst.name=='certificate-fingerprint' and os.environ.get('MOCK_STAMP_INTERRUPT')=='1' and not (base/'stamp-interrupted').exists():
@@ -66,7 +77,11 @@ if name=='curl':
  if os.environ.get('MOCK_INTERRUPT')=='1':os.kill(os.getppid(),signal.SIGTERM);sys.exit(1)
  encoding=args[args.index('-H')+1].split(': ',1)[1];suffix={'br':'.br','gzip':'.gz','deflate':'.deflate','identity':''}[encoding]
  if os.environ.get('MOCK_CURL_FAIL')=='1':sys.exit(22)
- shutil.copyfile(base/'site/current'/('index.html'+suffix),args[args.index('-o')+1])
+ apply_page_generation()
+ generation=(base/'active-generation').read_text() if (base/'active-generation').exists() else 'releases/old'
+ if (os.environ.get('MOCK_FORWARD_BAD_BODY')=='1' and generation!='releases/old') or (os.environ.get('MOCK_ROLLBACK_BAD_BODY')=='1' and generation=='releases/old'):Path(args[args.index('-o')+1]).write_text('wrong-body')
+ else:shutil.copyfile(base/'site'/generation/('index.html'+suffix),args[args.index('-o')+1])
+ event('page-body-probe',generation=generation,encoding=encoding)
  status=os.environ.get('MOCK_HTTP_STATUS','200')
  if '-D' in args:
   response_encoding='' if encoding=='identity' or os.environ.get('MOCK_BAD_ENCODING')=='1' else 'Content-Encoding:'+encoding+'\r\n'
@@ -82,23 +97,28 @@ if name=='docker':
   if '--noproxy' not in args or args[args.index('--noproxy')+1]!='*' or '-q' not in args:raise RuntimeError('readiness must ignore curlrc and proxies')
   if args[args.index('--connect-to')+1]!='tomkimberlin.com:443:127.0.0.1:9443' or args[-1]!='https://tomkimberlin.com/.well-known/onekb-release' or any(x in args for x in ['-k','--insecure']):raise RuntimeError('readiness must verify the existing private TLS listener with the public hostname')
   probes=base/'readiness-probes';count=int(probes.read_text())+1 if probes.exists() else 1;probes.write_text(str(count))
-  pending=base/'pending-generation';active=base/'active-generation'
-  if pending.exists() and count>=int(os.environ.get('MOCK_APPLY_AFTER_PROBES','1')):
-   active.write_text(pending.read_text());pending.unlink()
+  apply_page_generation()
+  active=base/'active-generation'
   if os.environ.get('MOCK_READINESS_HTTP_FAIL')=='1':sys.exit(22)
   value=active.read_text() if active.exists() else 'releases/old'
   print(os.environ.get('MOCK_READINESS_BODY','/srv/'+value+'/'),end='')
   if '-w' in args:print('\n'+os.environ.get('MOCK_READINESS_STATUS','200'),end='')
   sys.exit(0)
+ if '-s reload' in command:
+  counter=base/'reload-count';number=int(counter.read_text())+1 if counter.exists() else 1;counter.write_text(str(number))
+  if number>1 and os.environ.get('MOCK_IGNORE_ROLLBACK_RELOAD')=='1':event('ignored-rollback-reload');sys.exit(0)
  if '-s reload' in command and os.environ.get('MOCK_RELOAD_FAIL_ALWAYS')=='1':sys.exit(1)
  if '-s reload' in command and os.environ.get('MOCK_RELOAD_FAIL_ONCE')=='1' and not (base/'reload-failed').exists():
   (base/'reload-failed').touch();sys.exit(1)
  if '-t' in args and os.environ.get('MOCK_PREFLIGHT_FAIL')=='1':sys.exit(1)
  if '-s reload' in command and os.environ.get('MOCK_RELOAD_NOT_APPLIED')!='1':
   (base/'pending-generation').write_text(os.readlink(base/'site/current'))
+  (base/'pending-generation-probes').unlink(missing_ok=True)
  if '-s reload' in command and os.environ.get('MOCK_CERT_RELOAD_NOT_APPLIED')!='1':
   target=os.readlink(base/'tls/current') if (base/'tls/current').is_symlink() else ''
-  marker='pending-tls-release' if os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES') else 'served-tls-release'
+  delayed=os.environ.get('MOCK_CERT_ROLLBACK_APPLY_AFTER_PROBES') if int((base/'reload-count').read_text())>1 else os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES')
+  marker='pending-tls-release' if delayed else 'served-tls-release'
+  (base/'state/pending-tls-probes').unlink(missing_ok=True)
   (base/'state'/marker).write_text(target)
  sys.exit(0)
 if name=='openssl':
@@ -123,8 +143,10 @@ if name=='openssl':
   if os.environ.get('MOCK_CERT_PROBE_FAIL')=='1' or os.environ.get('MOCK_CERT_PROBE_FAIL_DOMAIN')==domain:sys.exit(1)
   counter=base/'state/tls-probe-count';count=int(counter.read_text())+1 if counter.exists() else 1;counter.write_text(str(count))
   pending=base/'state/pending-tls-release'
-  if pending.exists() and count>=int(os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES','0')):
-   (base/'state/served-tls-release').write_text(pending.read_text());pending.unlink()
+  if pending.exists():
+   progress=base/'state/pending-tls-probes';pending_count=int(progress.read_text())+1 if progress.exists() else 1;progress.write_text(str(pending_count))
+   limit=os.environ.get('MOCK_CERT_ROLLBACK_APPLY_AFTER_PROBES','0') if int((base/'reload-count').read_text())>1 else os.environ.get('MOCK_CERT_APPLY_AFTER_PROBES','0')
+   if pending_count>=int(limit):(base/'state/served-tls-release').write_text(pending.read_text());pending.unlink()
   target=(base/'state/served-tls-release').read_text()
   data=(base/'tls'/target/(domain+'.crt')).read_bytes()
   print('Session diagnostics that must not be compared or retained.')
@@ -160,6 +182,7 @@ class DeploymentTests(unittest.TestCase):
   for directory in ['site/releases/old','nginx','backups','state','acme','tls/releases/old','bin']:(self.base/directory).mkdir(parents=True,exist_ok=True)
   (self.base/'site/current').symlink_to('releases/old');(self.base/'tls/current').symlink_to('releases/old');(self.base/'nginx/nginx.conf').write_text('OLD-CONFIG')
   (self.base/'state/served-tls-release').write_text('releases/old')
+  for suffix in ['', '.br','.gz','.deflate']:(self.base/'site/releases/old'/('index.html'+suffix)).write_text('OLD'+suffix)
   for domain in ['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net']:
    # Match ACME's issued-file glob while copied filenames retain the domain.
    (self.base/'acme'/(domain+'-issued.crt')).write_text('VALID:'+domain)
@@ -394,7 +417,8 @@ class DeploymentTests(unittest.TestCase):
   result=self.run_script('publish-certificates.sh',{'MOCK_CERT_PROBE_FAIL_DOMAIN':'www.tomkimberlin.com'})
   self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
   domains=[x['domain'] for x in self.events() if x['kind']=='certificate-probe']
-  self.assertEqual(domains,['tomkimberlin.com','www.tomkimberlin.com']*3)
+  self.assertEqual(domains,['tomkimberlin.com','www.tomkimberlin.com']*6)
+  self.assertIn('Certificate rollback failed',result.stderr)
   self.assertFalse((self.base/'state/certificate-fingerprint').exists())
   self.assert_certificate_probe_cleanup()
  def test_certificate_delayed_reload_retries_until_all_chains_match(self):
@@ -414,7 +438,7 @@ class DeploymentTests(unittest.TestCase):
  def test_certificate_handshake_deadline_is_bounded(self):
   result=self.run_script('publish-certificates.sh',{'MOCK_CERT_PROBE_TIMEOUT':'1'})
   self.assertNotEqual(result.returncode,0,result.stdout+result.stderr)
-  self.assertEqual(len([x for x in self.events() if x['kind']=='certificate-probe-timeout']),3)
+  self.assertEqual(len([x for x in self.events() if x['kind']=='certificate-probe-timeout']),6)
   self.assertFalse((self.base/'state/certificate-fingerprint').exists())
   self.assert_certificate_probe_cleanup()
  def test_certificate_probe_interruption_restores_state_and_cleans_capture(self):
@@ -437,5 +461,113 @@ class DeploymentTests(unittest.TestCase):
   result=self.run_script('publish-certificates.sh',{'ONEKB_PREPARE_ONLY':'1'})
   self.assertEqual(result.returncode,0,result.stdout+result.stderr)
   self.assertFalse(any(x['kind']=='certificate-probe-timeout' for x in self.events()))
+  self.assert_certificate_probe_cleanup()
+
+ def marked_previous_page(self):
+  (self.base/'nginx/nginx.conf').write_text('OLD-CONFIG\nlocation = /.well-known/onekb-release { return 200 "/srv/releases/old/"; }\n')
+ def test_unapplied_page_rollback_reports_actual_generation_failure(self):
+  self.marked_previous_page()
+  result=self.run_script('deploy.sh',{'MOCK_FORWARD_BAD_BODY':'1','MOCK_IGNORE_ROLLBACK_RELOAD':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('Deployment rollback failed',result.stderr)
+  self.assertEqual(os.readlink(self.base/'site/current'),'releases/old')
+  self.assertNotEqual((self.base/'active-generation').read_text(),'releases/old')
+ def test_delayed_page_rollback_verifies_old_generation_and_four_bodies(self):
+  self.marked_previous_page()
+  result=self.run_script('deploy.sh',{'MOCK_FORWARD_BAD_BODY':'1','MOCK_ROLLBACK_APPLY_AFTER_PROBES':'3'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertNotIn('Deployment rollback failed',result.stderr)
+  self.assertEqual((self.base/'active-generation').read_text(),'releases/old')
+  old_probes=[x['encoding'] for x in self.events() if x['kind']=='page-body-probe' and x['generation']=='releases/old']
+  self.assertEqual(old_probes,['br','gzip','deflate','identity'])
+  self.assertEqual((self.base/'pending-generation-probes').read_text(),'3')
+ def test_legacy_page_rollback_distinguishes_restored_bodies_from_unknown_generation(self):
+  result=self.run_script('deploy.sh',{'MOCK_FORWARD_BAD_BODY':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('Previous configuration and page bodies were restored',result.stderr)
+  self.assertIn('worker generation cannot be verified',result.stderr)
+  self.assertIn('Deployment rollback failed',result.stderr)
+  old_probes=[x['encoding'] for x in self.events() if x['kind']=='page-body-probe' and x['generation']=='releases/old']
+  self.assertEqual(old_probes,['br','gzip','deflate','identity'])
+ def test_unapplied_certificate_rollback_reports_actual_chain_failure(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_STAMP_INTERRUPT':'1','MOCK_IGNORE_ROLLBACK_RELOAD':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('Certificate rollback failed',result.stderr)
+  self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assertNotEqual((self.base/'state/served-tls-release').read_text(),'releases/old')
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assert_certificate_probe_cleanup()
+ def test_delayed_certificate_rollback_verifies_all_previous_chains(self):
+  result=self.run_script('publish-certificates.sh',{'MOCK_STAMP_INTERRUPT':'1','MOCK_CERT_ROLLBACK_APPLY_AFTER_PROBES':'2'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertNotIn('Certificate rollback failed',result.stderr)
+  self.assertEqual((self.base/'state/served-tls-release').read_text(),'releases/old')
+  self.assertEqual((self.base/'state/pending-tls-probes').read_text(),'2')
+  domains=[x['domain'] for x in self.events() if x['kind']=='certificate-probe']
+  self.assertEqual(domains[-4:],['tomkimberlin.com','tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'])
+  self.assert_certificate_probe_cleanup()
+ def test_prepare_only_interruption_does_not_probe_during_rollback(self):
+  result=self.run_script('publish-certificates.sh',{'ONEKB_PREPARE_ONLY':'1','MOCK_STAMP_INTERRUPT':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertFalse(any(x['kind']=='certificate-probe' for x in self.events()))
+  self.assertNotIn('Certificate rollback failed',result.stderr)
+  self.assert_certificate_probe_cleanup()
+ def test_old_marker_alone_does_not_accept_wrong_rollback_representations(self):
+  self.marked_previous_page()
+  for fault in [{'MOCK_ROLLBACK_BAD_BODY':'1'},{'MOCK_BAD_ENCODING':'1'}]:
+   with self.subTest(fault=fault):
+    result=self.run_script('deploy.sh',dict(MOCK_FORWARD_BAD_BODY='1',**fault))
+    self.assertNotEqual(result.returncode,0)
+    self.assertIn('Deployment rollback failed',result.stderr)
+    self.assertEqual((self.base/'active-generation').read_text(),'releases/old')
+ def test_missing_previous_certificate_release_reports_unverifiable_recovery(self):
+  (self.base/'tls/current').unlink()
+  result=self.run_script('publish-certificates.sh',{'MOCK_RELOAD_FAIL_ONCE':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('No previous certificate release exists; live recovery cannot be verified',result.stderr)
+  self.assertIn('Certificate rollback failed',result.stderr)
+  self.assertFalse((self.base/'tls/current').is_symlink())
+  self.assertFalse((self.base/'state/certificate-fingerprint').exists())
+  self.assert_certificate_probe_cleanup()
+ def test_publication_lock_contention_is_benign_but_operation_errors_fail(self):
+  for code in ['1','69']:
+   with self.subTest(code=code):
+    result=self.run_script('publish-certificates.sh',{'MOCK_LOCK_EXIT':code})
+    self.assertEqual(result.returncode,0 if code=='1' else 69,result.stdout+result.stderr)
+    self.assertEqual('lock failed' in result.stderr,code!='1')
+    self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+    self.assert_certificate_probe_cleanup()
+ def test_optimizer_lock_contention_is_benign_but_operation_errors_fail(self):
+  for code in ['1','69']:
+   with self.subTest(code=code):
+    result=self.run_script('cache-certificates.sh',{'MOCK_LOCK_EXIT':code})
+    self.assertEqual(result.returncode,0 if code=='1' else 69,result.stdout+result.stderr)
+    self.assertEqual('lock failed' in result.stderr,code!='1')
+
+ def test_stamp_restore_failure_still_reloads_and_verifies_a_safe_previous_pointer(self):
+  (self.base/'state/certificate-fingerprint').write_text('previous-fingerprint\n')
+  result=self.run_script('publish-certificates.sh',{'MOCK_STAMP_INTERRUPT':'1','MOCK_STAMP_RESTORE_FAIL':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('Certificate rollback failed',result.stderr)
+  self.assertEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assertEqual((self.base/'state/served-tls-release').read_text(),'releases/old')
+  self.assertNotEqual((self.base/'state/certificate-fingerprint').read_text(),'previous-fingerprint\n')
+  events=self.events();self.assertEqual(len([x for x in events if x['kind']=='stamp-restore-failed']),1)
+  reloads=[i for i,x in enumerate(events) if x['kind']=='docker' and '-s reload' in x['command']]
+  self.assertEqual(len(reloads),2)
+  domains=[x['domain'] for x in events[reloads[-1]+1:] if x['kind']=='certificate-probe']
+  self.assertEqual(domains,['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'])
+  self.assert_certificate_probe_cleanup()
+ def test_failed_pointer_restore_never_reloads_even_when_stamp_restore_succeeds(self):
+  (self.base/'state/certificate-fingerprint').write_text('previous-fingerprint\n')
+  result=self.run_script('publish-certificates.sh',{'MOCK_STAMP_INTERRUPT':'1','MOCK_TLS_POINTER_RESTORE_FAIL':'1'})
+  self.assertNotEqual(result.returncode,0)
+  self.assertIn('Certificate rollback failed',result.stderr)
+  self.assertNotEqual(os.readlink(self.base/'tls/current'),'releases/old')
+  self.assertNotEqual((self.base/'state/served-tls-release').read_text(),'releases/old')
+  self.assertEqual((self.base/'state/certificate-fingerprint').read_text(),'previous-fingerprint\n')
+  events=self.events();self.assertEqual(len([x for x in events if x['kind']=='pointer-restore-failed']),1)
+  self.assertEqual(len([x for x in events if x['kind']=='docker' and '-s reload' in x['command']]),1)
+  self.assertEqual(len([x for x in events if x['kind']=='certificate-probe']),3)
   self.assert_certificate_probe_cleanup()
 if __name__=='__main__':unittest.main(verbosity=2)

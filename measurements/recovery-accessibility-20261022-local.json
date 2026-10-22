@@ -1,0 +1,72 @@
+{
+  "verifiedAt": "2026-10-22T16:14:26.388364+00:00",
+  "scope": "Local regression evidence for deployment recovery, accessibility equivalence and CI coverage; no production fault injection or system settings changes.",
+  "baselineCommit": "e870450235cea398bb4d2d09a133b15376efadf9",
+  "sourceSha256": {
+    "server/deploy.sh": "5b5260ff6904c73d19f5d498dd2b944a419c8c19d2266034fa9f66d38e20747c",
+    "server/publish-certificates.sh": "804da8db877a66115fcd077a25dbf2f1b1cf874c9bc8c714653ba0f812051333",
+    "server/cache-certificates.sh": "e93168e16043989c7c8d293595098c8af2d82aaa67733662047da8a15763adf5",
+    "tools/test_deployment.py": "66591c2164eb802fa621461c905ce60f21ea1e78027c4ba8d1903435f9db8f90",
+    "tools/verify-page.mjs": "dd919556dc63f86499a05dc0ef276bd7d0ad279127a756cf33454015734dfa0b",
+    "tools/verify-page.test.mjs": "7d1f79e22f63f3d98f25aa32d06c7d574a55e14461195a16e4995cb4bc0e2ef5",
+    "tools/check-measurements.mjs": "e7c15998f4a1fbd37e1bda72eba75a28cae1ad78a58c3a0ef247f265efded865",
+    ".github/workflows/checks.yml": "19c281b9aea52647a69b07ff4f49f05b0bd8fa1ca4097a7a7d96dca06f1f98cf"
+  },
+  "verification": {
+    "pythonProbeAndDeploymentTests": {
+      "passed": 146,
+      "failed": 0,
+      "seconds": 72.765
+    },
+    "deploymentAndRenewalFixtures": {
+      "passed": 46,
+      "failed": 0,
+      "independentSeconds": 70.304
+    },
+    "browserGuardTests": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0
+    },
+    "measurementGuardTests": {
+      "passed": 18,
+      "failed": 0
+    },
+    "pageComparisons": {
+      "passed": 48,
+      "engines": [
+        "Chromium",
+        "WebKit"
+      ],
+      "cases": "Sixteen comparisons each at normal, 24 px root font and 24 px body font settings.",
+      "evidence": [
+        "measurements/page-20261022-accessibility-local.json",
+        "measurements/browser-20261022-accessibility-root-font-local.json",
+        "measurements/browser-20261022-accessibility-body-font-local.json"
+      ]
+    },
+    "faultControls": [
+      "Page reload is unapplied or delayed; immutable prior generation and four representations must be observed after rollback.",
+      "Certificate rollback reload and complete-chain verification must succeed before recovery is reported.",
+      "A failed fingerprint restore still permits verified old-chain recovery when its pointer was safely restored; overall failure remains visible.",
+      "Failed TLS pointer restoration prevents reload.",
+      "Lock contention is a benign skip; other lock failures propagate.",
+      "Repeated termination during bounded cleanup does not abandon private verification captures."
+    ],
+    "negativeControls": "New fault fixtures fail against the corresponding earlier implementation. A hidden heading is absent from the real Chromium accessibility tree despite passing earlier visual/content/focus checks.",
+    "ciCoverage": [
+      "All Python probe/deployment fixtures with dependencies installed.",
+      "Required Chromium browser guards; missing Playwright is fatal.",
+      "Complete runtime, certificate optimizer and gallery client Docker builds."
+    ]
+  },
+  "privateLogSha256": {
+    "final-python-tests.log": "5e86c68702f99ce7c1aaa69f5f89ac1728371a26c6e899e68b381b85afb6706f",
+    "final-browser-guards.log": "50d0a38962bd593ad5c9fdba7612d263e55f2b73329c4b97ebd61bcd707870c7",
+    "final-measurement-checks.log": "8c89dcbd8788d502f67e5573c2875197527cbafe8be8491e605c6ca734dc6555"
+  },
+  "limits": [
+    "Local fault fixtures exercise controlled command and filesystem failures; they do not prove recovery from every host failure.",
+    "Live activation and transfer measurements are recorded separately after deployment."
+  ]
+}

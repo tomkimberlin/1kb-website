@@ -92,8 +92,29 @@ async function snapshot(page) {
   while(walker.nextNode()) comments.push(walker.currentNode.data);
   const inlineHandlers=[...document.querySelectorAll('*')].flatMap(element=>[...element.attributes]
    .filter(attribute=>/^on/i.test(attribute.name)).map(attribute=>({tag:element.tagName,attribute:attribute.name})));
+  // Pixels and keyboard activation do not expose screen-reader labels, roles
+  // or inherited language. Ignore elements without semantic attributes so
+  // harmless metadata reordering and equivalent href aliases stay comparable.
+  const semanticNames=new Set(['role','lang','dir','tabindex','hidden','inert',
+   'title','alt','id','for','headers','scope','abbr']);
+  const accessibilityAttributes=[...document.querySelectorAll('*')].flatMap(element=>{
+   const attributes=[...element.attributes]
+    .filter(({name})=>name.startsWith('aria-')||semanticNames.has(name))
+    .map(({name,value})=>[name,value]).sort(([a],[b])=>a.localeCompare(b));
+   if(!attributes.length)return [];
+   // Keep labels bound to the same element; tag-relative paths are stable when
+   // distinct metadata tags are reordered or optional source tags are omitted.
+   const path=[];
+   for(let node=element;node;node=node.parentElement) {
+    let ordinal=1;
+    for(let previous=node.previousElementSibling;previous;previous=previous.previousElementSibling)
+     if(previous.tagName===node.tagName)ordinal++;
+    path.unshift(node.tagName+':'+ordinal);
+   }
+   return [{path:path.join('/'),attributes:Object.fromEntries(attributes)}];
+  });
   return {
-   title:document.title,mode:document.compatMode,scripts:document.scripts.length,inlineHandlers,
+   title:document.title,mode:document.compatMode,scripts:document.scripts.length,inlineHandlers,accessibilityAttributes,
    embeddedContexts:document.querySelectorAll('iframe,frame,object,embed').length,
    text:clean(document.body.innerText),comments,
    viewport:[...document.querySelectorAll('meta[name=viewport]')].map(element=>element.content),
@@ -178,6 +199,7 @@ try {
       const png=await page.screenshot({fullPage:true});
       writeFileSync(join(output,`${name}-${version}.png`),png);
       if(version==='candidate') {
+       assert.deepEqual(state.accessibilityAttributes,results.baseline.state.accessibilityAttributes,name+' accessibility attributes changed');
        assert.deepEqual(state,results.baseline.state,name+' content or layout changed');
        assert(png.equals(results.baseline.png),name+' pixels changed');
       }
@@ -236,7 +258,7 @@ try {
     }
     assert.deepEqual(results.candidate.activations,results.baseline.activations,name+' activated destinations changed');
     cases.push({engine,browserVersion:browser.version(),width,theme,mobile:width<=402,identicalPixels:true,
-     identicalContentAndGeometry:true,keyboardLinks:9,focusKey,identicalFocusedPixels:9,keyboardEnterDestinations:9,
+     identicalContentAndGeometry:true,identicalAccessibilityAttributes:true,keyboardLinks:9,focusKey,identicalFocusedPixels:9,keyboardEnterDestinations:9,
      pageLoadRequests:1,keyboardProbeRequests:results.candidate.httpProbes,nativeProtocolActivations:results.candidate.protocolActivations,unexpectedRequests:0,externalRequestsBlocked:true});
     console.log(name+': identical pixels, content, geometry, focused appearance and Enter destinations; one page-load request');
    }

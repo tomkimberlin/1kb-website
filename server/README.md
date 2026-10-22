@@ -35,7 +35,7 @@ npm run verify:live
 npm run verify:alias
 ```
 
-Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then requires the exact release marker over the existing private TLS listener and checks all four bodies and encodings; failure restores the previous configuration/release. The private ACME vhost must have a valid trusted certificate for readiness to pass. Server images and host scripts need separate activation.
+Deployment builds a private snapshot into an immutable release: four bodies, `representations.json`, `site.js` and `nginx.conf`. Under the certificate lock it validates nginx, activates and reloads, then requires the exact release marker over the existing private TLS listener and checks all four bodies and encodings; failure restores and verifies the previous worker generation and all four bodies. Legacy configurations without a readiness marker report that generation cannot be verified. The private ACME vhost must have a valid trusted certificate for readiness to pass. Server images and host scripts need separate activation.
 
 Deployment leaves local `public/` unchanged; the subsequent build refreshes it for [public verification](../TRANSPORT.md#verification). Keep the checkout consistent with the deployed snapshot. A fresh query such as `?v=RELEASE_ID` bypasses the one-day browser cache. Offline deployment regressions: `python3 tools/test_deployment.py`.
 
@@ -54,9 +54,9 @@ Set the runtime tag through `ONEKB_IMAGE` or `start.sh`, the optimizer tag in `c
 
 ## Certificates and DNS
 
-Native nginx ACME renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. The publisher checks trust, hostname, at least one day's validity and matching keys before atomically activating a complete release. Fresh trusted handshakes must then serve the exact full chains for all three hostnames before the publisher records success, including on unchanged-fingerprint runs; failed activation rolls back.
+Native nginx ACME renews ECDSA certificates using Let's Encrypt's `tlsserver` profile and ISRG Root X2 chain preference. The publisher checks trust, hostname, at least one day's validity and matching keys before atomically activating a complete release. Fresh trusted handshakes must then serve the exact full chains for all three hostnames before the publisher records success, including on unchanged-fingerprint runs; failed activation restores and verifies the previous served chains.
 
-Optional compression receives public PEM files only, without network or private keys, with a 45-second deadline and five-second stop grace. Failure permits renewal with normal compression. The runtime accepts cached encodings only after complete decompression and exact comparison. Refreshing unchanged certificates' compression requires running the helper, testing and reloading nginx.
+Optional compression tests a bounded distance-code pool, retaining the baseline recipe and smaller exact saved output. It receives public PEM files only, without network or private keys, with a 45-second deadline and five-second stop grace. Failure permits renewal with normal compression. The runtime accepts cached encodings only after complete decompression and exact comparison. Refreshing unchanged certificates' compression requires running the helper, testing and reloading nginx.
 
 Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` needs Python 3.12+ and a C compiler. Reusing `--encoder ENCODER.so` requires its generated `ENCODER.so.json`; `--archive` supplies pinned sources offline.
 

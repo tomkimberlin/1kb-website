@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import ssl
 import sys
+import tarfile
 import tempfile
 import unittest
 from contextlib import redirect_stdout
@@ -63,6 +64,29 @@ class CertificateOptimizerTests(unittest.TestCase):
                            '\n-----BEGIN PRIVATE KEY-----\nfixture\n-----END PRIVATE KEY-----\n')
         with self.assertRaisesRegex(ValueError, 'Private-key PEM'):
             optimizer.pem_body(private)
+
+    def test_archive_checksum_is_checked_before_extraction_or_compilation(self):
+        archive = self.root / 'wrong.tar.gz'
+        archive.write_bytes(b'not the pinned source')
+        with patch.object(optimizer.tarfile, 'open') as extract, \
+             patch.object(optimizer.subprocess, 'run') as compile:
+            with self.assertRaisesRegex(ValueError, 'source archive checksum mismatch'):
+                optimizer.build_encoder(self.root, self.library, archive)
+        extract.assert_not_called()
+        compile.assert_not_called()
+
+    def test_source_patch_context_mismatch_stops_before_compilation(self):
+        archive = self.root / 'context.tar.gz'
+        contents = b'Unexpected pinned encoder source context'
+        with tarfile.open(archive, 'w:gz') as source:
+            info = tarfile.TarInfo(f'brotli-{optimizer.REVISION}/c/enc/backward_references_hq.c')
+            info.size = len(contents)
+            source.addfile(info, io.BytesIO(contents))
+        with patch.object(optimizer, 'ARCHIVE_SHA256', hashlib.sha256(archive.read_bytes()).hexdigest()), \
+             patch.object(optimizer.subprocess, 'run') as compile:
+            with self.assertRaisesRegex(RuntimeError, 'Pinned Brotli source does not match patch'):
+                optimizer.build_encoder(self.root, self.library, archive)
+        compile.assert_not_called()
 
     def first_der(self):
         length = int.from_bytes(self.source[4:7], 'big')
@@ -165,7 +189,9 @@ class CertificateOptimizerTests(unittest.TestCase):
         good = optimizer.encoder_provenance(self.library)
         manifest.write_text(json.dumps(good))
         self.assertEqual(optimizer.load_encoder_provenance(self.library), good)
-        for bad in ({**good, 'encoderSha256': 'wrong'}, {**good, 'model': {}}, [], {'params': good['params']}):
+        for bad in ({**good, 'encoderSha256': 'wrong'}, {**good, 'model': {}},
+                    {**good, 'parameterSearch': {}}, {**good, 'decoder': 'old decoder'},
+                    [], {'params': good['params']}):
             with self.subTest(bad=bad):
                 manifest.write_text(json.dumps(bad))
                 with self.assertRaisesRegex(ValueError, 'checksum or pinned recipe'):
@@ -174,6 +200,75 @@ class CertificateOptimizerTests(unittest.TestCase):
         self.library.write_bytes(b'a different encoder')
         with self.assertRaisesRegex(ValueError, 'checksum or pinned recipe'):
             optimizer.load_encoder_provenance(self.library)
+
+    def test_distance_pool_is_bounded_legal_and_contains_deployed_recipe(self):
+        pairs = optimizer.DISTANCE_CANDIDATES
+        self.assertEqual(len(pairs), 64)
+        self.assertEqual(len(set(pairs)), 64)
+        self.assertIn((optimizer.PARAMS[7], optimizer.PARAMS[8]), pairs)
+        self.assertTrue(all(0 <= p <= 3 and 0 <= d <= 15 << p and d % (1 << p) == 0
+                            for p, d in pairs))
+
+    def select(self, effect, clock=None):
+        with patch.object(optimizer.c, 'CDLL', return_value=object()), \
+             patch.object(optimizer, 'encode_candidate', side_effect=effect) as encode, \
+             patch.object(optimizer.time, 'monotonic', side_effect=clock or (lambda: 0)):
+            selected, facts = optimizer.select_encoding(self.source, self.library)
+        return selected, facts, encode
+
+    def test_distance_search_selects_smaller_candidate_and_records_actual_parameters(self):
+        def candidate(source, library, params):
+            return self.small if (params[7], params[8]) == (2, 12) else self.large
+        selected, facts, calls = self.select(candidate)
+        self.assertEqual(selected, self.small)
+        self.assertEqual((facts['params']['7'], facts['params']['8']), (2, 12))
+        self.assertEqual(calls.call_count, 64)
+        self.assertEqual(calls.call_args_list[0].args[2], optimizer.PARAMS)
+        self.assertEqual(facts['parameterSearchResult'],
+                         {'attempted': 64, 'failed': 0, 'deadlineReached': False})
+
+    def test_equal_distance_candidates_keep_deployed_recipe_provenance(self):
+        selected, facts, _ = self.select(lambda source, library, params: self.small)
+        self.assertEqual(selected, self.small)
+        self.assertEqual(facts['params'], {str(k): v for k, v in optimizer.PARAMS.items()})
+
+    def test_optional_trial_allocation_and_validation_failures_retain_baseline(self):
+        def candidate(source, library, params):
+            pair = params[7], params[8]
+            if pair == (0, 0):
+                raise MemoryError('optional allocation failure')
+            if pair == (0, 1):
+                raise RuntimeError('invalid or trailing candidate')
+            return self.small if params == optimizer.PARAMS else self.large
+        selected, facts, calls = self.select(candidate)
+        self.assertEqual(selected, self.small)
+        self.assertEqual(calls.call_count, 64)
+        self.assertEqual(facts['parameterSearchResult']['failed'], 2)
+        self.assertEqual(facts['params'], {str(k): v for k, v in optimizer.PARAMS.items()})
+
+    def test_baseline_failure_stops_before_optional_trials(self):
+        with patch.object(optimizer.c, 'CDLL', return_value=object()), \
+             patch.object(optimizer, 'encode_candidate', side_effect=MemoryError('baseline')) as encode:
+            with self.assertRaises(MemoryError):
+                optimizer.select_encoding(self.source, self.library)
+        self.assertEqual(encode.call_count, 1)
+
+    def test_search_deadline_retains_baseline_and_reports_partial_search(self):
+        selected, facts, calls = self.select(lambda source, library, params: self.small,
+                                             clock=iter([0, 10]).__next__)
+        self.assertEqual(selected, self.small)
+        self.assertEqual(calls.call_count, 1)
+        self.assertEqual(facts['parameterSearchResult'],
+                         {'attempted': 1, 'failed': 0, 'deadlineReached': True})
+
+    def test_search_deadline_preserves_smaller_completed_trial(self):
+        def candidate(source, library, params):
+            return self.large if params == optimizer.PARAMS else self.small
+        selected, facts, calls = self.select(candidate, clock=iter([0, 0, 10]).__next__)
+        self.assertEqual(selected, self.small)
+        self.assertEqual(calls.call_count, 2)
+        self.assertEqual((facts['params']['7'], facts['params']['8']), (0, 0))
+        self.assertTrue(facts['parameterSearchResult']['deadlineReached'])
 
     def test_output_guards_cover_direct_symbolic_hardlink_and_output_collisions(self):
         symbolic, hard = self.root / 'symbolic', self.root / 'hard'
@@ -230,7 +325,9 @@ class CertificateOptimizerTests(unittest.TestCase):
         with patch.object(sys, 'argv', ['optimizer', str(source), '--encoder', str(self.library), '--output', str(self.root)]), \
              patch.object(optimizer, 'build_encoder') as build, \
              patch.object(optimizer.urllib.request, 'urlopen') as download, \
-             patch.object(optimizer, 'encode', return_value=self.small), \
+             patch.object(optimizer, 'select_encoding', return_value=(self.small,
+                          {'params': {'7': 2, '8': 12}, 'parameterSearchResult':
+                           {'attempted': 64, 'failed': 0, 'deadlineReached': False}})), \
              patch.object(optimizer, 'decode_exact', side_effect=self.decode), \
              patch.object(optimizer.c, 'CDLL', return_value=object()), redirect_stdout(captured):
             optimizer.main()
@@ -238,6 +335,7 @@ class CertificateOptimizerTests(unittest.TestCase):
         download.assert_not_called()
         self.assertEqual(self.output.read_bytes(), self.small)
         self.assertFalse(json.loads(captured.getvalue())['retainedExisting'])
+        self.assertEqual(json.loads(self.manifest().read_text())['params'], {'7': 2, '8': 12})
 
 
 if __name__ == '__main__':
