@@ -1,6 +1,6 @@
 # Making a tiny website smaller
 
-I built the foundation of this website years ago, then let Astra cook on it. The tight loop of changing, measuring and verifying made it an ideal problem for AI to tackle.
+I built the foundation of this website years ago, then let Astra/GPT-6.1 Sol. The tight loop of changing, measuring and verifying made it an ideal problem for AI to tackle.
 
 The initial goal was fitting into [1KB Club](https://1kb.club/). Once it qualified, I wanted to see just how far Astra could take it. That expanded the work from HTML and CSS into headers, caching, nginx and TLS.
 

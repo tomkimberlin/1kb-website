@@ -1,0 +1,100 @@
+{
+  "measuredAt": "2026-10-22T17:04:17.857Z",
+  "url": "https://tomkimberlin.com/",
+  "pageCommit": "a2aed5e94c195e8cde4f2c5ced52c8af7de66ab9",
+  "pageRelease": "20261022T165455Z-aa9d6af64c9d-onekb-deploy.zxVRJg",
+  "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+  "serverOpenSSL": "OpenSSL 3.5.9 29 Sep 2026",
+  "scope": "Read-only public HTTPS in native browsers through a loopback CONNECT proxy. TLS is relayed unchanged end to end with ordinary public certificate verification. Only public Hello extension presence and record lengths/counts are retained; no ticket identities, binders, certificates, session secrets or keys are saved. Repeated cache-busted document requests only. Passive mode observes requests without interception; the CONNECT proxy permits only the owned hostname, and JavaScript is disabled. Routed mode blocks all other context requests.",
+  "contextType": "persistent",
+  "requestObservation": "passive",
+  "closeMode": "forced",
+  "deniedProxyTargets": 0,
+  "documentLoads": 6,
+  "rawReportSha256": "2bb2ac76488acdb146f3df242adceb4826e6b88fe387fd89cf91587509fdece7",
+  "verifierSha256": "b71bd6d8a2a57c3240cb27edd7fca2b276ddac7d0546c4b6c5b5e68c485aa2af",
+  "metadataParserSha256": "d978ac59fb737e3ef3d505edf777f0709a7c56db0b273ce184c6691a5da35cc3",
+  "findings": [
+    {
+      "engine": "chromium",
+      "version": "153.0.8010.12",
+      "documents": 3,
+      "allHttp200AndExactDecodedSource": true,
+      "connections": [
+        {
+          "visit": 1,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": false,
+          "pskSelected": false,
+          "pskModesOffered": true,
+          "closed": true,
+          "quietMillisecondsBeforeForcedHalfClose": 2009
+        },
+        {
+          "visit": 2,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": true,
+          "pskSelected": true,
+          "pskModesOffered": true,
+          "closed": true,
+          "quietMillisecondsBeforeForcedHalfClose": 2011
+        },
+        {
+          "visit": 3,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": true,
+          "pskSelected": true,
+          "pskModesOffered": true,
+          "closed": true
+        }
+      ],
+      "pskOffers": 2,
+      "pskSelections": 2
+    },
+    {
+      "engine": "webkit",
+      "version": "26.6",
+      "documents": 3,
+      "allHttp200AndExactDecodedSource": true,
+      "connections": [
+        {
+          "visit": 1,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": false,
+          "pskSelected": false,
+          "pskModesOffered": true,
+          "closed": true,
+          "quietMillisecondsBeforeForcedHalfClose": 2014,
+          "terminalOutcome": "Client ECONNRESET after forced upstream half-close; document already completed."
+        },
+        {
+          "visit": 2,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": false,
+          "pskSelected": false,
+          "pskModesOffered": true,
+          "closed": true,
+          "quietMillisecondsBeforeForcedHalfClose": 2011,
+          "terminalOutcome": "Client ECONNRESET after forced upstream half-close; document already completed."
+        },
+        {
+          "visit": 3,
+          "tlsVersion": "TLSv1.3",
+          "pskOffered": false,
+          "pskSelected": false,
+          "pskModesOffered": true,
+          "closed": true
+        }
+      ],
+      "pskOffers": 0,
+      "pskSelections": 0
+    }
+  ],
+  "conclusion": "Chromium selected TLS1.3 PSK resumption on its second and third connections. WebKit completed all three exact documents but offered no PSK. WebKit empty-nonce resumption compatibility remains unestablished.",
+  "limits": [
+    "Forced mode half-closes the upstream TCP stream after complete document delivery and at least 1.5 seconds additional wait; it does not synthesize TLS alerts. Negative results require a natural-close control.",
+    "A PSK offer proves the browser retained an offerable session; a TLS1.3 ServerHello PSK selection is the resumption signal. No encrypted ticket payload is inspected.",
+    "This forced-close run has no new trusted eight-byte-nonce control. The earlier natural-close and context controls are separate dated evidence in measurements/browser-resumption-20261022-live.json.",
+    "No browser timing, delivery-overhead saving, decoded ticket contents or universal browser compatibility is established."
+  ]
+}

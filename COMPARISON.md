@@ -1,5 +1,26 @@
 # Delivery overhead comparison
 
+<!-- comparison:current:start -->
+## Latest verified own-site result
+
+Measured 2026-10-22: **1,021 B HTML; 389 B Brotli; 536 B gzip; 524 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+
+| Measurement | Median | Range |
+| --- | ---: | ---: |
+| Complete TLS through first document | 5,642 B | 5,641–5,643 B |
+| TLS minus complete body | 5,253 B | 5,252–5,254 B |
+| Estimated TCP/IP + DNS through close | 7,334 B | 7,283–7,385 B |
+| TCP/IP + DNS minus complete body | 6,945 B | 6,894–6,996 B |
+| HTTP/2 plaintext minus complete body | 105 B | 105–105 B |
+
+[Overhead evidence](measurements/overhead-20261022-openssl359.json), [verified deployment](measurements/deployment-20261022-openssl359.json) and [page measurements](measurements/page-20261022-accessibility-local.json). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+
+Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
+<!-- comparison:current:end -->
+
+<!-- comparison:gallery:start -->
+## Historical six-site sample — September 22, 2026
+
 Measured September 22, 2026, against five pages from [1kb.club](https://1kb.club/). This website had the lowest delivery overhead in this sample. Each result subtracts the response body, so having less text does not improve the ranking.
 
 Each cell shows the median of three cold connections, in bytes. Both directions are counted.
@@ -29,20 +50,26 @@ At measurement time, the page was 742 bytes of HTML, 317 bytes with Brotli and 4
 
 The measurements cover the first document exchange on a cold connection. They exclude favicon/subresource discovery, link clicks, link-layer overhead, ARP/NDP cache misses and recursive DNS traffic beyond the chosen resolver. Subtracting the body does not remove incidental framing differences caused by its length. Client capabilities, connection reuse, cached state, routing and packet timing can change the totals.
 
-HTML-only edits do not require refreshing this body-subtracted comparison. Rerun it when headers, TLS or server configuration change, or to collect a newer sample. The October 5 direct-link and copy edits preserve the September 26 transport configuration; the fresh DebugBear counter-minus-body check is 81 B in both its September 22 and October 5 reports. That narrower counter does not update the full TLS/TCP/IP/DNS results above.
+The [October 5 own-site check](measurements/overhead-20261005.json) and [October 22 certificate check](measurements/overhead-20261022-certificate.json) remain dated evidence. The latest section above replaces their own-site figures; peer results remain the September 22 sample.
 
-The [October 5 own-site check](measurements/overhead-20261005.json) uses three fresh cold connections and verifies the current 1,021-byte HTML / 391-byte Brotli body. TLS overhead is 5,253 B median (5,252–5,253), versus 5,251 B (5,251–5,252) above; its two-byte change exactly matches variable CertificateVerify message lengths. Estimated TCP/IP + DNS overhead is 6,945 B median (6,945–7,048), versus 6,995 B (6,943–6,996); overlapping packet ranges do not establish a repeatable saving. HTTP/2 plaintext minus body remains 105 B in every old and new run, with the same 63-byte header block and control frames. This checks the current server, not a new six-site ranking.
+The latest October 22 runs use a frozen OpenSSL 3.5.8 client against the updated OpenSSL 3.5.9 server, with the same request fields and exact page bodies before and after. TLS and packet-overhead medians did not change during that runtime update. The evidence identifies client and server separately, including source hashes and versions. Historical package versions were not recorded, so the September client is not claimed bit-for-bit identical.
 
-The rebuilt client uses the existing historical OpenSSL 3.5.8 base, identical request fields, a 1,547-byte ClientHello and 2,157 sent TLS bytes. The Python/package layer was rebuilt; historical package versions were not recorded, so the historical client image is not claimed bit-for-bit identical. The evidence records versions, tool hashes, source/body hashes, all three samples and measurement boundaries.
+<!-- comparison:gallery:end -->
+
+## Reproduce a new sample
+
+`npm run check:measurements` checks the current comparison against hashed live evidence, exact page bodies and the latest published verification. A changed working build requires a separate local-candidate section and matching evidence until deployed and measured. Update `measurements/comparison-current.json` and the latest figures together; the historical peer sample stays dated.
 
 The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the connected local address, selected peer address and TCP source port, and requires HTTP 200 before publishing a decoded document. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20260922g -f server/Dockerfile .
-docker build -t onekb-gallery:20260922 -f tools/gallery.Dockerfile .
+docker build -t onekb-nginx:20261022b -f server/Dockerfile .
+docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
+
+These commands build a new client from the current sources; they do not recreate or overwrite the frozen October 22 measurement image. Record the actual image identity and dependency versions for each new comparison.
 
 Collect a sample:
 
@@ -53,7 +80,7 @@ docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
   --tmpfs /tmp:rw,noexec,nosuid,size=16m \
   -v "$PWD/tools/compare-gallery.py:/probe.py:ro" \
   -v "$PWD/optimization/gallery:/out" \
-  onekb-gallery:20260922 --out /out/run-1 --port 46280
+  onekb-gallery:local --out /out/run-1 --port 46280
 ```
 
 Repeat with distinct output directories and source-port ranges for additional samples. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
