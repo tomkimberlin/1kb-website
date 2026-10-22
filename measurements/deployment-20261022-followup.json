@@ -1,0 +1,205 @@
+{
+  "verifiedAt": "2026-10-22T16:38:38.719107+00:00",
+  "url": "https://tomkimberlin.com/",
+  "pageCommit": "51e0d58b084d928aa5704369cbfdbfce7ad001b3",
+  "pageRelease": "releases/20261022T162514Z-aa9d6af64c9d-onekb-deploy.2CsUgl",
+  "previousPageRelease": "releases/20261022T132104Z-aa9d6af64c9d-onekb-deploy.BCJNct",
+  "change": "Bounded certificate distance search, verified recovery and semantic browser regression checks. Page representations are unchanged.",
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1021,
+      "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 389,
+      "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 536,
+      "sha256": "fe61ae0c9d6c5676d5c12e35d87152dc45aaa1ae1c974d5aa8b1baf945799b81",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 524,
+      "sha256": "8e245b57c5006ca243a6914bca524f97152e1cd041c520da0a09ee356466e9a4",
+      "exactLocalOriginAndPublicResponse": true
+    }
+  ],
+  "server": {
+    "image": "onekb-nginx:20261022a",
+    "imageId": "sha256:def39fdc09777585b6f4179fc6b2cf14fc5df24d31b5f3a4a2cbb3c285a8b6f6",
+    "running": true,
+    "activeConfigurationSha256": "92cb4b0b658c1c6b835b1203798929ab005dee9828a3b4e8a89ae69a85967f3a",
+    "sourceFileHashes": {
+      "server/Dockerfile": "20f2154b4fb6cf1c6eab8b8900835fec4d3a39e7c6c87a0ac467e1cd85be2e06",
+      "server/nginx.conf": "b64de2d313610d2e4e0b7cc10eabb74885f2240e15daa136c39ae09d1d2b77e6",
+      "server/site.js": "90d91b33674bfb7f3fdb2c16e909f418188e798c077e621aa916202e35c82c77",
+      "server/start.sh": "9214e920f4b568bfda3103c760c220dd045e38073acb73fe516efa920a38f17e",
+      "server/publish-certificates.sh": "804da8db877a66115fcd077a25dbf2f1b1cf874c9bc8c714653ba0f812051333",
+      "server/cache-certificates.sh": "e93168e16043989c7c8d293595098c8af2d82aaa67733662047da8a15763adf5",
+      "tools/optimize-certificates.py": "5ace05e851ea88c80bf0cde39bec03a608ea1665494f475c5ad17362a9bcb6ad"
+    },
+    "installedPublisherSha256": "804da8db877a66115fcd077a25dbf2f1b1cf874c9bc8c714653ba0f812051333",
+    "installedCacheHelperSha256": "e93168e16043989c7c8d293595098c8af2d82aaa67733662047da8a15763adf5",
+    "installedHostFilesMatchCommit": true,
+    "installedModesAndOwnershipPreserved": true,
+    "trustedPrivateReadinessExactRelease": true,
+    "certificatePublisherFreshFullChainCheckPassed": true,
+    "privateCertificateCapturesRemaining": 0,
+    "runtimeImagePortsMountsCapabilitiesTrustCipherKeyExchangeReplayAndCredentialsUnchanged": true
+  },
+  "certificateCache": {
+    "optimizerImage": "onekb-certificate-optimizer:20261022b",
+    "optimizerImageId": "sha256:12e8f18864c8fb4de90e7272aa6f4ec987e067281e38f456a3e4753073d35f33",
+    "localEvidence": "measurements/certificate-distance-pool-20261022-local.json",
+    "actualOwnedCacheFiles": [
+      {
+        "brotliBytes": 1487,
+        "brotliSha256": "057d4aa15c5a77924d5e3a0f4620d0479b15014eea969ff377dc98ed997655d6",
+        "hostname": "tomkimberlin.com",
+        "inputSha256": "06775c21de30195f66bf5f991e73fe3b5ab59c3195b46f620ee5b1119701e0d7",
+        "metadataSha256": "a5aa41d5beb2df2b30cea6e7e7b01f1ccd37e5b00f01e7b134cbcb61a70d1265"
+      },
+      {
+        "brotliBytes": 1493,
+        "brotliSha256": "88b66d588589cb7a4c2b874377484aaa95eccd7dd54c439b5c01d0faf7586f1d",
+        "hostname": "www.tomkimberlin.com",
+        "inputSha256": "10d003a9fcefe2199c69d4a16f8916b3343947c88c83f254afbd558f5810b91f",
+        "metadataSha256": "6c485b0201cb8281917f0227c78d5039ffd25bca523a028e7c0519f57b92ea64"
+      },
+      {
+        "brotliBytes": 1491,
+        "brotliSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+        "hostname": "tom.kimberlin.net",
+        "inputSha256": "be23241b52bfdc46078d8e59a7bf704d6fac9e351b4437eacbcc4aeffbe402f1",
+        "metadataSha256": "e0562faebf2f9232617bc03f161dc8a8c04f1be6d5b29df60c5e270613dd3688"
+      }
+    ],
+    "trustedLiveCompleteCompressedCertificateBytes": [
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1499
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1505
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "www.tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1503
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tom.kimberlin.net",
+        "protocol": "TLSv1.3",
+        "verified": true
+      }
+    ],
+    "previousCompleteMessageBytes": [
+      1501,
+      1507,
+      1507
+    ],
+    "newCompleteMessageBytes": [
+      1499,
+      1505,
+      1503
+    ],
+    "componentDefinition": "Complete CompressedCertificate handshake message including its four-byte header; encoded certificate payload is twelve bytes shorter.",
+    "exactDecodeAndCompleteInputConsumptionVerified": true,
+    "all64CandidatesCompletedForEachChain": true,
+    "networklessPublicPemOnlyHelper": true
+  },
+  "verification": {
+    "applicationTests": 78,
+    "measurementGuardTests": 18,
+    "pythonProbeAndDeploymentTests": 146,
+    "deploymentAndRenewalFixtures": 46,
+    "browserGuardTests": 16,
+    "localBrowserComparisons": 48,
+    "liveBrowserComparisons": 16,
+    "mainHttp11AndHttp2Checks": 120,
+    "aliasRedirectChecks": 12,
+    "followedAliasExactBrotliPage": true,
+    "liveBrowserEvidence": "measurements/browser-20261022-followup-live.json",
+    "localBuildEvidence": "measurements/page-20261022-accessibility-local.json",
+    "recoveryEvidence": "measurements/recovery-accessibility-20261022-local.json",
+    "ci": [
+      {
+        "url": "https://github.com/tomkimberlin/1kb-website/actions/runs/39812412589",
+        "headSha": "51e0d58b084d928aa5704369cbfdbfce7ad001b3",
+        "status": "completed",
+        "conclusion": "success",
+        "jobs": {
+          "runtime": "success",
+          "application": "success",
+          "browser": "success"
+        }
+      }
+    ]
+  },
+  "deliveryOverhead": {
+    "evidence": "measurements/overhead-20261022-certificate.json",
+    "definition": "Measured traffic minus the entire actual encoded response body.",
+    "bodyBytes": 389,
+    "freshBaselineEstimatedTcpPlusDnsMedian": 6947,
+    "freshBaselineEstimatedTcpPlusDnsRange": [
+      6895,
+      6947
+    ],
+    "currentEstimatedTcpPlusDnsMedian": 6945,
+    "currentEstimatedTcpPlusDnsRange": [
+      6944,
+      6998
+    ],
+    "freshBaselineTlsMedian": 5255,
+    "currentTlsMedian": 5253,
+    "currentTlsRange": [
+      5252,
+      5254
+    ],
+    "interpretation": "The main certificate message shrank by two bytes. Three cold connections per phase show a two-byte median TLS reduction. Packet ranges overlap; no general network or performance improvement is established."
+  },
+  "rollback": {
+    "hostBackupDirectoryBasename": "cache-20261022-162810-1849161",
+    "previousPublisherCacheHelperAndSixOwnedCacheFilesRetained": true,
+    "pairedConfigurationPageAndTlsPointersRetained": true,
+    "newCacheInstallAndOriginalModesVerified": true,
+    "previousRuntimeRollback": {
+      "previousImage": "onekb-nginx:20260926a",
+      "previousImageId": "sha256:23bb9fbc651c76e8524270066f463ce798a6c15abb13e70b9ed11477ec783691",
+      "container": "onekb-website-rollback-runtime-20261022-132040",
+      "containerStopped": true,
+      "containerAutomaticRestartDisabled": true,
+      "hostBackupDirectoryBasename": "runtime-20261022-132040",
+      "previousPageReleaseAndPairedConfigurationRetained": true,
+      "previousHostScriptsAndTemplateRetained": true
+    }
+  },
+  "limitations": [
+    "Three sequential samples per phase on one client/path; packet segmentation, acknowledgments and signature lengths vary.",
+    "Native WebKit loaded the exact page but offered no resumption PSK in the separate investigation; no equivalent trusted eight-byte-nonce control was deployed.",
+    "No new DebugBear scanner result or universal optimum claim."
+  ]
+}
