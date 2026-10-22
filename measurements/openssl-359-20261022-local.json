@@ -1,0 +1,337 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-22",
+  "candidate": "OpenSSL 3.5.9",
+  "status": "Native candidate and full Linux production-image checks passed; live activation recorded separately.",
+  "scope": "Compatibility checks only. No global installation or service activation; the isolated Linux configuration preflight has no network or published ports and read-only production mounts.",
+  "source": {
+    "archiveUrl": "https://www.openssl.org/source/openssl-3.5.9.tar.gz",
+    "officialChecksumUrl": "https://www.openssl.org/source/openssl-3.5.9.tar.gz.sha256",
+    "archiveBytes": 53279637,
+    "archiveSha256": "603f5602e2eef00d77fbd429d34dcd5822bb301757a1bc9cdb24c670f1eb859a",
+    "checksumMatches": true,
+    "versionDatReleaseDate": "29 Sep 2026",
+    "verificationScope": "Published official SHA256 retrieved over verified HTTPS; no detached-signature verification claimed."
+  },
+  "patchCompatibility": {
+    "openssl": [
+      {
+        "path": "server/certificate-compression.patch",
+        "sha256": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44",
+        "exitCode": 0,
+        "output": "patching file 'crypto/comp/c_brotli.c'"
+      },
+      {
+        "path": "server/tls-flight.patch",
+        "sha256": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0",
+        "exitCode": 0,
+        "output": "patching file 'ssl/ssl_local.h'\npatching file 'ssl/ssl_lib.c'\npatching file 'ssl/statem/statem_lib.c'"
+      },
+      {
+        "path": "server/ticket-nonce.patch",
+        "sha256": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289",
+        "exitCode": 0,
+        "output": "patching file 'ssl/statem/statem_srvr.c'"
+      }
+    ],
+    "nginx": [
+      {
+        "path": "server/small-responses.patch",
+        "sha256": "08fb57eba519c72f9b73dc96c0c2bff2acebf071cc8760e25b1750a6bffb64e9",
+        "exitCode": 0,
+        "output": "patching file 'src/http/v2/ngx_http_v2.c'\npatching file 'src/http/v2/ngx_http_v2_filter_module.c'\npatching file 'src/http/v3/ngx_http_v3_filter_module.c'\npatching file 'src/http/ngx_http_header_filter_module.c'\npatching file 'src/http/ngx_http_header_filter_module.c'\npatching file 'src/http/ngx_http_core_module.c'\npatching file 'src/http/v2/ngx_http_v2.h'\npatching file 'src/http/v2/ngx_http_v2_filter_module.c'"
+      },
+      {
+        "path": "server/certificate-cache.patch",
+        "sha256": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+        "exitCode": 0,
+        "output": "patching file 'src/http/modules/ngx_http_ssl_module.c'\npatching file 'src/http/modules/ngx_http_ssl_module.h'\npatching file 'src/http/modules/ngx_http_ssl_brotli_cache.h'"
+      }
+    ],
+    "fuzz": 0,
+    "offsets": 0,
+    "snapshotStillCurrent": true,
+    "nginxArchiveSha256": "4261dc90e9e47c1c4041276e9aaa3d48ebe2e664f728e14fa95ae6c67d57a08b"
+  },
+  "build": {
+    "configure": [
+      "darwin64-arm64",
+      "shared",
+      "zlib",
+      "enable-brotli",
+      "no-docs",
+      "--with-brotli-include=<ignored-stock-source>/c/include",
+      "--with-brotli-lib=<ignored-stock-build>",
+      "--prefix=<not-installed>"
+    ],
+    "buildCommand": [
+      "make",
+      "-j2",
+      "build_sw"
+    ],
+    "installed": false,
+    "scope": "Native Darwin arm64, Brotli1.2.1 and SDK zlib; Zstd and production Linux runtime not represented.",
+    "buildExitCode": 0,
+    "buildLogSha256": "35c0f1a225ddfe8cd108aa85cb81788347ea0f2902f08f79d50151444e7f00bb",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+  },
+  "regression": {
+    "customHarnesses": [
+      {
+        "harness": "ticket-nonce",
+        "exitCode": 0,
+        "elapsedSeconds": 0.209,
+        "jsonRows": 46,
+        "caseRows": 28,
+        "skippedCases": 0,
+        "stdoutSha256": "42377b2971249e96f822c9fbb73a5b39d511496706de499230417a8b88e5965d",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "harness": "tls-flight",
+        "exitCode": 0,
+        "elapsedSeconds": 0.203,
+        "jsonRows": 24,
+        "caseRows": 23,
+        "skippedCases": 0,
+        "stdoutSha256": "1fcd6bc0f71e5a1a7caf10a555c3557d60c6045e130fb8ce3f271121f734f655",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "harness": "certificate-compression",
+        "exitCode": 0,
+        "elapsedSeconds": 0.379,
+        "jsonRows": 0,
+        "caseRows": 0,
+        "skippedCases": 0,
+        "stdoutSha256": "f24fc0151b42f19a1013d7ab461b7fd84f56108e23f1332987890f2820a32926",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "syntheticCases": 39,
+        "allocationFallbackCases": 2
+      },
+      {
+        "harness": "certificate-cache",
+        "exitCode": 0,
+        "elapsedSeconds": 0.806,
+        "jsonRows": 97,
+        "caseRows": 96,
+        "skippedCases": 0,
+        "stdoutSha256": "61876bffb91984f4525539fa6b68fe2940356a3c26df6d2e1e3ace183a6fb037",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "allocationSummary": [
+          {
+            "allocation_sites": 41,
+            "fault_checks": 82,
+            "baseline_fallbacks": 80,
+            "safe_candidate_successes": 2,
+            "failed_install_allocations": 4,
+            "decoder_fault_checks": 2
+          }
+        ]
+      }
+    ],
+    "upstream": {
+      "recipes": [
+        "test_sslapi",
+        "test_ssl_ctx",
+        "test_ssl_new",
+        "test_tls13ticket",
+        "test_tls13psk",
+        "test_tls13hrr",
+        "test_tls13certcomp",
+        "test_tls13ccs",
+        "test_sslcorrupt",
+        "test_tls13encryption",
+        "test_quicapi",
+        "test_quic_tserver"
+      ],
+      "recipeCount": 12,
+      "recipesPassed": 12,
+      "harnessOuterAssertions": {
+        "total": 62,
+        "passed": 60,
+        "failed": 0,
+        "skipped": 2,
+        "skipReason": "FIPS provider configuration not enabled; count excludes nested C iterations."
+      },
+      "sslApiNamedGroups": 114,
+      "sslApiNamedGroupFailures": 0,
+      "newContextSwitchGroups": {
+        "test_sigalg_ctx_switch": 4,
+        "test_sigalg_ctx_switch_cert_cb": 2,
+        "test_sigalg_ctx_switch_reneg": 1
+      },
+      "allSelectedRecipesMatchOfficialArchive": true,
+      "testLogSha256": "8c0ee8c10f115f2a024565daa18e013fd87b76333b9b2e32d62ba79063714f9e"
+    }
+  },
+  "nginxIntegration": {
+    "scope": "Compile-only actual nginx SSL module against candidate headers/library with cache feature enabled. Rewrite module omitted solely to avoid PCRE dependency; no runtime binary/profile or service activation. Candidate private-prefix library aliases allow configure probes; no global installation.",
+    "configureExitCode": 0,
+    "moduleCompileExitCode": 0,
+    "moduleObjectSha256": "5af426b24b0e9c9c4b172b183513f4603109d673b84845d55ee8aab7ad38af80"
+  },
+  "settingsEvidence": {
+    "nginxConfigSha256": "b64de2d313610d2e4e0b7cc10eabb74885f2240e15daa136c39ae09d1d2b77e6",
+    "nginxConfigUnchanged": true,
+    "nativePublicApiProfilesIdentical": true,
+    "comparisonScope": "Compare public library defaults and explicit TLS1.2/1.3 suite/ticket API profile, not a complete model of nginx configuration or trust stores.",
+    "profileFields": [
+      "cipher ordering and identities",
+      "protocol bounds",
+      "verify mode and flags",
+      "security level",
+      "early-data limit",
+      "ticket count",
+      "anti-replay option"
+    ],
+    "unchangedUpstreamSourcePaths": [
+      {
+        "path": "ssl/t1_lib.c",
+        "unchangedUpstream": true
+      },
+      {
+        "path": "ssl/ssl_ciph.c",
+        "unchangedUpstream": true
+      },
+      {
+        "path": "ssl/statem/extensions_srvr.c",
+        "unchangedUpstream": true
+      },
+      {
+        "path": "ssl/statem/extensions_clnt.c",
+        "unchangedUpstream": true
+      }
+    ]
+  },
+  "releaseRelevance": {
+    "primaryNotes": "https://openssl-library.org/news/openssl-3.5-notes/",
+    "primaryDetailedChanges": "https://raw.githubusercontent.com/openssl/openssl/openssl-3.5.9/CHANGES.md",
+    "nginxSniPath": "https://github.com/nginx/nginx/blob/release-1.30.4/src/http/ngx_http_request.c",
+    "concreteFix": "SSL_set_SSL_CTX resizes signature-validity storage for a replacement provider context. nginx uses this API during SNI selection; seven new upstream context-switch iterations pass with the project patches.",
+    "applicabilityLimit": "Current hosts share provider setup; the vulnerable provider-count mismatch was not demonstrated in the production configuration.",
+    "otherFixScope": "Native OpenSSL QUIC transport, DTLS, CMP, non-NIST/SM2 and AES-SIV fixes need their own applicability checks. nginx supplies its own QUIC transport through SSL_set_quic_tls_cbs.",
+    "brotliChange": "Dynamic-loader success-path error-queue cleanup changed upstream. Current direct-linked Brotli configuration does not use that DSO-loader branch.",
+    "overheadClaim": "No delivery-overhead or timing improvement established by this version evaluation."
+  },
+  "retainedEvidence": [
+    {
+      "path": "optimization/20261022/pass3-openssl359/source-provenance.json",
+      "sha256": "c4ef242511d975e99c334be7f6b16401bf4f9a43c7bc14fa2d703bc667af96a1"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/snapshot-manifest.json",
+      "sha256": "f106b8ce30f2ef44f8603a259a8d99375f008de817e25dac9636b6fcd7186deb"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/openssl-patch-application.json",
+      "sha256": "45e8d877bca8a366a14bc615b68036a8e6b478fc6f62516844d3c9fd09fb354c"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/nginx-patch-application.json",
+      "sha256": "21d919f4056d3c81216d188d9453ee9c5a174b14fe24155637b776b33ef1fba4"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/build-manifest.json",
+      "sha256": "f7d3552d815b5f3643cd5dab5dcb38c33a76bbdfd1b14df79f0ed3efcbb1be5a"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/custom-harness-results.json",
+      "sha256": "753d55926a7c985ffdf91a363b071aaea860161e8007d105747c0b6aaf397eb5"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/configuration-comparison.json",
+      "sha256": "782336755502757a80e655062669c235801213c4cf2c2cd514c60519d623275a"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/nginx-module-compile-result.json",
+      "sha256": "a06e8c6ad1c7df5ddd4338c40319119700777d665222ff4c7eec18c538f14314"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/security-path-source-comparison.json",
+      "sha256": "868646ac5bc117c71b2eca5b62fda437b202cc188176dd0aa18264fd254285d2"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/patched-source-comparison.json",
+      "sha256": "9bbd40166a263248e33938347c46e4a8017eada2bcb5debedec66d74e65d18ba"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/snapshot-freshness.json",
+      "sha256": "c9b81c45784392ab955d418f7a7ccab3f21d5aae7aa6f7dab501be3709caef79"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/selected-tests.json",
+      "sha256": "48bb2e0113032a2f8fd06339341ba082e92982fcdb99ada898d208bbaa83c136"
+    },
+    {
+      "path": "optimization/20261022/pass3-openssl359/test-process-result.json",
+      "sha256": "a4b19ac6a6df95dc66b6b717f5ad6ab5ed610d5d4fb4ff5edc6461f4eb451367"
+    }
+  ],
+  "limitations": [
+    "Native checks do not cover Zstd; the separate full Linux production-image build includes it.",
+    "The Linux configuration preflight checks loading and syntax; live protocol, browser and activation checks remain separate.",
+    "Raw upstream logs may contain local test session/key/token traces and remain private.",
+    "Current SNI hosts share provider setup; the replacement-provider-count failure condition was not demonstrated in production.",
+    "No byte, timing or global-optimum claim follows from the dependency upgrade."
+  ],
+  "verifiedAt": "2026-10-22T16:44:14.544898+00:00",
+  "nativeEvidenceSha256": "403a6e8e58b16cd3b97500b4cd6d6dec74512144d41212c3c07c55a2d21f77b4",
+  "linuxProductionImage": {
+    "image": "onekb-nginx:20261022b",
+    "imageId": "sha256:c353006decf2488e3bf99446cf30b8a385a34c5827f776a38275b86f2d20e6ca",
+    "platform": "linux-x86_64",
+    "openssl": "OpenSSL 3.5.9 29 Sep 2026",
+    "nginx": "1.30.4",
+    "features": [
+      "Brotli",
+      "zlib",
+      "Zstandard",
+      "HTTP/2",
+      "HTTP/3",
+      "njs",
+      "ACME",
+      "certificate cache"
+    ],
+    "buildCompleted": true,
+    "contextArchiveSha256": "2ae61f963663029140db02ce89e4c3230f2ae0507d4cda73ab65862329045489",
+    "sourceFileHashes": {
+      "server/Dockerfile": "55d9ccffc356783247f643222f64ca8937f1cb7bb1a94751b5365f9dff936076",
+      "server/certificate-compression.patch": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44",
+      "server/tls-flight.patch": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0",
+      "server/ticket-nonce.patch": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289",
+      "server/small-responses.patch": "08fb57eba519c72f9b73dc96c0c2bff2acebf071cc8760e25b1750a6bffb64e9",
+      "server/certificate-cache.patch": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+      "tools/verify-ticket-nonce.c": "9c223c3dfbc8ba067a027d23ca7d83912fae4be2d1cccc4bfb8fceb59596c395",
+      "tools/verify-tls-flight.c": "d1b950344b13338c637329f470e72064c24fee88bc3c62cb77b75627e5d76180",
+      "tools/verify-certificate-compression.c": "76c45a0bd8bd46367a58b981f2aad61d2feb983bd29f4107682b563a9a8a483a",
+      "tools/verify-certificate-cache.c": "69f010d757afeb562af4d9980454788239a2d40467d448317f193c730320f406",
+      "tools/optimize-certificates.py": "5ace05e851ea88c80bf0cde39bec03a608ea1665494f475c5ad17362a9bcb6ad"
+    },
+    "ticketNonceCases": 28,
+    "tlsFlightCasesPassed": 22,
+    "tlsFlightSkipped": [
+      {
+        "case": "excluded-async-mode",
+        "skipped": true,
+        "reason": "OpenSSL async jobs unsupported on this platform"
+      }
+    ],
+    "certificateCompressionSyntheticCases": 39,
+    "certificateCompressionAllocationFallbackCases": 2,
+    "cacheCases": 96,
+    "cacheAllocationSummary": {
+      "allocation_sites": 41,
+      "fault_checks": 82,
+      "baseline_fallbacks": 80,
+      "safe_candidate_successes": 2,
+      "failed_install_allocations": 4,
+      "decoder_fault_checks": 2
+    },
+    "actualConfigurationPreflightPassed": true,
+    "preflightIsolation": "No network, no published ports, read-only site/TLS/ACME/config mounts; existing service unchanged.",
+    "sourceScriptsMatchBuiltContext": true,
+    "privateBuildLogSha256": "0ccbe20b21e45bf4ff74b92f3e07e42fe53260b9310a65e04d4b2f1229bfac57",
+    "privateConfigurationLogSha256": "e45c816e8d6a079cfdf44d3d8c22a0fb97da19787a7b6110caccf70e3bc50cb9"
+  }
+}

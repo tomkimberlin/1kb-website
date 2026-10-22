@@ -1,10 +1,10 @@
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS build
 RUN apk add --no-cache build-base perl linux-headers curl brotli-dev zlib-dev zstd-dev
 WORKDIR /build
-RUN curl -fLsS https://www.openssl.org/source/openssl-3.5.8.tar.gz -o openssl.tar.gz \
- && echo 'a8f84a39918ec6415ce765d9b429d313ba97b8143169c172e734b9514464f5b2  openssl.tar.gz' | sha256sum -c - \
+RUN curl -fLsS https://www.openssl.org/source/openssl-3.5.9.tar.gz -o openssl.tar.gz \
+ && echo '603f5602e2eef00d77fbd429d34dcd5822bb301757a1bc9cdb24c670f1eb859a  openssl.tar.gz' | sha256sum -c - \
  && tar xzf openssl.tar.gz
-WORKDIR /build/openssl-3.5.8
+WORKDIR /build/openssl-3.5.9
 COPY server/certificate-compression.patch /build/certificate-compression.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-compression.patch
 COPY server/tls-flight.patch /build/tls-flight.patch
@@ -19,11 +19,11 @@ RUN cc -Wall -Wextra -Werror -I/opt/openssl/include /build/verify-certificate-co
  && /build/verify-certificate-compression
 
 COPY tools/verify-tls-flight.c /build/verify-tls-flight.c
-RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -DCOALESCE_INTERNAL -DRESUME_COALESCING -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-tls-flight.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-tls-flight \
+RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -DCOALESCE_INTERNAL -DRESUME_COALESCING -I/build/openssl-3.5.9 -I/build/openssl-3.5.9/include /build/verify-tls-flight.c /build/openssl-3.5.9/libssl.a /build/openssl-3.5.9/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-tls-flight \
  && /build/verify-tls-flight
 
 COPY tools/verify-ticket-nonce.c /build/verify-ticket-nonce.c
-RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-ticket-nonce.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-ticket-nonce \
+RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build/openssl-3.5.9 -I/build/openssl-3.5.9/include /build/verify-ticket-nonce.c /build/openssl-3.5.9/libssl.a /build/openssl-3.5.9/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-ticket-nonce \
  && /build/verify-ticket-nonce
 
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS headers
@@ -46,7 +46,7 @@ FROM compression-test AS certificate-cache-test
 COPY --from=headers /build/nginx-1.30.4/src/http/modules/ngx_http_ssl_brotli_cache.h /build/
 COPY tools/verify-certificate-cache.c /build/verify-certificate-cache.c
 COPY tools/fixtures/certificate-cache.pem tools/fixtures/certificate-cache.br /build/fixtures/
-RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build -I/build/openssl-3.5.8 -I/build/openssl-3.5.8/include /build/verify-certificate-cache.c /build/openssl-3.5.8/libssl.a /build/openssl-3.5.8/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-certificate-cache \
+RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build -I/build/openssl-3.5.9 -I/build/openssl-3.5.9/include /build/verify-certificate-cache.c /build/openssl-3.5.9/libssl.a /build/openssl-3.5.9/libcrypto.a -lbrotlienc -lbrotlidec -lbrotlicommon -lzstd -lz -ldl -pthread -o /build/verify-certificate-cache \
  && mkdir /tmp/cache-check && cd /tmp/cache-check \
  && /build/verify-certificate-cache /build/fixtures/certificate-cache.pem /build/fixtures/certificate-cache.br
 

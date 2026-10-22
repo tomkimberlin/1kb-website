@@ -53,6 +53,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: docker build -t onekb-nginx:20261022a -f server/Dockerfile .
+      - run: docker build -t onekb-nginx:20261022b -f server/Dockerfile .
       - run: docker build --target certificate-optimizer -f server/Dockerfile .
       - run: docker build -f tools/gallery.Dockerfile .
