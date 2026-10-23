@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-23T10:34:21.643Z",
+  "verifiedAt": "2026-10-23T10:34:24.703Z",
+  "passed": true,
+  "url": "https://tomkimberlin.com/",
+  "source": {
+    "bytes": 1021,
+    "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+  },
+  "cleanupComplete": true,
+  "cleanup": [
+    {
+      "engine": "chromium",
+      "encoding": "gzip",
+      "contextClosed": true
+    },
+    {
+      "engine": "chromium",
+      "encoding": "deflate",
+      "contextClosed": true
+    },
+    {
+      "engine": "chromium",
+      "browserClosed": true
+    },
+    {
+      "engine": "webkit",
+      "encoding": "gzip",
+      "contextClosed": true
+    },
+    {
+      "engine": "webkit",
+      "encoding": "deflate",
+      "contextClosed": true
+    },
+    {
+      "engine": "webkit",
+      "browserClosed": true
+    }
+  ],
+  "rows": [
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "encoding": "gzip",
+      "navigationStartedAt": "2026-10-23T10:34:21.861Z",
+      "verifiedAt": "2026-10-23T10:34:22.418Z",
+      "status": 200,
+      "contentEncoding": "gzip",
+      "explicitAcceptEncoding": "gzip",
+      "actualRequestAcceptEncoding": "gzip",
+      "exactDecodedSource": true,
+      "contentMatchesExpected": true,
+      "decodedBytes": 1021,
+      "decodedSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "pageDocumentRequests": 1,
+      "unexpectedPageRequests": 0,
+      "nextHopProtocol": "h2",
+      "protocolObservation": "PerformanceNavigationTiming.nextHopProtocol"
+    },
+    {
+      "engine": "chromium",
+      "browserVersion": "153.0.8010.12",
+      "encoding": "deflate",
+      "navigationStartedAt": "2026-10-23T10:34:22.456Z",
+      "verifiedAt": "2026-10-23T10:34:22.977Z",
+      "status": 200,
+      "contentEncoding": "deflate",
+      "explicitAcceptEncoding": "deflate",
+      "actualRequestAcceptEncoding": "deflate",
+      "exactDecodedSource": true,
+      "contentMatchesExpected": true,
+      "decodedBytes": 1021,
+      "decodedSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "pageDocumentRequests": 1,
+      "unexpectedPageRequests": 0,
+      "nextHopProtocol": "h2",
+      "protocolObservation": "PerformanceNavigationTiming.nextHopProtocol"
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "encoding": "gzip",
+      "navigationStartedAt": "2026-10-23T10:34:23.473Z",
+      "verifiedAt": "2026-10-23T10:34:24.031Z",
+      "status": 200,
+      "contentEncoding": "gzip",
+      "explicitAcceptEncoding": "gzip",
+      "actualRequestAcceptEncoding": "gzip",
+      "exactDecodedSource": true,
+      "contentMatchesExpected": true,
+      "decodedBytes": 1021,
+      "decodedSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "pageDocumentRequests": 1,
+      "unexpectedPageRequests": 0,
+      "nextHopProtocol": "h2",
+      "protocolObservation": "PerformanceNavigationTiming.nextHopProtocol"
+    },
+    {
+      "engine": "webkit",
+      "browserVersion": "26.6",
+      "encoding": "deflate",
+      "navigationStartedAt": "2026-10-23T10:34:24.162Z",
+      "verifiedAt": "2026-10-23T10:34:24.685Z",
+      "status": 200,
+      "contentEncoding": "deflate",
+      "explicitAcceptEncoding": "deflate",
+      "actualRequestAcceptEncoding": "deflate",
+      "exactDecodedSource": true,
+      "contentMatchesExpected": true,
+      "decodedBytes": 1021,
+      "decodedSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "pageDocumentRequests": 1,
+      "unexpectedPageRequests": 0,
+      "nextHopProtocol": "h2",
+      "protocolObservation": "PerformanceNavigationTiming.nextHopProtocol"
+    }
+  ],
+  "configuration": {
+    "ignoreHTTPSErrors": false,
+    "javaScriptEnabled": false,
+    "serviceWorkers": "block",
+    "freshContextPerCase": true,
+    "launchProxyConfigured": false,
+    "requestInterception": false,
+    "browserArgumentsModified": false,
+    "linkActivation": false
+  },
+  "scope": "Four public HTTPS native decoding readbacks with normal certificate validation. Encoded representation byte counts and hashes are verified separately from raw HTTP readbacks; browser response.body() supplies decoded source only. nextHopProtocol is recorded only when the browser exposes it. No transfer-overhead, timing, resumption or per-request release-generation claim is made.",
+  "harnessSha256": "e5e0bd2b3a0499c92b99d5e819e663b68ed2bb83acf89be63622382e9f2a19a7",
+  "verifierSourceSha256": "e5e0bd2b3a0499c92b99d5e819e663b68ed2bb83acf89be63622382e9f2a19a7",
+  "rawReportSha256": "4c7c5378ef9611a87fb750baf211a4a546e02bb7b337ae0c3ececcf08c0832c6"
+}

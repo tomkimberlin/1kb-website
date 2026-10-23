@@ -3,16 +3,16 @@
   "targetUrl": "https://tomkimberlin.com/",
   "current": {
     "overhead": {
-      "path": "measurements/overhead-20261023-gallery.json",
-      "sha256": "510eb7c21e35e8b66a3082bbee77c1ba60b5630528027ce1ec4ad6b866ba0817"
+      "path": "measurements/overhead-20261023-fallback.json",
+      "sha256": "64dc37f86066f1968da5a7871b42ac762f38f2d61c8742b62c7bf2dfabe32cce"
     },
     "deployment": {
-      "path": "measurements/deployment-20261023-gallery.json",
-      "sha256": "33321e4a10e473e3f56438abb3b3d58b2cc165a9a1fe070cf7bb2c4cb6b3f6b2"
+      "path": "measurements/deployment-20261023-fallback.json",
+      "sha256": "2e64518c46c8be87d39802f9476ba52d834083fed06e403cac579a49e754170d"
     },
     "page": {
-      "path": "measurements/page-20261022-accessibility-local.json",
-      "sha256": "dfa1440f1ffa5988988f09b64aa33118b929cd268b47510158c38cb31f5c6c1f"
+      "path": "measurements/page-20261023-rle-local.json",
+      "sha256": "ed6b4f60c9758cbc9df5fb9c8b5c2c888706ee50ea81c692e539426836038a24"
     }
   },
   "historicalGallery": {

@@ -3,7 +3,7 @@
 <!-- comparison:current:start -->
 ## Latest verified own-site result
 
-Measured 2026-10-23: **1,021 B HTML; 389 B Brotli; 536 B gzip; 524 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+Measured 2026-10-23: **1,021 B HTML; 389 B Brotli; 535 B gzip; 523 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
 
 Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.com 1,502 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
 
@@ -11,8 +11,8 @@ Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.co
 | --- | ---: | ---: |
 | Complete TLS through first document | 5,642 B | 5,641–5,642 B |
 | TLS minus complete body | 5,253 B | 5,252–5,253 B |
-| Estimated TCP/IP + DNS through close | 7,282 B | 7,281–7,334 B |
-| TCP/IP + DNS minus complete body | 6,893 B | 6,892–6,945 B |
+| Estimated TCP/IP + DNS through close | 7,334 B | 7,333–7,438 B |
+| TCP/IP + DNS minus complete body | 6,945 B | 6,944–7,049 B |
 | HTTP/2 plaintext minus complete body | 105 B | 105–105 B |
 
 HTTP/3 transport-parameter component: **96 B → 87 B (9 B less)** with unchanged effective parameters ([verified component evidence](measurements/quic-parameters-20261023-status-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
@@ -36,7 +36,7 @@ Three cold first-document exchanges per site count both directions and subtract 
 [Peer evidence](measurements/gallery-20261023-integrated.json). All 18 requests passed normal certificate validation, complete SYN visibility and zero capture-drop checks. The frozen Python/OpenSSL client measured document exchanges. This dated sample remains separate from later own-site updates; three samples do not establish a timing or universal ranking claim.
 <!-- comparison:fresh-gallery:end -->
 
-[Overhead evidence](measurements/overhead-20261023-gallery.json), [verified deployment](measurements/deployment-20261023-gallery.json) and [page measurements](measurements/page-20261022-accessibility-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+[Overhead evidence](measurements/overhead-20261023-fallback.json), [verified deployment](measurements/deployment-20261023-fallback.json) and [page measurements](measurements/page-20261023-rle-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
