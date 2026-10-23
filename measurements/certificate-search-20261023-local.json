@@ -1,0 +1,763 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-23",
+  "status": "Draft normalized negative evidence; no candidate selected from these searches.",
+  "scope": "Three fixed offline lossless-certificate searches on exact public Certificate bodies. Local Darwin artifacts only; no compilation outside the specified variants, private keys, network probes, tracked edits or live activation.",
+  "measurementDefinition": "Lengths are complete encoded Brotli Certificate-body payloads. Complete CompressedCertificate handshake messages add 12 bytes. These searches did not measure complete-exchange delivery overhead, latency or runtime performance.",
+  "installedDeploymentEvidence": {
+    "path": "measurements/deployment-20261023-native-quic.json",
+    "sha256": "a95d79043820784361b188e88aad64df49c005160b069fb992085d824fe9199e"
+  },
+  "currentInstalledChains": [
+    {
+      "hostname": "tomkimberlin.com",
+      "inputFormat": "TLS 1.3 Certificate body",
+      "inputBytes": 2218,
+      "inputSha256": "06775c21de30195f66bf5f991e73fe3b5ab59c3195b46f620ee5b1119701e0d7",
+      "installedBrotliBytes": 1486,
+      "installedBrotliSha256": "ffe8ca224aa655579e8fc472bfa3b818dfdb0d441f5637eb192a83cc523ec0fe",
+      "installedMetadataSha256": "3f1093a5a46aaeee1412726722b74b4865dd80885af7144941879d0917aa7ebc",
+      "completeCompressedCertificateMessageBytes": 1498
+    },
+    {
+      "hostname": "www.tomkimberlin.com",
+      "inputFormat": "TLS 1.3 Certificate body",
+      "inputBytes": 2220,
+      "inputSha256": "10d003a9fcefe2199c69d4a16f8916b3343947c88c83f254afbd558f5810b91f",
+      "installedBrotliBytes": 1490,
+      "installedBrotliSha256": "90f2fbfce98994ffeba62aacf34c679c33302332ce1ee1ae89826928bde6f4c9",
+      "installedMetadataSha256": "e8006a8face2291325914cdb63461e389e7aba77032398460882ef84c25d5a89",
+      "completeCompressedCertificateMessageBytes": 1502
+    },
+    {
+      "hostname": "tom.kimberlin.net",
+      "inputFormat": "TLS 1.3 Certificate body",
+      "inputBytes": 2217,
+      "inputSha256": "be23241b52bfdc46078d8e59a7bf704d6fac9e351b4437eacbcc4aeffbe402f1",
+      "installedBrotliBytes": 1491,
+      "installedBrotliSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+      "installedMetadataSha256": "e0562faebf2f9232617bc03f161dc8a8c04f1be6d5b29df60c5e270613dd3688",
+      "completeCompressedCertificateMessageBytes": 1503
+    }
+  ],
+  "archivedControl": {
+    "name": "archived-public-fixture",
+    "separateFromCurrentInputs": true,
+    "inputBytes": 2215,
+    "inputSha256": "7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd",
+    "referenceBrotliBytes": 1478,
+    "referenceBrotliSha256": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+    "source": {
+      "path": "tools/fixtures/certificate-cache.pem",
+      "sha256": "e5cf549607d0f13e295f103f6b888bafe5a420502298af9dbceee0f5d1a1a399"
+    }
+  },
+  "encodingSource": {
+    "brotliVersion": "1.2.1",
+    "revision": "db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "archiveSha256": "113b9685dfc14dd2f3360d077283266eec2fbdfb0fe3e5600f11be151da0d68e",
+    "baselineModel": {
+      "distanceSeed": 1,
+      "literalScale": 0.9,
+      "commandScale": 1.02,
+      "distanceScale": 1.1,
+      "histogramStreakLimit": 1536,
+      "histogramBias": 128,
+      "zeroRunThreshold": 7,
+      "nonzeroEntryThreshold": 16
+    },
+    "hqRefinementPasses": 2,
+    "sharedSourceObjectHashesEvidence": {
+      "path": "optimization/20261022/pass4-certificate-model/plan.json",
+      "sha256": "f3cbb18baab6b351eaa037affee6e365182439779ed72c55aef8581a1f58ae4b"
+    },
+    "priorModelResults": {
+      "path": "optimization/20261022/pass4-certificate-model/results.json",
+      "sha256": "625c0f8bc9274ccf30f01e1263312c4b5227493a2d613c8002a47fee0ae90c49"
+    }
+  },
+  "validationMethods": {
+    "stockCDecoder": {
+      "version": "1.2.1",
+      "librarySha256": "d9a00af0a51e6f2fdbfad0b5053d3ca6c4b267198e9cf846603917210c711b54",
+      "method": "tools/optimize-certificates.py decode_exact: streaming decoder success, exact decoded bytes and zero remaining input; decoder is unmodified stock."
+    },
+    "independentPythonDecoder": {
+      "version": "1.2.1",
+      "method": "Separately built official Python Brotli wheel, brotli.decompress equality against the entire exact input body; full encoded-input consumption is independently enforced by the stock C decoder.",
+      "pythonWrapperSha256": "813610bf0d74a6998d7b47d912e8892c3896e6eac19cb7b22575e04fc294b63f",
+      "nativeExtensionSha256": "2d1a8b1c24f35b4880c73ae4db33a60c0a3b531efa6a2ac315a2720add6b5f88"
+    },
+    "bindingSource": {
+      "path": "tools/optimize-certificates.py",
+      "sha256": "5ace05e851ea88c80bf0cde39bec03a608ea1665494f475c5ad17362a9bcb6ad"
+    },
+    "malformedControls": "Every saved best stream was truncated by one byte and appended with one zero byte; stock C complete-input decoding rejected both."
+  },
+  "experiments": [
+    {
+      "id": "certificate-combinations",
+      "variants": {
+        "literalScale": [
+          0.88,
+          0.89,
+          0.92
+        ],
+        "histogramStreakLimit": [
+          1280,
+          1792
+        ],
+        "combination": "Cartesian product; other model constants unchanged",
+        "newVariantConfigurations": 6
+      },
+      "controls": {
+        "models": [
+          "deployed-control",
+          "histogramStreakLimit-1280",
+          "histogramStreakLimit-1792",
+          "literalScale-0.88",
+          "literalScale-0.89",
+          "literalScale-0.92"
+        ],
+        "exactPriorBestStreamReplays": 24
+      },
+      "trialCounts": {
+        "variant": 1536,
+        "explicitControl": 1536,
+        "total": 3072,
+        "distanceSettingsPerConfiguration": 64,
+        "inputBodiesPerConfiguration": 4
+      },
+      "bestVariantByCurrentHost": [
+        {
+          "hostname": "tomkimberlin.com",
+          "bestVariantBrotliBytes": 1486,
+          "bestVariantBrotliSha256": "ffe8ca224aa655579e8fc472bfa3b818dfdb0d441f5637eb192a83cc523ec0fe",
+          "producerId": "streak-1280-literal-0.89",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 2,
+            "8": 16
+          },
+          "differenceFromInstalledBytes": 0
+        },
+        {
+          "hostname": "www.tomkimberlin.com",
+          "bestVariantBrotliBytes": 1490,
+          "bestVariantBrotliSha256": "d2ea6c7d4c8791dc95773a9f88c15e5c07a9b63f030a0e7cd51ae60e80f81975",
+          "producerId": "streak-1280-literal-0.88",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 0,
+            "8": 10
+          },
+          "differenceFromInstalledBytes": 0
+        },
+        {
+          "hostname": "tom.kimberlin.net",
+          "bestVariantBrotliBytes": 1492,
+          "bestVariantBrotliSha256": "1387b784df435e4255960a7704c2d74c8a08a4e1c69554447632556d55972cbc",
+          "producerId": "streak-1280-literal-0.88",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 3,
+            "8": 24
+          },
+          "differenceFromInstalledBytes": 1
+        }
+      ],
+      "archivedControl": {
+        "inputSha256": "7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd",
+        "bestVariantBrotliBytes": 1479,
+        "differenceFromArchivedReferenceBytes": 1
+      },
+      "searchValidation": {
+        "allStreamsExact": true,
+        "searchIndependentDecoderCallsIncludingThreeInstalledBaselineChecks": 6150
+      },
+      "savedArtifactValidation": {
+        "savedBestStreams": 48,
+        "exactSelectedParameterReplays": 48,
+        "savedBestIndependentDecoderCalls": 96,
+        "malformedStreamRejections": 96
+      },
+      "framingCorpus": {
+        "executed": false,
+        "reason": "No variant stream strictly beat an installed current-chain payload; the conditional 40-case framing expansion was not triggered."
+      },
+      "producerIds": [
+        "deployed-control",
+        "histogramStreakLimit-1280",
+        "histogramStreakLimit-1792",
+        "literalScale-0.88",
+        "literalScale-0.89",
+        "literalScale-0.92",
+        "streak-1280-literal-0.88",
+        "streak-1280-literal-0.89",
+        "streak-1280-literal-0.92",
+        "streak-1792-literal-0.88",
+        "streak-1792-literal-0.89",
+        "streak-1792-literal-0.92"
+      ],
+      "noveltyLimit": "The recorded October22 renewed-input matrix varied these literal/streak constants separately. Its scale-combination controls kept streak 1536; none of these six cross-models appears there. Earlier broad historical grid ranges were not retained.",
+      "evidence": {
+        "script": {
+          "path": "optimization/20261023/certificate-combinations/run.py",
+          "sha256": "c65bb1975428cf7a25f7beb28a2d2ccae9a6141799a996a3ae72cdcff55c0f9f"
+        },
+        "plan": {
+          "path": "optimization/20261023/certificate-combinations/plan.json",
+          "sha256": "d6d4fe04e859ead24a2b021f66a716f49e322b116d41ab17f87c47ecb07a7c2b"
+        },
+        "rawSummary": {
+          "path": "optimization/20261023/certificate-combinations/summary.json",
+          "sha256": "90b82ea1a8f9d8035b6336075d2a4a9688e6c4f3625303993447f27f2f73842f"
+        },
+        "rawSearchResults": {
+          "path": "optimization/20261023/certificate-combinations/search-results.json",
+          "sha256": "e815ffcbae31f2a960090a3d359ad173c69a1a15c43dca16c56f2b4ee55789c9"
+        },
+        "savedOutputValidation": {
+          "path": "optimization/20261023/certificate-combinations/validation.json",
+          "sha256": "61686db3745ee4a8b218f08be95a6a89a4bd422ad6b046c38e34a06055a5ff02"
+        },
+        "savedOutputValidationNote": "The first experiment used an inline readback harness. Its validation.json records the corrected expected decoder failure type; no standalone validation script was retained."
+      },
+      "readbackHarnessCorrection": "Initial readback negative-control catch expected ValueError; actual production helper raises RuntimeError for failed/full-consumption decoding. Catch corrected to the two documented failure types; no candidate or search result changed."
+    },
+    {
+      "id": "certificate-hq-passes",
+      "variants": {
+        "hqRefinementPasses": [
+          3,
+          4
+        ],
+        "newVariantConfigurations": 2,
+        "otherConstants": "Baseline model unchanged; source diff verified to change only the quality 11 HQ outer refinement loop bound."
+      },
+      "controls": {
+        "hqRefinementPasses": 2,
+        "model": "deployed-control",
+        "exactPriorBestStreamReplays": 4
+      },
+      "trialCounts": {
+        "variant": 512,
+        "explicitControl": 256,
+        "total": 768,
+        "distanceSettingsPerConfiguration": 64,
+        "inputBodiesPerConfiguration": 4
+      },
+      "bestVariantByCurrentHost": [
+        {
+          "hostname": "tomkimberlin.com",
+          "bestVariantBrotliBytes": 1487,
+          "bestVariantBrotliSha256": "057d4aa15c5a77924d5e3a0f4620d0479b15014eea969ff377dc98ed997655d6",
+          "producerId": "hq-passes-3",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 1,
+            "8": 6
+          },
+          "differenceFromInstalledBytes": 1
+        },
+        {
+          "hostname": "www.tomkimberlin.com",
+          "bestVariantBrotliBytes": 1492,
+          "bestVariantBrotliSha256": "b29b1b1aeaefdd4baab8d0277fe3716b756496ee8774f5d230e68be7ec423579",
+          "producerId": "hq-passes-3",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 0,
+            "8": 4
+          },
+          "differenceFromInstalledBytes": 2
+        },
+        {
+          "hostname": "tom.kimberlin.net",
+          "bestVariantBrotliBytes": 1491,
+          "bestVariantBrotliSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+          "producerId": "hq-passes-3",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 0,
+            "7": 2,
+            "8": 12
+          },
+          "differenceFromInstalledBytes": 0
+        }
+      ],
+      "archivedControl": {
+        "inputSha256": "7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd",
+        "bestVariantBrotliBytes": 1478,
+        "differenceFromArchivedReferenceBytes": 0
+      },
+      "searchValidation": {
+        "allStreamsExact": true,
+        "searchIndependentDecoderCallsIncludingThreeInstalledBaselineChecks": 1542
+      },
+      "savedArtifactValidation": {
+        "savedBestStreams": 12,
+        "exactSelectedParameterReplays": 12,
+        "savedBestIndependentDecoderCalls": 24,
+        "malformedStreamRejections": 24,
+        "onlyLoopBoundChanged": true
+      },
+      "framingCorpus": {
+        "executed": false,
+        "reason": "No variant stream strictly beat an installed current-chain payload; the conditional 40-case framing expansion was not triggered."
+      },
+      "producerIds": [
+        "deployed-control",
+        "hq-passes-3",
+        "hq-passes-4"
+      ],
+      "noveltyLimit": "Recorded prior model and parameter matrices did not change this two-pass loop. Historical unretained experiments are not claimed exhaustively known.",
+      "evidence": {
+        "script": {
+          "path": "optimization/20261023/certificate-hq-passes/run.py",
+          "sha256": "c3730248ba2393ea9b1712e48a9688d6472dcf08e614c3417d5758fa2f1cf51a"
+        },
+        "plan": {
+          "path": "optimization/20261023/certificate-hq-passes/plan.json",
+          "sha256": "d5664dab3bfcd000f2f6fe449505b53bf760a770116aea7c5ec4c8e7d2a72d57"
+        },
+        "rawSummary": {
+          "path": "optimization/20261023/certificate-hq-passes/summary.json",
+          "sha256": "558524b43bf58b550e49890162aa1ef0c7baa74070b8c29f6fd43163544605ea"
+        },
+        "rawSearchResults": {
+          "path": "optimization/20261023/certificate-hq-passes/search-results.json",
+          "sha256": "058def2c82ecc1111cd738a72ab366e6d2fbc524616420bfcb31d144a756c73d"
+        },
+        "savedOutputValidation": {
+          "path": "optimization/20261023/certificate-hq-passes/validation.json",
+          "sha256": "99aa235111a190b2d3de4ad334319322db8b1c8bce425c1675a6a9ab962738eb"
+        },
+        "savedOutputValidationScript": {
+          "path": "optimization/20261023/certificate-hq-passes/verify_saved.py",
+          "sha256": "65e080d97a5b37661b9b6f6579514dc23e14cb990865578e20013aabbca0bbb4"
+        }
+      }
+    },
+    {
+      "id": "certificate-mode-context",
+      "variants": {
+        "modes": [
+          0,
+          1,
+          2
+        ],
+        "disableLiteralContextModeling": [
+          0,
+          1
+        ],
+        "models": [
+          "deployed-control",
+          "histogramStreakLimit-1280",
+          "literalScale-0.88"
+        ],
+        "totalConfigurations": 18,
+        "parameterVariantConfigurations": 15,
+        "compilerOrModelChanges": false
+      },
+      "controls": {
+        "mode": 0,
+        "disableLiteralContextModeling": 0,
+        "modelConfigurations": 3,
+        "exactPriorBestStreamReplays": 12,
+        "exactInstalledSelectedStreamReplays": 3
+      },
+      "trialCounts": {
+        "variant": 3840,
+        "explicitControl": 768,
+        "total": 4608,
+        "distanceSettingsPerConfiguration": 64,
+        "inputBodiesPerConfiguration": 4
+      },
+      "bestVariantByCurrentHost": [
+        {
+          "hostname": "tomkimberlin.com",
+          "bestVariantBrotliBytes": 1486,
+          "bestVariantBrotliSha256": "ffe8ca224aa655579e8fc472bfa3b818dfdb0d441f5637eb192a83cc523ec0fe",
+          "producerId": "histogramStreakLimit-1280",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 1,
+            "7": 1,
+            "8": 10
+          },
+          "differenceFromInstalledBytes": 0
+        },
+        {
+          "hostname": "www.tomkimberlin.com",
+          "bestVariantBrotliBytes": 1490,
+          "bestVariantBrotliSha256": "90f2fbfce98994ffeba62aacf34c679c33302332ce1ee1ae89826928bde6f4c9",
+          "producerId": "literalScale-0.88",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 1,
+            "7": 0,
+            "8": 10
+          },
+          "differenceFromInstalledBytes": 0
+        },
+        {
+          "hostname": "tom.kimberlin.net",
+          "bestVariantBrotliBytes": 1491,
+          "bestVariantBrotliSha256": "d92ff635dca889c6036ca301cede9976462fadc91d9832b8136808e67d555724",
+          "producerId": "deployed-control",
+          "configuredParameters": {
+            "0": 0,
+            "1": 11,
+            "2": 16,
+            "4": 1,
+            "7": 1,
+            "8": 18
+          },
+          "differenceFromInstalledBytes": 0
+        }
+      ],
+      "archivedControl": {
+        "inputSha256": "7b845664010ae78725a04685cf5f866bdb2a422a40e9154caa11cfeb9372ddbd",
+        "bestVariantBrotliBytes": 1478,
+        "differenceFromArchivedReferenceBytes": 0
+      },
+      "searchValidation": {
+        "allStreamsExact": true,
+        "searchIndependentDecoderCallsIncludingThreeInstalledBaselineChecks": 9222
+      },
+      "savedArtifactValidation": {
+        "savedBestStreams": 72,
+        "exactSelectedParameterReplays": 72,
+        "savedBestIndependentDecoderCalls": 144,
+        "malformedStreamRejections": 144,
+        "originalLibrariesUnchanged": 3
+      },
+      "framingCorpus": {
+        "executed": false,
+        "reason": "No variant stream strictly beat an installed current-chain payload; the conditional 40-case framing expansion was not triggered."
+      },
+      "producerIds": [
+        "deployed-control",
+        "histogramStreakLimit-1280",
+        "literalScale-0.88"
+      ],
+      "noveltyLimit": "The prior 3,840-setting matrix covered only the current main body and baseline recipe in mode 0, both context settings. This joint matrix adds modes 1/2, the other exact bodies and installed winner models. Its variant portion intentionally repeats 64 previously covered main/baseline/mode 0/context 1 settings; variant counts are not claims of unique previously untested outputs.",
+      "evidence": {
+        "script": {
+          "path": "optimization/20261023/certificate-mode-context/run.py",
+          "sha256": "03abdf03b4300d4ef9e6aee852002aa08b7a36cd8f27b094a80dd6d9b7916e4e"
+        },
+        "plan": {
+          "path": "optimization/20261023/certificate-mode-context/plan.json",
+          "sha256": "1050b16c0790edcb853fede4c69de9868ee081c2a782224c14bd4286ed927ad8"
+        },
+        "rawSummary": {
+          "path": "optimization/20261023/certificate-mode-context/summary.json",
+          "sha256": "141b6380c9571917d868a13c72a0d4e913558390afcbe61788c8a97ca7d7b2c2"
+        },
+        "rawSearchResults": {
+          "path": "optimization/20261023/certificate-mode-context/search-results.json",
+          "sha256": "cda184520eee49b4701f9cc289e3a4c2f2fcb35ecad25ca1c3913d1e4450c19e"
+        },
+        "savedOutputValidation": {
+          "path": "optimization/20261023/certificate-mode-context/validation.json",
+          "sha256": "05d12665ab8c27515d8dc33eb82b7264bb4fb8ed052cfd33c91252d3a67497b5"
+        },
+        "savedOutputValidationScript": {
+          "path": "optimization/20261023/certificate-mode-context/verify_saved.py",
+          "sha256": "5b9b122fdced0882d3a2f030cdc2118a89189d2a1ca2e4d62c796052dbf660bb"
+        }
+      },
+      "recordedTrialPairComparisons": {
+        "mode0Versus1": {
+          "comparisons": 1536,
+          "identicalStreams": 1536
+        },
+        "context0Versus1": {
+          "comparisons": 2304,
+          "identicalStreams": 1974
+        }
+      },
+      "knownPreviouslyCoveredParameterTrialsWithinVariants": 64
+    }
+  ],
+  "originalProducers": [
+    {
+      "id": "deployed-control",
+      "originalEncoderSha256": "b33064d0b27f48f848f7a728aa0e142e274a9d1bbd0d0e8fadf01e5198450ad5",
+      "modelOverrides": {},
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "7f8297e6b793677641fbe0d522062e1b337641245ec9de43342c494dedd066a3",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/deployed-control/encoder.dylib.json",
+        "sha256": "8a0f15c659324fc9e05ccbf9363a129dfead0cda0a44f8016fddd5b4acd8c8d2"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "histogramStreakLimit-1280",
+      "originalEncoderSha256": "a48044de0e81577a7770ebfc62af41c5111ccf917a12b33e6466604ac6cfb90d",
+      "modelOverrides": {
+        "histogramStreakLimit": 1280
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "7f8297e6b793677641fbe0d522062e1b337641245ec9de43342c494dedd066a3",
+        "entropy_encode.c": "dc18810aa8d4e6ce70385936cb70a0d74adc5ce942fcae59f9bb248743d70147"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/histogramStreakLimit-1280/encoder.dylib.json",
+        "sha256": "1ad604fbe383b7c486e90a767aa73dd75ba7eeaf803e5752425cb99c0acf71a5"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "histogramStreakLimit-1792",
+      "originalEncoderSha256": "f0dfcc4950b653af2ade71b3af59e5153c3b500e0d4d755a448ee3003e5c1acf",
+      "modelOverrides": {
+        "histogramStreakLimit": 1792
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "7f8297e6b793677641fbe0d522062e1b337641245ec9de43342c494dedd066a3",
+        "entropy_encode.c": "1b7fe5671ec91ef1058a8aa9836c2553c3a15891b4ad19b549b82f9314c34134"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/histogramStreakLimit-1792/encoder.dylib.json",
+        "sha256": "748671404064f30758413d9137684691163413979e4842dc01e3414e31b19fe8"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "literalScale-0.88",
+      "originalEncoderSha256": "2587f7ccb6d9627f1fa6ef8da707e0014d2eb2cc5fb4f8d2c0ae87c2363486c9",
+      "modelOverrides": {
+        "literalScale": 0.88
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "4122002c3677401681505ccf47a2bf4190555c6fc8a3799ec894cb82c8692b29",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/literalScale-0.88/encoder.dylib.json",
+        "sha256": "ba1c7a10fa824990a37c9b85d2df3b195e5b6b80dd22d55661b0b6ff9941da81"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "literalScale-0.89",
+      "originalEncoderSha256": "d0b05d8a9b7d66430cfb7a4ca86e92a70d7c1f4d4850eedea4ef203814498c8f",
+      "modelOverrides": {
+        "literalScale": 0.89
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "55b9f9d91484f1ce46a06230bb7decae1d264d2892d572f15cd0067777887a99",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/literalScale-0.89/encoder.dylib.json",
+        "sha256": "24380096015c99680c35f47cb602a19a68cda6a7819108c3ed2a3fedb1770537"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "literalScale-0.92",
+      "originalEncoderSha256": "0e5a29236ac4f349d5f61789e44455bb00ccf4640ab386404f693cf1a6b16bae",
+      "modelOverrides": {
+        "literalScale": 0.92
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "9d337a9f34cf349f66272a9e515915912fb3bfdc32c66f6d1d5dbe2fa5bee7a3",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/literalScale-0.92/encoder.dylib.json",
+        "sha256": "85ddd9a087b8180a9ca697b668f29ac5e3f6af862e7deee688f6508b79a7eb79"
+      },
+      "producerStatus": "Exact original prior library reused; no recompile or provenance relabeling"
+    },
+    {
+      "id": "streak-1280-literal-0.88",
+      "originalEncoderSha256": "0da916c18291ffeaa8e2e59245aa6fa5f8f5b80256bc88fb28da33014cd24102",
+      "modelOverrides": {
+        "literalScale": 0.88,
+        "histogramStreakLimit": 1280
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "4122002c3677401681505ccf47a2bf4190555c6fc8a3799ec894cb82c8692b29",
+        "entropy_encode.c": "dc18810aa8d4e6ce70385936cb70a0d74adc5ce942fcae59f9bb248743d70147"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1280-literal-0.88/encoder.dylib.json",
+        "sha256": "09042ae00ed9da163ea8d78a5992fe1f91df51731b74c5db61317a8703ba5057"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "streak-1280-literal-0.89",
+      "originalEncoderSha256": "1c35a24c012acfad1409895603620240ab9b4db89b613f3c0bf20142e420a610",
+      "modelOverrides": {
+        "literalScale": 0.89,
+        "histogramStreakLimit": 1280
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "55b9f9d91484f1ce46a06230bb7decae1d264d2892d572f15cd0067777887a99",
+        "entropy_encode.c": "dc18810aa8d4e6ce70385936cb70a0d74adc5ce942fcae59f9bb248743d70147"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1280-literal-0.89/encoder.dylib.json",
+        "sha256": "766125ff810ec9b2e556dc3f7b7feed66ab285450ab9af42bd3d07fd316f19cd"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "streak-1280-literal-0.92",
+      "originalEncoderSha256": "a302ddc7e4034f0f8ae351122557b3f2e2f63d75bbbdc3a780fd4c5afdb296c3",
+      "modelOverrides": {
+        "literalScale": 0.92,
+        "histogramStreakLimit": 1280
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "9d337a9f34cf349f66272a9e515915912fb3bfdc32c66f6d1d5dbe2fa5bee7a3",
+        "entropy_encode.c": "dc18810aa8d4e6ce70385936cb70a0d74adc5ce942fcae59f9bb248743d70147"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1280-literal-0.92/encoder.dylib.json",
+        "sha256": "c3dd71af815b10383e77a44afdd4f6dd106be754a1669970e2962b75eaf4b90b"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "streak-1792-literal-0.88",
+      "originalEncoderSha256": "7f493509eae945327a56a62ccaa494c553a091cd64cfcbaac76e2ca9492d5956",
+      "modelOverrides": {
+        "literalScale": 0.88,
+        "histogramStreakLimit": 1792
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "4122002c3677401681505ccf47a2bf4190555c6fc8a3799ec894cb82c8692b29",
+        "entropy_encode.c": "1b7fe5671ec91ef1058a8aa9836c2553c3a15891b4ad19b549b82f9314c34134"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1792-literal-0.88/encoder.dylib.json",
+        "sha256": "0b1a835e99f5929db6988d68be6c04330f4884ba9dc503b9168b94ebbd52f66d"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "streak-1792-literal-0.89",
+      "originalEncoderSha256": "d39a738d791a8b03e27448e84f30b16db91fe378630611e0d64baa02aa2181f7",
+      "modelOverrides": {
+        "literalScale": 0.89,
+        "histogramStreakLimit": 1792
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "55b9f9d91484f1ce46a06230bb7decae1d264d2892d572f15cd0067777887a99",
+        "entropy_encode.c": "1b7fe5671ec91ef1058a8aa9836c2553c3a15891b4ad19b549b82f9314c34134"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1792-literal-0.89/encoder.dylib.json",
+        "sha256": "44a02e416eac9b57d40762b2ffbf7f27332bf2bd17201211e3ec50fc05430180"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "streak-1792-literal-0.92",
+      "originalEncoderSha256": "5cca9d13c0fddc64c1849cd4d3f28e1ad6ebb5849e1de1ed534e03bb97c50618",
+      "modelOverrides": {
+        "literalScale": 0.92,
+        "histogramStreakLimit": 1792
+      },
+      "hqRefinementPasses": 2,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "9d337a9f34cf349f66272a9e515915912fb3bfdc32c66f6d1d5dbe2fa5bee7a3",
+        "entropy_encode.c": "1b7fe5671ec91ef1058a8aa9836c2553c3a15891b4ad19b549b82f9314c34134"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-combinations/work/streak-1792-literal-0.92/encoder.dylib.json",
+        "sha256": "2962460a94ba1e49a2110a7af17e0a7cd571d02d64ff494ac64220e213567134"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "hq-passes-3",
+      "originalEncoderSha256": "3d101125c6bbaa60d991af5e48698e88b380b4ca8b2170412ce281b32a266ed4",
+      "modelOverrides": {},
+      "hqRefinementPasses": 3,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "bdf99058010c18f6c9602275012ab49a558bba8a17a863341c3279f5869e2714",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-hq-passes/work/hq-passes-3/encoder.dylib.json",
+        "sha256": "ba61733e6574fa1217364a0128fd9c884f0a4da8b096a30658a6e0c28b922c02"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    },
+    {
+      "id": "hq-passes-4",
+      "originalEncoderSha256": "e3af96d87b325a7cc1a8be8a215521e253616a609ee4bfc720280f28e099bb21",
+      "modelOverrides": {},
+      "hqRefinementPasses": 4,
+      "changedSourceSha256": {
+        "backward_references_hq.c": "35b287c26ecc8a82d39ac11fcf7c74b58afeb3aeb676e3b15ccd5fec81298785",
+        "entropy_encode.c": "51588e414218702b564b758662ee3dd7db60937ad3bb8909e73011f16ab36bd7"
+      },
+      "producerManifest": {
+        "path": "optimization/20261023/certificate-hq-passes/work/hq-passes-4/encoder.dylib.json",
+        "sha256": "0fa0aceb8cfb8c89ad6764665b62be854659b8aec516568793e81db0b6ce9a21"
+      },
+      "producerStatus": "Built only for this isolated experiment"
+    }
+  ],
+  "totals": {
+    "fixedSearchEncodedTrials": 8448,
+    "parameterVariantTrials": 5888,
+    "explicitControlTrials": 2560,
+    "searchIndependentDecoderCallsIncludingInstalledChecks": 16914,
+    "savedBestStreams": 132,
+    "exactSelectedParameterReplays": 132,
+    "savedBestIndependentDecoderCalls": 264,
+    "malformedStreamRejections": 264,
+    "strictInstalledPayloadImprovements": 0
+  },
+  "limits": [
+    "Finite recorded matrices only; no global optimum, exhaustive historical search, future-renewal gain or general encoder superiority claim.",
+    "Native original producer identities and model/source hashes are retained. Equal or larger experimental streams do not replace installed streams or relabel their provenance.",
+    "A stream minimum is not a complete-exchange overhead measurement. No public transfer or timing result follows from these negative searches.",
+    "Evidence references under optimization identify retained local artifacts and their hashes; they are not claims that those artifacts are published."
+  ]
+}
