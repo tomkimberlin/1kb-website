@@ -5,6 +5,8 @@
 
 Measured 2026-10-22: **1,021 B HTML; 389 B Brotli; 536 B gzip; 524 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
 
+Verified certificate components: **tomkimberlin.com 1,499 B; www.tomkimberlin.com 1,505 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
+
 | Measurement | Median | Range |
 | --- | ---: | ---: |
 | Complete TLS through first document | 5,642 B | 5,641–5,643 B |

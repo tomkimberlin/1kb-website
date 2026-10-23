@@ -17,6 +17,7 @@ const stats=values=>({median:[...values].sort((a,b)=>a-b)[1],minimum:Math.min(..
 const stamp=value=>{need(typeof value==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|\+00:00)$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,19)===value.slice(0,19),'Invalid evidence timestamp');return Date.parse(value);};
 const representations={identity:['html','index.html'],br:['brotli','index.html.br'],gzip:['gzip','index.html.gz'],deflate:['deflate','index.html.deflate']};
 const metrics=['tlsThroughBodyCompleteMinusBody','estimatedTcpPlusDnsMinusBody','responseHttpPlainMinusBody'];
+const componentHosts=['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'];
 const markers=kind=>[`<!-- comparison:${kind}:start -->`,`<!-- comparison:${kind}:end -->`];
 const bytes=n=>n.toLocaleString('en-US')+' B';
 const interval=s=>`${s.minimum.toLocaleString('en-US')}–${s.maximum.toLocaleString('en-US')} B`;
@@ -39,6 +40,8 @@ export function renderCurrent({overhead,deployment,page,refs}) {
 ## Latest verified own-site result
 
 Measured ${day}: **${bytes(page.html)} HTML; ${bytes(page.brotli)} Brotli; ${bytes(page.gzip)} gzip; ${bytes(page.deflate)} deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+
+Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(row=>row.hostname===host).compressedCertificateMessageBytes[0])}`).join('; ')}** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
@@ -92,6 +95,21 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   need(committed.length===page.html&&hash(committed)===page.htmlSha256,'Verified deployment source differs from its immutable commit');
   need(overhead.bodyBytes===page.brotli&&overhead.bodySha256===page.brotliSha256&&overhead.decodedBodyBytes===page.html&&overhead.sourceSha256===page.htmlSha256,'Overhead body/source differs from the verified page');
   const rawHashes=new Set(),times=[];
+  const certificates=deployment.certificateCache?.trustedLiveCompleteCompressedCertificateBytes;
+  need(Array.isArray(certificates)&&certificates.length===3
+    &&equal(certificates.map(row=>row.hostname).sort(),[...componentHosts].sort()),'Missing or duplicate verified certificate component hosts');
+  for(const row of certificates) {
+    need(row.verified===true&&row.protocol==='TLSv1.3'&&row.alpn==='h2'&&row.cipher==='TLS_AES_128_GCM_SHA256'
+      &&row.compressedCertificateMessageCount===1&&row.compressedCertificateMessageBytes?.length===1
+      &&integer(row.compressedCertificateMessageBytes[0])&&row.compressedCertificateMessageBytes[0]>=12,'Invalid verified certificate component');
+    const caches=deployment.certificateCache.actualOwnedCacheFiles;
+    if(caches!==undefined) {
+      const sidecar=Array.isArray(caches)?caches.filter(cache=>cache.hostname===row.hostname):[];
+      need(sidecar.length===1&&integer(sidecar[0].brotliBytes)&&sidecar[0].brotliBytes>0
+        &&sidecar[0].brotliBytes+12===row.compressedCertificateMessageBytes[0],'Verified certificate component and sidecar payload sizes differ');
+    }
+  }
+  const certificateBytes=certificates.find(row=>row.hostname==='tomkimberlin.com').compressedCertificateMessageBytes[0];
   for(const [i,row] of overhead.runs.entries()) {
     need(row.run===i+1&&row.statusCode===200&&row.certificateVerified===true&&row.httpProtocol==='h2'&&row.tlsProtocol==='TLSv1.3','Invalid current overhead sample');
     need(row.bodyBytes===page.brotli&&row.bodySha256===page.brotliSha256&&row.decodedBodyBytes===page.html&&row.sourceSha256===page.htmlSha256,'Stale overhead sample body/source');
@@ -100,6 +118,18 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     need([sent,received,row.estimatedIpv4TcpBytesAt1500Mtu,row.dnsIpv4UdpBytes,row.estimatedTcpPlusDnsBytes,row.responseHttpPlainBytes,...metrics.map(k=>row[k])].every(integer),'Invalid sample byte count');
     need(row.estimatedTcpPlusDnsBytes===row.estimatedIpv4TcpBytesAt1500Mtu+row.dnsIpv4UdpBytes,'Current packet/DNS sum differs');
     need(row[metrics[0]]===sent+received-row.bodyBytes&&row[metrics[1]]===row.estimatedTcpPlusDnsBytes-row.bodyBytes&&row[metrics[2]]===row.responseHttpPlainBytes-row.bodyBytes,'Current overhead does not subtract the whole encoded body');
+    const component=row.tlsComponents?.compressedCertificate?.read;
+    need(component?.count===1&&component.bytes===certificateBytes&&equal(component.messageBytes,[certificateBytes]),'Current measured certificate component differs from the verified deployment');
+  }
+  if(overhead.certificateComponents) {
+    const hosts=overhead.certificateComponents.hosts;
+    need(Array.isArray(hosts)&&hosts.length===3&&new Set(hosts.map(row=>row.hostname)).size===3,'Invalid normalized certificate component hosts');
+    for(const host of hosts) {
+      const matches=certificates.filter(row=>row.hostname===host.hostname);
+      need(matches.length===1&&matches[0].verified===true&&matches[0].compressedCertificateMessageCount===1
+        &&equal(matches[0].compressedCertificateMessageBytes,[host.compressedCertificateMessageBytes])
+        &&host.encodedCertificatePayloadBytes===host.compressedCertificateMessageBytes-12&&host.certificateVerified===true,'Normalized alias certificate component differs from the verified deployment');
+    }
   }
   need(rawHashes.size===3&&equal(times,[...times].sort((a,b)=>a-b)),'Duplicate samples or unordered timestamps');
   for(const key of metrics)need(equal(overhead.summary?.[key],stats(overhead.runs.map(r=>r[key]))),'Current overhead summary is stale');

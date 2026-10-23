@@ -106,3 +106,36 @@ test('dated fixtures stay valid when the project working bodies and README chang
   assert.deepEqual(frozen.check(),{liveDate:'2026-10-22',localCandidate:false});
   assert.notEqual(hash(readFileSync(join(project.root,'index.html'))),hash(readFileSync(join(frozen.root,'index.html'))));
 });
+
+// A certificate cache can change without a new page release or runtime image.
+test('verified cache-only component reduction cannot reuse older measured overhead',t=>{
+  const f=fixture(t);
+  const row=f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(r=>r.hostname==='tomkimberlin.com');
+  row.compressedCertificateMessageBytes=[row.compressedCertificateMessageBytes[0]-2];
+  const cache=f.data.deployment.certificateCache.actualOwnedCacheFiles.find(r=>r.hostname==='tomkimberlin.com');
+  cache.brotliBytes-=2;cache.brotliSha256='0'.repeat(64);
+  f.save('deployment');f.flush();
+  assert.throws(f.check,/certificate component/);
+});
+test('matching component-only aliases bind without claiming full alias exchanges',t=>{
+  const f=fixture(t);
+  f.data.overhead.certificateComponents={hosts:f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.map(row=>({hostname:row.hostname,compressedCertificateMessageBytes:row.compressedCertificateMessageBytes[0],encodedCertificatePayloadBytes:row.compressedCertificateMessageBytes[0]-12,certificateVerified:true}))};
+  f.save('overhead');f.flush();assert.doesNotThrow(f.check);
+});
+test('a verified alias reduction invalidates stale normalized alias components',t=>{
+  const f=fixture(t);
+  f.data.overhead.certificateComponents={hosts:f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.map(row=>({hostname:row.hostname,compressedCertificateMessageBytes:row.compressedCertificateMessageBytes[0],encodedCertificatePayloadBytes:row.compressedCertificateMessageBytes[0]-12,certificateVerified:true}))};
+  f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(row=>row.hostname==='www.tomkimberlin.com').compressedCertificateMessageBytes[0]-=2;
+  f.data.deployment.certificateCache.actualOwnedCacheFiles.find(row=>row.hostname==='www.tomkimberlin.com').brotliBytes-=2;
+  f.save('overhead');f.save('deployment');f.flush();assert.throws(f.check,/alias certificate component/);
+});
+test('sidecar payload size and full certificate framing must agree',t=>{
+  const f=fixture(t);f.data.deployment.certificateCache.actualOwnedCacheFiles[0].brotliBytes-=1;
+  f.save('deployment');f.flush();assert.throws(f.check,/sidecar payload/);
+});
+test('a www-only reduction cannot leave the canonical component line stale',t=>{
+  const f=fixture(t);
+  f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(row=>row.hostname==='www.tomkimberlin.com').compressedCertificateMessageBytes[0]-=2;
+  f.data.deployment.certificateCache.actualOwnedCacheFiles.find(row=>row.hostname==='www.tomkimberlin.com').brotliBytes-=2;
+  f.save('deployment');f.flush({doc:false});assert.throws(f.check,/section is stale/);
+});
