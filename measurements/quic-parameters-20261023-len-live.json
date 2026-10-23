@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "change": "Fresh parameter readback on the LEN runtime retains 87 B and unchanged effective values. The dated 96-to-87 component comparison is inherited.",
+  "before": {
+    "runtimeImageId": "sha256:13fad6b57ea028791f3e00f6e61edc2bd2a4e6f61e346abec953b65e31622af0",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 96,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": true,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": true,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "after": {
+    "runtimeImageId": "sha256:fdc327367ceab6f28e8fd88c3903c256900c7b23f86855eaae20d2f4c28bd27f",
+    "runtimeSourceCommit": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "pageCommitAtReadback": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "pageReleaseAtReadback": "releases/20261023T163526Z-aa9d6af64c9d-onekb-deploy.BtCJYe",
+    "perRequestGenerationVerified": false,
+    "runtimeReadbackAt": "2026-10-23T16:36:48.899075Z",
+    "privateRuntimeReadbackSha256": "66fec47b8e8f4b715ed68dc3ca81cc235418fee4a5a947f3974f7b07254d7de2",
+    "runtimeReadbacks": {
+      "clockScope": "Actual collector UTC around read-only SSH commands; private host timestamps have whole-second precision.",
+      "hostTimestampPrecisionSeconds": 1,
+      "before": {
+        "startedAt": "2026-10-23T16:36:48.542400Z",
+        "completedAt": "2026-10-23T16:36:48.617390Z",
+        "sha256": "66fec47b8e8f4b715ed68dc3ca81cc235418fee4a5a947f3974f7b07254d7de2"
+      },
+      "after": {
+        "startedAt": "2026-10-23T16:36:48.821211Z",
+        "completedAt": "2026-10-23T16:36:48.899075Z",
+        "sha256": "66fec47b8e8f4b715ed68dc3ca81cc235418fee4a5a947f3974f7b07254d7de2"
+      }
+    },
+    "privateRawSnapshotSha256": "f6301af6c0da5c0e5eec4242305a602a3ccf93557912024c7ea391c008f072a4",
+    "privateCollectionSnapshotSha256": "58bb24fcf022231d9d0a1c715e6b55830ee4a1a3a1295b60eb0c5950517071c2",
+    "collectorSourceSha256": "a7e4a0db4b3ef45f47a0a78e9e774c93070eac513cfdf792e27dd7dc01975964",
+    "tlsReleasePointerUnchanged": true,
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 87,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": false,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": false,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "source": {
+    "runtimeSourceCommit": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "dockerfileSha256": "e1770d1f8a63ec8ae2c176fb315ebeaa088a07ea493d21f9b6b7851683f6f534",
+    "quicDefaultsPatchSha256": "d1de4eb4a01bacd0d72da88455ef894c56711ef10db7762f923639f0298c75c2",
+    "quicBackendDefaultsPatchSha256": "e314c9ecdcd41aa4257387325184a17f844b527dd06d46900cdef56a7fd7df29"
+  },
+  "historicalBaseline": {
+    "path": "measurements/quic-native-defaults-20261023-live.json",
+    "sha256": "6ee002a07e71e8a4de5ac88b5b29493266586417720165292a633a79412c5f02",
+    "scope": "The before runtime and 96-byte observation are retained from the earlier October 23 native-defaults comparison; they were not rerun for the status patch."
+  },
+  "retainedParameterComparison": {
+    "path": "measurements/quic-parameters-20261023-status-live.json",
+    "sha256": "4f84b59b6698b2168b152011e6c3be318663b7fe4e08faeaae2c8fe5225bdae7",
+    "scope": "Original dated 96 B before side retained verbatim; no new nine-byte saving is attributed to the LEN change."
+  },
+  "parameterObservation": {
+    "afterSnapshotSha256": "f6301af6c0da5c0e5eec4242305a602a3ccf93557912024c7ea391c008f072a4",
+    "afterArtifactModifiedAt": "2026-10-23T16:36:48.807790092Z",
+    "probeCommandStartedAt": "2026-10-23T16:36:48.617759Z",
+    "probeCommandCompletedAt": "2026-10-23T16:36:48.820885Z",
+    "scope": "The frozen observer has no embedded measurement clock. afterArtifactModifiedAt is the actual local output-file mtime, bounded by collector UTC and read-only runtime attestations; it is not a handshake timestamp."
+  },
+  "normalizationSourceSha256": "afaa52bb1851a4e185ae95b7b087571bdf5fb6436b34032b3b7e88056186287d",
+  "limitations": [
+    "One fresh default-CA, owned-hostname-verified handshake-only parameter observation. No document or UDP exchange total is measured.",
+    "The inherited 96-to-87 component difference remains nine bytes. This runtime change creates no additional transport-parameter saving.",
+    "Raw TLVs, connection IDs, tickets, tokens, keys, addresses and qlogs are not published. No timing or peer-ranking result is claimed."
+  ]
+}
