@@ -2,7 +2,7 @@
 
 These standard Brotli streams encode two exact public TLS 1.3 Certificate bodies. Filenames hash the decoded body; `brotliSha256` in each sidecar hashes the encoded stream. They are optional cache data, separate from the page body and deployed encoder.
 
-The main-host payload is 1,486 B; `www` is 1,490 B. Complete CompressedCertificate messages add 12 B. These are candidate sizes until a dated deployment record verifies loading; renewed certificates have different input hashes and retain ordinary compression.
+The main-host payload is 1,486 B; `www` is 1,490 B. Complete CompressedCertificate messages add 12 B. The [October 23 deployment](../../measurements/deployment-20261023-certificate.json) verifies these exact streams were loaded. Renewed certificates have different input hashes and retain ordinary compression.
 
 The sidecars preserve the original Darwin producer, model, parameter and source hashes. Their `producerManifest` paths describe retained build artifacts, not files installed on the server. Native library hashes are historical identities; no native library is shipped here.
 
