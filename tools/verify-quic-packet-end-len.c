@@ -74,7 +74,8 @@ static void hex(FILE *f, const unsigned char *p, size_t n)
 ngx_int_t ngx_quic_encrypt(ngx_quic_header_t *p, ngx_str_t *out)
 {
     u_char h[256], *pn;
-    CHECK(p->payload.len >= 4 - p->num_len);
+    CHECK(p->num_len >= 1 && p->num_len <= 4);
+    CHECK(p->payload.len >= (size_t) (4 - p->num_len));
     plain_len = p->payload.len;
     memcpy(last_plain, p->payload.data, plain_len);
     pn_len = p->num_len;
