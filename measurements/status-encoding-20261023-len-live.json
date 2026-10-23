@@ -1,0 +1,494 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "verifiedThrough": "2026-10-23T16:36:48.492124Z",
+  "scope": "Fresh normally trusted status-field components on the LEN runtime; the original dated pre-status before side is retained unchanged.",
+  "definitions": {
+    "statusFieldBytes": "The exact encoded first :status field, independently decoded alone and in its complete header block.",
+    "blockBytes": "The complete encoded response header block, including HPACK table-size updates or the QPACK section prefix; excludes frame, TLS, QUIC and network framing.",
+    "savedBytes": "Before component bytes minus after component bytes; positive values mean fewer component bytes in the observed sample."
+  },
+  "requestCases": {
+    "main": {
+      "hostname": "tomkimberlin.com",
+      "method": "GET",
+      "path": "/",
+      "statusCode": 200
+    },
+    "missing": {
+      "hostname": "tomkimberlin.com",
+      "method": "GET",
+      "path": "/missing",
+      "statusCode": 404
+    },
+    "method": {
+      "hostname": "tomkimberlin.com",
+      "method": "BREW",
+      "path": "/",
+      "statusCode": 405
+    },
+    "wwwAlias": {
+      "hostname": "www.tomkimberlin.com",
+      "method": "GET",
+      "path": "/legacy?onekb=status",
+      "statusCode": 301
+    },
+    "alternateAlias": {
+      "hostname": "tom.kimberlin.net",
+      "method": "GET",
+      "path": "/legacy?onekb=status",
+      "statusCode": 301
+    }
+  },
+  "before": {
+    "runtimeImageId": "sha256:1942cf424ba319ff7357f0b0967eb348443e5486366253d1a4ff98432921a356",
+    "rawProbe": {
+      "path": "optimization/20261023/protocol-status/public-baseline.json",
+      "sha256": "59aace29d933d44e1cce08f950e9c7d6e147720fe830c45b608ae60bcd99d110",
+      "published": false
+    },
+    "runtimeReadback": {
+      "path": "optimization/20261023/protocol-status/baseline-runtime-readback.txt",
+      "sha256": "c72f02c4cacbe224cac6ef92ce4ff4961cb40c21dcf37dc4c46e8b52456c6b77",
+      "published": false
+    },
+    "runtimeReadbackAt": "2026-10-23T08:49:14Z",
+    "pageReleaseAtReadback": "releases/20261023T062935Z-aa9d6af64c9d-onekb-deploy.emoeWM",
+    "perRequestGenerationVerified": false,
+    "deploymentOverlap": false,
+    "passed": true,
+    "startedAt": "2026-10-23T08:47:19.728642Z",
+    "completedAt": "2026-10-23T08:47:20.531784Z",
+    "sourceSha256": "966d2546bf7da0af8f57b143779803a13a09f60e9bbc0086f1e681d178b4a6d3",
+    "reusedSources": {
+      "tools/verify-http3.py": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+      "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa"
+    },
+    "clientVersions": {
+      "h2": "4.4.1",
+      "hpack": "4.2.0",
+      "pylsqpack": "0.3.24",
+      "aioquic": "1.3.0"
+    },
+    "trust": "Default CA and owned hostname verification",
+    "fixtureCAUsed": false,
+    "freshConnections": 10,
+    "rows": {
+      "h2": {
+        "main": {
+          "statusCode": 200,
+          "statusFieldBytes": 1,
+          "blockBytes": 64,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 389,
+          "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "missing": {
+          "statusCode": 404,
+          "statusFieldBytes": 1,
+          "blockBytes": 26,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "method": {
+          "statusCode": 405,
+          "statusFieldBytes": 5,
+          "blockBytes": 45,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "wwwAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 5,
+          "blockBytes": 64,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "alternateAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 5,
+          "blockBytes": 64,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        }
+      },
+      "h3": {
+        "main": {
+          "statusCode": 200,
+          "statusFieldBytes": 1,
+          "blockBytes": 43,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 389,
+          "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "missing": {
+          "statusCode": 404,
+          "statusFieldBytes": 6,
+          "blockBytes": 32,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "method": {
+          "statusCode": 405,
+          "statusFieldBytes": 6,
+          "blockBytes": 46,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "wwwAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 6,
+          "blockBytes": 66,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "alternateAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 6,
+          "blockBytes": 66,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        }
+      }
+    },
+    "normalCertificateValidation": true,
+    "deployedEvidence": {
+      "path": "measurements/deployment-20261023-native-quic.json",
+      "sha256": "a95d79043820784361b188e88aad64df49c005160b069fb992085d824fe9199e"
+    },
+    "pageCommitAtReadback": "362a4d10181e889cd6ec641663fed620668b934d",
+    "runtimeSourceCommit": "e054e9213fd066380907d9a276f9bf1057ada1ca"
+  },
+  "after": {
+    "runtimeImageId": "sha256:fdc327367ceab6f28e8fd88c3903c256900c7b23f86855eaae20d2f4c28bd27f",
+    "runtimeSourceCommit": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "pageCommitAtReadback": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "pageReleaseAtReadback": "releases/20261023T163526Z-aa9d6af64c9d-onekb-deploy.BtCJYe",
+    "perRequestGenerationVerified": false,
+    "runtimeReadbackAt": "2026-10-23T16:36:48.492124Z",
+    "privateRuntimeReadbackSha256": "66fec47b8e8f4b715ed68dc3ca81cc235418fee4a5a947f3974f7b07254d7de2",
+    "runtimeReadbacks": {
+      "clockScope": "Actual collector UTC around read-only SSH commands; private host timestamps have whole-second precision.",
+      "hostTimestampPrecisionSeconds": 1,
+      "before": {
+        "startedAt": "2026-10-23T16:36:47.678860Z",
+        "completedAt": "2026-10-23T16:36:47.764930Z",
+        "sha256": "f5dee35cf98d81c8d038105ff29ed4ff85cdbe3fd398d55bd9f32ebd926421aa"
+      },
+      "after": {
+        "startedAt": "2026-10-23T16:36:48.412104Z",
+        "completedAt": "2026-10-23T16:36:48.492124Z",
+        "sha256": "66fec47b8e8f4b715ed68dc3ca81cc235418fee4a5a947f3974f7b07254d7de2"
+      }
+    },
+    "privateRawSnapshotSha256": "b62c1407439afcc235d0cae2cf5cf50457d14a9018308ee2580b8c28726f4f85",
+    "privateCollectionSnapshotSha256": "a016efe1ea95da5ce1c96c49960cd69bd47561bcb35153f146d47a584eb4561a",
+    "collectorSourceSha256": "a7e4a0db4b3ef45f47a0a78e9e774c93070eac513cfdf792e27dd7dc01975964",
+    "tlsReleasePointerUnchanged": true,
+    "freshConnections": 10,
+    "trust": "Default CA and owned hostname verification",
+    "sourceSha256": "966d2546bf7da0af8f57b143779803a13a09f60e9bbc0086f1e681d178b4a6d3",
+    "startedAt": "2026-10-23T16:36:47.856653Z",
+    "passed": true,
+    "completedAt": "2026-10-23T16:36:48.392308Z",
+    "reusedSources": {
+      "tools/verify-http3.py": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+      "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa"
+    },
+    "rows": {
+      "h2": {
+        "main": {
+          "statusCode": 200,
+          "statusFieldBytes": 1,
+          "blockBytes": 64,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 389,
+          "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "missing": {
+          "statusCode": 404,
+          "statusFieldBytes": 1,
+          "blockBytes": 26,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "method": {
+          "statusCode": 405,
+          "statusFieldBytes": 5,
+          "blockBytes": 45,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "wwwAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 4,
+          "blockBytes": 63,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-huffman",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "alternateAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 4,
+          "blockBytes": 63,
+          "nonFieldPrefixBytes": 1,
+          "statusRepresentation": "literal-name-huffman",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        }
+      },
+      "h3": {
+        "main": {
+          "statusCode": 200,
+          "statusFieldBytes": 1,
+          "blockBytes": 43,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 389,
+          "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "missing": {
+          "statusCode": 404,
+          "statusFieldBytes": 1,
+          "blockBytes": 27,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "indexed-static",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "method": {
+          "statusCode": 405,
+          "statusFieldBytes": 6,
+          "blockBytes": 46,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-raw",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "wwwAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 5,
+          "blockBytes": 65,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-huffman",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        },
+        "alternateAlias": {
+          "statusCode": 301,
+          "statusFieldBytes": 5,
+          "blockBytes": 65,
+          "nonFieldPrefixBytes": 2,
+          "statusRepresentation": "literal-name-huffman",
+          "bodyBytes": 0,
+          "bodySha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "normalCertificateValidation": true,
+          "exactStatus": true,
+          "exactBody": true,
+          "destinationVerified": true,
+          "allowVerified": true
+        }
+      }
+    },
+    "clientVersions": {
+      "h2": "4.4.1",
+      "hpack": "4.2.0",
+      "pylsqpack": "0.3.24",
+      "aioquic": "1.3.0"
+    },
+    "fixtureCAUsed": false,
+    "normalCertificateValidation": true,
+    "deploymentOverlap": false
+  },
+  "deltas": {
+    "h2": {
+      "main": {
+        "statusFieldBytesSaved": 0,
+        "blockBytesSaved": 0,
+        "bodyBytesSaved": 0
+      },
+      "missing": {
+        "statusFieldBytesSaved": 0,
+        "blockBytesSaved": 0,
+        "bodyBytesSaved": 0
+      },
+      "method": {
+        "statusFieldBytesSaved": 0,
+        "blockBytesSaved": 0,
+        "bodyBytesSaved": 0
+      },
+      "wwwAlias": {
+        "statusFieldBytesSaved": 1,
+        "blockBytesSaved": 1,
+        "bodyBytesSaved": 0
+      },
+      "alternateAlias": {
+        "statusFieldBytesSaved": 1,
+        "blockBytesSaved": 1,
+        "bodyBytesSaved": 0
+      }
+    },
+    "h3": {
+      "main": {
+        "statusFieldBytesSaved": 0,
+        "blockBytesSaved": 0,
+        "bodyBytesSaved": 0
+      },
+      "missing": {
+        "statusFieldBytesSaved": 5,
+        "blockBytesSaved": 5,
+        "bodyBytesSaved": 0
+      },
+      "method": {
+        "statusFieldBytesSaved": 0,
+        "blockBytesSaved": 0,
+        "bodyBytesSaved": 0
+      },
+      "wwwAlias": {
+        "statusFieldBytesSaved": 1,
+        "blockBytesSaved": 1,
+        "bodyBytesSaved": 0
+      },
+      "alternateAlias": {
+        "statusFieldBytesSaved": 1,
+        "blockBytesSaved": 1,
+        "bodyBytesSaved": 0
+      }
+    }
+  },
+  "source": {
+    "runtimeSourceCommit": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "dockerfileSha256": "e1770d1f8a63ec8ae2c176fb315ebeaa088a07ea493d21f9b6b7851683f6f534",
+    "statusEncodingPatchSha256": "d35b37e67f435a0aad5303c6f0ac92fe688514032d7a4ac8d5742299b48812a5"
+  },
+  "retainedStatusComparison": {
+    "path": "measurements/status-encoding-20261023-live.json",
+    "sha256": "58dbb319b90b5d1f6368fbb325d789d6b6d0720d111182ef52853f1dca7826e3",
+    "scope": "Original before side retained verbatim; its probes and earlier build tests were not rerun."
+  },
+  "normalizationSourceSha256": "afaa52bb1851a4e185ae95b7b087571bdf5fb6436b34032b3b7e88056186287d",
+  "limitations": [
+    "One fresh response per fixed case/protocol. This reconfirms the inherited status encoding; the LEN change is not its cause.",
+    "Complete header-block lengths can vary with Date and other fields. Field differences are not fixed TLS, QUIC, packet, whole-exchange or latency savings.",
+    "Page commit/release are explicit deployment context checked at both readbacks; no per-request worker-generation attestation is made."
+  ]
+}

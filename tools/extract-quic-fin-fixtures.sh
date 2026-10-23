@@ -25,7 +25,7 @@ for protected in "$streams" "$ack" "$output_source" "$0"; do
 done
 if [ "$(checksum "$streams")" != 546d0f07ebd91149cca56058cae973ab8f520edf9d5227c8f684d8cb689f51ad ] \
    || [ "$(checksum "$ack")" != 256b238edb0b3c757c341d4b0c2d482b38d56698a72d88638ff8353383cad763 ] \
-   || [ "$(checksum "$output_source")" != fff23e8f68bc2a49fe33a7446f64b82d88ece92d990c765f11ddf22df6f6fe22 ]; then
+   || [ "$(checksum "$output_source")" != 95ba0fc8c9f6825a95707cf3624624903ec5d46e721b11ba79121a191fc402b4 ]; then
     echo 'Pinned nginx stream/ACK/output source changed; review this gate' >&2
     exit 1
 fi

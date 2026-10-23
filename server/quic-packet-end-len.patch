@@ -1,0 +1,76 @@
+--- a/src/event/quic/ngx_event_quic_output.c
++++ b/src/event/quic/ngx_event_quic_output.c
+@@ -531,14 +531,15 @@
+     u_char *data, size_t max, size_t min, ngx_uint_t ack_only)
+ {
+     size_t                  len, pad, min_payload, max_payload;
+-    u_char                 *p;
++    u_char                 *p, *last_start;
++    size_t                  omit;
+     ssize_t                 flen;
+     ngx_str_t               res;
+     ngx_int_t               rc;
+     ngx_uint_t              nframes;
+     ngx_msec_t              now;
+     ngx_queue_t            *q;
+-    ngx_quic_frame_t       *f;
++    ngx_quic_frame_t       *f, *last, wire;
+     ngx_quic_header_t       pkt;
+     ngx_quic_connection_t  *qc;
+     static u_char           src[NGX_QUIC_MAX_UDP_PAYLOAD_SIZE];
+@@ -583,6 +584,8 @@
+ 
+     now = ngx_current_msec;
+     nframes = 0;
++    last = NULL;
++    last_start = NULL;
+     p = src;
+     len = 0;
+ 
+@@ -627,6 +630,9 @@
+             return NGX_ERROR;
+         }
+ 
++        last = f;
++        last_start = p;
++
+         len += flen;
+         p += flen;
+ 
+@@ -635,6 +641,36 @@
+ 
+     if (nframes == 0) {
+         return 0;
++    }
++
++    /* An implicit STREAM length consumes the packet plaintext remainder.
++     * Keep queued/split/retransmission metadata explicit; only rewrite the
++     * selected last wire frame when no padding will follow it. */
++    if (ctx->level == NGX_QUIC_ENCRYPTION_APPLICATION
++        && !ngx_quic_long_pkt(pkt.flags)
++        && last->type == NGX_QUIC_FT_STREAM && last->u.stream.len
++        && len > min_payload)
++    {
++        wire = *last;
++        wire.u.stream.len = 0;
++        flen = ngx_quic_create_frame(NULL, &wire);
++
++        if (flen == -1 || (size_t) flen > (size_t) (p - last_start)) {
++            return NGX_ERROR;
++        }
++
++        omit = (p - last_start) - flen;
++
++        if (len >= omit && len - omit >= min_payload) {
++            flen = ngx_quic_create_frame(last_start, &wire);
++
++            if (flen == -1 || (size_t) flen + omit != (size_t) (p - last_start)) {
++                return NGX_ERROR;
++            }
++
++            len -= omit;
++            p -= omit;
++        }
+     }
+ 
+     if (len < min_payload) {
