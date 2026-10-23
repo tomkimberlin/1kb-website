@@ -24,7 +24,7 @@ gallery = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gallery)
 
 
-def packet_frame(payload=0, peer='192.0.2.1', port=46240):
+def packet_frame(payload=0, peer='192.0.2.1', port=46240, direction='received', flags=24):
     ip = bytearray(20)
     ip[0] = 0x45
     ip[2:4] = struct.pack('!H', 40 + payload)
@@ -34,7 +34,10 @@ def packet_frame(payload=0, peer='192.0.2.1', port=46240):
     tcp = bytearray(20)
     tcp[:4] = struct.pack('!HH', 443, port)
     tcp[4:8] = (120).to_bytes(4, 'big')
-    tcp[12:14] = b'\x50\x18'
+    tcp[12:14] = bytes([0x50, flags])
+    if direction == 'sent':
+        ip[12:16], ip[16:20] = ip[16:20], ip[12:16]
+        tcp[:4] = struct.pack('!HH', port, 443)
     return b'\0' * 12 + b'\x08\x00' + ip + tcp + b'x' * payload
 
 
@@ -46,6 +49,7 @@ class FakeSocket:
     def bind(self, address): pass
     def connect(self, address): pass
     def getsockname(self): return ('192.0.2.2', 46240)
+    def getsockopt(self, *args): return struct.pack('=II', 3, 0)
     def sendall(self, data): pass
     def close(self): self.closed = True
 
@@ -55,7 +59,13 @@ class FakeThread:
         self.started = False
         self.joined = False
         self.args = kwargs.get('args', ())
-        self.action = kwargs.get('action', lambda args: args[2].append(gallery.tcp_packet(packet_frame(), '192.0.2.1', 46240, args[6])))
+        self.action = kwargs.get('action', self.capture)
+
+    @staticmethod
+    def capture(args):
+        for direction, flags in [('sent', 2), ('received', 18), ('received', 24)]:
+            frame = packet_frame(direction=direction, flags=flags)
+            args[2].append(gallery.tcp_packet(frame, '192.0.2.1', 46240, args[6]))
 
     def start(self): self.started = True; self.action(self.args)
     def join(self): self.joined = True
@@ -157,6 +167,7 @@ class GalleryTests(unittest.TestCase):
              patch.object(gallery.socket, 'gethostbyname', return_value='192.0.2.1'), \
              patch.object(gallery.socket, 'socket', side_effect=[self.raw, self.tcp]), \
              patch.object(gallery, 'dns', return_value=[]), \
+             patch.object(gallery, 'attach_capture_filter'), \
              patch.object(gallery.threading, 'Thread', side_effect=make_thread), \
              patch.object(gallery.ssl, 'create_default_context', return_value=context, side_effect=context_error), \
              patch.object(gallery.select, 'select', return_value=([], [], [])), \
@@ -319,9 +330,10 @@ class GalleryTests(unittest.TestCase):
 
     def test_capture_failure_and_empty_capture_cannot_be_successful_results(self):
         def failed(args): args[3].append(OSError('capture device failed'))
-        for action, message in [(failed, 'Packet capture failed'), (lambda args: None, 'No packets captured')]:
+        for action, message, error_type in [(failed, 'Packet capture failed', RuntimeError),
+                                            (lambda args: None, 'Packet capture integrity failed', ValueError)]:
             with self.subTest(message=message):
-                with self.assertRaisesRegex(RuntimeError, message):
+                with self.assertRaisesRegex(error_type, message):
                     self.run_probe(thread_action=action)
                 self.assertTrue(self.raw.closed)
                 if self.thread.started: self.assertTrue(self.thread.joined)
@@ -384,6 +396,125 @@ class GalleryTests(unittest.TestCase):
              patch.object(gallery, 'MAX_TLS_BYTES', 16):
             with self.assertRaisesRegex(ValueError, 'TLS byte limit'):
                 self.run_probe(tls=tls)
+
+
+class CaptureIntegrityTests(unittest.TestCase):
+    def packets(self):
+        return [gallery.tcp_packet(packet_frame(direction=direction, flags=flags),
+                                   '192.0.2.1', 46240, '192.0.2.2')
+                for direction, flags in [('sent', 2), ('received', 18)]]
+
+    def statistics(self, packets=2, drops=0):
+        return {'available': True, 'kernelPackets': packets, 'kernelDrops': drops}
+
+    def test_complete_syn_with_retransmission_and_zero_drops_is_valid(self):
+        packets = self.packets(); packets.insert(0, dict(packets[0]))
+        self.assertEqual(gallery.validate_capture(packets, self.statistics(3)),
+                         {'sentSynPackets': 2, 'receivedSynAckPackets': 1,
+                          'completeSynObserved': True})
+
+    def test_empty_or_one_sided_syn_fails_with_nonprivate_counts(self):
+        packets = self.packets()
+        for missing in [[], packets[:1], packets[1:]]:
+            with self.subTest(packets=len(missing)), self.assertRaisesRegex(
+                    ValueError, 'Packet capture integrity failed: missing SYN/SYN-ACK') as error:
+                gallery.validate_capture(missing, self.statistics(2))
+            self.assertIn('ownedPackets=' + str(len(missing)), str(error.exception))
+            self.assertIn('sentSyn=', str(error.exception))
+            self.assertIn('receivedSynAck=', str(error.exception))
+
+    def test_unavailable_negative_missing_boolean_or_noninteger_counters_fail(self):
+        invalid = [None, {}, {'available': False, 'errorCode': '192.0.2.1:46240'}]
+        for field in ['kernelPackets', 'kernelDrops']:
+            for value in [-1, True, 1.0, '2', None]:
+                item = self.statistics(); item[field] = value; invalid.append(item)
+            item = self.statistics(); del item[field]; invalid.append(item)
+        item = self.statistics(); item['available'] = 1; invalid.append(item)
+        for statistics in invalid:
+            with self.subTest(statistics=statistics), self.assertRaisesRegex(
+                    ValueError, 'unavailable or invalid kernel counters') as error:
+                gallery.validate_capture(self.packets(), statistics)
+            self.assertNotIn('192.0.2.1', str(error.exception))
+            self.assertNotIn('46240', str(error.exception))
+
+    def test_kernel_counter_contradiction_cannot_pass_with_zero_drops(self):
+        for count in [0, 1]:
+            with self.subTest(count=count), self.assertRaisesRegex(
+                    ValueError, 'kernel packet count below captured packets') as error:
+                gallery.validate_capture(self.packets(), self.statistics(count))
+            self.assertIn('kernelPackets=' + str(count), str(error.exception))
+            self.assertIn('kernelDrops=0', str(error.exception))
+
+    def test_positive_drops_fail_despite_complete_syn(self):
+        with self.assertRaisesRegex(ValueError, 'kernel drops') as error:
+            gallery.validate_capture(self.packets(), self.statistics(3, 1))
+        for count in ['ownedPackets=2', 'sentSyn=1', 'receivedSynAck=1',
+                      'kernelPackets=3', 'kernelDrops=1']:
+            self.assertIn(count, str(error.exception))
+
+    def test_statistics_use_one_exact_read_and_name_prefiltered_scope(self):
+        raw = FakeSocket()
+        with patch.object(raw, 'getsockopt', return_value=struct.pack('=II', 23, 4)) as read:
+            statistics = gallery.read_packet_statistics(raw)
+        read.assert_called_once_with(263, 6, 8)
+        self.assertEqual((statistics['kernelPackets'], statistics['kernelDrops']), (23, 4))
+        self.assertIn('peer/port-prefiltered', statistics['counterScope'].lower())
+
+    def test_unavailable_or_malformed_statistics_are_explicit_failure(self):
+        raw = FakeSocket()
+        with patch.object(raw, 'getsockopt', side_effect=OSError('fixture unavailable')):
+            self.assertEqual(gallery.read_packet_statistics(raw),
+                             {'available': False, 'errorCode': 'packet_statistics_unavailable'})
+        for data in [None, b'', b'1234567', b'123456789']:
+            with self.subTest(data=data), patch.object(raw, 'getsockopt', return_value=data):
+                result = gallery.read_packet_statistics(raw)
+                self.assertIs(result['available'], False)
+                self.assertNotIn('kernelDrops', result)
+
+    def test_statistics_read_once_after_join_and_before_raw_close(self):
+        case = GalleryTests(methodName='runTest'); calls = []
+        def statistics(raw, *args):
+            self.assertIs(raw, case.raw); self.assertTrue(case.tcp.closed)
+            self.assertTrue(case.thread.joined); self.assertFalse(raw.closed)
+            calls.append(args); return struct.pack('=II', 3, 0)
+        with patch.object(FakeSocket, 'getsockopt', statistics):
+            result = case.run_probe()
+        self.assertEqual(calls, [(263, 6, 8)])
+        self.assertTrue(case.raw.closed)
+        self.assertEqual(result['packet_capture_handshake'],
+                         {'sentSynPackets': 1, 'receivedSynAckPackets': 1,
+                          'completeSynObserved': True})
+        self.assertEqual(result['packet_capture_statistics']['kernelDrops'], 0)
+
+    def test_failed_integrity_cleans_up_and_cannot_write_fetched_html(self):
+        def no_syn_ack(args):
+            args[2].append(gallery.tcp_packet(packet_frame(direction='sent', flags=2),
+                                             '192.0.2.1', 46240, args[6]))
+        cases = [(no_syn_ack, struct.pack('=II', 1, 0)),
+                 (None, struct.pack('=II', 3, 1)),
+                 (None, struct.pack('=II', 2, 0)), (None, b'invalid')]
+        for action, data in cases:
+            case = GalleryTests(methodName='runTest')
+            with self.subTest(action=action, data=data), \
+                 patch.object(FakeSocket, 'getsockopt', return_value=data), \
+                 patch.object(Path, 'write_bytes') as save:
+                with self.assertRaisesRegex(ValueError, 'Packet capture integrity failed'):
+                    case.run_probe(thread_action=action)
+                save.assert_not_called()
+            self.assertTrue(case.raw.closed and case.tcp.closed and case.thread.joined)
+
+    def test_malformed_owned_flow_exception_survives_cleanup_and_blocks_html(self):
+        def malformed(args):
+            class Frames:
+                def recv(self, size): return packet_frame()[:-1]
+            gallery.capture_packets(Frames(), *args[1:])
+        case = GalleryTests(methodName='runTest')
+        with patch.object(Path, 'write_bytes') as save:
+            with self.assertRaisesRegex(RuntimeError, 'Packet capture failed: Truncated') as error:
+                case.run_probe(thread_action=malformed)
+            save.assert_not_called()
+        self.assertIsInstance(error.exception.__cause__, ValueError)
+        self.assertTrue(case.raw.closed and case.tcp.closed and case.thread.joined)
 
 
 class CliTests(unittest.TestCase):

@@ -4,7 +4,7 @@ Not a browser load: excludes subresources, favicon discovery, redirects and brow
 Requires Linux raw sockets and the configured capture interface (br0).
 The measurement container provides an OpenSSL build with certificate compression enabled.
 """
-import argparse, hashlib, io, json, math, select, socket, ssl, struct, threading, time, zlib
+import argparse, ctypes, hashlib, io, json, math, select, socket, ssl, struct, threading, time, zlib
 from pathlib import Path
 from urllib.parse import urlsplit
 import brotli, h11, h2.config, h2.connection, h2.events, zstandard
@@ -158,6 +158,69 @@ def tcp_packet(frame, peer, port, local_ip):
             'ip_bytes_at_1500_mtu': length + (segments - 1) * (ihl + thl)}
 
 
+def kernel_capture_filter(peer, port):
+    """Prefilter only untagged IPv4/TCP peer and ports; inspect no TLS data.
+
+    The existing Python parser still enforces the actual local address and
+    rejects malformed owned IP/TCP lengths and fragments. Do not hide those
+    owned-flow errors by validating or discarding them in this prefilter.
+    """
+    if type(port) is not int or not 1 <= port <= 65535:
+        raise ValueError('Capture requires a fixed nonzero bound source port')
+    peer_value = int.from_bytes(socket.inet_aton(peer), 'big')
+    rows=[]; labels={}; fixups=[]
+    def label(name): labels[name]=len(rows)
+    def ins(code,k,yes=None,no=None):
+        rows.append([code,0,0,k])
+        if yes is not None:fixups.append((len(rows)-1,yes,no))
+    ins(0x28,12)                       # Ethernet type
+    ins(0x15,0x0800,'version','reject')
+    label('version');ins(0x30,14);ins(0x54,0xf0)
+    ins(0x15,0x40,'ihl','reject')
+    label('ihl');ins(0x30,14);ins(0x54,0x0f)
+    ins(0x35,5,'protocol','reject')
+    label('protocol');ins(0x30,23)
+    ins(0x15,6,'addresses','reject')
+    label('addresses');ins(0xb1,14)     # X = IPv4 IHL in bytes
+    ins(0x20,26)                       # IPv4 source
+    ins(0x15,peer_value,'incoming','outgoing')
+    label('incoming');ins(0x48,14)     # TCP source port
+    ins(0x15,443,'incoming_destination','outgoing')
+    label('incoming_destination');ins(0x48,16)
+    ins(0x15,port,'accept','outgoing')
+    label('outgoing');ins(0x20,30)     # IPv4 destination
+    ins(0x15,peer_value,'outgoing_source','reject')
+    label('outgoing_source');ins(0x48,14)
+    ins(0x15,port,'outgoing_destination','reject')
+    label('outgoing_destination');ins(0x48,16)
+    ins(0x15,443,'accept','reject')
+    label('reject');ins(0x06,0)
+    label('accept');ins(0x06,65535+64)  # Existing bounded recv capacity
+    for index,yes,no in fixups:
+        for slot,target in ((1,yes),(2,no)):
+            jump=labels[target]-index-1
+            if not 0 <= jump <= 255:raise ValueError('Invalid capture filter jump')
+            rows[index][slot]=jump
+    return rows
+
+
+def attach_capture_filter(raw, rows):
+    """Attach classic BPF to this inactive Linux socket before activation."""
+    class Instruction(ctypes.Structure):
+        _fields_=[('code',ctypes.c_ushort),('jt',ctypes.c_ubyte),
+                  ('jf',ctypes.c_ubyte),('k',ctypes.c_uint32)]
+    class Program(ctypes.Structure):
+        _fields_=[('length',ctypes.c_ushort),('filter',ctypes.POINTER(Instruction))]
+    instructions=(Instruction*len(rows))(*(Instruction(*row) for row in rows))
+    program=Program(len(rows),instructions)
+    libc=ctypes.CDLL(None,use_errno=True)
+    libc.setsockopt.argtypes=[ctypes.c_int,ctypes.c_int,ctypes.c_int,
+                             ctypes.c_void_p,ctypes.c_uint]
+    libc.setsockopt.restype=ctypes.c_int
+    if libc.setsockopt(raw.fileno(),1,26,ctypes.byref(program),ctypes.sizeof(program))!=0:
+        raise OSError(ctypes.get_errno(),'Packet capture kernel filter attach failed')
+
+
 def capture_packets(raw, stop, packets, errors, peer, port, local_ip):
     try:
         while not stop.is_set():
@@ -171,6 +234,55 @@ def capture_packets(raw, stop, packets, errors, peer, port, local_ip):
     except Exception as error:
         errors.append(error)
         stop.set()
+
+
+def read_packet_statistics(raw):
+    """One post-join read of the peer/port-prefiltered AF_PACKET socket counters.
+
+    Linux SOL_PACKET/PACKET_STATISTICS, default struct tpacket_stats. Reading
+    resets these counters; this probe reads once and does not infer which
+    owned or unrelated packets were lost, or when they were lost.
+    """
+    try:
+        data = raw.getsockopt(263, 6, 8)
+    except OSError:
+        return {'available': False, 'errorCode': 'packet_statistics_unavailable'}
+    if not isinstance(data, bytes) or len(data) != 8:
+        return {'available': False, 'errorCode': 'packet_statistics_invalid_length'}
+    packets, drops = struct.unpack('=II', data)
+    return {'available': True, 'kernelPackets': packets, 'kernelDrops': drops,
+            'counterScope': 'Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count.'}
+
+
+def validate_capture(packets, statistics):
+    """Require necessary capture-integrity conditions before publishing a run.
+
+    Zero socket drops and complete SYN visibility do not prove complete link
+    visibility or absence of other capture loss. Counts contain no addresses.
+    """
+    sent_syn = sum(p['direction'] == 'sent' and p['flags'] & 0x12 == 0x02 for p in packets)
+    received_syn_ack = sum(p['direction'] == 'received' and p['flags'] & 0x12 == 0x12 for p in packets)
+    counters = (isinstance(statistics, dict) and statistics.get('available') is True
+                and type(statistics.get('kernelPackets')) is int and statistics['kernelPackets'] >= 0
+                and type(statistics.get('kernelDrops')) is int and statistics['kernelDrops'] >= 0)
+    reasons = []
+    if not sent_syn or not received_syn_ack:
+        reasons.append('missing SYN/SYN-ACK')
+    if not counters:
+        reasons.append('unavailable or invalid kernel counters')
+    else:
+        if statistics['kernelPackets'] < len(packets):
+            reasons.append('kernel packet count below captured packets')
+        if statistics['kernelDrops']:
+            reasons.append('kernel drops')
+    if reasons:
+        counts = ('ownedPackets=' + str(len(packets)) + ', sentSyn=' + str(sent_syn)
+                  + ', receivedSynAck=' + str(received_syn_ack)
+                  + ', kernelPackets=' + (str(statistics['kernelPackets']) if counters else 'unavailable')
+                  + ', kernelDrops=' + (str(statistics['kernelDrops']) if counters else 'unavailable'))
+        raise ValueError('Packet capture integrity failed: ' + '; '.join(reasons) + ' (' + counts + ')')
+    return {'sentSynPackets': sent_syn, 'receivedSynAckPackets': received_syn_ack,
+            'completeSynObserved': True}
 
 
 def dns(host):
@@ -207,9 +319,9 @@ def run(url,port,outdir,curve=None):
         remaining=deadline-time.monotonic()
         if remaining<=0:raise TimeoutError('TLS/HTTP exchange deadline exceeded')
         return remaining
-    raw=sock=thread=None;started=False
+    raw=sock=thread=None;started=False;capture_stats=None
     try:
-        raw=socket.socket(socket.AF_PACKET,socket.SOCK_RAW,socket.htons(3));raw.bind(('br0',0));raw.settimeout(.1)
+        raw=socket.socket(socket.AF_PACKET,socket.SOCK_RAW,0)
         context=ssl.create_default_context();context.set_alpn_protocols(['h2','http/1.1'])
         if curve:context.set_ecdh_curve(curve)
         messages=[];keyshares=[]
@@ -227,6 +339,8 @@ def run(url,port,outdir,curve=None):
         incoming,outgoing=ssl.MemoryBIO(),ssl.MemoryBIO()
         tls=context.wrap_bio(incoming,outgoing,server_hostname=host)
         sock=socket.socket();sock.settimeout(15);sock.bind(('0.0.0.0',port))
+        attach_capture_filter(raw,kernel_capture_filter(ip,port))
+        raw.bind(('br0',3));raw.settimeout(.1)
         counts={'sent':0,'received':0};ended=False
         def flush():
             check_progress()
@@ -344,15 +458,19 @@ def run(url,port,outdir,curve=None):
         finally:
             stop.set()
             if started:thread.join()
-            if raw is not None:raw.close()
+            if raw is not None:
+                try:capture_stats=read_packet_statistics(raw)
+                finally:raw.close()
     check_progress()
-    if not packets:raise RuntimeError('No packets captured for measured TCP flow')
+    capture_handshake=validate_capture(packets,capture_stats)
     (outdir/(host+'.html')).write_bytes(decoded)
     result['packets']=packets
     result['observed_ipv4_tcp_bytes']=sum(p['ip_bytes'] for p in packets)
     result['estimated_ipv4_tcp_bytes_1500_mtu']=sum(p['ip_bytes_at_1500_mtu'] for p in packets)
     result['dns_ipv4_udp_bytes']=sum(d['ipv4_udp_bytes'] for d in dns_results)
     result['estimated_tcp_plus_dns_bytes']=result['estimated_ipv4_tcp_bytes_1500_mtu']+result['dns_ipv4_udp_bytes']
+    result['packet_capture_statistics']=capture_stats
+    result['packet_capture_handshake']=capture_handshake
     return result
 
 def main(argv=None):

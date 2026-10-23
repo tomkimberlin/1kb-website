@@ -68,6 +68,8 @@ The October 22 runtime comparison used a frozen OpenSSL 3.5.8 client against the
 
 The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the connected local address, selected peer address and TCP source port, and requires HTTP 200 before publishing a decoded document. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 
+A socket-local kernel filter limits queued traffic to the selected peer and ports; the Python parser still checks the actual local address. Missing SYN/SYN-ACK, unavailable or inconsistent packet counters, or any reported socket drops fail the capture before a decoded document is published. Passing these checks supplies necessary capture-integrity evidence, not proof of complete link visibility. The September sample predates the counter checks.
+
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
