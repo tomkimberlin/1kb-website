@@ -69,7 +69,7 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20261023a -f server/Dockerfile .
+docker build -t onekb-nginx:20261023b -f server/Dockerfile .
 docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
 
