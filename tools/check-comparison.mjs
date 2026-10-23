@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {isDeepStrictEqual} from 'node:util';
+import {checkStreamOffsets,renderStreamOffsets,checkFreshQuicAfter} from './check-stream-offsets.mjs';
 
 const target='https://tomkimberlin.com/';
 const hash=data=>createHash('sha256').update(data).digest('hex');
@@ -151,17 +152,18 @@ ${sorted.map(r=>`| [${peerLabels[peerUrls.indexOf(r.url)]}](${r.url}) | ${cell(r
 ${markers('fresh-gallery')[1]}`;
 }
 
-export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding,peerComparison}) {
+export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding,peerComparison,streamOffsets}) {
   const rows=[['Complete TLS through first document',stats(overhead.runs.map(r=>r.tlsThroughBodyComplete.sent+r.tlsThroughBodyComplete.received))],
     ['TLS minus complete body',overhead.summary[metrics[0]]],
     ['Estimated TCP/IP + DNS through close',stats(overhead.runs.map(r=>r.estimatedTcpPlusDnsBytes))],
     ['TCP/IP + DNS minus complete body',overhead.summary[metrics[1]]],
     ['HTTP/2 plaintext minus complete body',overhead.summary[metrics[2]]]];
   const day=overhead.runs.at(-1).measuredAt.slice(0,10);
-  const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
+  const parameters=quic?`\n\n${streamOffsets?'Earlier verified ':''}HTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
   const peers=peerComparison?renderPeers(peerComparison,deployment.peerComparison):'';
+  const streams=streamOffsets?renderStreamOffsets(streamOffsets,deployment.quicStreamOffsets):'';
   const peerScope=peerComparison?'The own-site result above and the dated peer sample have separate evidence.':'Only this website was remeasured; this creates no new peer ranking.';
-  const status=statusEncoding?`\n\nStatus-field components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](${deployment.statusEncoding.path}); no fixed whole-exchange saving is established.`:'';
+  const status=statusEncoding?`\n\n${streamOffsets?'Earlier verified status-field':'Status-field'} components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](${deployment.statusEncoding.path}); no fixed whole-exchange saving is established.`:'';
   return `${markers('current')[0]}
 ## Latest verified own-site result
 
@@ -171,7 +173,7 @@ Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(d
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}${peers}
+${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}${streams}${peers}
 
 [Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). ${peerScope} TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
@@ -204,6 +206,9 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   const overhead=record(config.current.overhead),deployment=record(config.current.deployment),page=record(config.current.page),gallery=record(config.historicalGallery);
   const peerComparison=deployment.peerComparison===undefined?null:record(deployment.peerComparison);
   if(deployment.peerComparison!==undefined)checkPeers(peerComparison,{root,historical:config.historicalGallery});
+  const streamOffsets=deployment.quicStreamOffsets===undefined?null:record(deployment.quicStreamOffsets);
+  need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/quic-stream-offset.patch')||streamOffsets!==null,'Current STREAM-offset runtime requires component evidence');
+  if(streamOffsets!==null)checkStreamOffsets(streamOffsets,{deployment,page,readCommitted:(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']})});
   const statusEncoding=deployment.statusEncoding===undefined?null:record(deployment.statusEncoding);
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/status-encoding.patch')||deployment.statusEncoding!==undefined,'Current status-encoding runtime requires component evidence');
   if(deployment.statusEncoding!==undefined) {
@@ -273,6 +278,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     }
   }
   const quic=deployment.quicTransportParameters===undefined?null:record(deployment.quicTransportParameters);
+  if(streamOffsets!==null)checkFreshQuicAfter(quic,{deployment,streamOffsets,readCommitted:(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']})});
   if(deployment.quicTransportParameters!==undefined) {
     need(quic&&quic.schemaVersion===1&&quic.targetUrl===target,'Invalid QUIC component evidence');
     need(digest(quic.before?.runtimeImageId?.replace(/^sha256:/,''))&&quic.after?.runtimeImageId===deployment.server?.imageId,'QUIC component runtime image differs from current deployment');
@@ -378,7 +384,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
     }
   }
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison}),'Current comparison section is stale');
+  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison,streamOffsets}),'Current comparison section is stale');
   need(block(doc,'fresh-gallery',peerComparison!==null)===(peerComparison?renderPeers(peerComparison,deployment.peerComparison).trim():null),'Fresh peer section is stale');
   const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
