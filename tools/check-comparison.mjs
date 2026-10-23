@@ -6,6 +6,7 @@ import {resolve, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {isDeepStrictEqual} from 'node:util';
 import {checkStreamOffsets,renderStreamOffsets,checkFreshQuicAfter} from './check-stream-offsets.mjs';
+import {checkFinCoalescing,requireFinEvidence,renderFinCoalescing} from './check-fin-coalescing.mjs';
 
 const target='https://tomkimberlin.com/';
 const hash=data=>createHash('sha256').update(data).digest('hex');
@@ -152,7 +153,7 @@ ${sorted.map(r=>`| [${peerLabels[peerUrls.indexOf(r.url)]}](${r.url}) | ${cell(r
 ${markers('fresh-gallery')[1]}`;
 }
 
-export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding,peerComparison,streamOffsets}) {
+export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding,peerComparison,streamOffsets,finCoalescing}) {
   const rows=[['Complete TLS through first document',stats(overhead.runs.map(r=>r.tlsThroughBodyComplete.sent+r.tlsThroughBodyComplete.received))],
     ['TLS minus complete body',overhead.summary[metrics[0]]],
     ['Estimated TCP/IP + DNS through close',stats(overhead.runs.map(r=>r.estimatedTcpPlusDnsBytes))],
@@ -162,6 +163,7 @@ export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding
   const parameters=quic?`\n\n${streamOffsets?'Earlier verified ':''}HTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
   const peers=peerComparison?renderPeers(peerComparison,deployment.peerComparison):'';
   const streams=streamOffsets?renderStreamOffsets(streamOffsets,deployment.quicStreamOffsets):'';
+  const fin=finCoalescing?renderFinCoalescing(finCoalescing,deployment.quicFinCoalescing):'';
   const peerScope=peerComparison?'The own-site result above and the dated peer sample have separate evidence.':'Only this website was remeasured; this creates no new peer ranking.';
   const status=statusEncoding?`\n\n${streamOffsets?'Earlier verified status-field':'Status-field'} components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](${deployment.statusEncoding.path}); no fixed whole-exchange saving is established.`:'';
   return `${markers('current')[0]}
@@ -173,7 +175,7 @@ Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(d
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}${streams}${peers}
+${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}${streams}${fin}${peers}
 
 [Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). ${peerScope} TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
@@ -209,6 +211,11 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   const streamOffsets=deployment.quicStreamOffsets===undefined?null:record(deployment.quicStreamOffsets);
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/quic-stream-offset.patch')||streamOffsets!==null,'Current STREAM-offset runtime requires component evidence');
   if(streamOffsets!==null)checkStreamOffsets(streamOffsets,{deployment,page,readCommitted:(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']})});
+  const finCoalescing=deployment.quicFinCoalescing===undefined?null:record(deployment.quicFinCoalescing);
+  const immutableSource=(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']});
+  requireFinEvidence(deployment,finCoalescing,immutableSource);
+  if(finCoalescing!==null)checkFinCoalescing(finCoalescing,{deployment,page,streamOffsets,
+    baselineDeployment:record(finCoalescing.baselineDeployment),readCommitted:immutableSource});
   const statusEncoding=deployment.statusEncoding===undefined?null:record(deployment.statusEncoding);
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/status-encoding.patch')||deployment.statusEncoding!==undefined,'Current status-encoding runtime requires component evidence');
   if(deployment.statusEncoding!==undefined) {
@@ -384,7 +391,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
     }
   }
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison,streamOffsets}),'Current comparison section is stale');
+  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison,streamOffsets,finCoalescing}),'Current comparison section is stale');
   need(block(doc,'fresh-gallery',peerComparison!==null)===(peerComparison?renderPeers(peerComparison,deployment.peerComparison).trim():null),'Fresh peer section is stale');
   const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
