@@ -1,0 +1,99 @@
+--- a/src/http/v2/ngx_http_v2_filter_module.c
++++ b/src/http/v2/ngx_http_v2_filter_module.c
+@@ -107,6 +107,7 @@
+ ngx_http_v2_header_filter(ngx_http_request_t *r)
+ {
+     u_char                     status, *pos, *start, *p, *tmp;
++    u_char                     status_line[NGX_INT_T_LEN];
+     size_t                     len, tmp_len;
+     ngx_str_t                  host, location;
+     ngx_uint_t                 i, port, fin;
+@@ -423,8 +424,8 @@
+ 
+     } else {
+         *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_STATUS_INDEX);
+-        *pos++ = NGX_HTTP_V2_ENCODE_RAW | 3;
+-        pos = ngx_sprintf(pos, "%03ui", r->headers_out.status);
++        p = ngx_sprintf(status_line, "%03ui", r->headers_out.status);
++        pos = ngx_http_v2_write_value(pos, status_line, p - status_line, tmp);
+     }
+ 
+     if (r->headers_out.server == NULL) {
+--- a/src/http/v3/ngx_http_v3_filter_module.c
++++ b/src/http/v3/ngx_http_v3_filter_module.c
+@@ -126,6 +126,39 @@
+ }
+ 
+ 
++static uintptr_t
++ngx_http_v3_encode_status(u_char *p, ngx_uint_t status)
++{
++    u_char      value[NGX_INT_T_LEN], *last;
++    ngx_uint_t  index;
++
++    /* RFC 9204 static status entries; all other values remain literals. */
++    switch (status) {
++    case 100: index = 63; break;
++    case 103: index = 24; break;
++    case 200: index = 25; break;
++    case 204: index = 64; break;
++    case 206: index = 65; break;
++    case 302: index = 66; break;
++    case 304: index = 26; break;
++    case 400: index = 67; break;
++    case 403: index = 68; break;
++    case 404: index = 27; break;
++    case 421: index = 69; break;
++    case 425: index = 70; break;
++    case 500: index = 71; break;
++    case 503: index = 28; break;
++    default:
++        last = ngx_sprintf(value, "%03ui", status);
++        return ngx_http_v3_encode_field_lri(p, 0,
++                                           NGX_HTTP_V3_HEADER_STATUS_200,
++                                           value, last - value);
++    }
++
++    return ngx_http_v3_encode_field_ri(p, 0, index);
++}
++
++
+ static ngx_int_t
+ ngx_http_v3_header_filter(ngx_http_request_t *r)
+ {
+@@ -194,15 +227,7 @@
+ 
+     len = ngx_http_v3_encode_field_section_prefix(NULL, 0, 0, 0);
+ 
+-    if (r->headers_out.status == NGX_HTTP_OK) {
+-        len += ngx_http_v3_encode_field_ri(NULL, 0,
+-                                           NGX_HTTP_V3_HEADER_STATUS_200);
+-
+-    } else {
+-        len += ngx_http_v3_encode_field_lri(NULL, 0,
+-                                            NGX_HTTP_V3_HEADER_STATUS_200,
+-                                            NULL, 3);
+-    }
++    len += ngx_http_v3_encode_status(NULL, r->headers_out.status);
+ 
+     clcf = ngx_http_get_module_loc_conf(r, ngx_http_core_module);
+ 
+@@ -375,16 +400,8 @@
+                    "http3 output header: \":status: %03ui\"",
+                    r->headers_out.status);
+ 
+-    if (r->headers_out.status == NGX_HTTP_OK) {
+-        b->last = (u_char *) ngx_http_v3_encode_field_ri(b->last, 0,
+-                                                NGX_HTTP_V3_HEADER_STATUS_200);
+-
+-    } else {
+-        b->last = (u_char *) ngx_http_v3_encode_field_lri(b->last, 0,
+-                                                 NGX_HTTP_V3_HEADER_STATUS_200,
+-                                                 NULL, 3);
+-        b->last = ngx_sprintf(b->last, "%03ui", r->headers_out.status);
+-    }
++    b->last = (u_char *) ngx_http_v3_encode_status(b->last,
++                                                r->headers_out.status);
+ 
+     if (r->headers_out.server == NULL) {
+         if (clcf->server_tokens == NGX_HTTP_SERVER_TOKENS_ON) {
