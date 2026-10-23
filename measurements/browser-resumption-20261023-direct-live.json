@@ -1,0 +1,280 @@
+{
+  "schema": 1,
+  "status": "unresolved",
+  "date": "2026-10-23",
+  "host": "tomkimberlin.com",
+  "scope": "Direct persistent WebKit delivery and passive TLS1.3 Hello diagnostic; no byte saving or nonce-compatibility result.",
+  "browser": {
+    "engine": "WebKit",
+    "version": "26.6",
+    "playwright": "1.63.0",
+    "configuration": {
+      "persistentContext": true,
+      "freshProfile": true,
+      "normalCertificateValidation": true,
+      "launchProxyConfigured": false,
+      "requestInterception": false,
+      "javaScriptEnabled": false,
+      "serviceWorkers": "block"
+    },
+    "startedAt": "2026-10-23T07:44:36.287Z",
+    "completedAt": "2026-10-23T07:47:38.552Z",
+    "plannedIdleWaitMs": 90000,
+    "visits": [
+      {
+        "visit": 1,
+        "status": 200,
+        "exactDecodedSource": true,
+        "htmlBytes": 1021,
+        "htmlSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+      },
+      {
+        "visit": 2,
+        "status": 200,
+        "exactDecodedSource": true,
+        "htmlBytes": 1021,
+        "htmlSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+      },
+      {
+        "visit": 3,
+        "status": 200,
+        "exactDecodedSource": true,
+        "htmlBytes": 1021,
+        "htmlSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+      }
+    ],
+    "documentRequests": 3,
+    "timeline": [
+      {
+        "event": "navigation-start",
+        "utc": "2026-10-23T07:44:36.882Z",
+        "visit": 1
+      },
+      {
+        "event": "navigation-complete",
+        "utc": "2026-10-23T07:44:37.435Z",
+        "visit": 1
+      },
+      {
+        "event": "navigation-start",
+        "utc": "2026-10-23T07:46:07.452Z",
+        "visit": 2
+      },
+      {
+        "event": "navigation-complete",
+        "utc": "2026-10-23T07:46:07.984Z",
+        "visit": 2
+      },
+      {
+        "event": "navigation-start",
+        "utc": "2026-10-23T07:47:37.999Z",
+        "visit": 3
+      },
+      {
+        "event": "navigation-complete",
+        "utc": "2026-10-23T07:47:38.529Z",
+        "visit": 3
+      },
+      {
+        "event": "context-close",
+        "utc": "2026-10-23T07:47:38.529Z"
+      }
+    ],
+    "cleanupComplete": true,
+    "encodedBodyBytesMeasured": false
+  },
+  "observer": {
+    "sourceSha256": "d5bd56faba34072a6112821fae36e4d96f448544c8f32a38e342c9cf53e9505a",
+    "placement": "Temporary read-only container in the existing service network namespace; eth0, exact endpoint pair and TCP443 kernel/Python filters.",
+    "startedAt": "2026-10-23T07:44:20.208894+00:00",
+    "completedAt": "2026-10-23T07:49:50.682070+00:00",
+    "captureComplete": true,
+    "kernelPackets": 62,
+    "kernelDrops": 0,
+    "captureErrors": [],
+    "flows": [
+      {
+        "flowId": "f1",
+        "clearHelloComplete": true,
+        "tls13Selected": true,
+        "pskModesPresent": true,
+        "pskDheKeOffered": true,
+        "pskOffered": false,
+        "pskSelected": false,
+        "flags": [
+          {
+            "utc": "2026-10-23T07:44:36.894085+00:00",
+            "direction": "client",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:44:36.894146+00:00",
+            "direction": "server",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:45:51.950207+00:00",
+            "direction": "server",
+            "flag": "FIN"
+          },
+          {
+            "utc": "2026-10-23T07:45:51.951579+00:00",
+            "direction": "client",
+            "flag": "RST"
+          }
+        ]
+      },
+      {
+        "flowId": "f2",
+        "clearHelloComplete": true,
+        "tls13Selected": true,
+        "pskModesPresent": true,
+        "pskDheKeOffered": true,
+        "pskOffered": false,
+        "pskSelected": false,
+        "flags": [
+          {
+            "utc": "2026-10-23T07:46:07.459580+00:00",
+            "direction": "client",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:46:07.459631+00:00",
+            "direction": "server",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:47:22.544156+00:00",
+            "direction": "server",
+            "flag": "FIN"
+          },
+          {
+            "utc": "2026-10-23T07:47:22.545916+00:00",
+            "direction": "client",
+            "flag": "RST"
+          }
+        ]
+      },
+      {
+        "flowId": "f3",
+        "clearHelloComplete": true,
+        "tls13Selected": true,
+        "pskModesPresent": true,
+        "pskDheKeOffered": true,
+        "pskOffered": false,
+        "pskSelected": false,
+        "flags": [
+          {
+            "utc": "2026-10-23T07:47:38.006241+00:00",
+            "direction": "client",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:47:38.006291+00:00",
+            "direction": "server",
+            "flag": "SYN"
+          },
+          {
+            "utc": "2026-10-23T07:47:38.545876+00:00",
+            "direction": "client",
+            "flag": "RST"
+          }
+        ]
+      }
+    ],
+    "processAttributionEstablished": false,
+    "interpretation": "These are captured flows correlated with the navigation windows, not independently authenticated browser-owned flows. TCP FIN/RST flags do not establish TLS close_notify or orderly TLS shutdown."
+  },
+  "calibration": {
+    "initialHostBridge": {
+      "sourceSha256": "836f903e069b03dce10c694893672c5ce6c38ffb5d1b9babad3d166ddc356ded",
+      "capturedFlows": 0,
+      "kernelPackets": 0,
+      "normalTrustNativeSessionReused": [
+        false,
+        true
+      ],
+      "result": "Visibility calibration failed; empty capture is not evidence against resumption."
+    },
+    "serviceNetworkNamespace": {
+      "sourceSha256": "d5bd56faba34072a6112821fae36e4d96f448544c8f32a38e342c9cf53e9505a",
+      "startedAt": "2026-10-23T07:41:57.113901Z",
+      "completedAt": "2026-10-23T07:41:57.160651Z",
+      "clientOpenSSL": "OpenSSL 3.6.5 29 Sep 2026",
+      "normalCertificateValidation": true,
+      "exactEncodedBrotliBodyBytes": 389,
+      "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "nativeSessionReused": [
+        false,
+        true
+      ],
+      "observerPskSelected": [
+        false,
+        true
+      ],
+      "exactOwnedSourcePortHashMatches": true,
+      "terminalZeroDrops": true,
+      "result": "Passed observer calibration only. Explicit HTTP/1.1 Connection: close; not a WebKit or natural-idle-closure control."
+    }
+  },
+  "ownership": {
+    "snapshotAt": "2026-10-23T07:45:01.953128Z",
+    "visit": 1,
+    "records": 0,
+    "laterVisitSnapshotsTaken": false,
+    "result": "No socket records; process attribution remains unavailable. The helper matched its own native Python socket in a separate read-only control."
+  },
+  "offlineControls": {
+    "browserHarnessPassed": 7,
+    "namespaceObserverPassed": 33,
+    "ownershipPositive": 3,
+    "ownershipNegative": 4,
+    "ownershipSanitizedSubprocess": 2,
+    "independentReview": "Browser harness, observer and ownership helper reviewed before the trial; raw diagnostic independently audited afterward."
+  },
+  "deployedState": {
+    "readbackAt": "2026-10-23T07:52:32Z",
+    "imageId": "sha256:1942cf424ba319ff7357f0b0967eb348443e5486366253d1a4ff98432921a356",
+    "pageHtmlBytes": 1021,
+    "pageHtmlSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+    "priorDeploymentEvidence": "deployment-20261023-native-quic.json",
+    "priorDeploymentEvidenceSha256": "a95d79043820784361b188e88aad64df49c005160b069fb992085d824fe9199e",
+    "pageAndTlsReleasePointersUnchanged": true,
+    "temporaryObserverContainersRemoved": true,
+    "productionChangesMadeByDiagnostic": false
+  },
+  "limits": [
+    "No otherwise equivalent normally trusted positive WebKit control with the original eight-byte nonce was available. This trial cannot identify a nonce cause or establish compatibility.",
+    "All three page visits passed normal trust and exact decoded-byte checks. This does not prove TLS resumption or their encoded response sizes.",
+    "The final observer snapshot had complete clear Hellos, zero drops and no capture errors. Its three flows were not independently attributed to WebKit.",
+    "The first two captured flows show server FIN before the next navigation, followed by client RST; the third shows client RST near context closure. No decrypted TLS closure evidence was collected.",
+    "No new resumption-related deployment is justified by this evidence. No traffic, latency or body-size improvement is established; current comparison pointers remain unchanged.",
+    "No certificate keys, TLS secrets, ticket identities, binders, raw packet files or public copies of private filter endpoints were retained. No trust, security or persistent network settings changed."
+  ],
+  "localArtifactScope": "SHA256 references identify retained local diagnostic artifacts; those artifacts are not included in this public record.",
+  "localArtifactSha256": {
+    "direct-webkit.mjs": "78b5fab57cea1f53a214f34b7e2abb44cef46aa884889b9c3c12c754f1928b71",
+    "direct-webkit.test.mjs": "f6e63b926a9c49c1997bac0bf5abcb76ae6e688a2c5971321d7bb547149b7741",
+    "preparation.json": "1811c2f9f53e3868de1f29f6f754c56d5ee030a26f614b12574e2566a8ba2d28",
+    "namespace-v2/passive_tls_observer.py": "d5bd56faba34072a6112821fae36e4d96f448544c8f32a38e342c9cf53e9505a",
+    "namespace-v2/test_passive_tls_observer.py": "7b6a0666e29b9e90c6b79d8163b877414788b7bc647a73ee47d0d71332598091",
+    "namespace-v2/observer-preparation.json": "1136e65524443e79acda109ace0d77cf1923b718cb1f93a3d796b74c51eec7ba",
+    "passive_tls_observer.py": "836f903e069b03dce10c694893672c5ce6c38ffb5d1b9babad3d166ddc356ded",
+    "calibrate-python.py": "869b2003778c6ca7e11753043254fffe5ef65da7b3a71519fc2161fed8bd333a",
+    "observe-local-ownership.py": "d816902b3cb51c185ad950508daa92158ba2d5ca0efd3159ab46d505b8b092ae",
+    "ownership-preparation.json": "f83dafbda8fcccff5c69c81f241b475ef0be022604250d66aa1bc50ab6a1e867",
+    "webkit-report.json": "b32eda9f8d7891d8c703704373bdc77e0da3b24d0d56fec812abc3c3e68b916c",
+    "webkit-progress.jsonl": "6a00498bd492fea4cfe3a0027699284dd38c7f0a418a74f797072707bffefad6",
+    "webkit-observer.jsonl": "e35c03146f015133924098c69b3b892d82eafa62fbc530bd69e2591115039a47",
+    "calibration-observer.jsonl": "fc81a94fd108735ce31ff143f8bfa41e68efdbbe1922d5737db735f79185d32c",
+    "calibration-python.json": "6052e6a943347c1f711cae197afb2a627882340328e94fd95d9ca9671214dc00",
+    "calibration-netns-observer.jsonl": "ee6847a833f29552e59c7041bc6af8fac15ca2181a88725cb12e7c5c9f4749a5",
+    "python-netns-calibration-20261023.json": "0b980a7f02df94259ba535cefbec03eb2c25c6da69eeff14b75c0eebaa3176a2",
+    "calibration-netns-result.json": "015b27f5f3573b077fc8ea04e88286c4c406c147bf7ec70c5e2668c7b929d803",
+    "ownership-1.json": "e679cf4b4ab0647939df9d5a82f0eda20a3fb5ac2ab5bfc34d45618f2469bd35",
+    "ownership-visibility-diagnostic.json": "3a4f52732c2cd0ccafcfc7a96b08e02a52eb99f0a361a7798bf3b292fb0529c0",
+    "proxy-preflight.json": "b13ca8685b638f0dec698cd945b683818d5d005ed58b7082b483e83991fc8e2f",
+    "live-preflight.json": "8f3ff6069aae92a1103fdd59ce687b2c097ab4a191b45060107337ec7750d9fa",
+    "after-trial-runtime.txt": "8755fd38a6f0377c1b0e7816494c0042c3b2955c95a6b620e7af7c948ac009a2"
+  }
+}
