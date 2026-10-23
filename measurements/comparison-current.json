@@ -3,12 +3,12 @@
   "targetUrl": "https://tomkimberlin.com/",
   "current": {
     "overhead": {
-      "path": "measurements/overhead-20261023-stream.json",
-      "sha256": "186748d315357acace46a3ec15a179d2d74c4b16d417a099f4a45a6223b4b077"
+      "path": "measurements/overhead-20261023-fin.json",
+      "sha256": "1fa71d2b9a260ac65cffbf900eadd4cc442b1be4ebd62bb06116eca8f889bdc9"
     },
     "deployment": {
-      "path": "measurements/deployment-20261023-stream.json",
-      "sha256": "b5cce82f48f70dceb36ab3f15faa8aa741813eaf801469945684789e1247ad0d"
+      "path": "measurements/deployment-20261023-fin.json",
+      "sha256": "645e06897de8e8556e3225f380a72c2206fd9c29659b850a143f3270e16c5809"
     },
     "page": {
       "path": "measurements/page-20261023-rle-local.json",

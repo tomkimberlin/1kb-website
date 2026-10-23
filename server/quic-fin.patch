@@ -1,0 +1,56 @@
+--- a/src/event/quic/ngx_event_quic_streams.c
++++ b/src/event/quic/ngx_event_quic_streams.c
+@@ -1016,6 +1016,7 @@
+     ngx_uint_t              last;
+     ngx_chain_t            *out;
+     ngx_quic_frame_t       *frame;
++    ngx_quic_send_ctx_t    *ctx;
+     ngx_connection_t       *pc;
+     ngx_quic_connection_t  *qc;
+ 
+@@ -1055,6 +1056,36 @@
+ 
+     if (len == 0 && !last) {
+         return NGX_OK;
++    }
++
++    /* Only attach a final marker to a fresh, still-unsent queue tail.
++     * Serialized, reverted and lost STREAM frames retain pkt_need_ack. */
++    if (len == 0 && last && out == NULL && !qc->closing
++        && qs->send_final_size == qs->send_offset)
++    {
++        ctx = ngx_quic_get_send_ctx(qc, NGX_QUIC_ENCRYPTION_APPLICATION);
++
++        if (!ngx_queue_empty(&ctx->frames)) {
++            frame = ngx_queue_data(ngx_queue_last(&ctx->frames),
++                                   ngx_quic_frame_t, queue);
++
++            if (frame->type == NGX_QUIC_FT_STREAM
++                && frame->level == NGX_QUIC_ENCRYPTION_APPLICATION
++                && !frame->pkt_need_ack
++                && frame->u.stream.stream_id == qs->id
++                && frame->u.stream.length != 0
++                && frame->u.stream.off && frame->u.stream.len
++                && !frame->u.stream.fin
++                && frame->u.stream.offset <= qs->send_offset
++                && frame->u.stream.length
++                   == qs->send_offset - frame->u.stream.offset)
++            {
++                frame->u.stream.fin = 1;
++                frame->len = ngx_quic_create_frame(NULL, frame);
++                ngx_post_event(&qc->push, &ngx_posted_events);
++                goto done;
++            }
++        }
+     }
+ 
+     frame = ngx_quic_alloc_frame(pc);
+@@ -1075,6 +1106,8 @@
+     frame->u.stream.length = len;
+ 
+     ngx_quic_queue_frame(qc, frame);
++
++done:
+ 
+     qs->send_offset += len;
+     qc->streams.send_offset += len;

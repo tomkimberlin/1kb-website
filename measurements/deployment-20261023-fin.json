@@ -1,0 +1,515 @@
+{
+  "verifiedThrough": "2026-10-23T13:23:08Z",
+  "url": "https://tomkimberlin.com/",
+  "pageCommit": "9e0dbfd76ada9740bf4f2698b584d78f833a41ef",
+  "pageRelease": "releases/20261023T131709Z-aa9d6af64c9d-onekb-deploy.ZOLR8r",
+  "runtimeSourceCommit": "9e0dbfd76ada9740bf4f2698b584d78f833a41ef",
+  "previousPageRelease": "releases/20261023T113631Z-aa9d6af64c9d-onekb-deploy.d2E8NS",
+  "change": "Attach FIN to eligible final QUIC response data; omit its separate empty STREAM frame. Body, effective parameters, status encoding, certificate cache, libraries and container settings are unchanged.",
+  "server": {
+    "image": "onekb-nginx:20261023e",
+    "imageId": "sha256:60fe60ddb91f09f99e39360ad871782f3a36d47fe8bcadaca1159fd80fae7240",
+    "openssl": "OpenSSL 3.5.9 29 Sep 2026",
+    "sourceFileHashes": {
+      "server/Dockerfile": "945f90e9e0937d8e72fb7bce527d4b1eaaa271ec872a063073d23b9177f9f7e7",
+      "server/cache-certificates.sh": "e93168e16043989c7c8d293595098c8af2d82aaa67733662047da8a15763adf5",
+      "server/certificate-cache.patch": "0d37ffa6ea464f7e81c8661a52e6b105004f77bad4ea5a293834c23da1d7d2ce",
+      "server/certificate-compression.patch": "998eb2f9c52e1e69b63c39442575c4d7df4cf793ef976ab9478852b59a263c44",
+      "server/publish-certificates.sh": "804da8db877a66115fcd077a25dbf2f1b1cf874c9bc8c714653ba0f812051333",
+      "server/quic-backend-defaults.patch": "e314c9ecdcd41aa4257387325184a17f844b527dd06d46900cdef56a7fd7df29",
+      "server/quic-defaults.patch": "d1de4eb4a01bacd0d72da88455ef894c56711ef10db7762f923639f0298c75c2",
+      "server/quic-fin.patch": "861eaaed3734a3c071d3636e40f3c4cdab6e409b9698cd50175f3388f603b6cf",
+      "server/quic-stream-offset.patch": "c54501a08170325c70504592186d44b1fa6572fcb8dc4d23968ee7a585ca5f5a",
+      "server/small-responses.patch": "08fb57eba519c72f9b73dc96c0c2bff2acebf071cc8760e25b1750a6bffb64e9",
+      "server/start.sh": "34e1f36f9f89839ab7bdc9fa16f6117a23a1bff07889cb716302fef2f548155d",
+      "server/status-encoding.patch": "d35b37e67f435a0aad5303c6f0ac92fe688514032d7a4ac8d5742299b48812a5",
+      "server/ticket-nonce.patch": "95feb2020f4027f95877174448f2da4c638c2546ff424c120d7eaa954a9f5289",
+      "server/tls-flight.patch": "9625a71e0c5e68350c20ddd587542fd1f310da1f4757fa6ee867c11362ba87a0",
+      "server/unraid-template.xml": "624642e2bb9d57fdf57bab2dafef9b5469af53871e4652e5b27f313b18ce2c9a",
+      "tools/extract-quic-fin-fixtures.sh": "0a315d8e72b60500232038835896a79da97c802049250a1187df54c76fa80cde",
+      "tools/extract-quic-stream-resend.sh": "0da391d91ed175bc6d699747fabd95216c928fdc9ff2ff7aef3365454c77cdbf",
+      "tools/fixtures/certificate-cache.br": "347436ccea6b1654f0d58e61fc1fa289478acaf960973d5a7947202843a4cdc8",
+      "tools/fixtures/certificate-cache.pem": "e5cf549607d0f13e295f103f6b888bafe5a420502298af9dbceee0f5d1a1a399",
+      "tools/optimize-certificates.py": "5ace05e851ea88c80bf0cde39bec03a608ea1665494f475c5ad17362a9bcb6ad",
+      "tools/quic-fin-test.mk": "40d51666fad9423059fd39ece38555e8018b67d59aaa16350e6e361abeb1ef44",
+      "tools/quic-stream-offset-test.mk": "45365e32a075abc9f28e94067f759db865b2e6e9f0cc674c8b51813be6b88bd2",
+      "tools/quic-transport-test.mk": "9ad39ebeb6f33294c5a820c402bb89774583f0470a0ff37456de0955e817f7d7",
+      "tools/verify-certificate-cache.c": "69f010d757afeb562af4d9980454788239a2d40467d448317f193c730320f406",
+      "tools/verify-certificate-compression.c": "76c45a0bd8bd46367a58b981f2aad61d2feb983bd29f4107682b563a9a8a483a",
+      "tools/verify-quic-fin.c": "3140387c934bf6dc1042a348014615c7a23b18f49e6c8fa544bd74ec5c47b86d",
+      "tools/verify-quic-stream-offset.c": "35bb49038b0d69019d4e608e3eb1a5bfa0bb4e93007a8cc94cfea4e4d86b724e",
+      "tools/verify-quic-transport.c": "ae25e179d2375a6088e48292299f58829d1e9458b916b67ac124dc1ef448625d",
+      "tools/verify-ticket-nonce.c": "9c223c3dfbc8ba067a027d23ca7d83912fae4be2d1cccc4bfb8fceb59596c395",
+      "tools/verify-tls-flight.c": "d1b950344b13338c637329f470e72064c24fee88bc3c62cb77b75627e5d76180"
+    },
+    "running": true,
+    "activeConfigurationSha256": "162a69e87bf8fe22c32bb5d809340d49e5e83e3481ad7a713308eef8e0651ba1",
+    "exactCommittedConfigurationWithReleasePath": true,
+    "installedStartupSha256": "34e1f36f9f89839ab7bdc9fa16f6117a23a1bff07889cb716302fef2f548155d",
+    "installedTemplateSha256": "624642e2bb9d57fdf57bab2dafef9b5469af53871e4652e5b27f313b18ce2c9a",
+    "certificateCacheBytesAndMetadataUnchanged": true,
+    "trustedPrivateReadinessExactRelease": true
+  },
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1021,
+      "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 389,
+      "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 535,
+      "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 523,
+      "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713",
+      "exactLocalOriginAndPublicResponse": true
+    }
+  ],
+  "certificateCache": {
+    "optimizerImage": "onekb-certificate-optimizer:20261022b",
+    "optimizerImageId": "sha256:12e8f18864c8fb4de90e7272aa6f4ec987e067281e38f456a3e4753073d35f33",
+    "actualOwnedCacheFiles": [
+      {
+        "brotliBytes": 1486,
+        "brotliSha256": "ffe8ca224aa655579e8fc472bfa3b818dfdb0d441f5637eb192a83cc523ec0fe",
+        "hostname": "tomkimberlin.com",
+        "metadataSha256": "3f1093a5a46aaeee1412726722b74b4865dd80885af7144941879d0917aa7ebc",
+        "inputSha256": "06775c21de30195f66bf5f991e73fe3b5ab59c3195b46f620ee5b1119701e0d7"
+      },
+      {
+        "brotliBytes": 1490,
+        "brotliSha256": "90f2fbfce98994ffeba62aacf34c679c33302332ce1ee1ae89826928bde6f4c9",
+        "hostname": "www.tomkimberlin.com",
+        "metadataSha256": "e8006a8face2291325914cdb63461e389e7aba77032398460882ef84c25d5a89",
+        "inputSha256": "10d003a9fcefe2199c69d4a16f8916b3343947c88c83f254afbd558f5810b91f"
+      },
+      {
+        "brotliBytes": 1491,
+        "brotliSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+        "hostname": "tom.kimberlin.net",
+        "metadataSha256": "e0562faebf2f9232617bc03f161dc8a8c04f1be6d5b29df60c5e270613dd3688",
+        "inputSha256": "be23241b52bfdc46078d8e59a7bf704d6fac9e351b4437eacbcc4aeffbe402f1"
+      }
+    ],
+    "trustedLiveCompleteCompressedCertificateBytes": [
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1498
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1502
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "www.tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1503
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tom.kimberlin.net",
+        "protocol": "TLSv1.3",
+        "verified": true
+      }
+    ],
+    "evidenceScope": "Activation reverified all three trusted components; cache hashes remain exact and own H2 samples reobserve the main component. No certificate saving claimed."
+  },
+  "quicFinCoalescing": {
+    "path": "measurements/quic-fin-20261023-live.json",
+    "sha256": "50d137402c99d99064cb4b8679465ce78f0d42808571a9d79dd4e15087704404"
+  },
+  "quicStreamOffsets": {
+    "path": "measurements/quic-stream-offset-20261023-fin-live.json",
+    "sha256": "8db8a3715d9cfd5704f2547bc4660e375eb50e0b81140512da53e53cad957de1"
+  },
+  "quicTransportParameters": {
+    "path": "measurements/quic-parameters-20261023-fin-live.json",
+    "sha256": "d03539b6cff089f6c61f4f910b4953065a0dacc9cd7543494b71b5a811f50d1b"
+  },
+  "statusEncoding": {
+    "path": "measurements/status-encoding-20261023-fin-live.json",
+    "sha256": "701bf9164e15e3b2125af9f515705c45898546ef3c9beef6477091f1a8c5cf1b"
+  },
+  "peerComparison": {
+    "path": "measurements/gallery-20261023-integrated.json",
+    "sha256": "07c99b31aac2794e33e26d3297a2e3a1b5a79d1484dcb9a5f620e6a08c142d35"
+  },
+  "verification": {
+    "mainHttp11AndHttp2Checks": 120,
+    "aliasRedirectChecks": 12,
+    "http3Checks": 36,
+    "http3ReportSha256": "91945052541e30489b84327b92b31295863a94f5fb97d6ffcdb2d4721a13857d",
+    "http3VerifierSourceSha256": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+    "http3ProvenanceScope": "Unmodified repository verifier at the runtime source commit; raw report has no embedded source or clock identity. Root command history supplies that execution context.",
+    "rawPublicRepresentationChecks": [
+      {
+        "protocol": "http1.1",
+        "encoding": "identity",
+        "status": 200,
+        "bytes": 1021,
+        "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "http1.1",
+        "encoding": "br",
+        "status": 200,
+        "bytes": 389,
+        "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "http1.1",
+        "encoding": "gzip",
+        "status": 200,
+        "bytes": 535,
+        "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "http1.1",
+        "encoding": "deflate",
+        "status": 200,
+        "bytes": 523,
+        "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "h2",
+        "encoding": "identity",
+        "status": 200,
+        "bytes": 1021,
+        "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "h2",
+        "encoding": "br",
+        "status": 200,
+        "bytes": 389,
+        "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "h2",
+        "encoding": "gzip",
+        "status": 200,
+        "bytes": 535,
+        "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      },
+      {
+        "protocol": "h2",
+        "encoding": "deflate",
+        "status": 200,
+        "bytes": 523,
+        "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713",
+        "exactExpectedBody": true,
+        "normalCertificateValidation": true
+      }
+    ],
+    "rawPublicReadbackSha256": "d88252912ec7e08021e2f28977cd71bb487a089b05f32b052d93a5c8bebf664e",
+    "publicNativeBrowserEvidence": {
+      "path": "measurements/browser-20261023-fin-live.json",
+      "sha256": "17d90537ca4ba8b76524161889f72215e4b321593b8029159b8ec029d4a22635"
+    },
+    "publicNativeNavigationChecks": 3,
+    "nativeFallbackDecodingChecks": 4,
+    "localSemanticBrowserEvidence": {
+      "path": "measurements/page-20261023-rle-local.json",
+      "sha256": "ed6b4f60c9758cbc9df5fb9c8b5c2c888706ee50ea81c692e539426836038a24"
+    },
+    "sourcePrCi": {
+      "url": "https://github.com/tomkimberlin/1kb-website/actions/runs/39952516174",
+      "headSha": "9e0dbfd76ada9740bf4f2698b584d78f833a41ef",
+      "conclusion": "success",
+      "jobs": {
+        "browser": "success",
+        "application": "success",
+        "runtime": "success"
+      },
+      "terminalSnapshotSha256": "2ee24088dcd73066657052980bfc43a19316f17412c91b88a04729e1fbd40e89"
+    },
+    "postCaptureRuntimeReadbackSha256": "de51d233f9abe84be81257ea7d09508479ba4677272163293bbcda5738eb9451",
+    "certificateCacheReadbackSha256": "ef77389fe33cb418ffd14f7b381b39da4a10bbdb896ec636ab1dd90a7725f307",
+    "reviewedActivationSourceSha256": "4ea2d2c0ff9c0750e357f49b72cd89f7e405a812d11e38bb3063abb068e3eec1",
+    "activationLogSha256": "7ba42cd7f7e6942c9d64321728954a7d8367136c97bf025df0ac161a58fe2cae",
+    "trustedCertificateComponentReadbackSha256": "a5281e406f8b97f35ada2703e2ddc53630f3ae26876dda0942894b0ce8c0c419",
+    "containerSettingsComparisonSha256": "a964aa07c3b0168e6f01399e8d3f30729b8e3c55b3a0af32bad1964c4aa365ca",
+    "rollbackReadbackSha256": "f7d4070b757ccb9a381b1ff2be2fcb20de5277024a50a3fe9054dff43adbbcbd",
+    "executedOwnCaptureBundle": {
+      "bundleSha256": "61bc8779a37b382d2d1164fb585a23b11837285aea51ffac34dac9b1aed160d5",
+      "manifestSha256": "45ed2412cf7251b14a12d45de55e7630a2eeeb74973b24c12c628310a25633e0",
+      "runnerSha256": "556b4b02f5ff474daf3b279cf5647f856d7cadb9d1406da90e5f36d3a5f2ddff",
+      "mountedProbeSha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256",
+      "privateResultArchiveSha256": "093db6fcb06d4ce909cc6d476a3f32dc21aba7b382518313f977765775954fa1",
+      "scope": "Exact executed bundle61bc; later README-only bundle was not executed."
+    },
+    "allThreeFreshOwnCaptureGatesPassed": true,
+    "finImageGate": {
+      "platform": "Linux x86_64 configured native OpenSSL API; actual-source FIN lifecycle/independent decoder gate",
+      "results": {
+        "positiveCases": 40,
+        "fallbackCases": 12,
+        "stateCases": 11,
+        "serializedTailCases": 3,
+        "splitCases": 16,
+        "splitFragments": 3694,
+        "ackSequences": 18,
+        "allocationCases": 2,
+        "decoderChecks": 3750,
+        "malformedRejections": 7500,
+        "positiveComponentBytes": 12946,
+        "positiveEmptyFinFrames": 0,
+        "nativeOpenSSLApi": 1
+      },
+      "privateResultSha256": "fc0c9a16b79d8d2a5cc60a841ba82435b08fe35bce284cb7d2ec8e65407131f4",
+      "privateVectorsSha256": "7321414fdc16f13bb608f8d89c5fea8623d16370124d1651d8cc13a0f98ce885",
+      "testSourceSha256": "3140387c934bf6dc1042a348014615c7a23b18f49e6c8fa544bd74ec5c47b86d"
+    },
+    "pairedImageLocalGates": {
+      "baseline": {
+        "privateReportSha256": "8ddbb189593444e8bf9f8894ce0560947b2b2a7ceec2511954c3f456f1ef29a8",
+        "checks": {
+          "http1": 21,
+          "http2": 17,
+          "representations": 12,
+          "behavior": 36,
+          "headers-h2": 28,
+          "headers-h3": 28
+        },
+        "coldThenResumedPairs": 3,
+        "actualQuicResumption": true,
+        "privateLifecycleSha256": "3c1d12232e54e3bb228a66474501ddd050e0c1b2cb58c7118c111efec2842b2c",
+        "privateFinalHealthSha256": "197f3c1c6eaf16add1f78ccdce221141c56ebed1875af3b73253bf49688afcf0",
+        "lifecycleCases": 8,
+        "finalWorkerHealthPassed": true
+      },
+      "candidate": {
+        "privateReportSha256": "72f0205750ef3fd8e4dbd26b6a51334a373cc61c478850d045829830e520eeab",
+        "checks": {
+          "http1": 21,
+          "http2": 17,
+          "representations": 12,
+          "behavior": 36,
+          "headers-h2": 28,
+          "headers-h3": 28
+        },
+        "coldThenResumedPairs": 3,
+        "actualQuicResumption": true,
+        "privateLifecycleSha256": "3a9b7016e48ea7a0aa48054ee91c6e84364773568baa6065d428b924fa40d231",
+        "privateFinalHealthSha256": "197f3c1c6eaf16add1f78ccdce221141c56ebed1875af3b73253bf49688afcf0",
+        "lifecycleCases": 8,
+        "finalWorkerHealthPassed": true
+      }
+    },
+    "localFixtureArchiveSha256": "1c87bff962d177603df167f7b0af4727400283569f31ef2fc87472a2800eba32",
+    "installedPackageCount": 71,
+    "baselineRuntimeMetadataSha256": "e57fdbe8bf65a2be53f734539c353ccbbce6e269fd324f27ef53c01a67fe6e9a",
+    "candidateRuntimeMetadataSha256": "3fd69a562b2871b224033123f7cb6d8ca2e87928c088689a7838600fdac39d33",
+    "baselineImageConfigSha256": "8de35f10c3049bbc58a21e8456efcdccc6c0b88f2688cb727a0b9526c3689dcf",
+    "candidateImageConfigSha256": "8de35f10c3049bbc58a21e8456efcdccc6c0b88f2688cb727a0b9526c3689dcf",
+    "librariesPackagesConfigAndSupportBinariesUnchanged": true,
+    "buildSourceBindingSha256": "6fa86a83476940c7e2a7924c8739002329675b6b04e3b78d4cb2ec651660f09e",
+    "buildContextManifestSha256": "311e0579cdc5d0108656c35842669692f743f6c1f1e98304e3d28f9fa9182212",
+    "buildContextArchiveSha256": "b9854141849c5448dec9aac5221b7e38e8d6fc168c5b860bf0b631f35441df9b"
+  },
+  "deliveryOverhead": {
+    "evidence": "measurements/overhead-20261023-fin.json",
+    "sha256": "1fa71d2b9a260ac65cffbf900eadd4cc442b1be4ebd62bb06116eca8f889bdc9",
+    "definition": "Traffic minus the entire actual encoded response body; TLS and packet/DNS stop at different boundaries.",
+    "bodyBytes": 389,
+    "liveSummary": {
+      "estimatedTcpPlusDnsMinusBody": {
+        "median": 6944,
+        "minimum": 6944,
+        "maximum": 6996
+      },
+      "tlsThroughBodyCompleteMinusBody": {
+        "median": 5252,
+        "minimum": 5252,
+        "maximum": 5252
+      },
+      "responseHttpPlainMinusBody": {
+        "median": 105,
+        "minimum": 105,
+        "maximum": 105
+      },
+      "tlsHandshakeMessageBytes": {
+        "sent": {
+          "median": 1583,
+          "minimum": 1583,
+          "maximum": 1583
+        },
+        "received": {
+          "median": 2891,
+          "minimum": 2891,
+          "maximum": 2891
+        }
+      },
+      "tlsResidualAfterBodyAndHandshakeMessages": {
+        "sent": {
+          "median": 574,
+          "minimum": 574,
+          "maximum": 574
+        },
+        "received": {
+          "median": 204,
+          "minimum": 204,
+          "maximum": 204
+        }
+      },
+      "tlsComponents": {
+        "newSessionTicket": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 49,
+              "minimum": 49,
+              "maximum": 49
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "certificate": {
+          "read": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "compressedCertificate": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 1498,
+              "minimum": 1498,
+              "maximum": 1498
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "certificateVerify": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 79,
+              "minimum": 79,
+              "maximum": 79
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        }
+      }
+    }
+  },
+  "rollback": {
+    "previousRuntimeImageId": "sha256:8358bfe170c58e7ae35523ef7d74fff5136347838d0006252d50c6a4091084ce",
+    "retainedStoppedContainer": "onekb-website-rollback-quic-fin-20261023-131643-3230537",
+    "previousPageRelease": "releases/20261023T113631Z-aa9d6af64c9d-onekb-deploy.d2E8NS",
+    "pageAndConfigurationRollbackRetained": true,
+    "originalRuntimeSettingsAndInputsRetained": true
+  },
+  "limitations": [
+    "FIN framing combines a source-derived one-byte type with observed accepted ID/OFF/LEN widths. No fixed public whole-exchange saving is established.",
+    "Fresh H2 observations subtract the entire unchanged 389 B body. Signature/ACK/packet variation is not attributed to FIN.",
+    "Original status, parameter and offset comparisons retain dated before sides and fresh new-runtime after observations; peer/history remain dated.",
+    "Local paired recovery gates cannot identify a particular retransmitted FIN. No public UDP totals, timing, universal compatibility or TLS-over-TCP WebKit resumption conclusion."
+  ]
+}

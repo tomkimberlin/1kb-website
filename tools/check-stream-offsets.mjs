@@ -24,38 +24,7 @@ export function checkStreamOffsets(s,{deployment,page,readCommitted}) {
     need(digest(s.source[key])&&s.source[key]===deployment.server?.sourceFileHashes?.[path]
       &&hash(readCommitted(deployment.runtimeSourceCommit,path))===s.source[key],'STREAM source binding differs');
   }
-  for(const side of [s.before,s.after]) {
-    need(/^sha256:[0-9a-f]{64}$/.test(side?.runtimeImageId??'')&&/^[0-9a-f]{40}$/.test(side.runtimeSourceCommit??'')
-      &&/^[0-9a-f]{40}$/.test(side.pageCommitAtReadback??'')&&/^releases\/[A-Za-z0-9._-]+$/.test(side.pageReleaseAtReadback??'')
-      &&side.perRequestGenerationVerified===false&&digest(side.privateRawSnapshotSha256),'Invalid STREAM provenance');
-    need(side.passed===true&&side.normalCertificateValidation===true&&side.freshConnection===true&&side.streamRolesVerified===true
-      &&equal(side.handshake,{alpn:'h3',sessionResumed:false,earlyDataAccepted:false})
-      &&side.statusCode===200&&side.exactBrotliBody===true&&integer(side.bodyBytes)&&side.bodyBytes>0&&digest(side.bodySha256),'Invalid trusted STREAM response');
-    need(digest(side.observer?.sourceSha256)&&side.observer.sourceSha256==='297e152798685065bb02b0b3d55685e8fa8840dff39e5ad8a3c0e18e1be489c0'
-      &&equal(side.observer.versions,versions)&&equal(side.observer.aioquicSourceSha256,modulePins)
-      &&equal(side.observer.reusedSourceSha256,reusedPins),'Invalid STREAM observer identity');
-    const a=stamp(side.startedAt),b=stamp(side.observationStoppedAt),c=stamp(side.completedAt),r=side.runtimeReadbacks;
-    need(a<=b&&b<=c&&r?.precisionSeconds===1,'Invalid STREAM observation interval');
-    for(const phase of ['before','after'])need(keys(r[phase],['startedAt','completedAt','sha256'])&&digest(r[phase].sha256)
-      &&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(r[phase].startedAt)&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(r[phase].completedAt)
-      &&stamp(r[phase].startedAt)<=stamp(r[phase].completedAt),'Invalid STREAM runtime readback');
-    // A whole-second host timestamp denotes [t,t+1s); command order is not a per-request attestation.
-    need(stamp(r.before.completedAt)<=a&&stamp(r.before.completedAt)<=stamp(r.after.startedAt)
-      &&c<stamp(r.after.startedAt)+1000,'STREAM readback envelope differs');
-    need(keys(side.firstAcceptedFrames,Object.keys(roles))&&Array.isArray(side.acceptedRelevantFrames)
-      &&side.acceptedRelevantFrames.length>=3&&side.acceptedRelevantFrames.length<=256
-      &&integer(side.allAcceptedStreamFrameCount)&&side.allAcceptedStreamFrameCount>=side.acceptedRelevantFrames.length
-      &&side.allAcceptedStreamFrameCount<=256,'Invalid STREAM frame counts');
-    for(const frame of side.acceptedRelevantFrames)need(keys(frame,rowKeys)&&Object.values(roles).includes(frame.streamId)
-      &&integer(frame.frameType)&&frame.frameType>=8&&frame.frameType<=15
-      &&frame.offPresent===Boolean(frame.frameType&4)&&frame.lengthPresent===Boolean(frame.frameType&2)&&frame.fin===Boolean(frame.frameType&1)
-      &&integer(frame.semanticOffset)&&frame.semanticOffset<=0x7fffffff&&integer(frame.dataBytes)&&frame.dataBytes<=1<<20
-      &&fits(frame.streamId,frame.streamIdFieldBytes)
-      &&(frame.lengthPresent?fits(frame.dataBytes,frame.lengthFieldBytes):frame.lengthFieldBytes===0)
-      &&(frame.offPresent?fits(frame.semanticOffset,frame.offsetFieldBytes):frame.offsetFieldBytes===0&&frame.semanticOffset===0),'Invalid STREAM frame metadata');
-    for(const [role,id] of Object.entries(roles))need(side.firstAcceptedFrames[role]&&equal(side.firstAcceptedFrames[role],side.acceptedRelevantFrames.find(f=>f.streamId===id))
-      &&side.firstAcceptedFrames[role].semanticOffset===0,'STREAM first accepted role differs');
-  }
+  for(const side of [s.before,s.after])checkStreamPhase(side);
   need(s.before.runtimeImageId!==s.after.runtimeImageId&&s.before.privateRawSnapshotSha256!==s.after.privateRawSnapshotSha256
     &&stamp(s.before.completedAt)<stamp(s.after.startedAt)&&equal(s.before.observer,s.after.observer),'STREAM phases/client differ');
   need(page.brotli===389&&page.brotliSha256===bodySha256&&[s.before,s.after].every(side=>side.bodyBytes===page.brotli&&side.bodySha256===page.brotliSha256),'STREAM body differs from frozen current page');
@@ -87,4 +56,38 @@ export function checkFreshQuicAfter(quic,{deployment,streamOffsets,readCommitted
 export function renderStreamOffsets(s,ref) {
   const values=Object.values(s.deltas).map(v=>v.offsetFieldBytesSaved);
   return `\n\nHTTP/3 STREAM components: **${values[0]} B less in each of ${values.length} first-accepted zero-offset frames** ([component evidence](${ref.path})); no fixed whole-exchange saving is established.`;
+}
+
+// Shared strict validation; extracted unchanged for FIN evidence reuse.
+export function checkStreamPhase(side) {
+    need(/^sha256:[0-9a-f]{64}$/.test(side?.runtimeImageId??'')&&/^[0-9a-f]{40}$/.test(side.runtimeSourceCommit??'')
+      &&/^[0-9a-f]{40}$/.test(side.pageCommitAtReadback??'')&&/^releases\/[A-Za-z0-9._-]+$/.test(side.pageReleaseAtReadback??'')
+      &&side.perRequestGenerationVerified===false&&digest(side.privateRawSnapshotSha256),'Invalid STREAM provenance');
+    need(side.passed===true&&side.normalCertificateValidation===true&&side.freshConnection===true&&side.streamRolesVerified===true
+      &&equal(side.handshake,{alpn:'h3',sessionResumed:false,earlyDataAccepted:false})
+      &&side.statusCode===200&&side.exactBrotliBody===true&&integer(side.bodyBytes)&&side.bodyBytes>0&&digest(side.bodySha256),'Invalid trusted STREAM response');
+    need(digest(side.observer?.sourceSha256)&&side.observer.sourceSha256==='297e152798685065bb02b0b3d55685e8fa8840dff39e5ad8a3c0e18e1be489c0'
+      &&equal(side.observer.versions,versions)&&equal(side.observer.aioquicSourceSha256,modulePins)
+      &&equal(side.observer.reusedSourceSha256,reusedPins),'Invalid STREAM observer identity');
+    const a=stamp(side.startedAt),b=stamp(side.observationStoppedAt),c=stamp(side.completedAt),r=side.runtimeReadbacks;
+    need(a<=b&&b<=c&&r?.precisionSeconds===1,'Invalid STREAM observation interval');
+    for(const phase of ['before','after'])need(keys(r[phase],['startedAt','completedAt','sha256'])&&digest(r[phase].sha256)
+      &&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(r[phase].startedAt)&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/.test(r[phase].completedAt)
+      &&stamp(r[phase].startedAt)<=stamp(r[phase].completedAt),'Invalid STREAM runtime readback');
+    // A whole-second host timestamp denotes [t,t+1s); command order is not a per-request attestation.
+    need(stamp(r.before.completedAt)<=a&&stamp(r.before.completedAt)<=stamp(r.after.startedAt)
+      &&c<stamp(r.after.startedAt)+1000,'STREAM readback envelope differs');
+    need(keys(side.firstAcceptedFrames,Object.keys(roles))&&Array.isArray(side.acceptedRelevantFrames)
+      &&side.acceptedRelevantFrames.length>=3&&side.acceptedRelevantFrames.length<=256
+      &&integer(side.allAcceptedStreamFrameCount)&&side.allAcceptedStreamFrameCount>=side.acceptedRelevantFrames.length
+      &&side.allAcceptedStreamFrameCount<=256,'Invalid STREAM frame counts');
+    for(const frame of side.acceptedRelevantFrames)need(keys(frame,rowKeys)&&Object.values(roles).includes(frame.streamId)
+      &&integer(frame.frameType)&&frame.frameType>=8&&frame.frameType<=15
+      &&frame.offPresent===Boolean(frame.frameType&4)&&frame.lengthPresent===Boolean(frame.frameType&2)&&frame.fin===Boolean(frame.frameType&1)
+      &&integer(frame.semanticOffset)&&frame.semanticOffset<=0x7fffffff&&integer(frame.dataBytes)&&frame.dataBytes<=1<<20
+      &&fits(frame.streamId,frame.streamIdFieldBytes)
+      &&(frame.lengthPresent?fits(frame.dataBytes,frame.lengthFieldBytes):frame.lengthFieldBytes===0)
+      &&(frame.offPresent?fits(frame.semanticOffset,frame.offsetFieldBytes):frame.offsetFieldBytes===0&&frame.semanticOffset===0),'Invalid STREAM frame metadata');
+    for(const [role,id] of Object.entries(roles))need(side.firstAcceptedFrames[role]&&equal(side.firstAcceptedFrames[role],side.acceptedRelevantFrames.find(f=>f.streamId===id))
+      &&side.firstAcceptedFrames[role].semanticOffset===0,'STREAM first accepted role differs');
 }
