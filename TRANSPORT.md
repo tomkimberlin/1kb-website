@@ -70,6 +70,8 @@ Deployment readiness uses the existing private TLS listener with normal hostname
 
 [Public browser observations](measurements/browser-resumption-20261022-live.json) confirm Chromium resumption with ordinary certificate trust. WebKit loads the exact page but offers no PSK on repeat connections, including after natural idle closure, with a persistent profile and without request interception. No equivalent trusted eight-byte-nonce control was deployed in that investigation, so empty-nonce resumption compatibility remains unestablished.
 
+A [direct persistent WebKit 26.6 trial on October 23](measurements/browser-resumption-20261023-direct-live.json) loaded the exact page three times with normal certificate validation. The calibrated passive observer captured complete TLS 1.3 Hello pairs on three flows without PSK offers, but process ownership could not be established. No equivalent trusted positive WebKit control was available, so resumption compatibility remains unresolved.
+
 ## Alias
 
 `tom.kimberlin.net` and `www.tomkimberlin.com` use DNS-only A records pointing to the same server. Both HTTP and HTTPS return an empty 301 directly to `https://tomkimberlin.com`, preserving the path and query. Their HTTPS listeners use separate ECDSA certificates with automatic renewal and certificate compression. An alias visit still adds a redirect and, for HTTPS, a separate TLS connection.
