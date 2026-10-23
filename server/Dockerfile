@@ -48,6 +48,8 @@ COPY server/quic-stream-offset.patch /build/quic-stream-offset.patch
 RUN patch --fuzz=0 -p1 < /build/quic-stream-offset.patch
 COPY server/quic-fin.patch /build/quic-fin.patch
 RUN patch --fuzz=0 -p1 < /build/quic-fin.patch
+COPY server/quic-packet-end-len.patch /build/quic-packet-end-len.patch
+RUN patch --fuzz=0 -p1 < /build/quic-packet-end-len.patch
 COPY server/certificate-cache.patch /build/certificate-cache.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-cache.patch
 RUN ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/dev/stderr --http-log-path=/dev/stdout --pid-path=/tmp/nginx.pid --lock-path=/tmp/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-cc-opt="-DNGX_SSL_CERT_BROTLI_CACHE=1 -I/opt/openssl/include -Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt" --with-ld-opt="-L/opt/openssl/lib -lbrotlidec -Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs" --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40 >/tmp/configure.log \
@@ -75,6 +77,12 @@ RUN cc -O2 -Wall -Wextra -Werror -Wno-unused-parameter -I/build -I/build/openssl
  && mkdir /tmp/cache-check && cd /tmp/cache-check \
  && /build/verify-certificate-cache /build/fixtures/certificate-cache.pem /build/fixtures/certificate-cache.br
 
+# Depend on both the FIN/transport/TLS branch and the completed cache gate.
+FROM quic-fin-test AS quic-packet-end-len-test
+COPY --from=certificate-cache-test /build/verify-certificate-cache /build/tests/prior-certificate-cache-gate
+COPY tools/verify-quic-packet-end-len.c tools/quic-packet-end-len-test.mk tools/extract-quic-packet-end-len.sh /build/tests/
+RUN make -f objs/Makefile -f /build/tests/quic-packet-end-len-test.mk verify-quic-packet-end-len QUIC_PACKET_TEST_SOURCE=/build/tests/verify-quic-packet-end-len.c QUIC_PACKET_TEST_EXTRACTOR=/build/tests/extract-quic-packet-end-len.sh QUIC_PACKET_TEST_OUTPUT=/build/verify-quic-packet-end-len QUIC_PACKET_TEST_LDFLAGS='-Wl,--gc-sections,--as-needed,-O1,--sort-common,-z,pack-relative-relocs'
+
 FROM nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c AS certificate-encoder
 RUN apk add --no-cache build-base python3
 COPY tools/optimize-certificates.py /opt/optimize-certificates.py
@@ -92,6 +100,6 @@ RUN apk add --no-cache brotli-libs zlib zstd-libs
 COPY --from=certificate-cache-test /opt/openssl/lib/libssl.so.3 /opt/openssl/lib/libcrypto.so.3 /opt/openssl/lib/
 COPY --from=certificate-cache-test /opt/openssl/bin/openssl /opt/openssl/bin/openssl
 ENV LD_LIBRARY_PATH=/opt/openssl/lib
-COPY --from=quic-fin-test /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
+COPY --from=quic-packet-end-len-test /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
 
-COPY --from=quic-fin-test /build/nginx-1.30.4/objs/nginx /usr/sbin/nginx
+COPY --from=quic-packet-end-len-test /build/nginx-1.30.4/objs/nginx /usr/sbin/nginx
