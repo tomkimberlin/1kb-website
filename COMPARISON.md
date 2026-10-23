@@ -111,3 +111,9 @@ docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
 Repeat with distinct output directories and source-port ranges for additional samples. Failed requests remain in `results.json` and make the command exit unsuccessfully; the runner still attempts every site. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
 
 The September 26 probe fixes preserve query strings and reject failed captures, incomplete responses and unrequested HTTP/2 streams; decoding is capped at 1 MiB per layer and each TLS/HTTP exchange at 30 seconds. These checks apply to future runs, leaving the September 22 table unchanged; run the offline regressions with `python3 tools/test_compare_gallery.py` after installing `tools/gallery-requirements.txt` in a Python virtual environment.
+
+<!-- comparison:candidate:start -->
+## Local candidate — not deployed
+
+The working build is **1,021 B HTML; 389 B Brotli; 535 B gzip; 523 B deflate.** [Local build evidence](measurements/page-20261023-rle-local.json) binds these exact representations. No live transfer, overhead or peer-ranking result is claimed for this candidate. After publication and measurement, advance the verified-live pointers and remove this section.
+<!-- comparison:candidate:end -->

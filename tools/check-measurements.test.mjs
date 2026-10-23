@@ -46,6 +46,49 @@ function changeJson(directory,file,mutate) {
   mutate(data);
   writeFileSync(path,JSON.stringify(data));
 }
+const nativeEncoding='measurements/browser-20261023-fallback-encoding-local.json';
+function nativeEncodingFixture(t) {
+  const directory=fixture(t);
+  copyFileSync(new URL(nativeEncoding,project),join(directory,nativeEncoding));
+  const measured=JSON.parse(readFileSync(join(directory,page)));
+  // Synthetic validator fixture; these edits do not claim a new browser run.
+  changeJson(directory,nativeEncoding,data=>{
+    for(const row of data.rows) {
+      const key={identity:'html',br:'brotli',gzip:'gzip',deflate:'deflate'}[row.encoding];
+      row.encodedBytes=measured[key];row.encodedSha256=measured[key+'Sha256'];
+      row.htmlBytes=measured.html;row.htmlSha256=measured.htmlSha256;
+    }
+  });
+  refreshNativeReference(directory);
+  return directory;
+}
+function refreshNativeReference(directory) {
+  const sha256=createHash('sha256').update(readFileSync(join(directory,nativeEncoding))).digest('hex');
+  changeJson(directory,page,data=>data.nativeEncodingEvidence={path:nativeEncoding,sha256});
+}
+test('native encoding evidence binds both browsers to all four exact representations',t=>{
+  const result=check(nativeEncodingFixture(t));
+  assert.equal(result.status,0,result.stderr);
+});
+test('native encoding evidence rejects stale hashes and incomplete or changed cases',t=>{
+  const directory=nativeEncodingFixture(t);
+  changeJson(directory,nativeEncoding,data=>data.rows[0].encodedBytes++);
+  let result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,/Stale native encoding evidence hash/);
+  for(const [mutate,error] of [
+    [data=>data.rows[0].encodedBytes++,/Stale native encoding byte count/],
+    [data=>data.rows[0].encodedSha256='0'.repeat(64),/Stale native encoding body hash/],
+    [data=>data.rows[0].htmlSha256='0'.repeat(64),/Stale native decoded source hash/],
+    [data=>data.rows.pop(),/Native encoding cases must cover/],
+    [data=>data.rows[0]=data.rows[1],/Native encoding cases must cover/],
+    [data=>data.rows[0].exactDecodedSource=false,/exactDecodedSource/],
+    [data=>data.rows[0].unexpectedPageRequests=1,/unexpectedPageRequests/],
+    [data=>data.requestInterception=true,/Native encoding evidence: requestInterception/],
+  ]) {
+    const root=nativeEncodingFixture(t);
+    changeJson(root,nativeEncoding,mutate);refreshNativeReference(root);
+    result=check(root);assert.notEqual(result.status,0);assert.match(result.stderr,error);
+  }
+});
 const debugbear='measurements/debugbear-20261005.json';
 function debugbearFixture(t) {
   const directory=fixture(t);

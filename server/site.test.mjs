@@ -263,6 +263,28 @@ test('precompressed gzip rejects incomplete, padded and multi-member streams',t=
   }
 });
 
+test('saved gzip is used intact and supplies the matching deflate preload',t=>{
+  const candidate=readFileSync(new URL('../compression/index.html.gz',import.meta.url));
+  // Derive the fixture document from the saved stream, so future copy edits
+  // do not turn this build-path regression into a stale-content assertion.
+  const source=gunzipSync(candidate);
+  const result=runBuildFixture(t,brotliCompressSync(source),candidate,source);
+  assert.equal(result.status,0,result.stderr);
+  const report=JSON.parse(readFileSync(join(result.directory,'build-report.json')));
+  const gzip=readFileSync(join(result.directory,'public/index.html.gz'));
+  const deflate=readFileSync(join(result.directory,'public/index.html.deflate'));
+  assert.deepEqual(gzip,candidate,'build must preserve the smaller saved member');
+  assert.equal(report.gzip,candidate.length);
+  assert.equal(report.deflate,candidate.length-12);
+  assert.deepEqual(deflate.subarray(2,-4),gzip.subarray(10,-8));
+  const decoded=inflateSync(deflate,{info:true});
+  assert.deepEqual(decoded.buffer,source);
+  assert.equal(decoded.engine.bytesWritten,deflate.length);
+  const preloaded=JSON.parse(readFileSync(join(result.directory,'public/representations.json')));
+  assert.equal(preloaded.gzip,gzip.toString('base64'));
+  assert.equal(preloaded.deflate,deflate.toString('base64'));
+});
+
 test('a valid stale gzip file remains harmless after shortening the page',t=>{
   const longer=Buffer.concat([buildFixture,Buffer.from(' Old text that has since been removed.')]);
   const result=runBuildFixture(t,fixtureStock,gzipSync(longer));

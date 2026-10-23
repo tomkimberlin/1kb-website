@@ -57,6 +57,32 @@ if(buildOnly) {
   }
 }
 
+if(Object.hasOwn(browser,'nativeEncodingEvidence')) {
+  const ref=browser.nativeEncodingEvidence;
+  assert.match(ref?.path??'',/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.json$/,'Invalid native encoding evidence path');
+  assert.match(ref.sha256??'',/^[0-9a-f]{64}$/,'Invalid native encoding evidence hash');
+  assert.equal(hash(ref.path),ref.sha256,'Stale native encoding evidence hash');
+  const native=read(ref.path);
+  for(const [key,value] of Object.entries({schemaVersion:1,passed:true,cleanupComplete:true,loopbackOnly:true,
+    requestInterception:false,javaScriptEnabled:false,serviceWorkers:'block'}))
+    assert.equal(native[key],value,'Native encoding evidence: '+key);
+  assert.match(native.fixtureSourceSha256??'',/^[0-9a-f]{64}$/,'Missing native encoding verifier hash');
+  assert.ok(Array.isArray(native.rows),'Missing native encoding cases');
+  const matrix=['chromium','webkit'].flatMap(engine=>Object.keys(encodings).map(encoding=>`${engine}-${encoding}`));
+  assert.deepEqual(native.rows.map(({engine,encoding})=>`${engine}-${encoding}`).sort(),matrix.sort(),'Native encoding cases must cover both browsers and all four representations');
+  for(const row of native.rows) {
+    const key={identity:'html',br:'brotli',gzip:'gzip',deflate:'deflate'}[row.encoding];
+    assert.equal(row.encodedBytes,browser[key],'Stale native encoding byte count');
+    assert.equal(row.encodedSha256,browser[key+'Sha256'],'Stale native encoding body hash');
+    assert.equal(row.htmlBytes,browser.html,'Stale native decoded source size');
+    assert.equal(row.htmlSha256,browser.htmlSha256,'Stale native decoded source hash');
+    for(const [field,value] of Object.entries({exactDecodedSource:true,contentMatchesIdentityControl:true,
+      explicitAcceptEncoding:row.encoding,requestedEncodingAdvertised:true,pageDocumentRequests:1,unexpectedPageRequests:0}))
+      assert.equal(row[field],value,'Native encoding case: '+field);
+    assert.ok(typeof row.browserVersion==='string'&&row.browserVersion.trim(),'Missing native encoding browser version');
+  }
+}
+
 const readme=readFileSync('README.md','utf8'),comparison=readFileSync('COMPARISON.md','utf8');
 const galleryStart='<!-- comparison:gallery:start -->',galleryEnd='<!-- comparison:gallery:end -->';
 assert.equal(comparison.split(galleryStart).length,2,'Missing or duplicate historical gallery start');

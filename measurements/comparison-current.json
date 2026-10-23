@@ -18,5 +18,11 @@
   "historicalGallery": {
     "path": "measurements/gallery-20260922.json",
     "sha256": "e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef"
+  },
+  "candidate": {
+    "page": {
+      "path": "measurements/page-20261023-rle-local.json",
+      "sha256": "ed6b4f60c9758cbc9df5fb9c8b5c2c888706ee50ea81c692e539426836038a24"
+    }
   }
 }
