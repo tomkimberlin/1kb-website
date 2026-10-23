@@ -87,6 +87,6 @@ docker run --rm --network host --cap-drop ALL --cap-add NET_RAW \
   onekb-gallery:local --out /out/run-1 --port 46280
 ```
 
-Repeat with distinct output directories and source-port ranges for additional samples. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
+Repeat with distinct output directories and source-port ranges for additional samples. Failed requests remain in `results.json` and make the command exit unsuccessfully; the runner still attempts every site. The output directory also receives the fetched HTML for local inspection; only `results.json` metadata is used in the published comparison.
 
 The September 26 probe fixes preserve query strings and reject failed captures, incomplete responses and unrequested HTTP/2 streams; decoding is capped at 1 MiB per layer and each TLS/HTTP exchange at 30 seconds. These checks apply to future runs, leaving the September 22 table unchanged; run the offline regressions with `python3 tools/test_compare_gallery.py` after installing `tools/gallery-requirements.txt` in a Python virtual environment.

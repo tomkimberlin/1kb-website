@@ -355,8 +355,8 @@ def run(url,port,outdir,curve=None):
     result['estimated_tcp_plus_dns_bytes']=result['estimated_ipv4_tcp_bytes_1500_mtu']+result['dns_ipv4_udp_bytes']
     return result
 
-if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--out',required=True);p.add_argument('--curve');p.add_argument('--port',type=int,default=46240);p.add_argument('--urls',nargs='*');a=p.parse_args()
+def main(argv=None):
+    p=argparse.ArgumentParser();p.add_argument('--out',required=True);p.add_argument('--curve');p.add_argument('--port',type=int,default=46240);p.add_argument('--urls',nargs='*');a=p.parse_args(argv)
     out=Path(a.out);urls=a.urls or URLS
     try:validate_outputs(urls,out)
     except ValueError as error:p.error(str(error))
@@ -366,3 +366,8 @@ if __name__=='__main__':
         except Exception as e:r={'url':url,'error':str(e)}
         results.append(r);(out/'results.json').write_text(json.dumps({'time_utc':time.strftime('%Y-%m-%dT%H:%M:%SZ',time.gmtime()),'request_headers':HEADERS,'forced_curve':a.curve,'results':results},indent=2)+'\n')
         print(json.dumps({k:v for k,v in r.items() if k in ('url','error','body_bytes','decoded_body_bytes','tls_through_body_complete','http','keyshare_group_ids','estimated_tcp_plus_dns_bytes','observed_ipv4_tcp_bytes')}),flush=True)
+    return int(any('error' in row for row in results))
+
+
+if __name__=='__main__':
+    raise SystemExit(main())

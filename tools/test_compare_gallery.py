@@ -1,5 +1,7 @@
 """Gallery decoding, HTTP/2, capture bounds and cleanup regressions without live traffic."""
 import gzip
+import io
+import json
 import os
 import importlib.util
 from pathlib import Path
@@ -382,6 +384,48 @@ class GalleryTests(unittest.TestCase):
              patch.object(gallery, 'MAX_TLS_BYTES', 16):
             with self.assertRaisesRegex(ValueError, 'TLS byte limit'):
                 self.run_probe(tls=tls)
+
+
+class CliTests(unittest.TestCase):
+    def check_results(self, failures, expected_status):
+        urls = ['https://first.example/', 'https://second.example/', 'https://third.example/']
+        attempts = []
+        def probe(url, port, out, curve):
+            attempts.append((url, port, out, curve))
+            if url in failures:
+                raise ValueError(failures[url])
+            return {'url': url, 'body_bytes': 12, 'decoded_body_bytes': 20}
+        with tempfile.TemporaryDirectory() as directory, \
+             patch.object(gallery, 'run', side_effect=probe), \
+             patch.object(gallery.socket, 'socket', side_effect=AssertionError('Unexpected socket')), \
+             patch.object(gallery.socket, 'gethostbyname', side_effect=AssertionError('Unexpected DNS')), \
+             patch('sys.stdout', new_callable=io.StringIO) as stdout:
+            output = Path(directory) / 'sample'
+            status = gallery.main(['--out', str(output), '--port', '47200', '--urls', *urls])
+            saved = json.loads((output / 'results.json').read_text())
+            printed = [json.loads(line) for line in stdout.getvalue().splitlines()]
+        self.assertEqual(status, expected_status)
+        self.assertEqual(attempts, [(url, 47200 + i, output, None) for i, url in enumerate(urls)])
+        self.assertEqual([row['url'] for row in saved['results']], urls)
+        self.assertEqual(printed, saved['results'])
+        self.assertEqual(saved['request_headers'], [list(pair) for pair in gallery.HEADERS])
+        self.assertIsNone(saved['forced_curve'])
+        for row in saved['results']:
+            if row['url'] in failures:
+                self.assertIn('error', row)
+                self.assertEqual(row['error'], failures[row['url']])
+            else:
+                self.assertEqual(row['body_bytes'], 12)
+
+    def test_all_success_returns_zero(self):
+        self.check_results({}, 0)
+
+    def test_mixed_results_return_failure_and_keep_every_diagnostic(self):
+        self.check_results({'https://first.example/': '', 'https://third.example/': 'Probe failed'}, 1)
+
+    def test_all_errors_return_failure_and_attempt_every_url(self):
+        self.check_results({url: 'Probe failed' for url in
+                            ['https://first.example/', 'https://second.example/', 'https://third.example/']}, 1)
 
 
 class PacketTests(unittest.TestCase):
