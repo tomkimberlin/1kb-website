@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "change": "On native OpenSSL QUIC only, omit max_udp_payload_size=65527 and active_connection_id_limit=2, their RFC 9000 defaults. No effective parameter, key, nonce, ticket or security setting changes.",
+  "before": {
+    "runtimeImageId": "sha256:13fad6b57ea028791f3e00f6e61edc2bd2a4e6f61e346abec953b65e31622af0",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 96,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": true,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": true,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "after": {
+    "runtimeImageId": "sha256:1942cf424ba319ff7357f0b0967eb348443e5486366253d1a4ff98432921a356",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 87,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": false,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": false,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "parameterObservation": {
+    "beforeSnapshotSha256": "fea3b64f7e94a21d72579d22934a670901a012e44656fa758f66164866bc0e57",
+    "afterSnapshotSha256": "f6301af6c0da5c0e5eec4242305a602a3ccf93557912024c7ea391c008f072a4",
+    "beforeCompletedAtFromFileMtime": "2026-10-23T06:19:25.040020+00:00",
+    "afterCompletedAtFromFileMtime": "2026-10-23T06:28:37.958313+00:00",
+    "source": "Per-connection observation after unchanged aioquic validation; no raw TLV, connection ID, ticket, token, key material or qlog saved.",
+    "rfc": "https://www.rfc-editor.org/rfc/rfc9000.html#section-18.2"
+  },
+  "firstDocumentExchanges": {
+    "scope": "Three cold and three actually resumed public HTTP/3 connections per phase, aioquic 1.3.0 with classical key exchange and normal certificate validation. Both directions through first-document completion; subtract the entire encoded response body. IPv4/UDP adds 28 B per observed datagram; DNS, link layer, teardown and the second response are excluded.",
+    "timestampProvenance": "Traffic captures embed UTC start and completion timestamps covering both connections through close. Parameter-observer completion timestamps remain original output-file modification times, explicitly labeled; metadata hashes bind all saved reports.",
+    "bodyBytes": 389,
+    "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+    "before": {
+      "runs": [
+        {
+          "run": 1,
+          "rawMetadataSha256": "9fcf3eb1e59da9138b0cb025d65faa9150575b3672590862bbfc1b4af922ebb8",
+          "startedAt": "2026-10-23T06:19:25.131663Z",
+          "completedAt": "2026-10-23T06:19:25.447425Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6954,
+            "udpPayloadMinusEntireBody": 6565,
+            "ipv4UdpBytes": 7374,
+            "ipv4UdpMinusEntireBody": 6985,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 2,
+          "rawMetadataSha256": "93d90b4018aa8b2f1e99001fe92a60202f96bbafb699d51dd7d5cca9fb14e140",
+          "startedAt": "2026-10-23T06:19:25.561016Z",
+          "completedAt": "2026-10-23T06:19:25.877654Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6956,
+            "udpPayloadMinusEntireBody": 6567,
+            "ipv4UdpBytes": 7376,
+            "ipv4UdpMinusEntireBody": 6987,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 3,
+          "rawMetadataSha256": "8bbe799b92c9c7cc501bb97dec29af6fe76d4d28b4693003fd259b0763194023",
+          "startedAt": "2026-10-23T06:19:25.976131Z",
+          "completedAt": "2026-10-23T06:19:26.295313Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6955,
+            "udpPayloadMinusEntireBody": 6566,
+            "ipv4UdpBytes": 7375,
+            "ipv4UdpMinusEntireBody": 6986,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        }
+      ],
+      "summary": {
+        "cold": {
+          "udpPayloadMinusEntireBody": {
+            "median": 6566,
+            "minimum": 6565,
+            "maximum": 6567
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 6986,
+            "minimum": 6985,
+            "maximum": 6987
+          }
+        },
+        "resumed": {
+          "udpPayloadMinusEntireBody": {
+            "median": 4455,
+            "minimum": 4455,
+            "maximum": 4455
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 4651,
+            "minimum": 4651,
+            "maximum": 4651
+          }
+        }
+      }
+    },
+    "after": {
+      "runs": [
+        {
+          "run": 1,
+          "rawMetadataSha256": "8b1f79bbffb253005826584e1652351deede1e3e547ea18b07e692ba2db829d9",
+          "startedAt": "2026-10-23T06:31:59.701311Z",
+          "completedAt": "2026-10-23T06:32:00.014265Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6945,
+            "udpPayloadMinusEntireBody": 6556,
+            "ipv4UdpBytes": 7365,
+            "ipv4UdpMinusEntireBody": 6976,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 2,
+          "rawMetadataSha256": "392e0ddd84079ea3ef203749ad5f1ca8cb711fa5e62c483202281425b4e33f04",
+          "startedAt": "2026-10-23T06:32:00.126302Z",
+          "completedAt": "2026-10-23T06:32:00.444330Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6946,
+            "udpPayloadMinusEntireBody": 6557,
+            "ipv4UdpBytes": 7366,
+            "ipv4UdpMinusEntireBody": 6977,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 3,
+          "rawMetadataSha256": "0f3833cf85b9403b8964e20edd8def9bda9d44bbf6a36ebb49e8d4cb15160a89",
+          "startedAt": "2026-10-23T06:32:00.543020Z",
+          "completedAt": "2026-10-23T06:32:00.861416Z",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6946,
+            "udpPayloadMinusEntireBody": 6557,
+            "ipv4UdpBytes": 7366,
+            "ipv4UdpMinusEntireBody": 6977,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        }
+      ],
+      "summary": {
+        "cold": {
+          "udpPayloadMinusEntireBody": {
+            "median": 6557,
+            "minimum": 6556,
+            "maximum": 6557
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 6977,
+            "minimum": 6976,
+            "maximum": 6977
+          }
+        },
+        "resumed": {
+          "udpPayloadMinusEntireBody": {
+            "median": 4455,
+            "minimum": 4455,
+            "maximum": 4455
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 4651,
+            "minimum": 4651,
+            "maximum": 4651
+          }
+        }
+      }
+    }
+  },
+  "localControls": {
+    "actualNginxSerializerCasesPerBuildVariant": 207,
+    "parserRejectionControlsPerBuildVariant": 129,
+    "mandatoryBuildVariants": [
+      "native OpenSSL API",
+      "API fallback",
+      "BoringSSL guard",
+      "AWS-LC guard"
+    ],
+    "offlineSerializationsPerEquivalenceVariant": 333,
+    "productionHandlerHttp3ChecksPerImage": 36,
+    "bothImagesObservedColdAndResumedConnections": true,
+    "nativePairedColdExchanges": 1,
+    "nativeFixtureUdpMinusBodyBefore": 5006,
+    "nativeFixtureUdpMinusBodyAfter": 4997,
+    "backendContract": "Pinned nginx 1.30.4 native OpenSSL caller uses the full parameter buffer and does not consume the returned context prefix. Fallback, BoringSSL and AWS-LC guard branches retain existing bytes and context; branch tests are not vendor-library interoperability tests.",
+    "scope": "Controlled temporary explicitly trusted certificate and fixed fixture. Native fixture saving is local evidence, separate from the public exchange samples.",
+    "linuxBuildLogSha256": "7ba1771f43d4c6a0a210cb463bb31743edc06b5eef2bd49d1cd5393fbd8be3ce",
+    "handlerBaselineSha256": "fee78189e04869d88fa059005aa14d41498299dbb9eda20e887d4ebb92e93149",
+    "handlerCandidateSha256": "e002a35a219ca5def30618061596ca83198ea6fe5957b0ae6ac535b7913a726b"
+  },
+  "limits": [
+    "The parameter block is exactly 9 B smaller. Whole public exchanges vary with signatures, timing, control packets and segmentation; three samples do not establish a fixed traffic or latency improvement.",
+    "The QUIC change does not reduce HTTP/2 bytes. Certificate-cache component reductions are recorded separately.",
+    "No fresh peer ranking or resolution of the separate WebKit TLS-over-TCP resumption question is implied. A separate normally verified Chromium HTTP/3 document check is recorded in the browser evidence."
+  ]
+}

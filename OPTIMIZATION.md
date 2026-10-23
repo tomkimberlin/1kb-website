@@ -185,4 +185,4 @@ A fresh [October 5 delivery-overhead check](measurements/overhead-20261005.json)
 
 A [finite casing search](measurements/body-case-20261023-local.json) tested 215 HTML/URL casing variants across 12 Brotli settings. All 2,580 streams decoded exactly, and Chromium preserved canonical DOM and destinations; none beat 389 B. No source change was adopted.
 
-The [verified transport update](measurements/deployment-20261023-quic.json) instead saves 6 B in the QUIC parameter block, 1 B in the main compressed certificate and 3 B on `www`. The page body stays unchanged. [Current comparison](COMPARISON.md) keeps exact component savings separate from variable whole-exchange overhead.
+The [verified transport updates](measurements/deployment-20261023-native-quic.json) instead save 15 B in the QUIC parameter block across two changes (102 → 96 → 87 B), 1 B in the main compressed certificate and 3 B on `www`. The page body stays unchanged. [Current comparison](COMPARISON.md) keeps exact component savings separate from variable whole-exchange overhead.
