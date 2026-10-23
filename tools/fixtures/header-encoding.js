@@ -18,6 +18,15 @@ const cases = {
         'X-Empty': '', 'Content-Type': 'text/plain'}
 };
 function serve(r) {
+    // Final-status serializer fixtures only. Informational 1xx is covered by
+    // the offline actual-source regression, not treated as a final response.
+    const status = /^status-([2-5][0-9][0-9])$/.exec(r.uri.slice('/_encoding/'.length));
+    if (status) {
+        r.status = Number(status[1]);
+        r.headersOut['Content-Length'] = '0';
+        r.sendHeader();
+        return r.finish();
+    }
     const selected = cases[r.uri.slice('/_encoding/'.length)];
     if (!selected) return r.return(404, '');
     for (const key in selected) r.headersOut[key] = selected[key];

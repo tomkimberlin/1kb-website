@@ -38,6 +38,8 @@ COPY --from=compression-test /opt/openssl /opt/openssl
 WORKDIR /build/nginx-1.30.4
 COPY server/small-responses.patch /build/small-responses.patch
 RUN patch --fuzz=0 -p1 < /build/small-responses.patch
+COPY server/status-encoding.patch /build/status-encoding.patch
+RUN patch --fuzz=0 -p1 < /build/status-encoding.patch
 COPY server/quic-defaults.patch /build/quic-defaults.patch
 RUN patch --fuzz=0 -p1 < /build/quic-defaults.patch
 COPY server/quic-backend-defaults.patch /build/quic-backend-defaults.patch

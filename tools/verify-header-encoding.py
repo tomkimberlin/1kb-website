@@ -57,6 +57,7 @@ cases = {
     'empty-values': {'Cache-Control': '', 'Content-Encoding': '', 'Vary': '',
                      'X-Empty': '', 'Content-Type': 'text/plain'},
 }
+status_cases = (200, 204, 206, 301, 302, 304, 400, 403, 404, 405, 406, 421, 425, 500, 503, 599)
 HOST = args.host
 results = {'h2': [], 'h3ZeroTable': []}
 
@@ -65,7 +66,7 @@ def verify(case, headers, body, method='HEAD', status='200'):
     for (key, value) in headers:
         fields.setdefault(key, []).append(value)
     assert fields[':status'] == [status] and (not body), (case, status, fields.get(':status'), len(body))
-    expected = {k.lower(): v if isinstance(v, list) else [v] for (k, v) in cases[case].items() if v != ''} if case in cases else {'allow': ['GET, HEAD']}
+    expected = ({k.lower(): v if isinstance(v, list) else [v] for (k, v) in cases[case].items() if v != ''} if case in cases else {} if case.startswith('status-') else {'allow': ['GET, HEAD']})
     actual = {k: v for (k, v) in fields.items() if k not in [':status', 'date']}
     assert actual == expected, (case, {k: [len(x) for x in v] for (k, v) in actual.items()}, {k: [len(x) for x in v] for (k, v) in expected.items()})
     return {'case': case, 'method': method, 'status': status, 'headerFields': len(headers), 'headerValueBytes': sum((len(v.encode()) for (_, v) in headers)), 'passed': True}
@@ -125,6 +126,8 @@ if args.protocol in ('h2', 'both'):
         for (index, name) in enumerate(cases):
             request(name, '/_encoding/' + name, 'HEAD', settings=batches[index % len(batches)])
         request('similar-names', '/_encoding/similar-names', 'GET')
+        for status in status_cases:
+            request('status-' + str(status), '/_encoding/status-' + str(status), 'HEAD', str(status))
         for method in ['BREW', 'CUSTOM_METHOD', 'OPTIONS']:
             request(method, '/', method, '405')
 
@@ -165,6 +168,10 @@ async def h3():
             results['h3ZeroTable'].append(verify(name, headers, body))
         (headers, body) = await client.raw_request('/_encoding/similar-names', 'GET')
         results['h3ZeroTable'].append(verify('similar-names', headers, body, 'GET'))
+        for status in status_cases:
+            name = 'status-' + str(status)
+            (headers, body) = await client.raw_request('/_encoding/' + name, 'HEAD')
+            results['h3ZeroTable'].append(verify(name, headers, body, 'HEAD', str(status)))
         for method in ['BREW', 'CUSTOM_METHOD', 'OPTIONS']:
             (headers, body) = await client.raw_request('/', method)
             results['h3ZeroTable'].append(verify(method, headers, body, method, '405'))

@@ -29,7 +29,7 @@ function block(markdown,kind,required=true) {
   return markdown.slice(markdown.indexOf(start),markdown.indexOf(end)+end.length).trim();
 }
 
-export function renderCurrent({overhead,deployment,page,refs,quic}) {
+export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding}) {
   const rows=[['Complete TLS through first document',stats(overhead.runs.map(r=>r.tlsThroughBodyComplete.sent+r.tlsThroughBodyComplete.received))],
     ['TLS minus complete body',overhead.summary[metrics[0]]],
     ['Estimated TCP/IP + DNS through close',stats(overhead.runs.map(r=>r.estimatedTcpPlusDnsBytes))],
@@ -37,6 +37,7 @@ export function renderCurrent({overhead,deployment,page,refs,quic}) {
     ['HTTP/2 plaintext minus complete body',overhead.summary[metrics[2]]]];
   const day=overhead.runs.at(-1).measuredAt.slice(0,10);
   const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
+  const status=statusEncoding?`\n\nStatus-field components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](${deployment.statusEncoding.path}); no fixed whole-exchange saving is established.`:'';
   return `${markers('current')[0]}
 ## Latest verified own-site result
 
@@ -46,7 +47,7 @@ Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(d
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}
+${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}
 
 [Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
@@ -77,6 +78,74 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     return JSON.parse(contents);
   }
   const overhead=record(config.current.overhead),deployment=record(config.current.deployment),page=record(config.current.page),gallery=record(config.historicalGallery);
+  const statusEncoding=deployment.statusEncoding===undefined?null:record(deployment.statusEncoding);
+  need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/status-encoding.patch')||deployment.statusEncoding!==undefined,'Current status-encoding runtime requires component evidence');
+  if(deployment.statusEncoding!==undefined) {
+    const s=statusEncoding,source=s?.source,hashes=deployment.server?.sourceFileHashes;
+    need(s?.schemaVersion===1&&s.targetUrl===target,'Invalid status component evidence');
+    need(/^sha256:[0-9a-f]{64}$/.test(s.before?.runtimeImageId??'')&&s.after?.runtimeImageId===deployment.server?.imageId,'Status component runtime image differs from current deployment');
+    need(/^[0-9a-f]{40}$/.test(deployment.runtimeSourceCommit??'')&&source?.runtimeSourceCommit===deployment.runtimeSourceCommit
+      &&s.after.runtimeSourceCommit===deployment.runtimeSourceCommit,'Status component runtime source commit differs');
+    for(const [path,key] of [['server/status-encoding.patch','statusEncodingPatchSha256'],['server/Dockerfile','dockerfileSha256']]) {
+      need(digest(source[key])&&source[key]===hashes?.[path],'Status component source hash differs from deployment');
+      const committed=execFileSync('git',['show',deployment.runtimeSourceCommit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']});
+      need(hash(committed)===source[key],'Status component source differs from immutable runtime commit');
+    }
+    const cases={main:{hostname:'tomkimberlin.com',method:'GET',path:'/',statusCode:200},
+      missing:{hostname:'tomkimberlin.com',method:'GET',path:'/missing',statusCode:404},
+      method:{hostname:'tomkimberlin.com',method:'BREW',path:'/',statusCode:405},
+      wwwAlias:{hostname:'www.tomkimberlin.com',method:'GET',path:'/legacy?onekb=status',statusCode:301},
+      alternateAlias:{hostname:'tom.kimberlin.net',method:'GET',path:'/legacy?onekb=status',statusCode:301}};
+    need(equal(s.requestCases,cases),'Status component request cases differ');
+    const names=Object.keys(cases),protocols=['h2','h3'];
+    const sizes={before:{h2:[1,1,5,5,5],h3:[1,6,6,6,6]},after:{h2:[1,1,5,4,4],h3:[1,1,6,5,5]}};
+    const rowKeys=['statusCode','statusFieldBytes','blockBytes','nonFieldPrefixBytes','statusRepresentation','bodyBytes','bodySha256',
+      'normalCertificateValidation','exactStatus','exactBody','destinationVerified','allowVerified'];
+    const clientKeys=['h2','hpack','pylsqpack','aioquic'],reusedKeys=['tools/verify-http3.py','tools/probe_response.py'];
+    const verified=stamp(s.verifiedThrough);
+    for(const phase of ['before','after']) {
+      const side=s[phase];
+      need(side.passed===true&&side.normalCertificateValidation===true&&side.trust==='Default CA and owned hostname verification'
+        &&side.fixtureCAUsed===false&&side.freshConnections===10,'Status component requires trusted fresh connections');
+      need(digest(side.sourceSha256)&&keys(side.clientVersions,clientKeys)&&clientKeys.every(k=>typeof side.clientVersions[k]==='string'&&side.clientVersions[k].length>0)
+        &&keys(side.reusedSources,reusedKeys)&&reusedKeys.every(k=>digest(side.reusedSources[k])),'Invalid status component client identity');
+      need(/^[0-9a-f]{40}$/.test(side.runtimeSourceCommit??'')&&/^[0-9a-f]{40}$/.test(side.pageCommitAtReadback??'')
+        &&typeof side.pageReleaseAtReadback==='string'&&side.pageReleaseAtReadback.startsWith('releases/')
+        &&side.perRequestGenerationVerified===false&&typeof side.deploymentOverlap==='boolean'
+        &&!Object.hasOwn(side,'pageCommit')&&!Object.hasOwn(side,'pageRelease'),'Invalid status component readback scope');
+      need(stamp(side.startedAt)<=stamp(side.completedAt)&&stamp(side.completedAt)<=stamp(side.runtimeReadbackAt)
+        &&stamp(side.runtimeReadbackAt)<=verified,'Status component timestamps are unordered');
+      need(keys(side.rows,protocols),'Missing status component protocol rows');
+      for(const protocol of protocols) {
+        need(keys(side.rows[protocol],names),'Missing or extra status component case');
+        for(const [index,name] of names.entries()) {
+          const row=side.rows[protocol][name],prefix=protocol==='h2'?1:2;
+          const indexed=name==='main'||(name==='missing'&&(protocol==='h2'||phase==='after'));
+          const representation=indexed?'indexed-static':phase==='after'&&name.endsWith('Alias')?'literal-name-huffman':'literal-name-raw';
+          need(keys(row,rowKeys)&&row.statusCode===cases[name].statusCode&&row.statusFieldBytes===sizes[phase][protocol][index]
+            &&row.statusRepresentation===representation&&row.nonFieldPrefixBytes===prefix,'Status component field encoding differs');
+          need(integer(row.blockBytes)&&row.blockBytes>=prefix+row.statusFieldBytes&&row.blockBytes<=16384,'Status component block bounds differ');
+          need(row.normalCertificateValidation===true&&row.exactStatus===true&&row.exactBody===true
+            &&row.destinationVerified===true&&row.allowVerified===true,'Status component response verification failed');
+          need(integer(row.bodyBytes)&&digest(row.bodySha256)&&(name==='main'?row.bodyBytes>0:row.bodyBytes===0&&row.bodySha256===hash(Buffer.alloc(0))),'Status component body verification differs');
+        }
+      }
+      need(side.rows.h2.main.bodyBytes===side.rows.h3.main.bodyBytes&&side.rows.h2.main.bodySha256===side.rows.h3.main.bodySha256,'Status component protocol bodies differ');
+    }
+    need(stamp(s.before.runtimeReadbackAt)<=stamp(s.after.startedAt)&&s.before.sourceSha256===s.after.sourceSha256
+      &&equal(s.before.clientVersions,s.after.clientVersions)&&equal(s.before.reusedSources,s.after.reusedSources),'Status component client changed or phases overlap');
+    const main=s.after.rows.h2.main;
+    need(main.bodyBytes===page.brotli&&main.bodySha256===page.brotliSha256,'Status component after body differs from current page');
+    need(keys(s.deltas,protocols),'Invalid status component deltas');
+    for(const protocol of protocols) {
+      need(keys(s.deltas[protocol],names),'Missing status component delta case');
+      for(const name of names) {
+        const a=s.before.rows[protocol][name],b=s.after.rows[protocol][name],d=s.deltas[protocol][name];
+        need(keys(d,['statusFieldBytesSaved','blockBytesSaved','bodyBytesSaved'])&&['statusField','block','body'].every(k=>Number.isSafeInteger(d[k+'BytesSaved'])
+          &&d[k+'BytesSaved']===a[k+'Bytes']-b[k+'Bytes']),'Status component delta arithmetic differs');
+      }
+    }
+  }
   const quic=deployment.quicTransportParameters===undefined?null:record(deployment.quicTransportParameters);
   if(deployment.quicTransportParameters!==undefined) {
     need(quic&&quic.schemaVersion===1&&quic.targetUrl===target,'Invalid QUIC component evidence');
@@ -179,7 +248,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
     }
   }
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic}),'Current comparison section is stale');
+  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding}),'Current comparison section is stale');
   const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
   const date=new Date(overhead.runs.at(-1).measuredAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'UTC'});
