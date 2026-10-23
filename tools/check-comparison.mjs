@@ -29,13 +29,14 @@ function block(markdown,kind,required=true) {
   return markdown.slice(markdown.indexOf(start),markdown.indexOf(end)+end.length).trim();
 }
 
-export function renderCurrent({overhead,deployment,page,refs}) {
+export function renderCurrent({overhead,deployment,page,refs,quic}) {
   const rows=[['Complete TLS through first document',stats(overhead.runs.map(r=>r.tlsThroughBodyComplete.sent+r.tlsThroughBodyComplete.received))],
     ['TLS minus complete body',overhead.summary[metrics[0]]],
     ['Estimated TCP/IP + DNS through close',stats(overhead.runs.map(r=>r.estimatedTcpPlusDnsBytes))],
     ['TCP/IP + DNS minus complete body',overhead.summary[metrics[1]]],
     ['HTTP/2 plaintext minus complete body',overhead.summary[metrics[2]]]];
   const day=overhead.runs.at(-1).measuredAt.slice(0,10);
+  const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ACK parameters ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
   return `${markers('current')[0]}
 ## Latest verified own-site result
 
@@ -45,7 +46,7 @@ Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(d
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}
+${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}
 
 [Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
@@ -76,6 +77,30 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     return JSON.parse(contents);
   }
   const overhead=record(config.current.overhead),deployment=record(config.current.deployment),page=record(config.current.page),gallery=record(config.historicalGallery);
+  const quic=deployment.quicTransportParameters===undefined?null:record(deployment.quicTransportParameters);
+  if(deployment.quicTransportParameters!==undefined) {
+    need(quic&&quic.schemaVersion===1&&quic.targetUrl===target,'Invalid QUIC component evidence');
+    need(digest(quic.before?.runtimeImageId?.replace(/^sha256:/,''))&&quic.after?.runtimeImageId===deployment.server?.imageId,'QUIC component runtime image differs from current deployment');
+    const contextKeys=['max_idle_timeout_ms','max_udp_payload_size','initial_max_data','initial_max_stream_data_bidi_local','initial_max_stream_data_bidi_remote','initial_max_stream_data_uni','initial_max_streams_bidi','initial_max_streams_uni','active_connection_id_limit','disable_active_migration'];
+    const parameterKeys=['schema','host','protocol','certificate_verification','trust_store','fresh_handshake_completed','session_resumed','aioquic_version','probe_source_sha256','scope','encoded_transport_parameters_bytes','ack_fields','saved_context_relevant_effective_values'];
+    for(const [name,side] of [['before',quic.before],['after',quic.after]]) {
+      const p=side.parameters,c=p?.saved_context_relevant_effective_values;
+      need(keys(p,parameterKeys)&&p.schema===1&&p.host==='tomkimberlin.com'&&p.protocol==='h3'
+        &&p.certificate_verification===true&&p.trust_store==='default'&&p.fresh_handshake_completed===true&&p.session_resumed===false
+        &&typeof p.aioquic_version==='string'&&p.aioquic_version.length>0&&digest(p.probe_source_sha256)&&typeof p.scope==='string'
+        &&integer(p.encoded_transport_parameters_bytes)&&p.encoded_transport_parameters_bytes>0,'Invalid trusted QUIC parameter readback');
+      need(keys(c,contextKeys)&&contextKeys.slice(0,-1).every(key=>integer(c[key]))&&typeof c.disable_active_migration==='boolean','Invalid QUIC parameter context values');
+      need(keys(p.ack_fields,['ack_delay_exponent','max_ack_delay_ms']),'Invalid QUIC ACK fields');
+      for(const [key,value] of [['ack_delay_exponent',3],['max_ack_delay_ms',25]]) {
+        const ack=p.ack_fields[key];
+        need(keys(ack,['present','effective_value'])&&ack.present===(name==='before')&&ack.effective_value===value,'QUIC ACK defaults or omission changed');
+      }
+    }
+    const before=quic.before.parameters,after=quic.after.parameters;
+    need(before.encoded_transport_parameters_bytes-after.encoded_transport_parameters_bytes===6,'QUIC ACK component byte difference must be six');
+    need(equal(before.saved_context_relevant_effective_values,after.saved_context_relevant_effective_values)
+      &&before.aioquic_version===after.aioquic_version&&before.probe_source_sha256===after.probe_source_sha256,'QUIC context or measurement client changed');
+  }
   need(overhead.targetUrl===target&&deployment.url===target&&page.url===target,'Comparison evidence targets differ');
   need(overhead.phase==='live'&&overhead.runs?.length===3,'Current overhead must contain three live samples');
   need(overhead.pageCommit===deployment.pageCommit&&/^[0-9a-f]{40}$/.test(deployment.pageCommit),'Current page commits differ');
@@ -144,7 +169,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
     }
   }
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current}),'Current comparison section is stale');
+  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic}),'Current comparison section is stale');
   const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
   const date=new Date(overhead.runs.at(-1).measuredAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'UTC'});

@@ -1,0 +1,347 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "change": "Omit the two ACK transport parameters only when equal to RFC 9000 defaults. No effective parameter, key, nonce, ticket or security setting changes.",
+  "before": {
+    "runtimeImageId": "sha256:c353006decf2488e3bf99446cf30b8a385a34c5827f776a38275b86f2d20e6ca",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "41cd339920aba3c1522c56ff8658bfaf5eb5cf653ca9bef4f2bf09490bbd63a6",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 102,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": true,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": true,
+          "effective_value": 25
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "after": {
+    "runtimeImageId": "sha256:13fad6b57ea028791f3e00f6e61edc2bd2a4e6f61e346abec953b65e31622af0",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "41cd339920aba3c1522c56ff8658bfaf5eb5cf653ca9bef4f2bf09490bbd63a6",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 96,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "parameterObservation": {
+    "beforeSnapshotSha256": "149514f6c1950244dd6de35db6412cf62d56a3d61050c833f9e8e25e5edfc545",
+    "afterSnapshotSha256": "eb77cadb6f752a703696965948423045136552b886c462ad944d063dec4a09d3",
+    "beforeCompletedAtFromFileMtime": "2026-10-23T05:37:57.858435+00:00",
+    "afterCompletedAtFromFileMtime": "2026-10-23T05:45:49.992534+00:00",
+    "source": "Per-connection observation after unchanged aioquic validation; no raw TLV, connection ID, ticket, token, key material or qlog saved.",
+    "rfc": "https://www.rfc-editor.org/rfc/rfc9000.html#section-18.2"
+  },
+  "firstDocumentExchanges": {
+    "scope": "Three cold and three actually resumed public HTTP/3 connections per phase, aioquic 1.3.0 with classical key exchange and normal certificate validation. Both directions through first-document completion; subtract the entire encoded response body. IPv4/UDP adds 28 B per observed datagram; DNS, link layer, teardown and the second response are excluded.",
+    "timestampProvenance": "The existing traffic probe has no embedded wall-clock timestamp. Completion timestamps here are original output-file modification times; metadata hashes bind the saved reports.",
+    "bodyBytes": 389,
+    "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+    "before": {
+      "runs": [
+        {
+          "run": 1,
+          "rawMetadataSha256": "c3e0edf00cc1a7ab111ef20aa298bf3fb1d3c18940cef68fb52a4ae465301164",
+          "completedAtFromFileMtime": "2026-10-23T05:28:24.488673+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6775,
+            "udpPayloadMinusEntireBody": 6386,
+            "ipv4UdpBytes": 7111,
+            "ipv4UdpMinusEntireBody": 6722,
+            "datagrams": {
+              "sent": 7,
+              "received": 5
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 2,
+          "rawMetadataSha256": "522de1551bec78caca3047504dc5ce32dfc81f942d2f80d192882f3956b3424d",
+          "completedAtFromFileMtime": "2026-10-23T05:29:12.912982+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6961,
+            "udpPayloadMinusEntireBody": 6572,
+            "ipv4UdpBytes": 7381,
+            "ipv4UdpMinusEntireBody": 6992,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 3,
+          "rawMetadataSha256": "e52578d07eac24a6d4e98d4adc10fb8b63a77521e7fb17467b3bc4a838b04536",
+          "completedAtFromFileMtime": "2026-10-23T05:29:13.347093+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6961,
+            "udpPayloadMinusEntireBody": 6572,
+            "ipv4UdpBytes": 7381,
+            "ipv4UdpMinusEntireBody": 6992,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        }
+      ],
+      "summary": {
+        "cold": {
+          "udpPayloadMinusEntireBody": {
+            "median": 6572,
+            "minimum": 6386,
+            "maximum": 6572
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 6992,
+            "minimum": 6722,
+            "maximum": 6992
+          }
+        },
+        "resumed": {
+          "udpPayloadMinusEntireBody": {
+            "median": 4455,
+            "minimum": 4455,
+            "maximum": 4455
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 4651,
+            "minimum": 4651,
+            "maximum": 4651
+          }
+        }
+      }
+    },
+    "after": {
+      "runs": [
+        {
+          "run": 1,
+          "rawMetadataSha256": "778f3e8821ba55a93d4fd7a495d5e06efdc68da172f842bce9be2b5075eca198",
+          "completedAtFromFileMtime": "2026-10-23T05:50:08.148328+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6956,
+            "udpPayloadMinusEntireBody": 6567,
+            "ipv4UdpBytes": 7376,
+            "ipv4UdpMinusEntireBody": 6987,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 2,
+          "rawMetadataSha256": "43a4d818b6f60b1fc35adf634567f80fdd0ea273f1abe8fc37925dcb91b0ef61",
+          "completedAtFromFileMtime": "2026-10-23T05:50:08.580906+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6956,
+            "udpPayloadMinusEntireBody": 6567,
+            "ipv4UdpBytes": 7376,
+            "ipv4UdpMinusEntireBody": 6987,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        },
+        {
+          "run": 3,
+          "rawMetadataSha256": "45df95c5ce87042040cf750d59649a09628649e54e43c7a5993bc5b2644edd26",
+          "completedAtFromFileMtime": "2026-10-23T05:50:09.010550+00:00",
+          "cold": {
+            "sessionResumed": false,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 6958,
+            "udpPayloadMinusEntireBody": 6569,
+            "ipv4UdpBytes": 7378,
+            "ipv4UdpMinusEntireBody": 6989,
+            "datagrams": {
+              "sent": 8,
+              "received": 7
+            }
+          },
+          "resumed": {
+            "sessionResumed": true,
+            "bodyBytes": 389,
+            "udpPayloadBytes": 4844,
+            "udpPayloadMinusEntireBody": 4455,
+            "ipv4UdpBytes": 5040,
+            "ipv4UdpMinusEntireBody": 4651,
+            "datagrams": {
+              "sent": 4,
+              "received": 3
+            }
+          }
+        }
+      ],
+      "summary": {
+        "cold": {
+          "udpPayloadMinusEntireBody": {
+            "median": 6567,
+            "minimum": 6567,
+            "maximum": 6569
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 6987,
+            "minimum": 6987,
+            "maximum": 6989
+          }
+        },
+        "resumed": {
+          "udpPayloadMinusEntireBody": {
+            "median": 4455,
+            "minimum": 4455,
+            "maximum": 4455
+          },
+          "ipv4UdpMinusEntireBody": {
+            "median": 4651,
+            "minimum": 4651,
+            "maximum": 4651
+          }
+        }
+      }
+    }
+  },
+  "localControls": {
+    "actualNginxSerializerCases": 126,
+    "parserRejectionControls": 129,
+    "productionHandlerHttp3ChecksPerImage": 36,
+    "bothImagesObservedColdAndResumedConnections": true,
+    "nativePairedColdExchanges": 3,
+    "nativeFixtureUdpMinusBodyBefore": 5008,
+    "nativeFixtureUdpMinusBodyAfter": 5002,
+    "scope": "Controlled temporary explicitly trusted certificate and fixed fixture. Native fixture saving is local evidence, separate from the public exchange samples.",
+    "linuxBuildLogSha256": "42c0216d4bf556e1f5782921b5949f756703ff1b3b30bda8cd1dbdf590a1a0ed",
+    "handlerBaselineSha256": "b6ec4b88efca7af79e16b76c84cace64bd9e2cb749299c02af0e1bab2b4ac42a",
+    "handlerCandidateSha256": "fbdb8408d3c451be5df3bfbee038f19351ec5d2ec52d5376e0a74798e3b7a9ef"
+  },
+  "limits": [
+    "The parameter block is exactly 6 B smaller. Whole public exchanges vary with signatures, timing, control packets and segmentation; three samples do not establish a fixed traffic or latency improvement.",
+    "The QUIC change does not reduce HTTP/2 bytes. Certificate-cache component reductions are recorded separately.",
+    "No fresh peer ranking, browser HTTP/3 claim or resolution of the separate WebKit TLS-over-TCP resumption question is implied."
+  ]
+}

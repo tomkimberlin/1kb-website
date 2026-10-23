@@ -1,0 +1,40 @@
+{
+  "commit": "299a921b7b42baab9a0d7004fa9d7fa650a037a7",
+  "baseline": {
+    "rawBytes": 1021,
+    "brotliBytes": 389,
+    "gzipBytes": 536,
+    "deflateBytes": 524,
+    "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+  },
+  "candidateCountIncludingBaseline": 215,
+  "stockSettingsPerCandidate": 12,
+  "encodedTrials": 2580,
+  "bestBrotliBytes": 389,
+  "brotliRangeBytes": [
+    389,
+    442
+  ],
+  "improvingCandidates": 0,
+  "independentValidation": {
+    "all2580StreamsCompleteCConsumption": true,
+    "all2580StreamsExactPythonBrotli121Decode": true,
+    "baselineReproducesActual389BHash": true,
+    "stockLibrarySha256": "d9a00af0a51e6f2fdbfad0b5053d3ca6c4b267198e9cf846603917210c711b54",
+    "chromiumCases": 215,
+    "allCanonicalDestinationsAndDomEqual": true,
+    "externalPageRequests": 0
+  },
+  "files": {
+    "search.py": "599d579939898d50ed486f52713a6046d96c45eaa763822bfea40015b41ea585",
+    "check-browser.mjs": "870b6e874a21a79c042ba9fcf6274895f7e8fa97dc88f83081c7fc851cf66068",
+    "plan.json": "d867e43dedd6326ad73b0cd12d710acae5d98faaa6c738976f3c8d47a20a4200",
+    "browser-canonicalization.json": "0130d280e3d00222280b6091be392774365084564fc4b217c418fd98939b9d0f",
+    "results.json": "fdab7c79be1f68ae9cbd29d8b8c7be17e0eb8f23e4fda3e690e0dca4c90cadf6",
+    "browser-approved.log": "7d29362b5b806b0944167b88e0ee04e36e04197f042f78fbd7e236e71f93034b",
+    "search.log": "2d26c633bd436921f90f00d044cf51a9aa1d5fb6c3bdbdb0e3127133cde03e04"
+  },
+  "scope": "Local finite casing-only experiment; no source changes adopted, public measurements or full browser pixel-matrix claim.",
+  "result": "No smaller Brotli body in 2,580 trials. Keep the existing source.",
+  "sourceSummarySha256": "1f9e5437de08f4710b02472981d6c7b62c6f194cc93a818dd48243a5edbb444e"
+}

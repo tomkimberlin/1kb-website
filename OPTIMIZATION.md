@@ -180,3 +180,9 @@ The follow-up [exact-source compression experiment](measurements/compression-202
 This is a local review option, not a published improvement or a measured scanner result. If the same 81-byte counter/body difference recurred, the arithmetic prediction would be 471 B; an actual authorized test would be required to establish that number. The current live result remains 472 B. This one-byte body saving does not demonstrate lower body-subtracted delivery overhead. It remains local; the approved content and direct destinations are preserved.
 
 A fresh [October 5 delivery-overhead check](measurements/overhead-20261005.json) uses the established gallery probe and subtracts the current 391-byte body from each of three cold exchanges. HTTP/2 plaintext overhead remains 105 B; the 63-byte header block and control frames match the September 22 gallery. TLS median changes 5,251 → 5,253 B, fully tracking variable CertificateVerify message lengths. Estimated TCP/IP + DNS median changes 6,995 → 6,945 B, with overlapping ranges and no repeatable saving established. The useful content and direct links did not add measured HTTP/2 framing. This dated verification preserves the original body-subtracted objective; it does not redefine content as separately compressed substrings or establish a new global ranking.
+
+## October 23 follow-up
+
+A [finite casing search](measurements/body-case-20261023-local.json) tested 215 HTML/URL casing variants across 12 Brotli settings. All 2,580 streams decoded exactly, and Chromium preserved canonical DOM and destinations; none beat 389 B. No source change was adopted.
+
+The [verified transport update](measurements/deployment-20261023-quic.json) instead saves 6 B in the QUIC parameter block, 1 B in the main compressed certificate and 3 B on `www`. The page body stays unchanged. [Current comparison](COMPARISON.md) keeps exact component savings separate from variable whole-exchange overhead.
