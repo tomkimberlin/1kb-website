@@ -1,5 +1,6 @@
 import argparse,asyncio,hashlib,json
 from pathlib import Path
+from datetime import datetime,timezone
 from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
 from aioquic.h3.connection import H3Connection,H3_ALPN
@@ -41,6 +42,7 @@ class Client(QuicConnectionProtocol):
   headers=[(b':method',b'GET'),(b':scheme',b'https'),(b':authority',a.host.encode()),(b':path',b'/'),(b'accept-encoding',b'br'),(b'user-agent',b'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'),(b'accept',b'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'),(b'sec-fetch-dest',b'document'),(b'sec-fetch-mode',b'navigate'),(b'sec-fetch-site',b'none'),(b'sec-fetch-user',b'?1'),(b'accept-language',b'en-US,en;q=0.9'),(b'priority',b'u=0, i')]
   self.http.send_headers(sid,headers,end_stream=True);self.transmit();r=await asyncio.wait_for(self.waiters[sid],15);self.snap(f'response_{sid}_complete');validate_brotli_response(r['headers'],r['body'],expected_body,f'HTTP/3 stream {sid}');return {'stream':sid,'body_bytes':len(r['body']),'headers':report_headers(r['headers']),'trailers':report_headers(r.get('trailers',[]))}
 async def main():
+ started_at_utc=datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
  ticket=None;reports=[]
  def save(t):nonlocal ticket;ticket=t
  for i in range(2):
@@ -49,6 +51,7 @@ async def main():
   async with connect(a.ip,a.port,configuration=config,create_protocol=Client,session_ticket_handler=save) as c:
    responses=[await c.get(),await c.get()];await asyncio.sleep(.06);c.snap('after_ack_flush')
    reports.append({'connection':'resumption_attempt' if i else 'cold','session_reused':c.reused,'snapshots':c.snapshots,'datagrams':c.datagrams,'responses':responses,'h3_events':report_qlog([e for t in log.to_dict()['traces'] for e in t.get('events',[]) if 'http' in e.get('name','')])})
- Path(a.out).write_text(json.dumps({'host':a.host,'protocol':'h3','address_family':'IPv4','certificate_verification':True,'expected_body_bytes':len(expected_body),'expected_body_sha256':hashlib.sha256(expected_body).hexdigest(),'response_validation':'HTTP 200, Brotli encoding and exact local body on every response','cookie_header_values':'redacted, including qlog header events','scope':'Aioquic client with classical key exchange; IPv4/UDP count includes 28 bytes per datagram, excludes DNS and link-layer overhead.','measurements':reports},indent=2)+'\n')
+ completed_at_utc=datetime.now(timezone.utc).isoformat().replace('+00:00','Z')
+ Path(a.out).write_text(json.dumps({'started_at_utc':started_at_utc,'completed_at_utc':completed_at_utc,'host':a.host,'protocol':'h3','address_family':'IPv4','certificate_verification':True,'expected_body_bytes':len(expected_body),'expected_body_sha256':hashlib.sha256(expected_body).hexdigest(),'response_validation':'HTTP 200, Brotli encoding and exact local body on every response','cookie_header_values':'redacted, including qlog header events','scope':'Aioquic client with classical key exchange; IPv4/UDP count includes 28 bytes per datagram, excludes DNS and link-layer overhead.','measurements':reports},indent=2)+'\n')
  for r in reports:print(json.dumps({k:r[k] for k in ['connection','session_reused','snapshots']}))
 asyncio.run(main())

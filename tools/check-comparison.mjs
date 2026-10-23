@@ -36,7 +36,7 @@ export function renderCurrent({overhead,deployment,page,refs,quic}) {
     ['TCP/IP + DNS minus complete body',overhead.summary[metrics[1]]],
     ['HTTP/2 plaintext minus complete body',overhead.summary[metrics[2]]]];
   const day=overhead.runs.at(-1).measuredAt.slice(0,10);
-  const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ACK parameters ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
+  const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
   return `${markers('current')[0]}
 ## Latest verified own-site result
 
@@ -81,8 +81,9 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   if(deployment.quicTransportParameters!==undefined) {
     need(quic&&quic.schemaVersion===1&&quic.targetUrl===target,'Invalid QUIC component evidence');
     need(digest(quic.before?.runtimeImageId?.replace(/^sha256:/,''))&&quic.after?.runtimeImageId===deployment.server?.imageId,'QUIC component runtime image differs from current deployment');
+    const limits=quic.before?.parameters?.limit_fields!==undefined||quic.after?.parameters?.limit_fields!==undefined;
     const contextKeys=['max_idle_timeout_ms','max_udp_payload_size','initial_max_data','initial_max_stream_data_bidi_local','initial_max_stream_data_bidi_remote','initial_max_stream_data_uni','initial_max_streams_bidi','initial_max_streams_uni','active_connection_id_limit','disable_active_migration'];
-    const parameterKeys=['schema','host','protocol','certificate_verification','trust_store','fresh_handshake_completed','session_resumed','aioquic_version','probe_source_sha256','scope','encoded_transport_parameters_bytes','ack_fields','saved_context_relevant_effective_values'];
+    const parameterKeys=['schema','host','protocol','certificate_verification','trust_store','fresh_handshake_completed','session_resumed','aioquic_version','probe_source_sha256','scope','encoded_transport_parameters_bytes','ack_fields','saved_context_relevant_effective_values',...(limits?['limit_fields']:[])];
     for(const [name,side] of [['before',quic.before],['after',quic.after]]) {
       const p=side.parameters,c=p?.saved_context_relevant_effective_values;
       need(keys(p,parameterKeys)&&p.schema===1&&p.host==='tomkimberlin.com'&&p.protocol==='h3'
@@ -93,11 +94,20 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       need(keys(p.ack_fields,['ack_delay_exponent','max_ack_delay_ms']),'Invalid QUIC ACK fields');
       for(const [key,value] of [['ack_delay_exponent',3],['max_ack_delay_ms',25]]) {
         const ack=p.ack_fields[key];
-        need(keys(ack,['present','effective_value'])&&ack.present===(name==='before')&&ack.effective_value===value,'QUIC ACK defaults or omission changed');
+        need(keys(ack,['present','effective_value'])&&ack.present===(!limits&&name==='before')&&ack.effective_value===value,'QUIC ACK defaults or omission changed');
+      }
+      if(limits) {
+        need(keys(p.limit_fields,['max_udp_payload_size','active_connection_id_limit']),'Invalid QUIC limit fields');
+        for(const [key,value] of [['max_udp_payload_size',65527],['active_connection_id_limit',2]]) {
+          const limit=p.limit_fields[key];
+          need(keys(limit,['present','effective_value'])&&limit.present===(name==='before')&&limit.effective_value===value
+            &&c[key]===value,'QUIC limit defaults or omission changed');
+        }
       }
     }
     const before=quic.before.parameters,after=quic.after.parameters;
-    need(before.encoded_transport_parameters_bytes-after.encoded_transport_parameters_bytes===6,'QUIC ACK component byte difference must be six');
+    // ACK fields cost 3+3 B; the two optional limits cost 6+3 B.
+    need(before.encoded_transport_parameters_bytes-after.encoded_transport_parameters_bytes===(limits?9:6),'QUIC omitted-default component byte difference differs');
     need(equal(before.saved_context_relevant_effective_values,after.saved_context_relevant_effective_values)
       &&before.aioquic_version===after.aioquic_version&&before.probe_source_sha256===after.probe_source_sha256,'QUIC context or measurement client changed');
   }

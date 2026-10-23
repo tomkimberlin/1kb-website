@@ -172,3 +172,23 @@ test('stale rendered QUIC evidence link is rejected',t=>{const f=fixture(t);f.qu
 test('QUIC component display derives other validated lengths rather than hardcoding the first result',t=>{const f=fixture(t),save=f.quic();f.data.quic.before.parameters.encoded_transport_parameters_bytes=103;f.data.quic.after.parameters.encoded_transport_parameters_bytes=97;save();assert.doesNotThrow(f.check);assert.match(readFileSync(join(f.root,'COMPARISON.md'),'utf8'),/103 B → 97 B \(6 B less\)/);});
 
 test('hashed null QUIC evidence cannot disable the optional validation',t=>{const f=fixture(t),save=f.quic();f.data.quic=null;save();assert.throws(f.check,/Invalid QUIC component evidence/);});
+
+
+function limitReduction(f) {
+  const update=f.quic();
+  f.data.quic.before.parameters.encoded_transport_parameters_bytes=96;
+  f.data.quic.after.parameters.encoded_transport_parameters_bytes=87;
+  for(const [name,side] of Object.entries({before:f.data.quic.before,after:f.data.quic.after})) {
+    for(const field of Object.values(side.parameters.ack_fields))field.present=false;
+    side.parameters.limit_fields={max_udp_payload_size:{present:name==='before',effective_value:65527},active_connection_id_limit:{present:name==='before',effective_value:2}};
+  }
+  update();return update;
+}
+test('additional limit omission is a separate 96 to 87 B comparison',t=>{const f=fixture(t);limitReduction(f);assert.doesNotThrow(f.check);const doc=readFileSync(join(f.root,'COMPARISON.md'),'utf8');assert.match(doc,/96 B → 87 B \(9 B less\)/);assert.match(doc,/unchanged effective parameters/);assert.doesNotMatch(doc,/102 B → 87 B/);});
+test('new limit evidence cannot substitute an ACK-only six-byte delta',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.after.parameters.encoded_transport_parameters_bytes=90;save();assert.throws(f.check,/component byte difference/);});
+test('new limit evidence requires actual before-wire presence',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.before.parameters.limit_fields.max_udp_payload_size.present=false;save();assert.throws(f.check,/limit defaults/);});
+test('new limit evidence requires both fields omitted after activation',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.after.parameters.limit_fields.active_connection_id_limit.present=true;save();assert.throws(f.check,/limit defaults/);});
+test('new limit evidence must retain the exact effective defaults',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.after.parameters.limit_fields.max_udp_payload_size.effective_value=65526;save();assert.throws(f.check,/limit defaults/);});
+test('new limit evidence must agree with saved context values',t=>{const f=fixture(t),save=limitReduction(f);for(const name of ['before','after'])f.data.quic[name].parameters.saved_context_relevant_effective_values.active_connection_id_limit=3;save();assert.throws(f.check,/limit defaults/);});
+test('new limit evidence requires ACK fields already omitted on both sides',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.before.parameters.ack_fields.ack_delay_exponent.present=true;save();assert.throws(f.check,/ACK defaults/);});
+test('missing one phase limit observation cannot be inferred from context',t=>{const f=fixture(t),save=limitReduction(f);delete f.data.quic.before.parameters.limit_fields;save();assert.throws(f.check,/trusted QUIC/);});
