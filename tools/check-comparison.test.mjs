@@ -486,3 +486,5 @@ test('a fresh peer section requires referenced peer evidence',t=>{
   writeFileSync(path,readFileSync(path,'utf8')+'\n<!-- comparison:fresh-gallery:start -->\nStale table\n<!-- comparison:fresh-gallery:end -->\n');
   assert.throws(f.check,/Fresh peer section is stale/);
 });
+
+test('STREAM-offset runtime cannot omit its component evidence',t=>{const f=fixture(t);f.data.deployment.server.sourceFileHashes??={};f.data.deployment.server.sourceFileHashes['server/quic-stream-offset.patch']='a'.repeat(64);f.save('deployment');f.flush();assert.throws(f.check,/STREAM-offset runtime requires component evidence/);});

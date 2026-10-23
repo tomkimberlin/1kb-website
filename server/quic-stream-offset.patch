@@ -1,0 +1,29 @@
+--- a/src/event/quic/ngx_event_quic_transport.c
++++ b/src/event/quic/ngx_event_quic_transport.c
+@@ -1539,7 +1539,7 @@
+ 
+     type = NGX_QUIC_FT_STREAM;
+ 
+-    if (sf->off) {
++    if (sf->off && sf->offset != 0) {
+         type |= NGX_QUIC_STREAM_FRAME_OFF;
+     }
+ 
+@@ -1555,7 +1555,7 @@
+         len = ngx_quic_varint_len(type);
+         len += ngx_quic_varint_len(sf->stream_id);
+ 
+-        if (sf->off) {
++        if (sf->off && sf->offset != 0) {
+             len += ngx_quic_varint_len(sf->offset);
+         }
+ 
+@@ -1573,7 +1573,7 @@
+     ngx_quic_build_int(&p, type);
+     ngx_quic_build_int(&p, sf->stream_id);
+ 
+-    if (sf->off) {
++    if (sf->off && sf->offset != 0) {
+         ngx_quic_build_int(&p, sf->offset);
+     }
+ 
