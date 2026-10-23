@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "change": "Status-field encoding changed. Fresh readback confirms the previously deployed QUIC defaults and 87-byte parameter block remain unchanged.",
+  "before": {
+    "runtimeImageId": "sha256:13fad6b57ea028791f3e00f6e61edc2bd2a4e6f61e346abec953b65e31622af0",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 96,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": true,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": true,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "after": {
+    "runtimeImageId": "sha256:0fb57e6254282615542a1e1796c89f015799537bd7d262f7039757898bdba8ec",
+    "parameters": {
+      "schema": 1,
+      "host": "tomkimberlin.com",
+      "protocol": "h3",
+      "certificate_verification": true,
+      "trust_store": "default",
+      "fresh_handshake_completed": true,
+      "session_resumed": false,
+      "aioquic_version": "1.3.0",
+      "probe_source_sha256": "0a8a8bebb818234e76aa1d27e44b716a759c347d4e142a454356643ea150cf1c",
+      "scope": "Handshake-only parameter readback; original aioquic validation applied before observation. One received parameter block; saved-ticket blocks excluded. Not a traffic measurement.",
+      "encoded_transport_parameters_bytes": 87,
+      "ack_fields": {
+        "ack_delay_exponent": {
+          "present": false,
+          "effective_value": 3
+        },
+        "max_ack_delay_ms": {
+          "present": false,
+          "effective_value": 25
+        }
+      },
+      "limit_fields": {
+        "max_udp_payload_size": {
+          "present": false,
+          "effective_value": 65527
+        },
+        "active_connection_id_limit": {
+          "present": false,
+          "effective_value": 2
+        }
+      },
+      "saved_context_relevant_effective_values": {
+        "max_idle_timeout_ms": 75000,
+        "max_udp_payload_size": 65527,
+        "initial_max_data": 8585216,
+        "initial_max_stream_data_bidi_local": 65536,
+        "initial_max_stream_data_bidi_remote": 65536,
+        "initial_max_stream_data_uni": 65536,
+        "initial_max_streams_bidi": 128,
+        "initial_max_streams_uni": 3,
+        "active_connection_id_limit": 2,
+        "disable_active_migration": false
+      }
+    }
+  },
+  "historicalBaseline": {
+    "path": "measurements/quic-native-defaults-20261023-live.json",
+    "sha256": "6ee002a07e71e8a4de5ac88b5b29493266586417720165292a633a79412c5f02",
+    "scope": "The before runtime and 96-byte observation are retained from the earlier October 23 native-defaults comparison; they were not rerun for the status patch."
+  },
+  "parameterObservation": {
+    "afterSnapshotSha256": "f6301af6c0da5c0e5eec4242305a602a3ccf93557912024c7ea391c008f072a4",
+    "afterArtifactModifiedAt": "2026-10-23T09:09:51.605138+00:00",
+    "scope": "Fresh normally trusted handshake-only readback using the exact earlier observer. No raw TLVs, tickets, tokens, keys or qlogs retained."
+  },
+  "limitations": [
+    "The historical 96-to-87-byte component difference remains 9 bytes; this status patch creates no additional QUIC parameter saving.",
+    "No fresh whole HTTP/3 exchange total or peer ranking is claimed here. Earlier complete-exchange samples remain in their original dated record."
+  ]
+}

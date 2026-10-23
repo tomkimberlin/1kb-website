@@ -67,8 +67,55 @@ function fixture(t,project=repo) {
     const update=()=>{const path='measurements/quic-current.json';put(path,data.quic);data.deployment.quicTransportParameters={path,sha256:hash(readFileSync(resolve(root,path)))};save('deployment');flush();};
     update();return update;
   }
+  function statusEncoding() {
+    // Synthetic component rows use only immutable source hashes and dated page
+    // evidence. They never read a live probe, ignored draft or working source.
+    const runtime='2055306d4f632e5dd2eedd9793e17ace77b3c3bd';
+    const committed=name=>execFileSync('git',['show',runtime+':'+name],{cwd:project});
+    const patch=hash(committed('server/status-encoding.patch')),dockerfile=hash(committed('server/Dockerfile'));
+    data.deployment.runtimeSourceCommit=runtime;
+    data.deployment.server.sourceFileHashes??={};
+    Object.assign(data.deployment.server.sourceFileHashes,{'server/status-encoding.patch':patch,'server/Dockerfile':dockerfile});
+    const requestCases={main:{hostname:'tomkimberlin.com',method:'GET',path:'/',statusCode:200},
+      missing:{hostname:'tomkimberlin.com',method:'GET',path:'/missing',statusCode:404},
+      method:{hostname:'tomkimberlin.com',method:'BREW',path:'/',statusCode:405},
+      wwwAlias:{hostname:'www.tomkimberlin.com',method:'GET',path:'/legacy?onekb=status',statusCode:301},
+      alternateAlias:{hostname:'tom.kimberlin.net',method:'GET',path:'/legacy?onekb=status',statusCode:301}};
+    const sizes={before:{h2:[1,1,5,5,5],h3:[1,6,6,6,6]},after:{h2:[1,1,5,4,4],h3:[1,1,6,5,5]}};
+    const phases={};
+    for(const [phase,hour] of [['before','15'],['after','16']]) {
+      const rows={};
+      for(const protocol of ['h2','h3']) {
+        rows[protocol]={};
+        for(const [i,[name,request]] of Object.entries(requestCases).entries()) {
+          const indexed=name==='main'||(name==='missing'&&(protocol==='h2'||phase==='after'));
+          rows[protocol][name]={statusCode:request.statusCode,statusFieldBytes:sizes[phase][protocol][i],
+            blockBytes:50+sizes[phase][protocol][i],nonFieldPrefixBytes:protocol==='h2'?1:2,
+            statusRepresentation:indexed?'indexed-static':phase==='after'&&name.endsWith('Alias')?'literal-name-huffman':'literal-name-raw',
+            bodyBytes:name==='main'?data.page.brotli:0,bodySha256:name==='main'?data.page.brotliSha256:hash(Buffer.alloc(0)),
+            normalCertificateValidation:true,exactStatus:true,exactBody:true,destinationVerified:true,allowVerified:true};
+        }
+      }
+      phases[phase]={runtimeImageId:phase==='after'?data.deployment.server.imageId:'sha256:'+'b'.repeat(64),
+        runtimeSourceCommit:runtime,pageCommitAtReadback:data.deployment.pageCommit,pageReleaseAtReadback:data.deployment.pageRelease,
+        perRequestGenerationVerified:false,deploymentOverlap:phase==='after',
+        passed:true,normalCertificateValidation:true,trust:'Default CA and owned hostname verification',fixtureCAUsed:false,freshConnections:10,
+        startedAt:`2026-10-22T${hour}:00:00Z`,completedAt:`2026-10-22T${hour}:00:01Z`,runtimeReadbackAt:`2026-10-22T${hour}:01:00Z`,
+        sourceSha256:'a'.repeat(64),clientVersions:{h2:'4.4.1',hpack:'4.2.0',pylsqpack:'0.3.24',aioquic:'1.3.0'},
+        reusedSources:{'tools/verify-http3.py':'c'.repeat(64),'tools/probe_response.py':'d'.repeat(64)},rows};
+    }
+    data.statusEncoding={schemaVersion:1,targetUrl:config.targetUrl,verifiedThrough:'2026-10-22T17:00:00Z',
+      requestCases,...phases,source:{runtimeSourceCommit:runtime,statusEncodingPatchSha256:patch,dockerfileSha256:dockerfile},deltas:{h2:{},h3:{}}};
+    for(const protocol of ['h2','h3']) for(const name of Object.keys(requestCases)) {
+      const a=phases.before.rows[protocol][name],b=phases.after.rows[protocol][name];
+      data.statusEncoding.deltas[protocol][name]={statusFieldBytesSaved:a.statusFieldBytes-b.statusFieldBytes,blockBytesSaved:a.blockBytes-b.blockBytes,bodyBytesSaved:a.bodyBytes-b.bodyBytes};
+    }
+    const update=()=>{const path='measurements/status-current.json';put(path,data.statusEncoding);
+      data.deployment.statusEncoding={path,sha256:hash(readFileSync(resolve(root,path)))};save('deployment');flush();};
+    update();return update;
+  }
   flush();
-  return {root,data,config,save,put,flush,document,candidate,quic,check:()=>checkComparison({root})};
+  return {root,data,config,save,put,flush,document,candidate,quic,statusEncoding,check:()=>checkComparison({root})};
 }
 
 test('current real evidence, complete totals and all live hashes pass',t=>{const f=fixture(t);assert.deepEqual(f.check(),{liveDate:'2026-10-22',localCandidate:false});});
@@ -192,3 +239,134 @@ test('new limit evidence must retain the exact effective defaults',t=>{const f=f
 test('new limit evidence must agree with saved context values',t=>{const f=fixture(t),save=limitReduction(f);for(const name of ['before','after'])f.data.quic[name].parameters.saved_context_relevant_effective_values.active_connection_id_limit=3;save();assert.throws(f.check,/limit defaults/);});
 test('new limit evidence requires ACK fields already omitted on both sides',t=>{const f=fixture(t),save=limitReduction(f);f.data.quic.before.parameters.ack_fields.ack_delay_exponent.present=true;save();assert.throws(f.check,/ACK defaults/);});
 test('missing one phase limit observation cannot be inferred from context',t=>{const f=fixture(t),save=limitReduction(f);delete f.data.quic.before.parameters.limit_fields;save();assert.throws(f.check,/trusted QUIC/);});
+
+test('status component binds immutable runtime source and renders component-only bytes',t=>{
+  const f=fixture(t);f.statusEncoding();assert.doesNotThrow(f.check);
+  const doc=readFileSync(join(f.root,'COMPARISON.md'),'utf8');
+  assert.match(doc,/301: HTTP\/2 5 → 4 B; HTTP\/3 6 → 5 B/);
+  assert.match(doc,/HTTP\/3 404: 6 → 1 B; main 200 unchanged/);
+  assert.match(doc,/no fixed whole-exchange saving is established/);
+  assert.ok(doc.indexOf('Status-field components:')>doc.indexOf('| HTTP/2 plaintext minus complete body |'));
+});
+test('status and QUIC components coexist without changing the whole-body table',t=>{
+  const f=fixture(t);f.quic();f.statusEncoding();assert.doesNotThrow(f.check);
+  const doc=readFileSync(join(f.root,'COMPARISON.md'),'utf8');assert.match(doc,/HTTP\/3 transport-parameter component/);assert.match(doc,/Status-field components/);
+});
+test('runtime status patch requires a status component reference',t=>{
+  const f=fixture(t);f.statusEncoding();delete f.data.deployment.statusEncoding;f.save('deployment');f.flush({doc:false});
+  assert.throws(f.check,/requires component evidence/);
+});
+test('status reference hashes and nonnull schema are enforced',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h3.main.blockBytes++;f.put('measurements/status-current.json',f.data.statusEncoding);
+  assert.throws(f.check,/hash is stale/);f.data.statusEncoding=null;save();assert.throws(f.check,/Invalid status component evidence/);
+});
+test('status schema and exact target cannot be substituted',t=>{
+  for(const change of [{schemaVersion:2},{targetUrl:'https://example.invalid/'}]) {
+    const f=fixture(t),save=f.statusEncoding();Object.assign(f.data.statusEncoding,change);save();assert.throws(f.check,/Invalid status component evidence/);
+  }
+});
+test('status current image and runtime source commit must match deployment',t=>{
+  for(const [path,value] of [['runtimeImageId','sha256:'+'0'.repeat(64)],['runtimeSourceCommit','0'.repeat(40)]]) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after[path]=value;save();assert.throws(f.check,/runtime (image|source commit)/);
+  }
+});
+test('status source patch and Dockerfile hashes bind both deployment and immutable commit',t=>{
+  for(const [key,path] of [['statusEncodingPatchSha256','server/status-encoding.patch'],['dockerfileSha256','server/Dockerfile']]) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.source[key]='0'.repeat(64);save();assert.throws(f.check,/source hash differs/);
+    f.data.deployment.server.sourceFileHashes[path]='0'.repeat(64);save();assert.throws(f.check,/immutable runtime commit/);
+  }
+});
+test('status source metadata cannot select a different runtime commit',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.source.runtimeSourceCommit='f'.repeat(40);save();assert.throws(f.check,/source commit differs/);
+});
+test('status readback requires normal CA and ten fresh successful connections in both phases',t=>{
+  for(const phase of ['before','after']) for(const [key,value] of [['passed',false],['normalCertificateValidation',false],['trust','fixture CA'],['fixtureCAUsed',true],['freshConnections',9]]) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding[phase][key]=value;save();assert.throws(f.check,/trusted fresh connections/);
+  }
+});
+test('status measurement client identities cannot change or be malformed',t=>{
+  for(const change of [s=>{s.after.sourceSha256='b'.repeat(64);},s=>{s.after.clientVersions.hpack='new';},s=>{s.after.reusedSources['tools/verify-http3.py']='e'.repeat(64);},s=>{s.after.sourceSha256='bad';}]) {
+    const f=fixture(t),save=f.statusEncoding();change(f.data.statusEncoding);save();assert.throws(f.check,/client (changed|identity)/);
+  }
+});
+test('status readback never claims a per-request page generation',t=>{
+  for(const phase of ['before','after']) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding[phase].perRequestGenerationVerified=true;save();assert.throws(f.check,/readback scope/);
+  }
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.pageCommit=f.data.deployment.pageCommit;save();assert.throws(f.check,/readback scope/);
+});
+test('status deployment overlap must be an explicit boolean observation',t=>{
+  for(const phase of ['before','after']) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding[phase].deploymentOverlap='false';save();assert.throws(f.check,/readback scope/);
+  }
+});
+test('future status refresh can honestly report no overlapping page deployment',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.deploymentOverlap=false;save();assert.doesNotThrow(f.check);
+});
+test('readback page fields are metadata rather than a per-request current-page claim',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.pageCommitAtReadback='e'.repeat(40);f.data.statusEncoding.after.pageReleaseAtReadback='releases/another-byte-identical-snapshot';save();assert.doesNotThrow(f.check);
+});
+test('status timestamps require ordered probes and subsequent readbacks',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.completedAt='2026-10-22T18:00:00Z';save();assert.throws(f.check,/timestamps are unordered/);
+});
+test('status baseline runtime readback precedes the after probe',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.before.runtimeReadbackAt='2026-10-22T16:00:00.500Z';save();assert.throws(f.check,/phases overlap/);
+});
+test('status request cases and all ten protocol rows are required without extras',t=>{
+  for(const change of [s=>{s.requestCases.wwwAlias.hostname='tomkimberlin.com';},s=>{delete s.after.rows.h3.missing;},s=>{s.after.rows.h2.extra=s.after.rows.h2.main;},s=>{delete s.before.rows.h2;}]) {
+    const f=fixture(t),save=f.statusEncoding();change(f.data.statusEncoding);save();assert.throws(f.check,/request cases|component (case|protocol)/);
+  }
+});
+test('every status field byte count is checked independently of reported deltas',t=>{
+  for(const phase of ['before','after']) for(const protocol of ['h2','h3']) for(const name of ['main','missing','method','wwwAlias','alternateAlias']) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding[phase].rows[protocol][name].statusFieldBytes++;save();assert.throws(f.check,/field encoding differs/);
+  }
+});
+test('status representation and encoded prefix cannot be relabeled',t=>{
+  for(const change of [s=>{s.after.rows.h2.wwwAlias.statusRepresentation='literal-name-raw';},s=>{s.before.rows.h3.missing.statusRepresentation='indexed-static';},s=>{s.after.rows.h2.main.nonFieldPrefixBytes=0;},s=>{s.after.rows.h3.main.nonFieldPrefixBytes=1;},s=>{s.after.rows.h3.main.statusCode=404;}]) {
+    const f=fixture(t),save=f.statusEncoding();change(f.data.statusEncoding);save();assert.throws(f.check,/field encoding differs/);
+  }
+});
+test('status complete block bounds include both prefix and field and cap accepted size',t=>{
+  for(const value of [2,16385,-1,3.5]) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h3.main.blockBytes=value;save();assert.throws(f.check,/block bounds differ/);
+  }
+});
+test('status rows require exact status/body/destination/Allow and normal validation',t=>{
+  for(const key of ['exactStatus','exactBody','destinationVerified','allowVerified','normalCertificateValidation']) {
+    const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h2.wwwAlias[key]=false;save();assert.throws(f.check,/response verification failed/);
+  }
+});
+test('status rows reject unallowlisted raw header or packet fields',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h3.main.rawHeaderBlock='PRIVATE_SENTINEL';save();assert.throws(f.check,/field encoding differs/);
+});
+test('status errors and aliases have exact empty-body hashes',t=>{
+  for(const change of [s=>{s.after.rows.h3.missing.bodyBytes=1;},s=>{s.after.rows.h2.wwwAlias.bodySha256='a'.repeat(64);}]) {
+    const f=fixture(t),save=f.statusEncoding();change(f.data.statusEncoding);save();assert.throws(f.check,/body verification differs/);
+  }
+});
+test('status after main body must match the current page across both protocols',t=>{
+  const f=fixture(t),save=f.statusEncoding();for(const protocol of ['h2','h3'])f.data.statusEncoding.after.rows[protocol].main.bodySha256='b'.repeat(64);save();assert.throws(f.check,/after body differs/);
+});
+test('status protocol bodies cannot disagree even if one matches current page',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h3.main.bodyBytes++;save();assert.throws(f.check,/protocol bodies differ/);
+});
+test('a future body change can preserve independent historical before-body evidence',t=>{
+  for(const delta of [-10,10]) {
+    const f=fixture(t),save=f.statusEncoding();for(const protocol of ['h2','h3']) {
+      f.data.statusEncoding.before.rows[protocol].main.bodyBytes+=delta;
+      f.data.statusEncoding.before.rows[protocol].main.bodySha256='b'.repeat(64);
+      f.data.statusEncoding.deltas[protocol].main.bodyBytesSaved=delta;
+    }
+    save();assert.doesNotThrow(f.check);
+  }
+});
+test('status component deltas derive from actual field/block/body counts including Date variation',t=>{
+  const f=fixture(t),save=f.statusEncoding();f.data.statusEncoding.after.rows.h3.missing.blockBytes++;f.data.statusEncoding.deltas.h3.missing.blockBytesSaved--;save();assert.doesNotThrow(f.check);
+  f.data.statusEncoding.deltas.h3.missing.statusFieldBytesSaved--;save();assert.throws(f.check,/delta arithmetic differs/);
+});
+test('stale rendered status component values and evidence links are rejected',t=>{
+  for(const [before,after] of [['HTTP/2 5 → 4 B','HTTP/2 5 → 3 B'],['](measurements/status-current.json)','](measurements/status-old.json)']]) {
+    const f=fixture(t);f.statusEncoding();const path=join(f.root,'COMPARISON.md');writeFileSync(path,readFileSync(path,'utf8').replace(before,after));assert.throws(f.check,/section is stale/);
+  }
+});
