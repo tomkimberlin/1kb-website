@@ -29,7 +29,129 @@ function block(markdown,kind,required=true) {
   return markdown.slice(markdown.indexOf(start),markdown.indexOf(end)+end.length).trim();
 }
 
-export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding}) {
+const peerUrls=[target,'https://pba.im/200B','https://cv.btxx.org/','https://5.vg/','https://1k.lom.me/','https://hi.mrkrk.me/'];
+const peerLabels=['This website','pba.im/200B','cv.btxx.org','5.vg','1k.lom.me','hi.mrkrk.me'];
+const peerMetrics=['bodyBytes',...metrics];
+
+function checkPeers(p,{root,historical}) {
+  need(keys(p,['schemaVersion','normalizedAt','date','startedAt','completedAt','scope','probe','client','serverRuntime','ownSite','privateInputSha256','ownReferenceSha256','historicalGallery','runs','summary','validation','limits'])
+    &&p.schemaVersion===1&&typeof p.scope==='string'&&p.scope.length>0,'Invalid peer comparison schema');
+  const start=stamp(p.startedAt),end=stamp(p.completedAt);
+  need(start<end&&end<=stamp(p.normalizedAt)&&p.date===p.startedAt.slice(0,10),'Invalid peer comparison dates');
+  need(keys(p.probe,['sourceCommit','mountedProbeSha256','frozenImageHelperSha256','helperProvenance'])
+    &&/^[0-9a-f]{40}$/.test(p.probe.sourceCommit)&&digest(p.probe.mountedProbeSha256),'Invalid peer probe identity');
+  const source=execFileSync('git',['show',p.probe.sourceCommit+':tools/compare-gallery.py'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  need(hash(source)===p.probe.mountedProbeSha256,'Peer probe differs from immutable source');
+  need(equal(p.probe.frozenImageHelperSha256,{dnsHelperSha256:'7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0',responseHelperSha256:'e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa'})
+    &&typeof p.probe.helperProvenance==='string'&&p.probe.helperProvenance.length>0,'Invalid frozen peer helper identities');
+  need(keys(p.client,['imageId','openssl','python','packages','requestHeaders'])
+    &&p.client.imageId==='sha256:597ef273b8ca5b3abb5710801fb111005c53374718952191940af032b9424ac9'
+    &&p.client.openssl==='OpenSSL 3.5.8 25 Aug 2026'&&p.client.python==='3.14.8'
+    &&equal(p.client.packages,{brotli:'1.2.1',h11:'0.16.0',h2:'4.1.0',hpack:'4.1.0',hyperframe:'6.1.0',zstandard:'0.25.0'})
+    &&hash(JSON.stringify(p.client.requestHeaders))==='ea3189e754b4d6ca984634eb5152355b0146b62041fd13b9029bd51328636270','Peer measurement client/profile differs');
+  need(keys(p.privateInputSha256,['clientBefore','clientAfter','runtimeBefore','runtimeAfter','runScript'])
+    &&Object.values(p.privateInputSha256).every(digest)&&digest(p.ownReferenceSha256),'Invalid peer provenance hashes');
+  need(keys(p.historicalGallery,['path','sha256','date'])&&p.historicalGallery.path===historical.path
+    &&p.historicalGallery.sha256===historical.sha256&&p.historicalGallery.date==='2026-09-22','Peer historical evidence binding differs');
+  const own=p.ownSite,runtime=p.serverRuntime,bounded=(n,min,max)=>integer(n)&&n>=min&&n<=max;
+  need(keys(own,['sourceSha256','bodySha256','bodyBytes','decodedBodyBytes','pageCommit'])&&digest(own.sourceSha256)&&digest(own.bodySha256)
+    &&bounded(own.bodyBytes,1,1<<20)&&bounded(own.decodedBodyBytes,1,1<<20)&&/^[0-9a-f]{40}$/.test(own.pageCommit),'Invalid dated peer own-site identity');
+  const html=execFileSync('git',['show',own.pageCommit+':index.html'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  need(html.length===own.decodedBodyBytes&&hash(html)===own.sourceSha256,'Peer own-site source differs from immutable commit');
+  const body=execFileSync('git',['show',own.pageCommit+':compression/index.html.br'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  need(body.length===own.bodyBytes&&hash(body)===own.bodySha256,'Peer own-site body differs from immutable commit');
+  need(keys(runtime,['imageId','running','pageRelease','openssl'])&&/^sha256:[0-9a-f]{64}$/.test(runtime.imageId)
+    &&runtime.running===true&&/^releases\/[A-Za-z0-9._-]{1,200}$/.test(runtime.pageRelease)
+    &&typeof runtime.openssl==='string'&&/^OpenSSL [0-9][A-Za-z0-9 .-]{1,100}$/.test(runtime.openssl),'Invalid dated peer runtime');
+  const validation=['allHttp200','allCertificateVerified','allCompleteSynObserved','allKernelDropsZero','allKernelCountersConsistent','exactRequestProfile','committedMountedProbeBound','clientRuntimeBracketsChecked','tlsReleasePointerUnchanged','packetDnsTlsAndBodyArithmeticChecked','capturedOwnHtmlMatchesSource'];
+  need(keys(p.validation,['completeSuccessfulRows',...validation])&&p.validation.completeSuccessfulRows===18
+    &&validation.every(k=>p.validation[k]===true)&&Array.isArray(p.limits)&&p.limits.length>0&&p.limits.every(s=>typeof s==='string'&&s.length>0),'Peer validation did not pass');
+  need(Array.isArray(p.runs)&&p.runs.length===3,'Peer comparison requires three rounds');
+  const raw=new Set(),rows=[];let previous=start;
+  const rowKeys=['url','statusCode','certificateVerified','httpProtocol','tlsProtocol','cipher','keyShareGroupIds','contentEncoding',
+    'bodyBytes','bodySha256','decodedBodyBytes','tlsThroughBodyComplete','tlsBeforeClientClose','tlsThroughBodyCompleteMinusBody','responseHttpPlainBytes','responseHttpPlainMinusBody',
+    'captureIntegrity','packetDirections','observedIpv4TcpBytes','estimatedIpv4TcpBytesAt1500Mtu','dnsIpv4UdpBytes','estimatedTcpPlusDnsBytes','estimatedTcpPlusDnsMinusBody','dnsQueries','tlsHandshakeMessages'];
+  for(const [i,run] of p.runs.entries()) {
+    need(keys(run,['run','startedAt','completedAt','rawReportCompletedAt','commandExitCode','privateRawSnapshotSha256','results'])
+      &&run.run===i+1&&run.commandExitCode===0&&digest(run.privateRawSnapshotSha256),'Invalid peer round/provenance');
+    const a=stamp(run.startedAt),b=stamp(run.completedAt),reported=stamp(run.rawReportCompletedAt);
+    need(previous<=a&&a<=reported&&reported<=b&&b<=end,'Peer round timestamps are unordered');previous=b;raw.add(run.privateRawSnapshotSha256);
+    need(Array.isArray(run.results)&&run.results.length===6&&equal(run.results.map(r=>r.url).sort(),[...peerUrls].sort()),'Peer round must contain each of six URLs exactly once');
+    for(const row of run.results) {
+      need(keys(row,[...rowKeys,...(row.httpProtocol==='h2'?['responseHttp2Frames','responseHttp2TrailingPartialBytes']:[])])
+        &&row.statusCode===200&&row.certificateVerified===true&&['h2','http/1.1'].includes(row.httpProtocol)
+        &&['TLSv1.2','TLSv1.3'].includes(row.tlsProtocol),'Peer row requires successful normal-trust response');
+      need(typeof row.cipher==='string'&&/^[A-Za-z0-9_-]{1,80}$/.test(row.cipher)&&Array.isArray(row.keyShareGroupIds)
+        &&row.keyShareGroupIds.length<=16&&row.keyShareGroupIds.every(n=>bounded(n,0,65535))
+        &&typeof row.contentEncoding==='string'&&row.contentEncoding.split(',').length<=8
+        &&row.contentEncoding.split(',').every(s=>['identity','br','gzip','deflate','zstd'].includes(s.trim().toLowerCase())),'Invalid peer protocol metadata');
+      need(bounded(row.bodyBytes,1,1<<20)&&digest(row.bodySha256)&&bounded(row.decodedBodyBytes,1,1<<20)
+        &&bounded(row.responseHttpPlainBytes,row.bodyBytes,2<<20),'Invalid peer body/plaintext bounds');
+      if(row.url===target)need(row.bodyBytes===own.bodyBytes&&row.bodySha256===own.bodySha256
+        &&row.decodedBodyBytes===own.decodedBodyBytes&&row.contentEncoding==='br','Peer own-site body differs from dated identity');
+      need(keys(row.tlsThroughBodyComplete,['sent','received'])&&keys(row.tlsBeforeClientClose,['sent','received']),'Invalid peer TLS counters');
+      for(const direction of ['sent','received'])need(bounded(row.tlsThroughBodyComplete[direction],0,4<<20)
+        &&bounded(row.tlsBeforeClientClose[direction],row.tlsThroughBodyComplete[direction],4<<20),'Peer TLS stopping points differ');
+      need([row.tlsThroughBodyCompleteMinusBody,row.estimatedTcpPlusDnsMinusBody,row.responseHttpPlainMinusBody,row.observedIpv4TcpBytes,row.estimatedIpv4TcpBytesAt1500Mtu,row.dnsIpv4UdpBytes,row.estimatedTcpPlusDnsBytes].every(integer)
+        &&row.tlsThroughBodyCompleteMinusBody===row.tlsThroughBodyComplete.sent+row.tlsThroughBodyComplete.received-row.bodyBytes
+        &&row.responseHttpPlainMinusBody===row.responseHttpPlainBytes-row.bodyBytes,'Peer overhead must subtract the complete body');
+      const ci=row.captureIntegrity,dirs=row.packetDirections;
+      need(keys(ci,['sentSynPackets','receivedSynAckPackets','completeSynObserved','ownedPackets','kernelPackets','kernelDrops'])
+        &&ci.completeSynObserved===true&&integer(ci.ownedPackets)&&integer(ci.kernelPackets)&&ci.kernelPackets>=ci.ownedPackets&&ci.kernelDrops===0
+        &&keys(dirs,['sent','received']),'Incomplete peer capture or kernel drops');
+      for(const d of Object.values(dirs))need(keys(d,['packets','observedIpv4TcpBytes','estimatedIpv4TcpBytesAt1500Mtu'])
+        &&bounded(d.packets,1,1<<20)&&integer(d.observedIpv4TcpBytes)&&d.observedIpv4TcpBytes>=40*d.packets
+        &&integer(d.estimatedIpv4TcpBytesAt1500Mtu)&&d.estimatedIpv4TcpBytesAt1500Mtu>=d.observedIpv4TcpBytes,'Invalid peer packet-direction counts');
+      need(bounded(ci.sentSynPackets,1,dirs.sent.packets)&&bounded(ci.receivedSynAckPackets,1,dirs.received.packets)
+        &&ci.ownedPackets===dirs.sent.packets+dirs.received.packets,'Peer SYN/owned packet counts differ');
+      need(row.observedIpv4TcpBytes===dirs.sent.observedIpv4TcpBytes+dirs.received.observedIpv4TcpBytes
+        &&row.estimatedIpv4TcpBytesAt1500Mtu===dirs.sent.estimatedIpv4TcpBytesAt1500Mtu+dirs.received.estimatedIpv4TcpBytesAt1500Mtu,'Peer packet sums differ');
+      need(Array.isArray(row.dnsQueries)&&equal(row.dnsQueries.map(q=>q.qtype),[1,28,65]),'Missing peer DNS query types');
+      for(const q of row.dnsQueries)need(keys(q,['qtype','query_bytes','response_bytes','ipv4_udp_bytes','answer_count','flags'])
+        &&['query_bytes','response_bytes','ipv4_udp_bytes','answer_count'].every(k=>integer(q[k]))&&typeof q.flags==='string'&&/^[0-9a-f]{4}$/.test(q.flags)
+        &&q.query_bytes+q.response_bytes+56===q.ipv4_udp_bytes,'Peer DNS byte arithmetic differs');
+      need(row.dnsIpv4UdpBytes===row.dnsQueries.reduce((n,q)=>n+q.ipv4_udp_bytes,0)
+        &&row.estimatedTcpPlusDnsBytes===row.estimatedIpv4TcpBytesAt1500Mtu+row.dnsIpv4UdpBytes
+        &&row.estimatedTcpPlusDnsMinusBody===row.estimatedTcpPlusDnsBytes-row.bodyBytes,'Peer packet/DNS/full-body arithmetic differs');
+      need(Array.isArray(row.tlsHandshakeMessages)&&row.tlsHandshakeMessages.length<=1024&&row.tlsHandshakeMessages.every(m=>keys(m,['direction','type','bytes'])
+        &&['read','write'].includes(m.direction)&&bounded(m.type,0,255)&&bounded(m.bytes,0,4<<20)),'Invalid peer TLS message metadata');
+      if(row.httpProtocol==='h2') {
+        need(Array.isArray(row.responseHttp2Frames)&&row.responseHttp2Frames.length<=65536
+          &&row.responseHttp2Frames.every(f=>keys(f,['type','stream','payload_bytes'])&&bounded(f.type,0,255)&&bounded(f.stream,0,0x7fffffff)&&bounded(f.payload_bytes,0,0xffffff))
+          &&integer(row.responseHttp2TrailingPartialBytes),'Invalid peer HTTP/2 frame metadata');
+        need(row.responseHttp2Frames.reduce((n,f)=>n+9+f.payload_bytes,0)+row.responseHttp2TrailingPartialBytes===row.responseHttpPlainBytes
+          &&row.responseHttp2Frames.filter(f=>f.type===0&&f.stream===1).reduce((n,f)=>n+f.payload_bytes,0)>=row.bodyBytes,'Peer HTTP/2 plaintext/body arithmetic differs');
+      }
+      rows.push(row);
+    }
+  }
+  need(raw.size===3,'Duplicate peer raw snapshots');
+  need(stamp(p.runs[0].startedAt)===start&&stamp(p.runs.at(-1).completedAt)===end,'Peer total interval differs from its rounds');
+  need(Array.isArray(p.summary)&&p.summary.length===6&&equal(p.summary.map(s=>s.url).sort(),[...peerUrls].sort()),'Missing or duplicate peer summary URLs');
+  for(const summary of p.summary) {
+    need(keys(summary,['url',...peerMetrics]),'Invalid peer summary fields');
+    for(const key of peerMetrics)need(equal(summary[key],stats(rows.filter(r=>r.url===summary.url).map(r=>r[key]))),'Peer median/range summary is stale');
+  }
+}
+
+function renderPeers(peer,ref) {
+  const date=new Date(peer.startedAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'UTC'});
+  const cell=s=>`${s.median.toLocaleString('en-US')} (${s.minimum.toLocaleString('en-US')}–${s.maximum.toLocaleString('en-US')})`;
+  const sorted=[...peer.summary].sort((a,b)=>a.tlsThroughBodyCompleteMinusBody.median-b.tlsThroughBodyCompleteMinusBody.median||a.url.localeCompare(b.url));
+  return `\n\n${markers('fresh-gallery')[0]}
+### Six-site sample — ${date}
+
+Three cold first-document exchanges per site count both directions and subtract each complete encoded body. Values are median (range), in bytes.
+
+| Website | TLS through first document, minus body | Estimated TCP/IP + DNS through close, minus body |
+| --- | ---: | ---: |
+${sorted.map(r=>`| [${peerLabels[peerUrls.indexOf(r.url)]}](${r.url}) | ${cell(r.tlsThroughBodyCompleteMinusBody)} | ${cell(r.estimatedTcpPlusDnsMinusBody)} |`).join('\n')}
+
+[Peer evidence](${ref.path}). All 18 requests passed normal certificate validation, complete SYN visibility and zero capture-drop checks. The frozen Python/OpenSSL client measured document exchanges. This dated sample remains separate from later own-site updates; three samples do not establish a timing or universal ranking claim.
+${markers('fresh-gallery')[1]}`;
+}
+
+export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding,peerComparison}) {
   const rows=[['Complete TLS through first document',stats(overhead.runs.map(r=>r.tlsThroughBodyComplete.sent+r.tlsThroughBodyComplete.received))],
     ['TLS minus complete body',overhead.summary[metrics[0]]],
     ['Estimated TCP/IP + DNS through close',stats(overhead.runs.map(r=>r.estimatedTcpPlusDnsBytes))],
@@ -37,6 +159,8 @@ export function renderCurrent({overhead,deployment,page,refs,quic,statusEncoding
     ['HTTP/2 plaintext minus complete body',overhead.summary[metrics[2]]]];
   const day=overhead.runs.at(-1).measuredAt.slice(0,10);
   const parameters=quic?`\n\nHTTP/3 transport-parameter component: **${bytes(quic.before.parameters.encoded_transport_parameters_bytes)} → ${bytes(quic.after.parameters.encoded_transport_parameters_bytes)} (${bytes(quic.before.parameters.encoded_transport_parameters_bytes-quic.after.parameters.encoded_transport_parameters_bytes)} less)** with unchanged effective ${quic.before.parameters.limit_fields?'parameters':'ACK parameters'} ([verified component evidence](${deployment.quicTransportParameters.path})); this does not establish a fixed complete-exchange or HTTP/2 saving.`:'';
+  const peers=peerComparison?renderPeers(peerComparison,deployment.peerComparison):'';
+  const peerScope=peerComparison?'The own-site result above and the dated peer sample have separate evidence.':'Only this website was remeasured; this creates no new peer ranking.';
   const status=statusEncoding?`\n\nStatus-field components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](${deployment.statusEncoding.path}); no fixed whole-exchange saving is established.`:'';
   return `${markers('current')[0]}
 ## Latest verified own-site result
@@ -47,9 +171,9 @@ Verified certificate components: **${componentHosts.map(host=>`${host} ${bytes(d
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}
+${rows.map(([label,s])=>`| ${label} | ${bytes(s.median)} | ${interval(s)} |`).join('\n')}${parameters}${status}${peers}
 
-[Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+[Overhead evidence](${refs.overhead.path}), [verified deployment](${refs.deployment.path}) and [page measurements](${refs.page.path}). ${peerScope} TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 ${markers('current')[1]}`;
@@ -78,6 +202,8 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     return JSON.parse(contents);
   }
   const overhead=record(config.current.overhead),deployment=record(config.current.deployment),page=record(config.current.page),gallery=record(config.historicalGallery);
+  const peerComparison=deployment.peerComparison===undefined?null:record(deployment.peerComparison);
+  if(deployment.peerComparison!==undefined)checkPeers(peerComparison,{root,historical:config.historicalGallery});
   const statusEncoding=deployment.statusEncoding===undefined?null:record(deployment.statusEncoding);
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/status-encoding.patch')||deployment.statusEncoding!==undefined,'Current status-encoding runtime requires component evidence');
   if(deployment.statusEncoding!==undefined) {
@@ -240,15 +366,20 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   // New published verification must advance the pointer even when bytes match.
   const deploymentTime=stamp(deployment.verifiedThrough??deployment.verifiedAt),overheadTime=Math.max(...times);
   for(const name of readdirSync(resolve(root,'measurements'))) {
-    if(!/^(?:deployment|overhead)-[A-Za-z0-9._-]+\.json$/.test(name))continue;
+    if(!/^(?:deployment|overhead|gallery)-[A-Za-z0-9._-]+\.json$/.test(name))continue;
     const other=read('measurements/'+name);
+    if(name.startsWith('gallery-')&&other.schemaVersion===1) {
+      need(peerComparison!==null,'Published normalized peer comparison requires a current reference');
+      need(stamp(other.completedAt)<=stamp(peerComparison.completedAt),'A newer peer comparison is missing from the comparison');
+    }
     if(name.startsWith('deployment-')&&other.url===target)need(stamp(other.verifiedThrough??other.verifiedAt)<=deploymentTime,'A newer verified deployment is missing from the comparison');
     if(name.startsWith('overhead-')&&other.targetUrl===target&&other.phase!=='baseline') {
       need(Array.isArray(other.runs)&&other.runs.length===3,'Malformed published overhead record');
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
     }
   }
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding}),'Current comparison section is stale');
+  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison}),'Current comparison section is stale');
+  need(block(doc,'fresh-gallery',peerComparison!==null)===(peerComparison?renderPeers(peerComparison,deployment.peerComparison).trim():null),'Fresh peer section is stale');
   const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
   const date=new Date(overhead.runs.at(-1).measuredAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'UTC'});

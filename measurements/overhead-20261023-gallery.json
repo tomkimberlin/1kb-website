@@ -1,0 +1,944 @@
+{
+  "schemaVersion": 1,
+  "normalizedAt": "2026-10-23T09:33:57.721404+00:00",
+  "targetUrl": "https://tomkimberlin.com/",
+  "phase": "live",
+  "scope": "Own-site subset of three fresh six-site gallery captures. Each metric subtracts the complete actual 389 B encoded body. No fresh HTTP/3 totals or causal saving is claimed.",
+  "pageCommit": "2055306d4f632e5dd2eedd9793e17ace77b3c3bd",
+  "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+  "bodyBytes": 389,
+  "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+  "decodedBodyBytes": 1021,
+  "runs": [
+    {
+      "run": 1,
+      "measuredAt": "2026-10-23T09:25:13Z",
+      "privateRawSnapshotSha256": "df076aff139d7c0e991d945d7d2a276d8ab3c1a2de76f97c9c01042d2bafd488",
+      "statusCode": 200,
+      "httpProtocol": "h2",
+      "tlsProtocol": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "keyShareGroupIds": [
+        4588
+      ],
+      "certificateVerified": true,
+      "bodyBytes": 389,
+      "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "decodedBodyBytes": 1021,
+      "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "tlsThroughBodyComplete": {
+        "sent": 2157,
+        "received": 3484
+      },
+      "tlsHandshakeMessageBytes": {
+        "sent": 1583,
+        "received": 2891
+      },
+      "tlsResidualAfterBodyAndHandshakeMessages": {
+        "sent": 574,
+        "received": 204
+      },
+      "tlsThroughBodyCompleteMinusBody": 5252,
+      "responseHttpPlainBytes": 494,
+      "responseHttpPlainMinusBody": 105,
+      "observedIpv4TcpBytes": 6669,
+      "estimatedIpv4TcpBytesAt1500Mtu": 6773,
+      "packetCount": 19,
+      "packetDirectionCounts": {
+        "sent": 10,
+        "received": 9
+      },
+      "dnsIpv4UdpBytes": 508,
+      "dnsQueries": [
+        {
+          "qtype": 1,
+          "query_bytes": 34,
+          "response_bytes": 50,
+          "ipv4_udp_bytes": 140,
+          "answer_count": 1,
+          "flags": "8180"
+        },
+        {
+          "qtype": 28,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        },
+        {
+          "qtype": 65,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        }
+      ],
+      "estimatedTcpPlusDnsBytes": 7281,
+      "estimatedTcpPlusDnsMinusBody": 6892,
+      "tlsHandshakeMessages": [
+        {
+          "direction": "write",
+          "type": 1,
+          "bytes": 1547
+        },
+        {
+          "direction": "read",
+          "type": 2,
+          "bytes": 1210
+        },
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1498
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 79
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "write",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "read",
+          "type": 4,
+          "bytes": 49
+        }
+      ],
+      "tlsComponents": {
+        "newSessionTicket": {
+          "read": {
+            "count": 1,
+            "bytes": 49,
+            "messageBytes": [
+              49
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificate": {
+          "read": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "compressedCertificate": {
+          "read": {
+            "count": 1,
+            "bytes": 1498,
+            "messageBytes": [
+              1498
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificateVerify": {
+          "read": {
+            "count": 1,
+            "bytes": 79,
+            "messageBytes": [
+              79
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        }
+      },
+      "responseHttp2Frames": [
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 6
+        },
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 0
+        },
+        {
+          "type": 1,
+          "stream": 1,
+          "payload_bytes": 63
+        },
+        {
+          "type": 0,
+          "stream": 1,
+          "payload_bytes": 389
+        }
+      ],
+      "responseHttp2TrailingPartialBytes": 0,
+      "derivedFromGallerySnapshotSha256": "5dfc69747650171b6567ee5a84ede5640dfe705d25a2ea707771358b0a9d08e4",
+      "captureStartedAt": "2026-10-23T09:25:05Z",
+      "captureCompletedAt": "2026-10-23T09:25:13Z",
+      "captureValidation": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true,
+        "kernelPackets": 19,
+        "kernelDrops": 0,
+        "ownedPackets": 19,
+        "passed": true
+      },
+      "galleryCaptureGatesPassed": 6,
+      "captureStartedMarkerSha256": "a567c9a73a4dd9e002479529d7aecb90b02a6652793cf506b641fb89782a974a",
+      "captureCompletedMarkerSha256": "56496c90d55484773bd2461ae7072bac10f428484554254cf66c98934501a158",
+      "captureExitMarkerSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "run": 2,
+      "measuredAt": "2026-10-23T09:25:18Z",
+      "privateRawSnapshotSha256": "8155b4d560305bae91b393d3e2e8952127f2d45c6e2f326ec41a2d7fc03eab96",
+      "statusCode": 200,
+      "httpProtocol": "h2",
+      "tlsProtocol": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "keyShareGroupIds": [
+        4588
+      ],
+      "certificateVerified": true,
+      "bodyBytes": 389,
+      "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "decodedBodyBytes": 1021,
+      "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "tlsThroughBodyComplete": {
+        "sent": 2157,
+        "received": 3485
+      },
+      "tlsHandshakeMessageBytes": {
+        "sent": 1583,
+        "received": 2892
+      },
+      "tlsResidualAfterBodyAndHandshakeMessages": {
+        "sent": 574,
+        "received": 204
+      },
+      "tlsThroughBodyCompleteMinusBody": 5253,
+      "responseHttpPlainBytes": 494,
+      "responseHttpPlainMinusBody": 105,
+      "observedIpv4TcpBytes": 6670,
+      "estimatedIpv4TcpBytesAt1500Mtu": 6774,
+      "packetCount": 19,
+      "packetDirectionCounts": {
+        "sent": 10,
+        "received": 9
+      },
+      "dnsIpv4UdpBytes": 508,
+      "dnsQueries": [
+        {
+          "qtype": 1,
+          "query_bytes": 34,
+          "response_bytes": 50,
+          "ipv4_udp_bytes": 140,
+          "answer_count": 1,
+          "flags": "8180"
+        },
+        {
+          "qtype": 28,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        },
+        {
+          "qtype": 65,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        }
+      ],
+      "estimatedTcpPlusDnsBytes": 7282,
+      "estimatedTcpPlusDnsMinusBody": 6893,
+      "tlsHandshakeMessages": [
+        {
+          "direction": "write",
+          "type": 1,
+          "bytes": 1547
+        },
+        {
+          "direction": "read",
+          "type": 2,
+          "bytes": 1210
+        },
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1498
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 80
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "write",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "read",
+          "type": 4,
+          "bytes": 49
+        }
+      ],
+      "tlsComponents": {
+        "newSessionTicket": {
+          "read": {
+            "count": 1,
+            "bytes": 49,
+            "messageBytes": [
+              49
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificate": {
+          "read": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "compressedCertificate": {
+          "read": {
+            "count": 1,
+            "bytes": 1498,
+            "messageBytes": [
+              1498
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificateVerify": {
+          "read": {
+            "count": 1,
+            "bytes": 80,
+            "messageBytes": [
+              80
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        }
+      },
+      "responseHttp2Frames": [
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 6
+        },
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 0
+        },
+        {
+          "type": 1,
+          "stream": 1,
+          "payload_bytes": 63
+        },
+        {
+          "type": 0,
+          "stream": 1,
+          "payload_bytes": 389
+        }
+      ],
+      "responseHttp2TrailingPartialBytes": 0,
+      "derivedFromGallerySnapshotSha256": "5832825f037c14511950971d1082ce4f5946170997e411c0dccabd15c20e4989",
+      "captureStartedAt": "2026-10-23T09:25:13Z",
+      "captureCompletedAt": "2026-10-23T09:25:18Z",
+      "captureValidation": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true,
+        "kernelPackets": 19,
+        "kernelDrops": 0,
+        "ownedPackets": 19,
+        "passed": true
+      },
+      "galleryCaptureGatesPassed": 6,
+      "captureStartedMarkerSha256": "56496c90d55484773bd2461ae7072bac10f428484554254cf66c98934501a158",
+      "captureCompletedMarkerSha256": "1d151a6ccbb6e35f9cffbb08aa5ecb54e085b9e3e84cb2ee6330540d713ea8cd",
+      "captureExitMarkerSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "run": 3,
+      "measuredAt": "2026-10-23T09:25:23Z",
+      "privateRawSnapshotSha256": "be8b7ad79c1e5ec825252edabe49676b8335e8b36692acf35d94666ea13d3de6",
+      "statusCode": 200,
+      "httpProtocol": "h2",
+      "tlsProtocol": "TLSv1.3",
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "keyShareGroupIds": [
+        4588
+      ],
+      "certificateVerified": true,
+      "bodyBytes": 389,
+      "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "decodedBodyBytes": 1021,
+      "sourceSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "tlsThroughBodyComplete": {
+        "sent": 2157,
+        "received": 3485
+      },
+      "tlsHandshakeMessageBytes": {
+        "sent": 1583,
+        "received": 2892
+      },
+      "tlsResidualAfterBodyAndHandshakeMessages": {
+        "sent": 574,
+        "received": 204
+      },
+      "tlsThroughBodyCompleteMinusBody": 5253,
+      "responseHttpPlainBytes": 494,
+      "responseHttpPlainMinusBody": 105,
+      "observedIpv4TcpBytes": 6774,
+      "estimatedIpv4TcpBytesAt1500Mtu": 6826,
+      "packetCount": 21,
+      "packetDirectionCounts": {
+        "sent": 11,
+        "received": 10
+      },
+      "dnsIpv4UdpBytes": 508,
+      "dnsQueries": [
+        {
+          "qtype": 1,
+          "query_bytes": 34,
+          "response_bytes": 50,
+          "ipv4_udp_bytes": 140,
+          "answer_count": 1,
+          "flags": "8180"
+        },
+        {
+          "qtype": 28,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        },
+        {
+          "qtype": 65,
+          "query_bytes": 34,
+          "response_bytes": 94,
+          "ipv4_udp_bytes": 184,
+          "answer_count": 0,
+          "flags": "8180"
+        }
+      ],
+      "estimatedTcpPlusDnsBytes": 7334,
+      "estimatedTcpPlusDnsMinusBody": 6945,
+      "tlsHandshakeMessages": [
+        {
+          "direction": "write",
+          "type": 1,
+          "bytes": 1547
+        },
+        {
+          "direction": "read",
+          "type": 2,
+          "bytes": 1210
+        },
+        {
+          "direction": "read",
+          "type": 8,
+          "bytes": 19
+        },
+        {
+          "direction": "read",
+          "type": 25,
+          "bytes": 1498
+        },
+        {
+          "direction": "read",
+          "type": 15,
+          "bytes": 80
+        },
+        {
+          "direction": "read",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "write",
+          "type": 20,
+          "bytes": 36
+        },
+        {
+          "direction": "read",
+          "type": 4,
+          "bytes": 49
+        }
+      ],
+      "tlsComponents": {
+        "newSessionTicket": {
+          "read": {
+            "count": 1,
+            "bytes": 49,
+            "messageBytes": [
+              49
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificate": {
+          "read": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "compressedCertificate": {
+          "read": {
+            "count": 1,
+            "bytes": 1498,
+            "messageBytes": [
+              1498
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        },
+        "certificateVerify": {
+          "read": {
+            "count": 1,
+            "bytes": 80,
+            "messageBytes": [
+              80
+            ]
+          },
+          "write": {
+            "count": 0,
+            "bytes": 0,
+            "messageBytes": []
+          }
+        }
+      },
+      "responseHttp2Frames": [
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 6
+        },
+        {
+          "type": 4,
+          "stream": 0,
+          "payload_bytes": 0
+        },
+        {
+          "type": 1,
+          "stream": 1,
+          "payload_bytes": 63
+        },
+        {
+          "type": 0,
+          "stream": 1,
+          "payload_bytes": 389
+        }
+      ],
+      "responseHttp2TrailingPartialBytes": 0,
+      "derivedFromGallerySnapshotSha256": "d080d9177b6bff6b5e07a39fec913a5e995674c7272f6ea14c678adfc30cd2c8",
+      "captureStartedAt": "2026-10-23T09:25:18Z",
+      "captureCompletedAt": "2026-10-23T09:25:23Z",
+      "captureValidation": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true,
+        "kernelPackets": 21,
+        "kernelDrops": 0,
+        "ownedPackets": 21,
+        "passed": true
+      },
+      "galleryCaptureGatesPassed": 6,
+      "captureStartedMarkerSha256": "1d151a6ccbb6e35f9cffbb08aa5ecb54e085b9e3e84cb2ee6330540d713ea8cd",
+      "captureCompletedMarkerSha256": "e9582de2ad76ffb9e37d6d3bb88974bbc00e45893e885e0acf07ddd00599a9a8",
+      "captureExitMarkerSha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    }
+  ],
+  "summary": {
+    "estimatedTcpPlusDnsMinusBody": {
+      "median": 6893,
+      "minimum": 6892,
+      "maximum": 6945
+    },
+    "tlsThroughBodyCompleteMinusBody": {
+      "median": 5253,
+      "minimum": 5252,
+      "maximum": 5253
+    },
+    "responseHttpPlainMinusBody": {
+      "median": 105,
+      "minimum": 105,
+      "maximum": 105
+    },
+    "tlsHandshakeMessageBytes": {
+      "sent": {
+        "median": 1583,
+        "minimum": 1583,
+        "maximum": 1583
+      },
+      "received": {
+        "median": 2892,
+        "minimum": 2891,
+        "maximum": 2892
+      }
+    },
+    "tlsResidualAfterBodyAndHandshakeMessages": {
+      "sent": {
+        "median": 574,
+        "minimum": 574,
+        "maximum": 574
+      },
+      "received": {
+        "median": 204,
+        "minimum": 204,
+        "maximum": 204
+      }
+    },
+    "tlsComponents": {
+      "newSessionTicket": {
+        "read": {
+          "count": {
+            "median": 1,
+            "minimum": 1,
+            "maximum": 1
+          },
+          "bytes": {
+            "median": 49,
+            "minimum": 49,
+            "maximum": 49
+          }
+        },
+        "write": {
+          "count": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "bytes": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "certificate": {
+        "read": {
+          "count": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "bytes": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          }
+        },
+        "write": {
+          "count": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "bytes": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "compressedCertificate": {
+        "read": {
+          "count": {
+            "median": 1,
+            "minimum": 1,
+            "maximum": 1
+          },
+          "bytes": {
+            "median": 1498,
+            "minimum": 1498,
+            "maximum": 1498
+          }
+        },
+        "write": {
+          "count": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "bytes": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      },
+      "certificateVerify": {
+        "read": {
+          "count": {
+            "median": 1,
+            "minimum": 1,
+            "maximum": 1
+          },
+          "bytes": {
+            "median": 80,
+            "minimum": 79,
+            "maximum": 80
+          }
+        },
+        "write": {
+          "count": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          },
+          "bytes": {
+            "median": 0,
+            "minimum": 0,
+            "maximum": 0
+          }
+        }
+      }
+    }
+  },
+  "parentGallerySnapshotSha256": [
+    "5dfc69747650171b6567ee5a84ede5640dfe705d25a2ea707771358b0a9d08e4",
+    "5832825f037c14511950971d1082ce4f5946170997e411c0dccabd15c20e4989",
+    "d080d9177b6bff6b5e07a39fec913a5e995674c7272f6ea14c678adfc30cd2c8"
+  ],
+  "serverRuntime": {
+    "imageId": "sha256:0fb57e6254282615542a1e1796c89f015799537bd7d262f7039757898bdba8ec",
+    "openssl": "OpenSSL 3.5.9 29 Sep 2026",
+    "pageRelease": "releases/20261023T085211Z-aa9d6af64c9d-onekb-deploy.iMNYJf",
+    "beforeCaptureVerifiedAt": "2026-10-23T09:25:05Z",
+    "afterCaptureVerifiedAt": "2026-10-23T09:25:23Z",
+    "beforeReadbackSha256": "20f8c80d387533c47b05d7b5c121f5aa2b8403d7060e766aac0241b6edacc621",
+    "afterReadbackSha256": "0b646e5fdbb39cc58f170177e640ddb12f49bf1e2b5de285d090204aaae67c2b",
+    "tlsReleasePointerUnchanged": true,
+    "versionScope": "Fresh server runtime readback, separate from the client OpenSSL 3.5.8 metadata."
+  },
+  "client": {
+    "imageId": "sha256:597ef273b8ca5b3abb5710801fb111005c53374718952191940af032b9424ac9",
+    "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+    "python": "3.14.8",
+    "packages": {
+      "h2": "4.1.0",
+      "h11": "0.16.0",
+      "brotli": "1.2.1",
+      "zstandard": "0.25.0",
+      "hpack": "4.1.0",
+      "hyperframe": "6.1.0"
+    },
+    "requestHeaders": [
+      [
+        "accept-encoding",
+        "gzip, deflate, br, zstd"
+      ],
+      [
+        "sec-ch-ua",
+        "\"Chromium\";v=\"145\", \"Not:A-Brand\";v=\"99\""
+      ],
+      [
+        "sec-ch-ua-mobile",
+        "?0"
+      ],
+      [
+        "sec-ch-ua-platform",
+        "\"macOS\""
+      ],
+      [
+        "upgrade-insecure-requests",
+        "1"
+      ],
+      [
+        "user-agent",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+      ],
+      [
+        "accept",
+        "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+      ],
+      [
+        "sec-fetch-site",
+        "none"
+      ],
+      [
+        "sec-fetch-mode",
+        "navigate"
+      ],
+      [
+        "sec-fetch-user",
+        "?1"
+      ],
+      [
+        "sec-fetch-dest",
+        "document"
+      ],
+      [
+        "accept-language",
+        "en-US,en;q=0.9"
+      ],
+      [
+        "priority",
+        "u=0, i"
+      ]
+    ],
+    "metadataSnapshotSha256": "9cd9f6724ca3cadc2e5c0e9d8ba189ca5d2a1a233fcc45751d294d7ae9f22a9d",
+    "actualMountedProbeSha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256",
+    "probeSourceCommit": "30f9539a84447a60c477e4a1a3397eb489202b34",
+    "freshClientAttestations": {
+      "before": {
+        "verifiedAt": "2026-10-23T09:25:05Z",
+        "privateReadbackSha256": "4fd114511516fdd5cb27df44980771f3a27bf1173bf247198647900df0159788"
+      },
+      "after": {
+        "verifiedAt": "2026-10-23T09:25:23Z",
+        "privateReadbackSha256": "4d375e6157a50544cade0362515768d5c08986594f2e90a68611652dc982b18f"
+      }
+    },
+    "coldConnections": 3,
+    "certificateVerification": true,
+    "sessionResumption": "Not attempted; a fresh TLS context per URL.",
+    "requestProfile": "Representative Chromium fields; actual client is Python/OpenSSL, not a browser.",
+    "versionProvenance": "Fresh before/after attestations verify immutable image 597ef, actual mounted probe 286b8 and complete client versions. Helper source hashes are bound to the retained immutable image context, not freshly read from the measurement container."
+  },
+  "methodology": {
+    "tlsMetric": "Encrypted bytes sent plus received through own first-document completion minus the same entire encoded body. Excludes DNS and TCP/IP; a TLS read may include coincident control traffic.",
+    "packetMetric": "Estimated IPv4 TCP bytes through connection close in both directions plus A/AAAA/HTTPS DNS UDP exchanges, minus the same body. 1500-byte MTU estimates, 80 ms idle window and 250 ms capture grace.",
+    "responseMetric": "HTTP/2 response plaintext through body completion minus the same encoded body, including control/header/DATA envelopes.",
+    "timestampScope": "measuredAt preserves the original six-site report completion timestamp. Each own exchange occurred within captureStartedAt/captureCompletedAt; no separate per-site completion clock was recorded.",
+    "rawSnapshotScope": "privateRawSnapshotSha256 hashes a provenance-preserving derived single-site view. derivedFromGallerySnapshotSha256 hashes its original unmodified six-site report. The original own row and all top-level metadata are checked exactly.",
+    "captureScope": "Integrated source uses a scoped peer/source-port kernel filter, then enforces SYN/SYN-ACK visibility, valid AF_PACKET counters, zero drops and kernelPackets>=captured packets before success. All 18 rows pass independent revalidation; passing is necessary, not proof of absence of other capture loss.",
+    "capturePrivacy": "Only allowlisted counts, lengths, timestamps and hashes are public. Raw addresses, ports, packet sequences, DNS contents, arbitrary headers, cookies and secrets are omitted.",
+    "differentStoppingPoints": "TLS and packet/DNS stop at different boundaries; their difference does not isolate TCP overhead.",
+    "normalizerSourceSha256": "c08dfe2c2ee1513a540b79253b4630ab2cc106789b91022ded36d068ca2aa10e",
+    "strictPhaseNormalizer": {
+      "path": "optimization/20261023/measurement/normalize-overhead.py",
+      "sha256": "bf52a01576e77e2f67cd41b48ed3dba52aff2f74a4cb2a095f2a212f2e11b763",
+      "published": false
+    },
+    "controls": {
+      "path": "optimization/20261023/measurement/test_normalize_gallery_own_overhead.py",
+      "sha256": "510dac1114f3eefcfe6f2ce3089d2483af9569bd870b496246ad8f82b419929f",
+      "published": false
+    },
+    "executionScript": {
+      "path": "optimization/20261023/gallery-integrated/run.sh",
+      "sha256": "96af77aaff3dc4862b74aaff646300c16945453f5882853d3262d7950caa7294",
+      "published": false
+    },
+    "measurementSource": {
+      "probeSourceCommit": "30f9539a84447a60c477e4a1a3397eb489202b34",
+      "actualMountedProbeSha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256",
+      "integrationBaseCommit": "2055306d4f632e5dd2eedd9793e17ace77b3c3bd",
+      "integrationBaseProbeSha256": "8150b85442c545771670c9efca5ae43d1d6fba9c476490895369fcbaa855890e",
+      "integrationDiffSha256": "c7b8358b5baa49bd7a227435fa29673970e6a058717413f98933cb60817cea4f",
+      "integrationEvidence": {
+        "path": "optimization/20261023/gallery-capture-integration/candidate-manifest.json",
+        "sha256": "f669f203530d28c74a9116c8fab9831f279935a634f5e6512f0f86ad48218619",
+        "published": false
+      },
+      "cliScope": "Pinned main attempts all requested URLs, writes diagnostics and exits nonzero if any row failed. Fresh exit markers are 0 for all three complete gallery runs."
+    },
+    "immutableImageInputs": {
+      "sourceCommit": "51e0d58b084d928aa5704369cbfdbfce7ad001b3",
+      "clientContextArchiveSha256": "8af7b46e4a2e788e8c9718d0da0753e66ef73fe8ab85ef3477a8172f569e3a78",
+      "imageBuildToolSourceSha256": {
+        "tools/gallery.Dockerfile": "4e9d78d0ae6805b2c4ff7fc3214d6d9b432c94d6aaf1aef3ef57407f32833e6d",
+        "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa",
+        "tools/dns_measurement.py": "7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0"
+      },
+      "scope": "These are the original image-build inputs. The separately mounted executed probe comes from 30f9539; its helper imports are byte-identical to these frozen image inputs."
+    }
+  },
+  "validation": {
+    "allThreeCompleted": true,
+    "allHttp200AndBrotliBodiesMatchSource": true,
+    "allSourceHashesMatchPageCommit": true,
+    "packetAndDnsSumsVerified": true,
+    "http2FrameAndDataSumsVerified": true,
+    "all18GalleryCaptureGatesRevalidated": true,
+    "ownCaptureGatesIndependentlyRevalidated": true,
+    "exactDerivedParentRowsVerified": true,
+    "actualMountedSourceAndFreshClientAttestationsVerified": true,
+    "freshRuntimeAndPageCaptureBracketVerified": true
+  },
+  "limitations": [
+    "Three sequential gallery runs from one client/path; no timing, causal byte-saving or universal improvement claim.",
+    "DNS excludes recursive resolver work; packet estimates exclude link-layer bytes. Capture-gate success cannot prove complete link visibility.",
+    "Signature sizes, ACK/segmentation and control timing vary. Main 200 status and exact 389 B body are unchanged; status-field savings on 301/404 do not explain these main-page totals.",
+    "No fresh HTTP/3 exchange totals are included. Historical measurements remain unchanged."
+  ]
+}

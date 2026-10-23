@@ -114,8 +114,16 @@ function fixture(t,project=repo) {
       data.deployment.statusEncoding={path,sha256:hash(readFileSync(resolve(root,path)))};save('deployment');flush();};
     update();return update;
   }
+  function peerComparison() {
+    // The same relative path resolves to committed public evidence after integration.
+    // This frozen dated record never reads a live request or the current working body.
+    data.peerComparison=json(new URL('../measurements/gallery-20261023-integrated.json',import.meta.url));
+    const update=()=>{const path='measurements/gallery-20261023-integrated.json';put(path,data.peerComparison);
+      data.deployment.peerComparison={path,sha256:hash(readFileSync(resolve(root,path)))};save('deployment');flush();};
+    update();return update;
+  }
   flush();
-  return {root,data,config,save,put,flush,document,candidate,quic,statusEncoding,check:()=>checkComparison({root})};
+  return {root,data,config,save,put,flush,document,candidate,quic,statusEncoding,peerComparison,check:()=>checkComparison({root})};
 }
 
 test('current real evidence, complete totals and all live hashes pass',t=>{const f=fixture(t);assert.deepEqual(f.check(),{liveDate:'2026-10-22',localCandidate:false});});
@@ -369,4 +377,112 @@ test('stale rendered status component values and evidence links are rejected',t=
   for(const [before,after] of [['HTTP/2 5 → 4 B','HTTP/2 5 → 3 B'],['](measurements/status-current.json)','](measurements/status-old.json)']]) {
     const f=fixture(t);f.statusEncoding();const path=join(f.root,'COMPARISON.md');writeFileSync(path,readFileSync(path,'utf8').replace(before,after));assert.throws(f.check,/section is stale/);
   }
+});
+
+// Dated peer comparisons are independent of the current own-site measurement.
+test('normalized peer evidence validates all 18 rows and renders a dated table sorted by TLS median',t=>{
+  const f=fixture(t),before=readFileSync(join(f.root,'COMPARISON.md'),'utf8').split('<!-- comparison:gallery:start -->')[1];f.peerComparison();
+  assert.doesNotThrow(f.check);
+  const doc=readFileSync(join(f.root,'COMPARISON.md'),'utf8');
+  assert.equal(doc.split('<!-- comparison:gallery:start -->')[1],before);
+  assert.match(doc,/Six-site sample — October 23, 2026/);assert.match(doc,/5,253 \(5,252–5,253\)/);
+  const urls=doc.split('<!-- comparison:fresh-gallery:start -->')[1].split('<!-- comparison:fresh-gallery:end -->')[0].split('\n').filter(l=>l.startsWith('| [')).map(l=>l.match(/\]\(([^)]+)\)/)[1]);
+  assert.deepEqual(urls,['https://tomkimberlin.com/','https://cv.btxx.org/','https://hi.mrkrk.me/','https://5.vg/','https://pba.im/200B','https://1k.lom.me/']);
+  assert.doesNotMatch(doc,/Only this website was remeasured|creates no new peer ranking/);
+  assert.notEqual(f.data.peerComparison.ownSite.pageCommit,f.data.deployment.pageCommit);
+  assert.notEqual(f.data.peerComparison.serverRuntime.imageId,f.data.deployment.server.imageId);
+});
+test('a different working candidate can retain independently dated peer evidence',t=>{
+  const f=fixture(t);f.peerComparison();const peer=structuredClone(f.data.peerComparison);f.candidate();
+  assert.doesNotThrow(f.check);assert.deepEqual(f.data.peerComparison,peer);
+  assert.notEqual(hash(readFileSync(join(f.root,'index.html'))),peer.ownSite.sourceSha256);
+});
+test('a later own-only measurement can retain the earlier peer sample unchanged',t=>{
+  const f=fixture(t);f.peerComparison();const peer=structuredClone(f.data.peerComparison);
+  for(const row of f.data.overhead.runs)row.measuredAt=row.measuredAt.replace('2026-10-22','2026-10-24');
+  f.data.deployment.verifiedThrough='2026-10-24T18:00:00Z';f.save('overhead');f.save('deployment');f.flush();
+  const p=join(f.root,'README.md');writeFileSync(p,readFileSync(p,'utf8').replace('October 22, 2026','October 24, 2026'));
+  assert.doesNotThrow(f.check);assert.deepEqual(f.data.peerComparison,peer);
+});
+test('a published normalized gallery cannot silently lose its deployment reference',t=>{
+  const f=fixture(t);f.peerComparison();delete f.data.deployment.peerComparison;delete f.data.peerComparison;f.save('deployment');f.flush();
+  assert.throws(f.check,/Published normalized peer comparison requires a current reference/);
+});
+test('a newer normalized gallery invalidates a stale reference and can then become current',t=>{
+  const f=fixture(t);f.peerComparison();const later=structuredClone(f.data.peerComparison);
+  for(const key of ['startedAt','completedAt','normalizedAt'])later[key]=later[key].replace('2026-10-23','2026-10-24');later.date='2026-10-24';
+  for(const run of later.runs)for(const key of ['startedAt','completedAt','rawReportCompletedAt'])run[key]=run[key].replace('2026-10-23','2026-10-24');
+  const path='measurements/gallery-20261024-integrated.json';f.put(path,later);assert.throws(f.check,/newer peer comparison/);
+  f.data.peerComparison=later;f.data.deployment.peerComparison={path,sha256:hash(readFileSync(join(f.root,path)))};f.save('deployment');f.flush();assert.doesNotThrow(f.check);
+});
+test('legacy raw gallery and older normalized galleries do not force new peer measurements',t=>{
+  const f=fixture(t);f.peerComparison();f.put('measurements/gallery-20261022-older.json',{schemaVersion:1,completedAt:'2026-10-22T00:00:00Z'});assert.doesNotThrow(f.check);
+});
+test('peer reference remains hash bound and rejects explicit null',t=>{
+  const f=fixture(t);f.peerComparison();const path=join(f.root,f.data.deployment.peerComparison.path);writeFileSync(path,readFileSync(path,'utf8')+'\n');assert.throws(f.check,/hash is stale/);
+  f.put(f.data.deployment.peerComparison.path,null);f.data.deployment.peerComparison.sha256=hash(readFileSync(path));f.save('deployment');f.flush({doc:false});assert.throws(f.check,/peer comparison schema/);
+});
+const peerRejected=[
+  ['three complete rounds',p=>p.runs.pop(),/three rounds/],
+  ['six unique URLs per round',p=>{p.runs[0].results[1]=structuredClone(p.runs[0].results[0]);},/six URLs/],
+  ['normal certificate validation',p=>{p.runs[0].results[1].certificateVerified=false;},/normal-trust/],
+  ['HTTP 200',p=>{p.runs[0].results[1].statusCode=301;},/normal-trust/],
+  ['normalizer date and terminal time',p=>{p.normalizedAt='2026-10-23T09:00:00Z';},/peer comparison dates/],
+  ['ordered round intervals',p=>{p.runs[1].startedAt=p.runs[0].startedAt;},/timestamps are unordered/],
+  ['raw completion bounded by its round',p=>{p.runs[0].rawReportCompletedAt='2026-10-23T10:00:00Z';},/timestamps are unordered/],
+  ['exact total interval',p=>{p.startedAt='2026-10-23T09:25:04Z';},/total interval/],
+  ['successful command completion',p=>{p.runs[1].commandExitCode=1;},/round\/provenance/],
+  ['distinct raw snapshot hashes',p=>{p.runs[1].privateRawSnapshotSha256=p.runs[0].privateRawSnapshotSha256;},/Duplicate peer raw/],
+  ['committed probe digest',p=>{p.probe.mountedProbeSha256='0'.repeat(64);},/immutable source/],
+  ['immutable measurement image',p=>{p.client.imageId='sha256:'+'a'.repeat(64);},/client\/profile/],
+  ['exact client packages',p=>{p.client.packages.h2='4.4.1';},/client\/profile/],
+  ['exact request profile',p=>{p.client.requestHeaders[0][1]='br';},/client\/profile/],
+  ['frozen helper identity',p=>{p.probe.frozenImageHelperSha256.dnsHelperSha256='0'.repeat(64);},/helper identities/],
+  ['private input provenance digests',p=>{p.privateInputSha256.runScript='bad';},/provenance hashes/],
+  ['historical gallery binding',p=>{p.historicalGallery.sha256='0'.repeat(64);},/historical evidence/],
+  ['dated own source hash',p=>{p.ownSite.sourceSha256='0'.repeat(64);},/immutable commit/],
+  ['dated own committed body hash',p=>{p.ownSite.bodySha256='0'.repeat(64);},/body differs from immutable commit/],
+  ['dated own body hash',p=>{p.runs[0].results[0].bodySha256='a'.repeat(64);},/dated identity/],
+  ['positive encoded body',p=>{p.runs[0].results[1].bodyBytes=0;},/body\/plaintext/],
+  ['body digest syntax',p=>{p.runs[0].results[1].bodySha256='bad';},/body\/plaintext/],
+  ['complete encoded-body subtraction',p=>{p.runs[0].results[1].tlsThroughBodyCompleteMinusBody++;},/complete body/],
+  ['TLS stopping points',p=>{p.runs[0].results[0].tlsBeforeClientClose.received=0;},/stopping points/],
+  ['capture SYN visibility',p=>{p.runs[0].results[1].captureIntegrity.completeSynObserved=false;},/Incomplete peer capture/],
+  ['positive SYN count',p=>{p.runs[0].results[1].captureIntegrity.sentSynPackets=0;},/SYN\/owned/],
+  ['zero kernel drops',p=>{p.runs[0].results[1].captureIntegrity.kernelDrops=1;},/kernel drops/],
+  ['kernel counter bounds',p=>{p.runs[0].results[1].captureIntegrity.kernelPackets=0;},/kernel drops/],
+  ['packet direction sums',p=>{p.runs[0].results[1].packetDirections.sent.observedIpv4TcpBytes--;},/packet sums/],
+  ['DNS sums',p=>{p.runs[0].results[1].dnsIpv4UdpBytes++;},/packet\/DNS/],
+  ['DNS query arithmetic',p=>{p.runs[0].results[1].dnsQueries[0].query_bytes++;},/DNS byte arithmetic/],
+  ['DNS flag representation',p=>{p.runs[0].results[1].dnsQueries[0].flags=8180;},/DNS byte arithmetic/],
+  ['packet plus DNS sums',p=>{p.runs[0].results[1].estimatedTcpPlusDnsBytes++;},/packet\/DNS/],
+  ['full-body packet subtraction',p=>{p.runs[0].results[1].estimatedTcpPlusDnsMinusBody++;},/packet\/DNS/],
+  ['HTTP/2 plaintext sums',p=>{p.runs[0].results[0].responseHttp2TrailingPartialBytes++;},/HTTP\/2 plaintext/],
+  ['HTTP/2 DATA lower bound',p=>{const r=p.runs[0].results[0];r.responseHttp2Frames.find(f=>f.type===0).payload_bytes=0;r.responseHttp2Frames.find(f=>f.type===1).payload_bytes+=r.bodyBytes;},/HTTP\/2 plaintext/],
+  ['median and min/max recomputation',p=>{p.summary[0].tlsThroughBodyCompleteMinusBody.maximum++;},/summary is stale/],
+  ['all summary URLs once',p=>{p.summary[1]=structuredClone(p.summary[0]);},/summary URLs/],
+  ['all body-size summaries',p=>{p.summary[1].bodyBytes.median++;},/summary is stale/],
+  ['explicit successful validation',p=>{p.validation.allCertificateVerified=false;},/validation did not pass/],
+  ['no raw row metadata',p=>{p.runs[0].results[0].rawPacket='PRIVATE_SENTINEL';},/normal-trust/],
+  ['no raw TLS metadata',p=>{p.runs[0].results[0].tlsHandshakeMessages[0].raw='PRIVATE_SENTINEL';},/TLS message metadata/],
+  ['no raw DNS metadata',p=>{p.runs[0].results[0].dnsQueries[0].address='PRIVATE_SENTINEL';},/DNS byte arithmetic/],
+  ['no unallowlisted top-level capture',p=>{p.rawPacket='PRIVATE_SENTINEL';},/peer comparison schema/]
+];
+for(const [name,change,pattern] of peerRejected)test('peer evidence rejects '+name,t=>{
+  const f=fixture(t),save=f.peerComparison();change(f.data.peerComparison);save();assert.throws(f.check,pattern);
+});
+test('stale rendered peer date, range and link cannot be blessed by valid data',t=>{
+  for(const [before,after] of [['Six-site sample — October 23, 2026','Six-site sample — October 22, 2026'],['5,253 (5,252–5,253)','5,253 (5,253–5,253)'],['](measurements/gallery-20261023-integrated.json)','](measurements/gallery-old.json)']]) {
+    const f=fixture(t);f.peerComparison();const path=join(f.root,'COMPARISON.md');writeFileSync(path,readFileSync(path,'utf8').replace(before,after));assert.throws(f.check,/section is stale/);
+  }
+});
+test('duplicate fresh peer markers outside the current section are rejected',t=>{
+  const f=fixture(t);f.peerComparison();const path=join(f.root,'COMPARISON.md');
+  writeFileSync(path,readFileSync(path,'utf8')+'\n<!-- comparison:fresh-gallery:start -->\n');
+  assert.throws(f.check,/duplicate comparison fresh-gallery/);
+});
+test('a fresh peer section requires referenced peer evidence',t=>{
+  const f=fixture(t),path=join(f.root,'COMPARISON.md');
+  writeFileSync(path,readFileSync(path,'utf8')+'\n<!-- comparison:fresh-gallery:start -->\nStale table\n<!-- comparison:fresh-gallery:end -->\n');
+  assert.throws(f.check,/Fresh peer section is stale/);
 });

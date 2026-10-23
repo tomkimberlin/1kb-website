@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {copyFileSync, readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync} from 'node:fs';
+import {copyFileSync, readFileSync, writeFileSync, mkdirSync, mkdtempSync, rmSync, existsSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, dirname} from 'node:path';
 import {spawnSync} from 'node:child_process';
 
 const page='measurements/page-20260926-local.json',gallery='measurements/gallery-20260922.json';
+const project=new URL(existsSync(new URL('../package.json',import.meta.url))?'../':'../../../../',import.meta.url);
 function fixture(t) {
   const directory=mkdtempSync(join(tmpdir(),'onekb-measurements-'));
   t.after(()=>rmSync(directory,{recursive:true,force:true}));
@@ -14,7 +15,7 @@ function fixture(t) {
     'public/index.html','public/index.html.br','public/index.html.gz','public/index.html.deflate','public/representations.json']) {
     const target=join(directory,file);
     mkdirSync(dirname(target),{recursive:true});
-    copyFileSync(new URL('../'+file,import.meta.url),target);
+    copyFileSync(file==='tools/check-measurements.mjs'?new URL('./check-measurements.mjs',import.meta.url):new URL(file,project),target);
   }
   // Synthetic validator fixture: rebind the recorded matrix to these test bytes.
   // This exercises provenance checks; it does not create new browser evidence.
@@ -48,7 +49,7 @@ function changeJson(directory,file,mutate) {
 const debugbear='measurements/debugbear-20261005.json';
 function debugbearFixture(t) {
   const directory=fixture(t);
-  copyFileSync(new URL('../'+debugbear,import.meta.url),join(directory,debugbear));
+  copyFileSync(new URL(debugbear,project),join(directory,debugbear));
   const measured=JSON.parse(readFileSync(join(directory,page)));
   // Synthetic opt-in fixture: bind the normalized scan to these test bytes.
   // This exercises the validator without claiming a newly performed scan.
@@ -321,7 +322,7 @@ test('README must publish the latest DebugBear count and link its exact report a
 
 test('recovered September scan cannot replace current DebugBear evidence',t=>{
   const directory=debugbearFixture(t);
-  copyFileSync(new URL('../measurements/debugbear-20260922-recovered.json',import.meta.url),join(directory,debugbear));
+  copyFileSync(new URL('measurements/debugbear-20260922-recovered.json',project),join(directory,debugbear));
   const result=check(directory);
   assert.notEqual(result.status,0);
   assert.match(result.stderr,/Stale DebugBear source hash/);
@@ -338,5 +339,33 @@ test('browser evidence must include the actual accessibility-attribute compariso
     const result=check(directory);
     assert.notEqual(result.status,0);
     assert.match(result.stderr,/identicalAccessibilityAttributes/);
+  }
+});
+
+test('fresh peer table rows cannot replace September gallery values',t=>{
+  const directory=fixture(t),path=join(directory,'COMPARISON.md');
+  const source=readFileSync(path,'utf8');
+  const fresh='## Six-site sample — October 23, 2026\n\n| Website | TLS | Packet + DNS |\n| --- | ---: | ---: |\n| [Current sample](https://tomkimberlin.com/) | 1 (1–2) | 2 (2–3) |\n\n';
+  writeFileSync(path,fresh+source);
+  const result=check(directory);assert.equal(result.status,0,result.stderr);
+});
+test('a correct fresh row cannot conceal a stale historical row',t=>{
+  const directory=fixture(t),path=join(directory,'COMPARISON.md');
+  const source=readFileSync(path,'utf8');
+  const own=source.split('\n').find(line=>line.startsWith('| ')&&line.includes('](https://tomkimberlin.com/)'));
+  writeFileSync(path,own+'\n'+source.replace('**5,251**','**5,250**'));
+  const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,/Stale comparison TLS median/);
+});
+test('historical gallery markers and URL rows must be unique',t=>{
+  for(const mutate of [text=>text.replace('<!-- comparison:gallery:start -->',''),
+    text=>text+'\n<!-- comparison:gallery:end -->',
+    text=>{
+      const start=text.indexOf('<!-- comparison:gallery:start -->'),end=text.indexOf('<!-- comparison:gallery:end -->');
+      const historical=text.slice(start,end),row=historical.split('\n').find(line=>line.startsWith('| ')&&line.includes('](https://tomkimberlin.com/)'));
+      assert.ok(row,'Historical fixture row is required');
+      return text.slice(0,start)+historical.replace(row,row+'\n'+row)+text.slice(end);
+    }]) {
+    const directory=fixture(t),path=join(directory,'COMPARISON.md');writeFileSync(path,mutate(readFileSync(path,'utf8')));
+    const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,/historical (gallery|comparison)/i);
   }
 });
