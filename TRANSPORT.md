@@ -2,7 +2,7 @@
 
 The page size in [build-report.json](build-report.json) covers the response body. Total traffic also includes request and response headers, TLS, DNS and network framing. Connection reuse, browser caching and client behavior affect that total.
 
-The [October 22 deployment](measurements/deployment-20261022.json) verifies the current page, runtime image and host scripts. It serves 1,021-byte HTML and a 389-byte Brotli body. The first TLS ticket is eight bytes smaller; [fresh cold-exchange measurements](measurements/overhead-20261022.json) subtract the full encoded body and keep signature and packet variation visible. Historical September/October records remain dated evidence.
+The [October 23 deployment](measurements/deployment-20261023-quic.json) verifies the current page, runtime image and host scripts. It serves 1,021-byte HTML and a 389-byte Brotli body. [Current measurements](measurements/overhead-20261023-quic.json) subtract the full encoded body and retain signature and packet variation. Historical records remain dated evidence.
 
 ## Main website
 
@@ -23,6 +23,7 @@ nginx serves `tomkimberlin.com` directly. Cloudflare provides DNS only for this 
 - **Offline certificate cache:** the runtime can load a smaller precomputed Brotli message from `/tls/compressed/`. The [loader](server/certificate-cache.patch) keys files by the exact Certificate-body SHA256 and requires complete decompression, exact length and byte equality before using one. Missing or invalid files preserve ordinary compression. The [September 22 comparison](measurements/certificate-cache-20260922.json) saved 9 bytes for the measured main-host certificate, 8 for `www` and 2 for `tom.kimberlin.net`, conditional on client certificate-compression support. The [September 26 recipe tests](measurements/certificate-cache-20260926-local.json) keep the same main chain at 1,478 bytes and save another 3 and 2 bytes on the two aliases, producing 1,497 and 1,488 bytes. That recipe is now deployed; renewal may produce different savings.
 - **Resumption:** a shared session cache and OpenSSL `NumTickets 1` support reuse with one stateful TLS 1.3 ticket.
 - **Protocols:** TLS 1.2/1.3 and HTTP/2 are enabled. HTTP/3 is available without an Alt-Svc or DNS advertisement.
+- **QUIC parameters:** omit `ack_delay_exponent=3` and `max_ack_delay=25`, their [RFC 9000 defaults](https://www.rfc-editor.org/rfc/rfc9000.html#section-18.2). The [verified parameter block](measurements/quic-defaults-20261023-live.json) shrank from 102 to 96 bytes. Nondefaults stay explicit; the saved early-data context is unchanged. Runtime builds test the actual nginx serializer across 126 cases and 129 rejection controls.
 
 The [transport audit](measurements/payload-20260912.json) measured a 63-byte HTTP/2 header block and a 43-byte HTTP/3 header block. Date compression varies with its value. Changing TLS buffers alone—1, 4, 16 or 32 KB—produced the same traffic totals. The later saving came from avoiding an early response flush.
 
@@ -33,6 +34,8 @@ The optional [certificate optimizer](server/cache-certificates.sh) runs in a sep
 The image build runs 12 cache-loader cases covering valid installation, interrupted and short reads, malformed/stale/non-improving input, file-type checks and preservation of the fallback cache. The harness also injects allocation failures, checks existing OpenSSL errors and marks, and verifies successful retries. The September 22 audit also recorded six nginx configuration checks covering supported static use and rejecting incompatible configurations. The archived public fixture tests serialization and cache behavior without relying on its validity dates. The [local results](measurements/transport-20260926-local.json) record the allocation sweep and ASan/UBSan runs, including their platform limits.
 
 The [October 22 bounded distance search](measurements/certificate-distance-pool-20261022-local.json) compares 64 legal distance-code choices while retaining the existing recipe, exact decoder checks and saved smaller output. Local and constrained Docker checks reduce the main certificate payload from 1,489 to 1,487 bytes, with 2–4 bytes saved on the aliases. [Live activation](measurements/deployment-20261022-followup.json) confirms complete messages of 1,499/1,505/1,503 bytes, including framing. Three cold exchanges show a two-byte median TLS reduction; packet-estimate ranges overlap. [Fresh measurements](measurements/overhead-20261022-certificate.json). Optional trial errors keep the validated baseline; a five-second trial-launch budget supplements the existing external deadline.
+
+The [October 23 cache update](measurements/deployment-20261023-certificate.json) saves another 1 B on the main host and 3 B on `www`, preserving the exact decoded certificates. Complete messages are 1,498/1,502/1,503 B. The [saved streams](compression/certificates/README.md) retain their original producer metadata; the deployed encoder and renewal recipe are unchanged.
 
 ## TLS handshake records
 

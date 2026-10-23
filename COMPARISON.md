@@ -3,17 +3,21 @@
 <!-- comparison:current:start -->
 ## Latest verified own-site result
 
-Measured 2026-10-22: **1,021 B HTML; 389 B Brotli; 536 B gzip; 524 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+Measured 2026-10-23: **1,021 B HTML; 389 B Brotli; 536 B gzip; 524 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+
+Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.com 1,502 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-| Complete TLS through first document | 5,642 B | 5,641–5,643 B |
-| TLS minus complete body | 5,253 B | 5,252–5,254 B |
-| Estimated TCP/IP + DNS through close | 7,334 B | 7,283–7,385 B |
-| TCP/IP + DNS minus complete body | 6,945 B | 6,894–6,996 B |
+| Complete TLS through first document | 5,640 B | 5,640–5,642 B |
+| TLS minus complete body | 5,251 B | 5,251–5,253 B |
+| Estimated TCP/IP + DNS through close | 7,334 B | 7,280–7,384 B |
+| TCP/IP + DNS minus complete body | 6,945 B | 6,891–6,995 B |
 | HTTP/2 plaintext minus complete body | 105 B | 105–105 B |
 
-[Overhead evidence](measurements/overhead-20261022-openssl359.json), [verified deployment](measurements/deployment-20261022-openssl359.json) and [page measurements](measurements/page-20261022-accessibility-local.json). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+HTTP/3 transport-parameter component: **102 B → 96 B (6 B less)** with unchanged effective ACK parameters ([verified component evidence](measurements/quic-defaults-20261023-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
+
+[Overhead evidence](measurements/overhead-20261023-quic.json), [verified deployment](measurements/deployment-20261023-quic.json) and [page measurements](measurements/page-20261022-accessibility-local.json). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
@@ -52,7 +56,7 @@ The measurements cover the first document exchange on a cold connection. They ex
 
 The [October 5 own-site check](measurements/overhead-20261005.json) and [October 22 certificate check](measurements/overhead-20261022-certificate.json) remain dated evidence. The latest section above replaces their own-site figures; peer results remain the September 22 sample.
 
-The latest October 22 runs use a frozen OpenSSL 3.5.8 client against the updated OpenSSL 3.5.9 server, with the same request fields and exact page bodies before and after. TLS and packet-overhead medians did not change during that runtime update. The evidence identifies client and server separately, including source hashes and versions. Historical package versions were not recorded, so the September client is not claimed bit-for-bit identical.
+The October 22 runtime comparison used a frozen OpenSSL 3.5.8 client against the updated OpenSSL 3.5.9 server, with the same request fields and exact page bodies before and after. TLS and packet-overhead medians did not change during that runtime update. The evidence identifies client and server separately, including source hashes and versions. Historical package versions were not recorded, so the September client is not claimed bit-for-bit identical.
 
 <!-- comparison:gallery:end -->
 
@@ -65,7 +69,7 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20261022b -f server/Dockerfile .
+docker build -t onekb-nginx:20261023a -f server/Dockerfile .
 docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
 

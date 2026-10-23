@@ -58,8 +58,17 @@ function fixture(t,project=repo) {
     writeFileSync(resolve(root,'index.html'),source);put('build-report.json',build);put('measurements/page-candidate.json',page);
     config.candidate={page:{path:'measurements/page-candidate.json',sha256:hash(readFileSync(resolve(root,'measurements/page-candidate.json')))}};flush();return page;
   }
+  function quic() {
+    // Synthetic readbacks exercise the optional path without live or ignored inputs.
+    const parameters={schema:1,host:'tomkimberlin.com',protocol:'h3',certificate_verification:true,trust_store:'default',fresh_handshake_completed:true,session_resumed:false,aioquic_version:'1.3.0',probe_source_sha256:'a'.repeat(64),scope:'Synthetic trusted parameter fixture; no network measurement.',encoded_transport_parameters_bytes:102,ack_fields:{ack_delay_exponent:{present:true,effective_value:3},max_ack_delay_ms:{present:true,effective_value:25}},saved_context_relevant_effective_values:{max_idle_timeout_ms:75000,max_udp_payload_size:65527,initial_max_data:8585216,initial_max_stream_data_bidi_local:65536,initial_max_stream_data_bidi_remote:65536,initial_max_stream_data_uni:65536,initial_max_streams_bidi:128,initial_max_streams_uni:3,active_connection_id_limit:2,disable_active_migration:false}};
+    data.quic={schemaVersion:1,targetUrl:config.targetUrl,before:{runtimeImageId:'sha256:'+'b'.repeat(64),parameters},after:{runtimeImageId:data.deployment.server.imageId,parameters:structuredClone(parameters)}};
+    data.quic.after.parameters.encoded_transport_parameters_bytes=96;
+    for(const ack of Object.values(data.quic.after.parameters.ack_fields))ack.present=false;
+    const update=()=>{const path='measurements/quic-current.json';put(path,data.quic);data.deployment.quicTransportParameters={path,sha256:hash(readFileSync(resolve(root,path)))};save('deployment');flush();};
+    update();return update;
+  }
   flush();
-  return {root,data,config,save,put,flush,document,candidate,check:()=>checkComparison({root})};
+  return {root,data,config,save,put,flush,document,candidate,quic,check:()=>checkComparison({root})};
 }
 
 test('current real evidence, complete totals and all live hashes pass',t=>{const f=fixture(t);assert.deepEqual(f.check(),{liveDate:'2026-10-22',localCandidate:false});});
@@ -106,3 +115,60 @@ test('dated fixtures stay valid when the project working bodies and README chang
   assert.deepEqual(frozen.check(),{liveDate:'2026-10-22',localCandidate:false});
   assert.notEqual(hash(readFileSync(join(project.root,'index.html'))),hash(readFileSync(join(frozen.root,'index.html'))));
 });
+
+// A certificate cache can change without a new page release or runtime image.
+test('verified cache-only component reduction cannot reuse older measured overhead',t=>{
+  const f=fixture(t);
+  const row=f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(r=>r.hostname==='tomkimberlin.com');
+  row.compressedCertificateMessageBytes=[row.compressedCertificateMessageBytes[0]-2];
+  const cache=f.data.deployment.certificateCache.actualOwnedCacheFiles.find(r=>r.hostname==='tomkimberlin.com');
+  cache.brotliBytes-=2;cache.brotliSha256='0'.repeat(64);
+  f.save('deployment');f.flush();
+  assert.throws(f.check,/certificate component/);
+});
+test('matching component-only aliases bind without claiming full alias exchanges',t=>{
+  const f=fixture(t);
+  f.data.overhead.certificateComponents={hosts:f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.map(row=>({hostname:row.hostname,compressedCertificateMessageBytes:row.compressedCertificateMessageBytes[0],encodedCertificatePayloadBytes:row.compressedCertificateMessageBytes[0]-12,certificateVerified:true}))};
+  f.save('overhead');f.flush();assert.doesNotThrow(f.check);
+});
+test('a verified alias reduction invalidates stale normalized alias components',t=>{
+  const f=fixture(t);
+  f.data.overhead.certificateComponents={hosts:f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.map(row=>({hostname:row.hostname,compressedCertificateMessageBytes:row.compressedCertificateMessageBytes[0],encodedCertificatePayloadBytes:row.compressedCertificateMessageBytes[0]-12,certificateVerified:true}))};
+  f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(row=>row.hostname==='www.tomkimberlin.com').compressedCertificateMessageBytes[0]-=2;
+  f.data.deployment.certificateCache.actualOwnedCacheFiles.find(row=>row.hostname==='www.tomkimberlin.com').brotliBytes-=2;
+  f.save('overhead');f.save('deployment');f.flush();assert.throws(f.check,/alias certificate component/);
+});
+test('sidecar payload size and full certificate framing must agree',t=>{
+  const f=fixture(t);f.data.deployment.certificateCache.actualOwnedCacheFiles[0].brotliBytes-=1;
+  f.save('deployment');f.flush();assert.throws(f.check,/sidecar payload/);
+});
+test('a www-only reduction cannot leave the canonical component line stale',t=>{
+  const f=fixture(t);
+  f.data.deployment.certificateCache.trustedLiveCompleteCompressedCertificateBytes.find(row=>row.hostname==='www.tomkimberlin.com').compressedCertificateMessageBytes[0]-=2;
+  f.data.deployment.certificateCache.actualOwnedCacheFiles.find(row=>row.hostname==='www.tomkimberlin.com').brotliBytes-=2;
+  f.save('deployment');f.flush({doc:false});assert.throws(f.check,/section is stale/);
+});
+
+
+// The optional HTTP/3 component remains separate from the HTTP/2 exchange table.
+test('trusted optional QUIC component binds current image and renders outside the table',t=>{
+  const f=fixture(t);f.quic();assert.doesNotThrow(f.check);
+  const doc=readFileSync(join(f.root,'COMPARISON.md'),'utf8');
+  assert.match(doc,/102 B → 96 B \(6 B less\)/);assert.match(doc,/component.*HTTP\/2 saving/);
+  assert.ok(doc.indexOf('HTTP/3 transport-parameter component:')>doc.indexOf('| HTTP/2 plaintext minus complete body |'));
+});
+test('QUIC evidence hash cannot silently change',t=>{const f=fixture(t);f.quic();f.data.quic.after.parameters.encoded_transport_parameters_bytes--;f.put('measurements/quic-current.json',f.data.quic);assert.throws(f.check,/hash is stale/);});
+test('QUIC after image must be the currently verified runtime',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.runtimeImageId='sha256:'+'0'.repeat(64);save();assert.throws(f.check,/QUIC component runtime image/);});
+test('QUIC byte accounting must remove exactly the two default fields',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.encoded_transport_parameters_bytes--;save();assert.throws(f.check,/byte difference/);});
+test('QUIC readbacks require normal certificate trust',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.trust_store='test-only';save();assert.throws(f.check,/trusted QUIC/);});
+test('QUIC readbacks require completed fresh handshakes',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.session_resumed=true;save();assert.throws(f.check,/trusted QUIC/);});
+test('QUIC ACK fields must actually be omitted after activation',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.ack_fields.max_ack_delay_ms.present=true;save();assert.throws(f.check,/ACK defaults/);});
+test('QUIC effective ACK values must stay at the protocol defaults',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.ack_fields.ack_delay_exponent.effective_value=4;save();assert.throws(f.check,/ACK defaults/);});
+test('QUIC context numeric values cannot change',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.saved_context_relevant_effective_values.initial_max_data++;save();assert.throws(f.check,/context or measurement client/);});
+test('QUIC context values must be numeric even if equally malformed',t=>{const f=fixture(t),save=f.quic();for(const side of ['before','after'])f.data.quic[side].parameters.saved_context_relevant_effective_values.max_idle_timeout_ms='75000';save();assert.throws(f.check,/context values/);});
+test('QUIC readbacks cannot carry unallowlisted raw network fields',t=>{const f=fixture(t),save=f.quic();f.data.quic.after.parameters.ip='192.0.2.1';save();assert.throws(f.check,/trusted QUIC/);});
+test('stale rendered QUIC bytes are rejected',t=>{const f=fixture(t);f.quic();const path=join(f.root,'COMPARISON.md');writeFileSync(path,readFileSync(path,'utf8').replace('102 B → 96 B','102 B → 97 B'));assert.throws(f.check,/section is stale/);});
+test('stale rendered QUIC evidence link is rejected',t=>{const f=fixture(t);f.quic();const path=join(f.root,'COMPARISON.md');writeFileSync(path,readFileSync(path,'utf8').replace('](measurements/quic-current.json)','](measurements/quic-old.json)'));assert.throws(f.check,/section is stale/);});
+test('QUIC component display derives other validated lengths rather than hardcoding the first result',t=>{const f=fixture(t),save=f.quic();f.data.quic.before.parameters.encoded_transport_parameters_bytes=103;f.data.quic.after.parameters.encoded_transport_parameters_bytes=97;save();assert.doesNotThrow(f.check);assert.match(readFileSync(join(f.root,'COMPARISON.md'),'utf8'),/103 B → 97 B \(6 B less\)/);});
+
+test('hashed null QUIC evidence cannot disable the optional validation',t=>{const f=fixture(t),save=f.quic();f.data.quic=null;save();assert.throws(f.check,/Invalid QUIC component evidence/);});
