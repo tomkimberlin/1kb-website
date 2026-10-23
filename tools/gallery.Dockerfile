@@ -1,4 +1,4 @@
-FROM onekb-nginx:20261023a
+FROM onekb-nginx:20261023b
 RUN LD_LIBRARY_PATH= apk add --no-cache python3 py3-h2 py3-h11 'py3-brotli>=1.2.1' py3-zstandard
 ENV SSL_CERT_FILE=/etc/ssl/cert.pem
 COPY tools/dns_measurement.py /dns_measurement.py

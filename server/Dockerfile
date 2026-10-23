@@ -40,13 +40,18 @@ COPY server/small-responses.patch /build/small-responses.patch
 RUN patch --fuzz=0 -p1 < /build/small-responses.patch
 COPY server/quic-defaults.patch /build/quic-defaults.patch
 RUN patch --fuzz=0 -p1 < /build/quic-defaults.patch
+COPY server/quic-backend-defaults.patch /build/quic-backend-defaults.patch
+RUN patch --fuzz=0 -p1 < /build/quic-backend-defaults.patch
 COPY server/certificate-cache.patch /build/certificate-cache.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-cache.patch
 RUN ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/dev/stderr --http-log-path=/dev/stdout --pid-path=/tmp/nginx.pid --lock-path=/tmp/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-cc-opt="-DNGX_SSL_CERT_BROTLI_CACHE=1 -I/opt/openssl/include -Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt" --with-ld-opt="-L/opt/openssl/lib -lbrotlidec -Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs" --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40 >/tmp/configure.log \
  && make -j4 >/tmp/modules.log
 FROM headers AS quic-transport-test
 COPY tools/verify-quic-transport.c tools/quic-transport-test.mk /build/tests/
-RUN make -f objs/Makefile -f /build/tests/quic-transport-test.mk verify-quic-transport QUIC_TEST_SOURCE=/build/tests/verify-quic-transport.c QUIC_TEST_OUTPUT=/build/verify-quic-transport QUIC_TEST_LDFLAGS=-Wl,--gc-sections
+RUN make -f objs/Makefile -f /build/tests/quic-transport-test.mk verify-quic-transport QUIC_TEST_SOURCE=/build/tests/verify-quic-transport.c QUIC_TEST_OUTPUT=/build/verify-quic-transport QUIC_TEST_CPPFLAGS=-DQUIC_TEST_REQUIRE_NATIVE=1 QUIC_TEST_LDFLAGS=-Wl,--gc-sections \
+ && for mode in API_FALLBACK BORINGSSL_GUARD AWSLC_GUARD; do \
+      make -f objs/Makefile -f /build/tests/quic-transport-test.mk verify-quic-transport QUIC_TEST_SOURCE=/build/tests/verify-quic-transport.c QUIC_TEST_OUTPUT=/build/verify-quic-$mode QUIC_TEST_CPPFLAGS=-DQUIC_TEST_$mode=1 QUIC_TEST_LDFLAGS=-Wl,--gc-sections || exit 1; \
+    done
 
 FROM compression-test AS certificate-cache-test
 COPY --from=headers /build/nginx-1.30.4/src/http/modules/ngx_http_ssl_brotli_cache.h /build/

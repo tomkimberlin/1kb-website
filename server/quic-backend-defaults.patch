@@ -1,0 +1,83 @@
+--- a/src/event/quic/ngx_event_quic_transport.c
++++ b/src/event/quic/ngx_event_quic_transport.c
+@@ -2030,8 +2030,9 @@
+ ngx_quic_create_transport_params(u_char *pos, u_char *end, ngx_quic_tp_t *tp,
+     size_t *clen)
+ {
+-    u_char  *p;
+-    size_t   len;
++    u_char      *p;
++    size_t       len;
++    ngx_uint_t   send_max_udp_payload_size, send_active_connection_id_limit;
+ 
+ #define ngx_quic_tp_len(id, value)                                            \
+     ngx_quic_varint_len(id)                                                   \
+@@ -2057,6 +2058,18 @@
+         p = ngx_cpymem(p, value.data, value.len);                             \
+     } while (0)
+ 
++#if (NGX_QUIC_OPENSSL_API && !defined OPENSSL_IS_BORINGSSL                   \
++     && !defined OPENSSL_IS_AWSLC)
++    /* Native OpenSSL only receives the wire buffer in nginx 1.30.4. */
++    send_max_udp_payload_size =
++        (tp->max_udp_payload_size != 65527); /* RFC 9000 default. */
++    send_active_connection_id_limit = (tp->active_connection_id_limit != 2);
++#else
++    /* Preserve serialization and the context prefix for other backends. */
++    send_max_udp_payload_size = 1;
++    send_active_connection_id_limit = 1;
++#endif
++
+     len = ngx_quic_tp_len(NGX_QUIC_TP_INITIAL_MAX_DATA, tp->initial_max_data);
+ 
+     len += ngx_quic_tp_len(NGX_QUIC_TP_INITIAL_MAX_STREAMS_UNI,
+@@ -2077,16 +2090,20 @@
+     len += ngx_quic_tp_len(NGX_QUIC_TP_MAX_IDLE_TIMEOUT,
+                            tp->max_idle_timeout);
+ 
+-    len += ngx_quic_tp_len(NGX_QUIC_TP_MAX_UDP_PAYLOAD_SIZE,
+-                           tp->max_udp_payload_size);
++    if (send_max_udp_payload_size) {
++        len += ngx_quic_tp_len(NGX_QUIC_TP_MAX_UDP_PAYLOAD_SIZE,
++                               tp->max_udp_payload_size);
++    }
+ 
+     if (tp->disable_active_migration) {
+         len += ngx_quic_varint_len(NGX_QUIC_TP_DISABLE_ACTIVE_MIGRATION);
+         len += ngx_quic_varint_len(0);
+     }
+ 
+-    len += ngx_quic_tp_len(NGX_QUIC_TP_ACTIVE_CONNECTION_ID_LIMIT,
+-                           tp->active_connection_id_limit);
++    if (send_active_connection_id_limit) {
++        len += ngx_quic_tp_len(NGX_QUIC_TP_ACTIVE_CONNECTION_ID_LIMIT,
++                               tp->active_connection_id_limit);
++    }
+ 
+     /* transport parameters listed above will be saved in 0-RTT context */
+     if (clen) {
+@@ -2141,16 +2158,20 @@
+     ngx_quic_tp_vint(NGX_QUIC_TP_MAX_IDLE_TIMEOUT,
+                      tp->max_idle_timeout);
+ 
+-    ngx_quic_tp_vint(NGX_QUIC_TP_MAX_UDP_PAYLOAD_SIZE,
+-                     tp->max_udp_payload_size);
++    if (send_max_udp_payload_size) {
++        ngx_quic_tp_vint(NGX_QUIC_TP_MAX_UDP_PAYLOAD_SIZE,
++                         tp->max_udp_payload_size);
++    }
+ 
+     if (tp->disable_active_migration) {
+         ngx_quic_build_int(&p, NGX_QUIC_TP_DISABLE_ACTIVE_MIGRATION);
+         ngx_quic_build_int(&p, 0);
+     }
+ 
+-    ngx_quic_tp_vint(NGX_QUIC_TP_ACTIVE_CONNECTION_ID_LIMIT,
+-                     tp->active_connection_id_limit);
++    if (send_active_connection_id_limit) {
++        ngx_quic_tp_vint(NGX_QUIC_TP_ACTIVE_CONNECTION_ID_LIMIT,
++                         tp->active_connection_id_limit);
++    }
+ 
+     if (tp->max_ack_delay != NGX_QUIC_DEFAULT_MAX_ACK_DELAY) {
+         ngx_quic_tp_vint(NGX_QUIC_TP_MAX_ACK_DELAY,

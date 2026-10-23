@@ -9,15 +9,15 @@ Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.co
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-| Complete TLS through first document | 5,640 B | 5,640–5,642 B |
-| TLS minus complete body | 5,251 B | 5,251–5,253 B |
-| Estimated TCP/IP + DNS through close | 7,334 B | 7,280–7,384 B |
-| TCP/IP + DNS minus complete body | 6,945 B | 6,891–6,995 B |
+| Complete TLS through first document | 5,641 B | 5,641–5,642 B |
+| TLS minus complete body | 5,252 B | 5,252–5,253 B |
+| Estimated TCP/IP + DNS through close | 7,385 B | 7,333–7,386 B |
+| TCP/IP + DNS minus complete body | 6,996 B | 6,944–6,997 B |
 | HTTP/2 plaintext minus complete body | 105 B | 105–105 B |
 
-HTTP/3 transport-parameter component: **102 B → 96 B (6 B less)** with unchanged effective ACK parameters ([verified component evidence](measurements/quic-defaults-20261023-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
+HTTP/3 transport-parameter component: **96 B → 87 B (9 B less)** with unchanged effective parameters ([verified component evidence](measurements/quic-native-defaults-20261023-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
 
-[Overhead evidence](measurements/overhead-20261023-quic.json), [verified deployment](measurements/deployment-20261023-quic.json) and [page measurements](measurements/page-20261022-accessibility-local.json). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+[Overhead evidence](measurements/overhead-20261023-native-quic.json), [verified deployment](measurements/deployment-20261023-native-quic.json) and [page measurements](measurements/page-20261022-accessibility-local.json). Only this website was remeasured; this creates no new peer ranking. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
@@ -69,7 +69,7 @@ The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host ne
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20261023a -f server/Dockerfile .
+docker build -t onekb-nginx:20261023b -f server/Dockerfile .
 docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
 
