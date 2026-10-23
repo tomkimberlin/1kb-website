@@ -46,6 +46,8 @@ COPY server/quic-backend-defaults.patch /build/quic-backend-defaults.patch
 RUN patch --fuzz=0 -p1 < /build/quic-backend-defaults.patch
 COPY server/quic-stream-offset.patch /build/quic-stream-offset.patch
 RUN patch --fuzz=0 -p1 < /build/quic-stream-offset.patch
+COPY server/quic-fin.patch /build/quic-fin.patch
+RUN patch --fuzz=0 -p1 < /build/quic-fin.patch
 COPY server/certificate-cache.patch /build/certificate-cache.patch
 RUN patch --fuzz=0 -p1 < /build/certificate-cache.patch
 RUN ./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/dev/stderr --http-log-path=/dev/stdout --pid-path=/tmp/nginx.pid --lock-path=/tmp/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-cc-opt="-DNGX_SSL_CERT_BROTLI_CACHE=1 -I/opt/openssl/include -Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt" --with-ld-opt="-L/opt/openssl/lib -lbrotlidec -Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs" --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40 >/tmp/configure.log \
@@ -60,6 +62,10 @@ RUN make -f objs/Makefile -f /build/tests/quic-transport-test.mk verify-quic-tra
 FROM quic-transport-test AS quic-stream-test
 COPY tools/verify-quic-stream-offset.c tools/quic-stream-offset-test.mk tools/extract-quic-stream-resend.sh /build/tests/
 RUN make -f objs/Makefile -f /build/tests/quic-stream-offset-test.mk verify-quic-stream-offset QUIC_STREAM_TEST_SOURCE=/build/tests/verify-quic-stream-offset.c QUIC_STREAM_TEST_EXTRACTOR=/build/tests/extract-quic-stream-resend.sh QUIC_STREAM_TEST_OUTPUT=/build/verify-quic-stream-offset
+
+FROM quic-stream-test AS quic-fin-test
+COPY tools/verify-quic-fin.c tools/quic-fin-test.mk tools/extract-quic-fin-fixtures.sh /build/tests/
+RUN make -f objs/Makefile -f /build/tests/quic-fin-test.mk verify-quic-fin QUIC_FIN_TEST_SOURCE=/build/tests/verify-quic-fin.c QUIC_FIN_TEST_EXTRACTOR=/build/tests/extract-quic-fin-fixtures.sh QUIC_FIN_TEST_OUTPUT=/build/verify-quic-fin
 
 FROM compression-test AS certificate-cache-test
 COPY --from=headers /build/nginx-1.30.4/src/http/modules/ngx_http_ssl_brotli_cache.h /build/
@@ -86,6 +92,6 @@ RUN apk add --no-cache brotli-libs zlib zstd-libs
 COPY --from=certificate-cache-test /opt/openssl/lib/libssl.so.3 /opt/openssl/lib/libcrypto.so.3 /opt/openssl/lib/
 COPY --from=certificate-cache-test /opt/openssl/bin/openssl /opt/openssl/bin/openssl
 ENV LD_LIBRARY_PATH=/opt/openssl/lib
-COPY --from=quic-stream-test /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
+COPY --from=quic-fin-test /build/nginx-1.30.4/objs/ngx_http_headers_more_filter_module.so /usr/lib/nginx/modules/
 
-COPY --from=quic-stream-test /build/nginx-1.30.4/objs/nginx /usr/sbin/nginx
+COPY --from=quic-fin-test /build/nginx-1.30.4/objs/nginx /usr/sbin/nginx
