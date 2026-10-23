@@ -58,8 +58,13 @@ if(buildOnly) {
 }
 
 const readme=readFileSync('README.md','utf8'),comparison=readFileSync('COMPARISON.md','utf8');
+const galleryStart='<!-- comparison:gallery:start -->',galleryEnd='<!-- comparison:gallery:end -->';
+assert.equal(comparison.split(galleryStart).length,2,'Missing or duplicate historical gallery start');
+assert.equal(comparison.split(galleryEnd).length,2,'Missing or duplicate historical gallery end');
+assert.ok(comparison.indexOf(galleryStart)<comparison.indexOf(galleryEnd),'Historical gallery markers are reversed');
+const historicalComparison=comparison.slice(comparison.indexOf(galleryStart),comparison.indexOf(galleryEnd));
 assert.ok(readme.includes(`](${browserPath})`));
-assert.ok(comparison.includes(`](${galleryPath})`));
+assert.ok(historicalComparison.includes(`](${galleryPath})`));
 const cells=line=>line.split('|').slice(1,-1).map(cell=>cell.trim());
 const bytes=cell=>Number(cell.replace(/[*, B]/g,''));
 for(const [key,label] of Object.entries({html:'Raw HTML',brotli:'Brotli response body',gzip:'Gzip response body',deflate:'Deflate response body'})) {
@@ -139,7 +144,9 @@ for(const summary of gallery.summary) {
   assert.deepEqual(summary.tls_range,range(tls),'Gallery TLS range: '+summary.url);
   assert.equal(summary.total_median,median(total),'Gallery total median: '+summary.url);
   assert.deepEqual(summary.total_range,range(total),'Gallery total range: '+summary.url);
-  const row=comparison.split('\n').find(line=>line.startsWith('| ')&&line.includes(`](${summary.url})`));
+  const tableRows=historicalComparison.split('\n').filter(line=>line.startsWith('| ')&&line.includes(`](${summary.url})`));
+  assert.equal(tableRows.length,1,'Missing or duplicate historical comparison row: '+summary.url);
+  const row=tableRows[0];
   assert.ok(row,'Missing comparison table row: '+summary.url);
   assert.equal(bytes(cells(row)[1]),summary.tls_median,'Stale comparison TLS median: '+summary.url);
   assert.equal(bytes(cells(row)[2]),summary.total_median,'Stale comparison total median: '+summary.url);

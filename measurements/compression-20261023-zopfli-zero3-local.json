@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "phase": "local",
+  "completedAt": "2026-10-23T09:14:22+00:00",
+  "scope": "Fixed exact-source fallback-compression experiment. No encoder, page or deployment change was adopted. Body bytes are separate from delivery overhead.",
+  "result": "No reduction below the installed 536-byte gzip and 524-byte deflate bodies.",
+  "page": {
+    "source": {
+      "bytes": 1021,
+      "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+    },
+    "gzip": {
+      "bytes": 536,
+      "sha256": "fe61ae0c9d6c5676d5c12e35d87152dc45aaa1ae1c974d5aa8b1baf945799b81"
+    },
+    "deflate": {
+      "bytes": 524,
+      "sha256": "8e245b57c5006ca243a6914bca524f97152e1cd041c520da0a09ee356466e9a4"
+    },
+    "brotli": {
+      "bytes": 389,
+      "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e"
+    }
+  },
+  "encoder": {
+    "name": "Zopfli",
+    "version": "0.4.3",
+    "sourceArchiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+    "experiment": "Preserve three-symbol zero runs in the Huffman smoothing heuristic; compare current threshold 4 and stock threshold 5."
+  },
+  "matrix": {
+    "thresholds": [
+      3,
+      4,
+      5
+    ],
+    "iterations": [
+      15,
+      100,
+      1000
+    ],
+    "blockSplitting": [
+      0,
+      1
+    ],
+    "trials": 18,
+    "newTrials": 6,
+    "controlTrials": 12,
+    "workers": 1,
+    "hardEncodingWallCapSeconds": 60
+  },
+  "variants": [
+    {
+      "threshold": 3,
+      "role": "new candidate",
+      "trials": 6,
+      "gzipRangeBytes": [
+        536,
+        537
+      ],
+      "bestGzipBytes": 536,
+      "bestDeflateBytes": 524,
+      "librarySha256": "74103d47423bdcba2d1324e81e3b86629d0637d4d9cad3a3f74219c080b4c77f",
+      "deflateSourceSha256": "36538c1128986ee2819eb8fe598404c6a947080494d33eb17c1434075cc4ff5b",
+      "bestSettings": [
+        {
+          "iterations": 15,
+          "blockSplitting": 1
+        },
+        {
+          "iterations": 100,
+          "blockSplitting": 1
+        },
+        {
+          "iterations": 1000,
+          "blockSplitting": 1
+        }
+      ]
+    },
+    {
+      "threshold": 4,
+      "role": "current tuned control",
+      "trials": 6,
+      "gzipRangeBytes": [
+        536,
+        537
+      ],
+      "bestGzipBytes": 536,
+      "bestDeflateBytes": 524,
+      "librarySha256": "a7cb7527bd633e2d54258f69b55be42d8faaabcf6e33cab30917fd8f371325cd",
+      "deflateSourceSha256": "dcb03aef1eefa7001bc0f27788d1e9d8002b78d8474dcba487cefd2e5cbb501d",
+      "bestSettings": [
+        {
+          "iterations": 15,
+          "blockSplitting": 1
+        },
+        {
+          "iterations": 100,
+          "blockSplitting": 1
+        },
+        {
+          "iterations": 1000,
+          "blockSplitting": 1
+        }
+      ]
+    },
+    {
+      "threshold": 5,
+      "role": "stock control",
+      "trials": 6,
+      "gzipRangeBytes": [
+        536,
+        538
+      ],
+      "bestGzipBytes": 536,
+      "bestDeflateBytes": 524,
+      "librarySha256": "79e9e789e40e9810a76d45d419c045655ca1a69ada234021ee3fa07f728e7966",
+      "deflateSourceSha256": "5b35044bd740af59d6f2c3ca5fdac118357a13a178133f282ab0833c28db7425",
+      "bestSettings": [
+        {
+          "iterations": 1000,
+          "blockSplitting": 1
+        }
+      ]
+    }
+  ],
+  "controlReplay": {
+    "installedGzipSha256": "fe61ae0c9d6c5676d5c12e35d87152dc45aaa1ae1c974d5aa8b1baf945799b81",
+    "exactSettings": [
+      {
+        "iterations": 15,
+        "blockSplitting": 1
+      },
+      {
+        "iterations": 100,
+        "blockSplitting": 1
+      }
+    ]
+  },
+  "validation": {
+    "pythonVersion": "3.13.16",
+    "pythonZlibBuildVersion": "1.2.12",
+    "pythonZlibRuntimeVersion": "1.2.12",
+    "pythonCompleteCandidateDecodes": 54,
+    "pythonMalformedRejects": 108,
+    "pythonDecodePoint": "Before saving each exact candidate buffer.",
+    "nodeVersion": "v24.22.1",
+    "nodeZlibVersion": "1.3.2.1-motley-285e94b",
+    "nodeCompleteCandidateDecodes": 54,
+    "nodeMalformedRejects": 108,
+    "nodeDecodePoint": "Re-read saved files, verify hashes and require full consumption.",
+    "nodeBaselineCompleteDecodes": 3,
+    "savedOutputHashesReverified": 54,
+    "productionInputAndSavedCompressionHashesUnchanged": true
+  },
+  "artifacts": [
+    {
+      "path": "optimization/20261023/body-zopfli-zero3/summary.json",
+      "sha256": "c131cb9228a1753d0a028d220f34b1bbc46fd0fd45182c061eac0f33854383cc",
+      "published": false
+    },
+    {
+      "path": "optimization/20261023/body-zopfli-zero3/producers.json",
+      "sha256": "7368488de3849b0ea9928d40fcf846767438afff58d2c350108283cd8d1142b5",
+      "published": false
+    },
+    {
+      "path": "optimization/20261023/body-zopfli-zero3/trials.json",
+      "sha256": "edb729d28df6c65f0aabeff95a6be344d746fa6d506fb368a6b07404aca40bc9",
+      "published": false
+    },
+    {
+      "path": "optimization/20261023/body-zopfli-zero3/validate-node.mjs",
+      "sha256": "c5492d5d6c925251b12ec147b89b8a7876f55b505e10ff29f014271c2d37beea",
+      "published": false
+    },
+    {
+      "path": "optimization/20261023/body-zopfli-zero3/encode.py",
+      "sha256": "1568173150a7e6b35f49b0a8eff0c820d0f495ba14c69b4313da6bca68d3b017",
+      "published": false
+    }
+  ],
+  "limitations": [
+    "Eighteen finite trials on one fixed source; no global optimum or cross-input performance claim.",
+    "The candidate ties the installed byte lengths but produces different encoded streams.",
+    "All source and installed compression bytes remain unchanged; no byte reduction or timing improvement is claimed."
+  ]
+}
