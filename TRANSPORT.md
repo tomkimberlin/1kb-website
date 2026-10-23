@@ -2,7 +2,7 @@
 
 The page size in [build-report.json](build-report.json) covers the response body. Total traffic also includes request and response headers, TLS, DNS and network framing. Connection reuse, browser caching and client behavior affect that total.
 
-The [October 23 deployment](measurements/deployment-20261023-gallery.json) verifies the current page, runtime image and host scripts. It serves 1,021-byte HTML and a 389-byte Brotli body. [Current measurements](measurements/overhead-20261023-gallery.json) subtract the full encoded body and retain signature and packet variation. Historical records remain dated evidence.
+The [October 23 deployment](measurements/deployment-20261023-fallback.json) verifies the current page, runtime image and host scripts. It serves 1,021-byte HTML, 389 B Brotli, 535 B gzip and 523 B deflate. [Current measurements](measurements/overhead-20261023-fallback.json) subtract the full encoded body and retain signature and packet variation. Historical records remain dated evidence.
 
 ## Main website
 
