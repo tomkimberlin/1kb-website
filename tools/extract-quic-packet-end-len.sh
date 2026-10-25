@@ -60,7 +60,7 @@ if [ -e "$destination" ] && [ "$source" -ef "$destination" ]; then
     echo 'Output aliases an implementation source' >&2
     exit 1
 fi
-if [ "$(checksum "$source")" != 546d0f07ebd91149cca56058cae973ab8f520edf9d5227c8f684d8cb689f51ad ]; then
+if [ "$(checksum "$source")" != bb62e7abf0a3fd37deadd632ad1543f18b39f7e298b4ab2431305f5fbc7af598 ]; then
     echo 'Pinned nginx source changed: ngx_event_quic_streams.c' >&2
     exit 1
 fi

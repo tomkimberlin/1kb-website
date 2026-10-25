@@ -23,7 +23,7 @@ for protected in "$streams" "$ack" "$output_source" "$0"; do
         exit 1
     fi
 done
-if [ "$(checksum "$streams")" != 546d0f07ebd91149cca56058cae973ab8f520edf9d5227c8f684d8cb689f51ad ] \
+if [ "$(checksum "$streams")" != bb62e7abf0a3fd37deadd632ad1543f18b39f7e298b4ab2431305f5fbc7af598 ] \
    || [ "$(checksum "$ack")" != 256b238edb0b3c757c341d4b0c2d482b38d56698a72d88638ff8353383cad763 ] \
    || [ "$(checksum "$output_source")" != 95ba0fc8c9f6825a95707cf3624624903ec5d46e721b11ba79121a191fc402b4 ]; then
     echo 'Pinned nginx stream/ACK/output source changed; review this gate' >&2
@@ -76,7 +76,7 @@ trap 'exit 1' 1 2 3 15
     printf '\n'
     extract_function "$streams" ngx_quic_handle_stream_ack void
 } > "$temporary"
-if [ "$(checksum "$temporary")" != 31f0f06fa8003c3473d0a1a089b6e30df2093f07043f2476cb199db8d7427250 ]; then
+if [ "$(checksum "$temporary")" != bac84edd85593a1a8045fa3e526828d52f253f5a2a12daa12e919fcd21843eed ]; then
     echo 'Extracted component functions differ from their reviewed bytes' >&2
     exit 1
 fi
