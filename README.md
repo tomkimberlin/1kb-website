@@ -20,7 +20,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 | Deflate response body | Encoded page body | 537 B |
 | Raw HTML | Decoded page | 1,039 B |
 
-The project link now uses **Intune Device Workbench**. The longer name and URL add 7 B to the Brotli body; no new delivery-overhead measurement is claimed.
+The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. The longer name and URL add 7 B to the Brotli body; no new delivery-overhead measurement is claimed.
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 

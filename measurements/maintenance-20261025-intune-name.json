@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "kind": "content-update-deployment",
+  "verifiedAt": "2026-10-25T17:20:17.879108Z",
+  "sourceCommit": "2fa4e3fe7e2b6863f6a62ab46fd7dbdafb459e0a",
+  "url": "https://tomkimberlin.com/",
+  "change": "Rename M365 Workbench to Intune Device Workbench and point its direct link and legacy /m redirect to https://github.com/tomkimberlin/Intune-Device-Workbench. No CSS, other copy or other destinations changed.",
+  "pageRelease": "releases/20261025T172002Z-d3292c44fafb-onekb-deploy.tGwijc",
+  "previousPageRelease": "releases/20261025T045750Z-aa9d6af64c9d-onekb-deploy.UTfgl2",
+  "rollback": "Previous release and paired deployment backup retained by server/deploy.sh.",
+  "runtime": {
+    "imageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+    "running": true,
+    "restartCount": 0,
+    "imageUnchanged": true,
+    "hostScriptsUnchanged": true,
+    "templateUnchanged": true
+  },
+  "representations": {
+    "html": {
+      "bytes": 1039,
+      "sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7"
+    },
+    "brotli": {
+      "bytes": 396,
+      "sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1"
+    },
+    "gzip": {
+      "bytes": 549,
+      "sha256": "8474511ccefc367a84903035fdefdc6508a485794936edbfbc8cf6b87a85910d"
+    },
+    "deflate": {
+      "bytes": 537,
+      "sha256": "840eb8884d722cc87f83ec94bd5c412761a299d481d52984e053d93386890168"
+    }
+  },
+  "verification": {
+    "localApplicationTests": 79,
+    "measurementGuardTests": 27,
+    "comparisonTests": 340,
+    "browserCases": 16,
+    "browserEvidence": "measurements/browser-20261025-intune-name-local.json",
+    "syntaxChecksPassed": true,
+    "originReleaseMarkerAndAllBodiesPassed": true,
+    "liveHttp11AndHttp2ChecksPassed": 120,
+    "aliasChecksPassed": 12,
+    "readback": {
+      "verifiedAt": "2026-10-25T17:20:17.879108Z",
+      "pageRelease": "releases/20261025T172002Z-d3292c44fafb-onekb-deploy.tGwijc",
+      "runtimeImageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+      "running": true,
+      "restartCount": 0,
+      "normalCertificateValidation": true,
+      "exactPublicSource": true,
+      "projectLink": {
+        "href": "https://github.com/tomkimberlin/Intune-Device-Workbench",
+        "text": "Intune Device Workbench"
+      },
+      "legacyRedirect": {
+        "path": "/m",
+        "status": 301,
+        "location": "https://github.com/tomkimberlin/Intune-Device-Workbench"
+      },
+      "htmlSha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+      "handlerSha256": "539dd2f727a4b1ff595a1e9dc814cfe9b46f915ccc00bcf8c4aa811799c4ccd1",
+      "linkCount": 9
+    },
+    "privateLogHashes": {
+      "deploy.log": "ca600c5ebb779bb778bf7cda337e8eae89bc5ae8d08d89bb0f564324ff8fadb9",
+      "post-deploy-build.log": "31332fef91a91351dad09587452d406b7ba078d464b1f625ac0df9fd87eac080",
+      "live.log": "84cb4a9905904587fb99675b9233b91b0fb5dd8e9dec6cdbeed61cb83b98fdae",
+      "alias.log": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9",
+      "live-readback.json": "2f1ac91341876e487b12ea9042cfb8926ca17c44634e8bda3c4d26f9bf178fd7",
+      "tests.log": "42f14eb6869773366b036b87f4251d53a9c66c371186ff0ba084698d7bd20f39",
+      "check.log": "04786584aa84f059dbe32fe6221903ad86e2e942589afb5c9202a4d5d3e00ad9",
+      "measurements.log": "4117b163be507f1555f11d8d3124bebf14da65a78fc49c42057f7911f18f04bd"
+    }
+  },
+  "scope": "Verified content/link update. No new transport capture or delivery-overhead saving is claimed. The historical comparison remains bound to its previously measured page; the separate page-build section shows this newly deployed body. No graph included."
+}
