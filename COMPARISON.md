@@ -3,27 +3,29 @@
 <!-- comparison:current:start -->
 ## Latest verified own-site result
 
-Measured 2026-10-23: **1,021 B HTML; 389 B Brotli; 535 B gzip; 523 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
+Measured 2026-10-25: **1,021 B HTML; 389 B Brotli; 535 B gzip; 523 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
 
 Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.com 1,502 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
-| Complete TLS through first document | 5,641 B | 5,640–5,642 B |
-| TLS minus complete body | 5,252 B | 5,251–5,253 B |
-| Estimated TCP/IP + DNS through close | 7,333 B | 7,332–7,334 B |
-| TCP/IP + DNS minus complete body | 6,944 B | 6,943–6,945 B |
+| Complete TLS through first document | 5,641 B | 5,641–5,642 B |
+| TLS minus complete body | 5,252 B | 5,252–5,253 B |
+| Estimated TCP/IP + DNS through close | 7,334 B | 7,333–7,385 B |
+| TCP/IP + DNS minus complete body | 6,945 B | 6,944–6,996 B |
 | HTTP/2 plaintext minus complete body | 105 B | 105–105 B |
 
-Earlier verified HTTP/3 transport-parameter component: **96 B → 87 B (9 B less)** with unchanged effective parameters ([verified component evidence](measurements/quic-parameters-20261023-len-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
+Earlier verified HTTP/3 transport-parameter component: **96 B → 87 B (9 B less)** with unchanged effective parameters ([verified component evidence](measurements/quic-parameters-20261025-adjacent-live.json)); this does not establish a fixed complete-exchange or HTTP/2 saving.
 
-Earlier verified status-field components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](measurements/status-encoding-20261023-len-live.json); no fixed whole-exchange saving is established.
+Earlier verified status-field components: **301: HTTP/2 5 → 4 B; HTTP/3 6 → 5 B. HTTP/3 404: 6 → 1 B; main 200 unchanged.** [Verified component evidence](measurements/status-encoding-20261025-adjacent-live.json); no fixed whole-exchange saving is established.
 
-HTTP/3 STREAM components: **1 B less in each of 3 first-accepted zero-offset frames** ([component evidence](measurements/quic-stream-offset-20261023-len-live.json)); no fixed whole-exchange saving is established.
+HTTP/3 STREAM components: **1 B less in each of 3 first-accepted zero-offset frames** ([component evidence](measurements/quic-stream-offset-20261025-adjacent-live.json)); no fixed whole-exchange saving is established.
 
 Earlier verified HTTP/3 response STREAM framing: **9 → 4 B (5 B less)** across the accepted response frames; the final marker is attached to the data frame ([component evidence](measurements/quic-fin-20261023-live.json)). Type-byte size is source-derived; other widths are observed. This does not establish a fixed complete-exchange saving.
 
-HTTP/3 response STREAM headers: **4 → 2 B (2 B less)** in the one accepted FIN response frame; its two-byte LEN field is omitted ([component evidence](measurements/quic-stream-length-20261023-live.json)). The earlier FIN 9 → 4 B result remains dated evidence; this is a separate response-only field observation, not a fixed packet or complete-exchange saving.
+Earlier verified HTTP/3 response STREAM headers: **4 → 2 B (2 B less)** in the one accepted FIN response frame; its two-byte LEN field is omitted ([component evidence](measurements/quic-stream-length-20261023-live.json)). The earlier FIN 9 → 4 B result remains dated evidence; this is a separate response-only field observation, not a fixed packet or complete-exchange saving.
+
+HTTP/3 accepted control STREAM headers: **7 → 3 B (4 B less)** across the complete nine-byte setup sequence through the first exact document response ([component evidence](measurements/quic-adjacent-20261025-adjacent-live.json)); type-byte width is source-derived. No fixed packet, complete-exchange, HTTP/2 or latency saving is established.
 
 <!-- comparison:fresh-gallery:start -->
 ### Six-site sample — October 23, 2026
@@ -42,7 +44,7 @@ Three cold first-document exchanges per site count both directions and subtract 
 [Peer evidence](measurements/gallery-20261023-integrated.json). All 18 requests passed normal certificate validation, complete SYN visibility and zero capture-drop checks. The frozen Python/OpenSSL client measured document exchanges. This dated sample remains separate from later own-site updates; three samples do not establish a timing or universal ranking claim.
 <!-- comparison:fresh-gallery:end -->
 
-[Overhead evidence](measurements/overhead-20261023-len.json), [verified deployment](measurements/deployment-20261023-len.json) and [page measurements](measurements/page-20261025-font-validation-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+[Overhead evidence](measurements/overhead-20261025-adjacent.json), [verified deployment](measurements/deployment-20261025-adjacent.json) and [page measurements](measurements/page-20261025-font-validation-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
@@ -96,7 +98,7 @@ A socket-local kernel filter limits queued traffic to the selected peer and port
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20261023f -f server/Dockerfile .
+docker build -t onekb-nginx:20261025a -f server/Dockerfile .
 docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
 
