@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "kind": "maintenance-verification",
+  "verifiedAt": "2026-10-25T04:19:55Z",
+  "sourceCommit": "5c9e71519bebb35582b7753fa4f244759a0c7abb",
+  "mergeCommit": "9e9e828765bc74c28481e938e5a6038edca0cbec",
+  "change": "HTTP/3 measurement rejects interrupted and malformed responses without publishing partial results; successful measurement profile and server behavior unchanged.",
+  "regressionVerification": {
+    "pythonTestsPassed": 186,
+    "evidenceTestsPassed": 270,
+    "syntaxChecksPassed": true,
+    "nodeTests": {
+      "sandboxPassed": 78,
+      "sandboxBlocked": 1,
+      "blockedReason": "Loopback socket EPERM",
+      "approvedHttpFileRerunPassed": 9
+    },
+    "sourceCi": {
+      "runId": 40160899078,
+      "headSha": "5c9e71519bebb35582b7753fa4f244759a0c7abb",
+      "jobs": {
+        "application": "success",
+        "browser": "success",
+        "runtime": "success"
+      }
+    },
+    "independentReview": "No blocking findings; 13 focused HTTP/3 tests passed.",
+    "defaultBranchCi": {
+      "runId": 40161178294,
+      "headSha": "9e9e828765bc74c28481e938e5a6038edca0cbec",
+      "jobs": {
+        "application": "success",
+        "browser": "success",
+        "runtime": "success"
+      },
+      "completedAt": "2026-10-25T04:18:12Z",
+      "verifiedAt": "2026-10-25T04:19:55Z",
+      "privateMetadataSha256": "58d65d5d76d70eb0374cb5c37a52c1f70b8fe87740d05b29860f2af3350eaae7"
+    }
+  },
+  "pageVerification": {
+    "release": "releases/20261025T041519Z-aa9d6af64c9d-onekb-deploy.cpo3uP",
+    "representations": [
+      {
+        "encoding": "identity",
+        "bytes": 1021,
+        "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+      },
+      {
+        "encoding": "br",
+        "bytes": 389,
+        "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e"
+      },
+      {
+        "encoding": "gzip",
+        "bytes": 535,
+        "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0"
+      },
+      {
+        "encoding": "deflate",
+        "bytes": 523,
+        "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713"
+      }
+    ],
+    "exactOriginAndPublicBodies": true,
+    "liveHttp11AndHttp2ChecksPassed": 120,
+    "aliasChecksPassed": 12,
+    "privateDeployLogSha256": "2e02a5054d99466ece9e3ee245137498a13ddf803dbfa396e5df942a0e6ef7e5",
+    "privateLiveLogSha256": "84cb4a9905904587fb99675b9233b91b0fb5dd8e9dec6cdbeed61cb83b98fdae",
+    "privateAliasLogSha256": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9",
+    "deployWrapperNote": "The shell wrapper returned an error assigning a reserved variable after deployment; the Active release log, independent private release marker, and all public response checks confirm successful activation.",
+    "verifiedAt": "2026-10-25T04:16:17Z",
+    "independentPrivateReleaseMarker": {
+      "verifiedAt": "2026-10-25T04:19:55Z",
+      "value": "/srv/releases/20261025T041519Z-aa9d6af64c9d-onekb-deploy.cpo3uP/",
+      "httpStatus": 200,
+      "privateReadbackSha256": "22ba8887ae23916528c8d42242b545e201b838586205a4d3c1cea5aafe740621"
+    }
+  },
+  "runtimeVerification": {
+    "imageId": "sha256:fdc327367ceab6f28e8fd88c3903c256900c7b23f86855eaae20d2f4c28bd27f",
+    "running": true,
+    "activeConfigurationSha256": "c7cc0b4f52fca94a674b5aa06c8df48fc4dc7bcbfb14f2926472ccc66b313bc6",
+    "imageUnchanged": true,
+    "privateHostReadbackSha256": "bf300aac2c09451bcabbd2528e3f39a52080b93dff2ac0a95c01c569eba2ecf9"
+  },
+  "scope": "Measurement-tool maintenance and unchanged page/runtime verification. No new body, delivery-overhead or latency reduction is claimed; dated transfer measurements remain unchanged."
+}
