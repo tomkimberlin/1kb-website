@@ -66,7 +66,7 @@ test('direct page links and compatibility aliases preserve their destinations',(
   });
   assert.deepEqual(destinations,[
     'https://euthenics.com/','https://paste.kimberlin.net/','https://xmr.surf/',
-    'https://github.com/tomkimberlin/m365-workbench','https://github.com/tomkimberlin/Save-Image-As',
+    'https://github.com/tomkimberlin/Intune-Device-Workbench','https://github.com/tomkimberlin/Save-Image-As',
     'https://1kb.club/','https://github.com/tomkimberlin/1kb-website','https://github.com/tomkimberlin',
     'mailto:tomkimberlin@gmail.com'
   ]);
@@ -79,7 +79,7 @@ test('direct page links and compatibility aliases preserve their destinations',(
     ['https://tom.kimberlin.net/p?from=alias&check=1','https://tomkimberlin.com/p?from=alias&check=1'],
     ['/b','https://github.com/tomkimberlin'],['/a','https://github.com/tomkimberlin/1kb-website'],['/o','https://1kb.club/'],['/w','https://euthenics.com/'],['/e','https://euthenics.com/'],['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
     ['/p','https://paste.kimberlin.net/'],['/k','https://1kb.club/'],
-    ['/c','mailto:tomkimberlin@gmail.com'],['/m','https://github.com/tomkimberlin/m365-workbench'],['/i','https://github.com/tomkimberlin/Save-Image-As'],
+    ['/c','mailto:tomkimberlin@gmail.com'],['/m','https://github.com/tomkimberlin/Intune-Device-Workbench'],['/i','https://github.com/tomkimberlin/Save-Image-As'],
     ['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website']
   ]) {
     const r=call(url);

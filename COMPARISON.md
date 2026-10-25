@@ -49,6 +49,12 @@ Three cold first-document exchanges per site count both directions and subtract 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
 
+<!-- comparison:candidate:start -->
+## Page build awaiting transport measurement
+
+The current page build is **1,039 B HTML; 396 B Brotli; 549 B gzip; 537 B deflate.** [Local build evidence](measurements/page-20261025-intune-name-local.json) binds these exact representations. These bodies differ from the dated transport snapshot above. No new transfer, overhead or peer-ranking result is claimed. After transport measurement, advance the verified-live pointers and remove this section.
+<!-- comparison:candidate:end -->
+
 <!-- comparison:gallery:start -->
 ## Historical six-site sample — September 22, 2026
 

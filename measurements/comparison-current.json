@@ -18,5 +18,11 @@
   "historicalGallery": {
     "path": "measurements/gallery-20260922.json",
     "sha256": "e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef"
+  },
+  "candidate": {
+    "page": {
+      "path": "measurements/page-20261025-intune-name-local.json",
+      "sha256": "1d02f588491896b4edfc116519889adb96b1da237fb9ba05e26d4cb83525d135"
+    }
   }
 }
