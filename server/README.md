@@ -1,6 +1,6 @@
 # Hosting
 
-Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; the [deployment record](../measurements/deployment-20261023-len.json) identifies the latest verified page, image and host scripts.
+Configuration and scripts for nginx on an Unraid/Docker host, with Cloudflare providing DNS only. The [Dockerfile](Dockerfile) pins nginx/OpenSSL and the required modules. [Delivery settings](../TRANSPORT.md) covers patches and test limits; the [transport deployment record](../measurements/deployment-20261023-len.json) identifies the measured page, image and host scripts. The [DNS maintenance follow-up](../measurements/maintenance-20261025-dns-lock.json) verifies the later helper fix and unchanged page.
 
 ## Prepare an installation
 
@@ -62,7 +62,7 @@ Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` n
 
 DNS updates confirm IPv4 changes with a second lookup. Store the Cloudflare token at `secrets/cloudflare-dns-token`, root-owned mode 600 inside a mode-700 directory, outside the container. It needs Zone / DNS / Edit access and must work after an IP change. `--verify-write` submits the current address to check access.
 
-The recorded five-minute Unraid schedules are `/boot/config/plugins/user.scripts/onekb-certificates.cron` and `onekb-dns.cron`; install them separately. Locks prevent overlapping runs.
+The recorded five-minute Unraid schedules are `/boot/config/plugins/user.scripts/onekb-certificates.cron` and `onekb-dns.cron`; install them separately. Lock contention skips overlapping runs; other lock failures report an error and exit unsuccessfully.
 
 ## Recovery
 
