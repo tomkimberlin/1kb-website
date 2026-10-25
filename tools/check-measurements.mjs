@@ -27,6 +27,24 @@ const encodings={br:'index.html.br',deflate:'index.html.deflate',gzip:'index.htm
 assert.deepEqual(Object.keys(preloaded).sort(),Object.keys(encodings).sort(),'Preload map must contain exactly four representations');
 for(const [encoding,file] of Object.entries(encodings))
   assert.equal(preloaded[encoding],readFileSync('public/'+file).toString('base64'),'Stale or malformed preloaded '+encoding);
+const html=readFileSync('index.html','utf8');
+const nativeProtocolActivations=[...html.matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
+function checkBrowserMatrix(comparisons,label) {
+  const matrix=['chromium','webkit'].flatMap(engine=>[320,402,768,1440].flatMap(width=>['light','dark'].map(theme=>`${engine}-${width}-${theme}`)));
+  assert.ok(Array.isArray(comparisons),label+' matrix is missing');
+  assert.deepEqual(comparisons.map(({engine,width,theme})=>`${engine}-${width}-${theme}`).sort(),matrix.sort(),label+' matrix must contain all 16 unique cases');
+  for(const entry of comparisons) {
+    const name=`${entry.engine}-${entry.width}-${entry.theme}`;
+    assert.ok(Number.isInteger(entry.width),label+' case '+name+': width must be numeric');
+    const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,identicalAccessibilityAttributes:true,
+      keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
+      keyboardProbeRequests:9-nativeProtocolActivations,unexpectedRequests:0,externalRequestsBlocked:true};
+    assert.equal(entry.nativeProtocolActivations??0,nativeProtocolActivations,label+' case '+name+': nativeProtocolActivations');
+    for(const [key,value] of Object.entries(expected))assert.equal(entry[key],value,label+' case '+name+': '+key);
+    assert.ok(typeof entry.browserVersion==='string'&&entry.browserVersion.trim(),label+' case '+name+': missing browser version');
+    assert.ok(['Tab','Alt+Tab'].includes(entry.focusKey),label+' case '+name+': unsupported keyboard probe');
+  }
+}
 if(buildOnly) {
   assert.equal(browser.scope,'local build','Build-only evidence must explicitly use local build scope');
   assert.ok(!Object.hasOwn(browser,'verification'),'Build-only evidence must not carry browser equivalence verification');
@@ -40,21 +58,33 @@ if(buildOnly) {
   assert.equal(verification.browserCandidateSha256,browser.htmlSha256,'Browser candidate hash does not match the measured build');
   assert.match(verification.browserBaselineSha256??'',/^[0-9a-f]{64}$/,'Browser baseline hash is missing or invalid');
   assert.equal(verification.browserBaselineSha256,read(browser.publishedMeasurement).htmlSha256,'Browser baseline hash does not match the dated page snapshot');
-  const matrix=['chromium','webkit'].flatMap(engine=>[320,402,768,1440].flatMap(width=>['light','dark'].map(theme=>`${engine}-${width}-${theme}`)));
-  const comparisons=verification.browserComparisons;
-  assert.ok(Array.isArray(comparisons),'Browser matrix is missing');
-  assert.deepEqual(comparisons.map(({engine,width,theme})=>`${engine}-${width}-${theme}`).sort(),matrix.sort(),'Browser matrix must contain all 16 unique cases');
-  const nativeProtocolActivations=[...readFileSync('index.html','utf8').matchAll(/<a\s+href=(?:"mailto:[^"]*"|'mailto:[^']*'|mailto:[^\s>]+)/gi)].length;
-  for(const entry of comparisons) {
-    const name=`${entry.engine}-${entry.width}-${entry.theme}`;
-    const expected={mobile:entry.width<=402,identicalPixels:true,identicalContentAndGeometry:true,identicalAccessibilityAttributes:true,
-      keyboardLinks:9,identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,
-      keyboardProbeRequests:9-nativeProtocolActivations,unexpectedRequests:0,externalRequestsBlocked:true};
-    assert.equal(entry.nativeProtocolActivations??0,nativeProtocolActivations,'Browser case '+name+': nativeProtocolActivations');
-    for(const [key,value] of Object.entries(expected))assert.equal(entry[key],value,'Browser case '+name+': '+key);
-    assert.ok(typeof entry.browserVersion==='string'&&entry.browserVersion.trim(),'Browser case '+name+': missing browser version');
-    assert.ok(['Tab','Alt+Tab'].includes(entry.focusKey),'Browser case '+name+': unsupported keyboard probe');
+  checkBrowserMatrix(verification.browserComparisons,'Browser');
+}
+if(Object.hasOwn(browser,'fontOverrideEvidence')) {
+  const references=browser.fontOverrideEvidence;
+  assert.ok(references&&typeof references==='object'&&!Array.isArray(references),'Missing enlarged-font references');
+  assert.deepEqual(Object.keys(references).sort(),['body','root'],'Enlarged-font references must cover root and body');
+  const comment=html.indexOf('<!--');
+  assert.ok(comment>=0,'Enlarged-font fixture requires the source comment insertion point');
+  for(const [name,selector] of [['root','html'],['body','body']]) {
+    const ref=references[name],label='Enlarged-font '+name;
+    assert.match(ref?.path??'',/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.json$/,label+': invalid evidence path');
+    assert.match(ref.sha256??'',/^[0-9a-f]{64}$/,label+': invalid evidence hash');
+    assert.equal(hash(ref.path),ref.sha256,label+': stale evidence hash');
+    assert.equal(ref.comparisons,16,label+': expected 16 comparisons');
+    const report=read(ref.path);
+    assert.equal(report.verifierSha256,hash('tools/verify-page.mjs'),label+': stale verifier');
+    assert.equal(report.handlerSha256,hash('server/site.js'),label+': stale handler');
+    // These are test-only derivatives of the current decoded HTML. The dated
+    // report's original baseline is historical, not the current normal baseline.
+    const derivative=Buffer.from(html.slice(0,comment)+`<style>${selector}{font-size:24px!important}</style>`+html.slice(comment));
+    assert.equal(report.candidate?.htmlBytes,derivative.length,label+': stale candidate size');
+    assert.equal(report.candidate?.htmlSha256,createHash('sha256').update(derivative).digest('hex'),label+': stale candidate source');
+    assert.ok(Number.isSafeInteger(report.baseline?.htmlBytes)&&report.baseline.htmlBytes>0,label+': invalid historical baseline size');
+    assert.match(report.baseline?.htmlSha256??'',/^[0-9a-f]{64}$/,label+': invalid historical baseline hash');
+    checkBrowserMatrix(report.cases,label);
   }
+  console.log('Both enlarged-font derivatives match the current source, verifier and handler; all 32 browser comparisons pass.');
 }
 
 if(Object.hasOwn(browser,'nativeEncodingEvidence')) {

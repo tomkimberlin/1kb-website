@@ -46,6 +46,74 @@ function changeJson(directory,file,mutate) {
   mutate(data);
   writeFileSync(path,JSON.stringify(data));
 }
+const fontReports=Object.fromEntries(['root','body'].map(name=>[name,`measurements/browser-20261022-accessibility-${name}-font-local.json`]));
+function fontFixture(t) {
+  const directory=fixture(t);
+  for(const file of Object.values(fontReports))copyFileSync(new URL(file,project),join(directory,file));
+  const current=JSON.parse(readFileSync(new URL('measurements/page-20261025-font-validation-local.json',project)));
+  changeJson(directory,page,data=>data.fontOverrideEvidence=current.fontOverrideEvidence);
+  return directory;
+}
+function refreshFontReference(directory,file) {
+  const sha256=createHash('sha256').update(readFileSync(join(directory,file))).digest('hex');
+  changeJson(directory,page,data=>{
+    const ref=Object.values(data.fontOverrideEvidence).find(ref=>ref.path===file);
+    ref.sha256=sha256;
+  });
+}
+test('enlarged-font evidence binds both complete matrices to exact current-source derivatives',t=>{
+  const result=check(fontFixture(t));
+  assert.equal(result.status,0,result.stderr);
+  assert.match(result.stdout,/all 32 browser comparisons pass/);
+});
+test('enlarged-font references cannot omit a setting or point outside measurement records',t=>{
+  for(const [mutate,error] of [
+    [data=>data.fontOverrideEvidence=null,/Missing enlarged-font references/],
+    [data=>delete data.fontOverrideEvidence.body,/must cover root and body/],
+    [data=>data.fontOverrideEvidence.extra={},/must cover root and body/],
+    [data=>data.fontOverrideEvidence.root.path='../outside.json',/invalid evidence path/],
+    [data=>data.fontOverrideEvidence.root.path='measurements/missing-font.json',/ENOENT/],
+    [data=>delete data.fontOverrideEvidence.root.sha256,/invalid evidence hash/],
+    [data=>data.fontOverrideEvidence.body.sha256='0'.repeat(64),/stale evidence hash/],
+    [data=>data.fontOverrideEvidence.body.comparisons=0,/expected 16 comparisons/]
+  ]) {
+    const directory=fontFixture(t);changeJson(directory,page,mutate);
+    const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,error);
+  }
+});
+test('enlarged-font report hash binds the dated historical baseline and complete record',t=>{
+  const directory=fontFixture(t);
+  changeJson(directory,fontReports.root,data=>data.baseline.htmlSha256='0'.repeat(64));
+  const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,/stale evidence hash/);
+});
+test('enlarged-font evidence rejects failed, incomplete and stale reports for either setting',t=>{
+  for(const file of Object.values(fontReports))for(const [mutate,error] of [
+    [data=>data.cases=[],/matrix must contain all 16/],
+    [data=>data.cases.pop(),/matrix must contain all 16/],
+    [data=>data.cases[1]=data.cases[0],/matrix must contain all 16/],
+    [data=>data.cases[0].width='320',/width must be numeric/],
+    [data=>data.cases[0].identicalPixels=false,/identicalPixels/],
+    [data=>data.cases[0].identicalContentAndGeometry=false,/identicalContentAndGeometry/],
+    [data=>data.cases[0].identicalAccessibilityAttributes=false,/identicalAccessibilityAttributes/],
+    [data=>data.cases[0].identicalFocusedPixels=8,/identicalFocusedPixels/],
+    [data=>data.cases[0].keyboardEnterDestinations=8,/keyboardEnterDestinations/],
+    [data=>data.cases[0].unexpectedRequests=1,/unexpectedRequests/],
+    [data=>delete data.cases[0].browserVersion,/missing browser version/],
+    [data=>data.verifierSha256='0'.repeat(64),/stale verifier/],
+    [data=>data.handlerSha256='0'.repeat(64),/stale handler/],
+    [data=>data.candidate.htmlBytes++,/stale candidate size/],
+    [data=>data.candidate.htmlSha256='0'.repeat(64),/stale candidate source/],
+    [data=>data.baseline.htmlBytes=0,/invalid historical baseline size/],
+    [data=>delete data.baseline.htmlSha256,/invalid historical baseline hash/]
+  ]) {
+    const directory=fontFixture(t);changeJson(directory,file,mutate);refreshFontReference(directory,file);
+    const result=check(directory);assert.notEqual(result.status,0,file);assert.match(result.stderr,error);
+  }
+  const directory=fontFixture(t);
+  copyFileSync(join(directory,fontReports.root),join(directory,fontReports.body));
+  refreshFontReference(directory,fontReports.body);
+  const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,/stale candidate source/);
+});
 const nativeEncoding='measurements/browser-20261023-fallback-encoding-local.json';
 function nativeEncodingFixture(t) {
   const directory=fixture(t);
