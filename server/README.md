@@ -62,7 +62,7 @@ Standalone `python3 tools/optimize-certificates.py --build-encoder ENCODER.so` n
 
 DNS updates confirm IPv4 changes with a second lookup. Store the Cloudflare token at `secrets/cloudflare-dns-token`, root-owned mode 600 inside a mode-700 directory, outside the container. It needs Zone / DNS / Edit access and must work after an IP change. `--verify-write` submits the current address to check access.
 
-The recorded five-minute Unraid schedules are `/boot/config/plugins/user.scripts/onekb-certificates.cron` and `onekb-dns.cron`; install them separately. Locks prevent overlapping runs.
+The recorded five-minute Unraid schedules are `/boot/config/plugins/user.scripts/onekb-certificates.cron` and `onekb-dns.cron`; install them separately. Lock contention skips overlapping runs; other lock failures report an error and exit unsuccessfully.
 
 ## Recovery
 

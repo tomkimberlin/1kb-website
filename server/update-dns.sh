@@ -8,7 +8,14 @@ base=/mnt/user/appdata/onekb-website
 verify_write=false
 case ${1:-} in '') ;; --verify-write) verify_write=true;; *) exit 2;; esac
 exec 9>"$base/state/dns.lock"
-flock -n 9 || exit 0
+if flock -n 9; then
+  :
+else
+  lock_status=$?
+  if test "$lock_status" = 1; then exit 0; fi
+  printf 'DNS update lock failed (exit %s).\n' "$lock_status" >&2
+  exit "$lock_status"
+fi
 unset cf_dns_token
 trap 'unset cf_dns_token' EXIT
 fail() { printf '%s\n' "$1" >&2; exit 1; }
