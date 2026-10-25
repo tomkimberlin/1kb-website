@@ -86,7 +86,8 @@ if(existsSync(gzipCandidate)) {
   decoded=result.buffer;
  }
  catch(error) { throw new Error('Invalid gzip candidate: '+gzipCandidate,{cause:error}); }
- if(decoded.equals(data)&&optimized.length<gzip.length)gzip=optimized;
+ // Preserve a verified saved member on ties: gzip OS bytes differ by platform.
+ if(decoded.equals(data)&&optimized.length<=gzip.length)gzip=optimized;
 }
 // HTTP deflate uses a zlib wrapper around the same optimized DEFLATE stream.
 if(gzip[3]!==0)throw Error('Unexpected optional gzip fields');

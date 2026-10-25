@@ -52,6 +52,21 @@ function fontFixture(t) {
   for(const file of Object.values(fontReports))copyFileSync(new URL(file,project),join(directory,file));
   const current=JSON.parse(readFileSync(new URL('measurements/page-20261025-font-validation-local.json',project)));
   changeJson(directory,page,data=>data.fontOverrideEvidence=current.fontOverrideEvidence);
+  // Rebind these copied, synthetic fixtures just like the main matrix above.
+  // Historical browser records on disk remain unchanged and are not rerun.
+  const html=readFileSync(join(directory,'index.html'),'utf8');
+  const comment=html.indexOf('<!--');
+  const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
+  for(const [name,selector] of [['root','html'],['body','body']]) {
+    const file=fontReports[name];
+    const derivative=Buffer.from(html.slice(0,comment)+`<style>${selector}{font-size:24px!important}</style>`+html.slice(comment));
+    changeJson(directory,file,data=>{
+      data.verifierSha256=hash(readFileSync(join(directory,'tools/verify-page.mjs')));
+      data.handlerSha256=hash(readFileSync(join(directory,'server/site.js')));
+      data.candidate={htmlBytes:derivative.length,htmlSha256:hash(derivative)};
+    });
+    refreshFontReference(directory,file);
+  }
   return directory;
 }
 function refreshFontReference(directory,file) {

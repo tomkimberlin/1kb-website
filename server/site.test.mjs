@@ -66,7 +66,7 @@ test('direct page links and compatibility aliases preserve their destinations',(
   });
   assert.deepEqual(destinations,[
     'https://euthenics.com/','https://paste.kimberlin.net/','https://xmr.surf/',
-    'https://github.com/tomkimberlin/m365-workbench','https://github.com/tomkimberlin/Save-Image-As',
+    'https://github.com/tomkimberlin/Intune-Device-Workbench','https://github.com/tomkimberlin/Save-Image-As',
     'https://1kb.club/','https://github.com/tomkimberlin/1kb-website','https://github.com/tomkimberlin',
     'mailto:tomkimberlin@gmail.com'
   ]);
@@ -79,7 +79,7 @@ test('direct page links and compatibility aliases preserve their destinations',(
     ['https://tom.kimberlin.net/p?from=alias&check=1','https://tomkimberlin.com/p?from=alias&check=1'],
     ['/b','https://github.com/tomkimberlin'],['/a','https://github.com/tomkimberlin/1kb-website'],['/o','https://1kb.club/'],['/w','https://euthenics.com/'],['/e','https://euthenics.com/'],['/g','https://github.com/tomkimberlin'],['/index.html?x=1','/?x=1'],
     ['/p','https://paste.kimberlin.net/'],['/k','https://1kb.club/'],
-    ['/c','mailto:tomkimberlin@gmail.com'],['/m','https://github.com/tomkimberlin/m365-workbench'],['/i','https://github.com/tomkimberlin/Save-Image-As'],
+    ['/c','mailto:tomkimberlin@gmail.com'],['/m','https://github.com/tomkimberlin/Intune-Device-Workbench'],['/i','https://github.com/tomkimberlin/Save-Image-As'],
     ['/x','https://xmr.surf/'],['/s','https://github.com/tomkimberlin/1kb-website']
   ]) {
     const r=call(url);
@@ -273,7 +273,7 @@ test('saved gzip is used intact and supplies the matching deflate preload',t=>{
   const report=JSON.parse(readFileSync(join(result.directory,'build-report.json')));
   const gzip=readFileSync(join(result.directory,'public/index.html.gz'));
   const deflate=readFileSync(join(result.directory,'public/index.html.deflate'));
-  assert.deepEqual(gzip,candidate,'build must preserve the smaller saved member');
+  assert.deepEqual(gzip,candidate,'build must preserve the selected saved member');
   assert.equal(report.gzip,candidate.length);
   assert.equal(report.deflate,candidate.length-12);
   assert.deepEqual(deflate.subarray(2,-4),gzip.subarray(10,-8));
@@ -283,6 +283,26 @@ test('saved gzip is used intact and supplies the matching deflate preload',t=>{
   const preloaded=JSON.parse(readFileSync(join(result.directory,'public/representations.json')));
   assert.equal(preloaded.gzip,gzip.toString('base64'));
   assert.equal(preloaded.deflate,deflate.toString('base64'));
+});
+
+test('equal-size saved gzip preserves the exact member across OS header differences',t=>{
+  let candidate;
+  for(let level=1;level<=9;level++)for(let strategy=0;strategy<=4;strategy++) {
+    const encoded=gzipSync(buildFixture,{level,strategy});
+    if(!candidate||encoded.length<candidate.length)candidate=encoded;
+  }
+  // A portable unknown-OS header differs from stock on both macOS and Linux.
+  candidate[9]=255;
+  const result=runBuildFixture(t,fixtureStock,candidate);
+  assert.equal(result.status,0,result.stderr);
+  const emitted=readFileSync(join(result.directory,'public/index.html.gz'));
+  assert.deepEqual(emitted,candidate);
+  assert.deepEqual(gunzipSync(emitted),buildFixture);
+  const preload=JSON.parse(readFileSync(join(result.directory,'public/representations.json')));
+  assert.equal(preload.gzip,candidate.toString('base64'));
+  const deflate=readFileSync(join(result.directory,'public/index.html.deflate'));
+  assert.deepEqual(deflate.subarray(2,-4),candidate.subarray(10,-8));
+  assert.deepEqual(inflateSync(deflate),buildFixture);
 });
 
 test('a valid stale gzip file remains harmless after shortening the page',t=>{

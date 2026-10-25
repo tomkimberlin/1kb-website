@@ -189,9 +189,9 @@ ${markers('current')[1]}`;
 
 export function renderCandidate(page,ref) {
   return `${markers('candidate')[0]}
-## Local candidate — not deployed
+## Page build awaiting transport measurement
 
-The working build is **${bytes(page.html)} HTML; ${bytes(page.brotli)} Brotli; ${bytes(page.gzip)} gzip; ${bytes(page.deflate)} deflate.** [Local build evidence](${ref.path}) binds these exact representations. No live transfer, overhead or peer-ranking result is claimed for this candidate. After publication and measurement, advance the verified-live pointers and remove this section.
+The current page build is **${bytes(page.html)} HTML; ${bytes(page.brotli)} Brotli; ${bytes(page.gzip)} gzip; ${bytes(page.deflate)} deflate.** [Local build evidence](${ref.path}) binds these exact representations. These bodies differ from the dated transport snapshot above. No new transfer, overhead or peer-ranking result is claimed. After transport measurement, advance the verified-live pointers and remove this section.
 ${markers('candidate')[1]}`;
 }
 

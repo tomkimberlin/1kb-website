@@ -1,0 +1,20 @@
+{
+  "scope": "intended copy baseline",
+  "html": 1039,
+  "htmlSha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+  "derivedFrom": {
+    "path": "measurements/page-20261025-font-validation-local.json",
+    "htmlSha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+  },
+  "changes": [
+    {
+      "from": "M365 Workbench",
+      "to": "Intune Device Workbench"
+    },
+    {
+      "from": "https://github.com/tomkimberlin/m365-workbench",
+      "to": "https://github.com/tomkimberlin/Intune-Device-Workbench"
+    }
+  ],
+  "method": "Apply exactly the two authorized substitutions to the previous page. Browser equality is checked against this intended-copy baseline, not against the visibly different old name."
+}
