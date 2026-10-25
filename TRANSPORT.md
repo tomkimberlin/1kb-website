@@ -81,6 +81,8 @@ A [direct persistent WebKit 26.6 trial on October 23](measurements/browser-resum
 
 ## Verification
 
+New HTTP/3 measurement runs fail immediately when a pending response is reset or the connection closes. Informational headers precede the final response, and trailers preserve its status and encoding, following [RFC 9114 §4.1](https://www.rfc-editor.org/rfc/rfc9114.html#section-4.1). Offline regressions exercise those failures without publishing a report, plus successful four-response accounting: `python3 -m unittest discover -s tools -p 'test_http3_measurement.py'`. These guards do not revise the dated measurements above.
+
 For this installation, commit and push finished website changes, then deploy with `npm run deploy -- YOUR_SSH_HOST`, using the configured hostname or local SSH alias, before running these checks. GitHub pushes alone do not update the origin server; server images and host scripts have a separate activation step in the [hosting guide](server/README.md#build-and-deploy).
 
 ```sh

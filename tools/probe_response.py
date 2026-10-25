@@ -54,11 +54,24 @@ def report_headers(headers):
 
 
 def receive_headers(response, headers):
-    # Trailers must not replace the final status/encoding used for validation.
-    if any(name == ':status' for name, _ in headers):
-        response['headers'] = headers
-    else:
+    # RFC 9114 section 4.1: informational sections precede one final
+    # response; trailers cannot replace that response's status or encoding.
+    statuses = [value for name, value in headers if name == ':status']
+    if not statuses:
+        if not response.get('headers'):
+            raise ValueError('HTTP/3 trailers arrived before final response headers')
         response.setdefault('trailers', []).extend(headers)
+        return
+    if (len(statuses) != 1 or len(statuses[0]) != 3 or
+            statuses[0][0] not in '12345' or not statuses[0].isascii() or not statuses[0].isdigit()):
+        raise ValueError('HTTP/3 response requires exactly one valid status')
+    if response.get('headers'):
+        raise ValueError('HTTP/3 stream sent headers after its final response')
+    if statuses[0].startswith('1'):
+        if statuses[0] == '101':
+            raise ValueError('HTTP/3 does not support Switching Protocols')
+        return
+    response['headers'] = headers
 
 
 def report_qlog(value):
