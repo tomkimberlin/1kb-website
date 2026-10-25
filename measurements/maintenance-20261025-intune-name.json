@@ -76,5 +76,20 @@
       "measurements.log": "4117b163be507f1555f11d8d3124bebf14da65a78fc49c42057f7911f18f04bd"
     }
   },
-  "scope": "Verified content/link update. No new transport capture or delivery-overhead saving is claimed. The historical comparison remains bound to its previously measured page; the separate page-build section shows this newly deployed body. No graph included."
+  "scope": "Verified content/link update. No new transport capture or delivery-overhead saving is claimed. The historical comparison remains bound to its previously measured page; the separate page-build section shows this newly deployed body. No graph included.",
+  "buildReproducibility": {
+    "verifiedAt": "2026-10-25T17:23:28.627555Z",
+    "issue": "Stock Node gzip uses an OS-specific header byte; local Darwin and Linux CI bodies decoded identically but differed at byte 9.",
+    "observedOSHeader": {
+      "darwin": 19,
+      "linux": 3
+    },
+    "savedGzipSha256": "8474511ccefc367a84903035fdefdc6508a485794936edbfbc8cf6b87a85910d",
+    "linuxStockGzipSha256": "cc91bac65284d4da1ad71cceee787418f08008458c4f863a6ba89b99a0455133",
+    "fix": "Retain the fully validated exact-source saved gzip on an equal-size tie. Saved bytes equal the already deployed gzip; all four page representations are unchanged. Brotli tie behavior is unchanged.",
+    "focusedRegression": "Alter only the OS byte of an equal-size valid saved gzip; require exact member, preload and shared deflate payload preservation.",
+    "buildSourceSha256": "d893c2873ee422fc86ed4a6a4f31d335a587df1dfea6e64bd8ed0abbe94beb99",
+    "regressionTestsPassed": 80,
+    "privateTestLogSha256": "bc24cb8458600a0b236f1591e146e3a9f357e0ffe775ded3a06c487b57f1fd24"
+  }
 }
