@@ -5,7 +5,7 @@ from aioquic.asyncio.client import connect
 from aioquic.asyncio.protocol import QuicConnectionProtocol
 from aioquic.h3.connection import H3Connection,H3_ALPN
 from aioquic.h3.events import HeadersReceived,DataReceived
-from aioquic.quic.events import ProtocolNegotiated,HandshakeCompleted
+from aioquic.quic.events import ProtocolNegotiated,HandshakeCompleted,ConnectionTerminated,StreamReset
 from aioquic.quic.configuration import QuicConfiguration
 from aioquic.quic.logger import QuicLogger
 from probe_response import ipv4_address, validate_brotli_response, report_headers, receive_headers, report_qlog, require_distinct_report
@@ -27,16 +27,29 @@ class Client(QuicConnectionProtocol):
  def quic_event_received(self,event):
   if isinstance(event,ProtocolNegotiated):self.http=H3Connection(self._quic)
   if isinstance(event,HandshakeCompleted):self.reused=event.session_resumed;self.snap('handshake_complete')
+  if isinstance(event,ConnectionTerminated):
+   for waiter in self.waiters.values():
+    if not waiter.done():waiter.set_exception(RuntimeError('HTTP/3 connection ended before a complete response'))
+   return
+  if isinstance(event,StreamReset):
+   waiter=self.waiters.get(event.stream_id)
+   if waiter is not None and not waiter.done():waiter.set_exception(RuntimeError('HTTP/3 stream reset before a complete response'))
+   return
   if self.http:
    for e in self.http.handle_event(event):
     if isinstance(e,(HeadersReceived,DataReceived)) and e.stream_id in self.responses:
      r=self.responses[e.stream_id];waiter=self.waiters[e.stream_id]
      if waiter.done():continue
-     if isinstance(e,HeadersReceived):receive_headers(r,[(k.decode(),v.decode()) for k,v in e.headers])
+     if isinstance(e,HeadersReceived):
+      try:receive_headers(r,[(k.decode(),v.decode()) for k,v in e.headers])
+      except ValueError as error:waiter.set_exception(error);continue
      else:
+      if not r['headers']:waiter.set_exception(ValueError('HTTP/3 body arrived before final response headers'));continue
       if len(r['body'])+len(e.data)>len(expected_body):waiter.set_exception(ValueError(f'HTTP/3 stream {e.stream_id}: response body exceeds the local Brotli representation'));continue
       r['body']+=e.data
-     if e.stream_ended:waiter.set_result(r)
+     if e.stream_ended:
+      if not r['headers']:waiter.set_exception(ValueError('HTTP/3 stream ended before its final response'))
+      else:waiter.set_result(r)
  async def get(self):
   sid=self._quic.get_next_available_stream_id();self.responses[sid]={'body':b'','headers':[]};self.waiters[sid]=asyncio.get_running_loop().create_future()
   headers=[(b':method',b'GET'),(b':scheme',b'https'),(b':authority',a.host.encode()),(b':path',b'/'),(b'accept-encoding',b'br'),(b'user-agent',b'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36'),(b'accept',b'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'),(b'sec-fetch-dest',b'document'),(b'sec-fetch-mode',b'navigate'),(b'sec-fetch-site',b'none'),(b'sec-fetch-user',b'?1'),(b'accept-language',b'en-US,en;q=0.9'),(b'priority',b'u=0, i')]

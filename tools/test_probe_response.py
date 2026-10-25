@@ -115,6 +115,20 @@ class ResponseTests(unittest.TestCase):
             with self.subTest(value=value), self.assertRaises(argparse.ArgumentTypeError):
                 ipv4_address(value)
 
+    def test_http3_response_headers_reject_invalid_status_and_order(self):
+        for status in ('', '20', '2000', '600', '2O0', '２００', '101'):
+            with self.subTest(status=status), self.assertRaises(ValueError):
+                receive_headers({'headers': []}, [(':status', status)])
+        final = [(':status', '200'), ('content-encoding', 'br')]
+        for headers in ([(':status', '103')], final,
+                        [(':status', '200'), (':status', '200')]):
+            response = {'headers': final.copy()}
+            with self.subTest(headers=headers), self.assertRaises(ValueError):
+                receive_headers(response, headers)
+            self.assertEqual(response['headers'], final)
+        with self.assertRaises(ValueError):
+            receive_headers({'headers': []}, [('x-trailer', 'too early')])
+
 
 @unittest.skipUnless(HAVE_H2, 'Install tools/requirements.txt for in-memory HTTP/2 integration')
 class Http2ProbeTests(unittest.TestCase):
@@ -266,7 +280,7 @@ class Http2ProbeTests(unittest.TestCase):
 @unittest.skipUnless(importlib.util.find_spec('aioquic'), 'Install tools/requirements.txt for HTTP/3 events')
 class Http3ProbeTests(unittest.TestCase):
     def test_oversized_body_rejects_waiter_before_end_stream(self):
-        from aioquic.h3.events import DataReceived
+        from aioquic.h3.events import DataReceived, HeadersReceived
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             source = root / 'expected.br'
@@ -278,7 +292,8 @@ class Http3ProbeTests(unittest.TestCase):
                 module = runpy.run_path(str(ROOT / 'measure-http3.py'), run_name='probe_fixture')
             async def exercise():
                 client = module['Client'].__new__(module['Client'])
-                events = [DataReceived(data=b'page', stream_id=0, stream_ended=False),
+                events = [HeadersReceived(headers=[(b':status', b'200'), (b'content-encoding', b'br')], stream_id=0, stream_ended=False),
+                          DataReceived(data=b'page', stream_id=0, stream_ended=False),
                           DataReceived(data=b'excess', stream_id=0, stream_ended=False)]
                 client.http = SimpleNamespace(handle_event=lambda event: events)
                 client.responses = {0: {'body': b'', 'headers': []}}
