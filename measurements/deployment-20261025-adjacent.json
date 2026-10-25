@@ -1,0 +1,363 @@
+{
+  "schemaVersion": 1,
+  "url": "https://tomkimberlin.com/",
+  "verifiedThrough": "2026-10-25T05:21:22.260948Z",
+  "pageCommit": "79fd19662243a6968bbf4e00ddfff1b336000d77",
+  "pageRelease": "releases/20261025T045750Z-aa9d6af64c9d-onekb-deploy.UTfgl2",
+  "runtimeSourceCommit": "79fd19662243a6968bbf4e00ddfff1b336000d77",
+  "runtimeActivation": {
+    "startedAt": "2026-10-25T05:19:24.821268Z",
+    "completedAt": "2026-10-25T05:19:40.745478Z"
+  },
+  "change": "Adjacent control STREAM coalescing; exact page representations and prior component history are validated separately.",
+  "server": {
+    "image": "onekb-nginx:20261025a",
+    "activeConfigurationSha256": "5735a2d279355c1e02612c9964d8a9d784589db57298d3e5d2663f9bb6915dae",
+    "exactCommittedConfigurationWithReleasePath": true,
+    "trustedPrivateReadinessExactRelease": true,
+    "installedStartupSha256": "f8a337df2db9fcb3472df3281689f56a5b658309813f1e7ecd901fbd39d5ef3a",
+    "installedTemplateSha256": "2bdca84422650de26773b41c4ab6c5f22c1aca19985e5c1a863ea08c986c8623",
+    "completeSettingsExceptDocumentedCreationMetadataMatched": true,
+    "creationMetadataComparison": "Exact CLI attachment and owned CID-file fields verified before projection; OOM false or null both mean enabled. All other effective settings compared without exclusions. Raw inspections retained.",
+    "certificateCacheBytesAndMetadataUnchanged": true,
+    "libraryBuildMetadataDifference": {
+      "library": "libcrypto.so.3",
+      "changedBytes": 29,
+      "scope": "Only build-date string and GNU build-id descriptor; all other bytes identical."
+    },
+    "imageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+    "running": true,
+    "openssl": "OpenSSL 3.5.9 29 Sep 2026",
+    "sourceFileHashes": {
+      "server/Dockerfile": "8d28d28115fa78a85a7534f9fa8437868cfa8d34e210c3824bb040b987e48d7a",
+      "server/quic-adjacent-stream.patch": "fa835efb819a60a9fb27fc3d923ec171a02c31e0979b136ba7837ca771a5bbf2",
+      "server/quic-fin.patch": "861eaaed3734a3c071d3636e40f3c4cdab6e409b9698cd50175f3388f603b6cf",
+      "server/quic-packet-end-len.patch": "6de823ad6a7138fdc34f1579666b54ff18217617e7a20f53a76b6d3b9d228945",
+      "server/quic-stream-offset.patch": "c54501a08170325c70504592186d44b1fa6572fcb8dc4d23968ee7a585ca5f5a",
+      "tools/extract-quic-fin-fixtures.sh": "4349db218ffb58f90e9dcf3ba76eff222a7c2a520adf4ef146c543ff8eae7ef3",
+      "tools/extract-quic-packet-end-len.sh": "d638b8dc53d645664de00ee9909131a176643b353ae97c8a6fe1e287ea12f54d",
+      "tools/verify-quic-fin.c": "3140387c934bf6dc1042a348014615c7a23b18f49e6c8fa544bd74ec5c47b86d",
+      "tools/quic-fin-test.mk": "40d51666fad9423059fd39ece38555e8018b67d59aaa16350e6e361abeb1ef44",
+      "tools/verify-quic-packet-end-len.c": "7aa1dbef1db91c4db7388dc48b33b7e542b0085aa4899ad2fd3b8c0319589ab6",
+      "tools/quic-packet-end-len-test.mk": "4e6f61497981534a46c7bc49c4498c565df1f26091512ac01ef2e5640a51a81e",
+      "tools/verify-quic-adjacent.c": "2e4d4411c6d6f0c48fefb9ec7633a6c2f8b0eafcab0ed593ff4c91af521a959f",
+      "tools/quic-adjacent-test.mk": "c8581d384bebba082b3473136f079fbb36f7421a0bf61317dbec3a4d70c7db8b",
+      "tools/extract-quic-adjacent-fixtures.sh": "29bec4f576b2a330f3621456819869fe12dc33203aca22ddc29a9578529b1ba7",
+      "server/status-encoding.patch": "d35b37e67f435a0aad5303c6f0ac92fe688514032d7a4ac8d5742299b48812a5",
+      "server/quic-defaults.patch": "d1de4eb4a01bacd0d72da88455ef894c56711ef10db7762f923639f0298c75c2",
+      "server/quic-backend-defaults.patch": "e314c9ecdcd41aa4257387325184a17f844b527dd06d46900cdef56a7fd7df29"
+    }
+  },
+  "pageRepresentations": [
+    {
+      "encoding": "identity",
+      "bytes": 1021,
+      "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "br",
+      "bytes": 389,
+      "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 535,
+      "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0",
+      "exactLocalOriginAndPublicResponse": true
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 523,
+      "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713",
+      "exactLocalOriginAndPublicResponse": true
+    }
+  ],
+  "certificateCache": {
+    "actualOwnedCacheFiles": [
+      {
+        "brotliBytes": 1486,
+        "brotliSha256": "ffe8ca224aa655579e8fc472bfa3b818dfdb0d441f5637eb192a83cc523ec0fe",
+        "hostname": "tomkimberlin.com",
+        "metadataSha256": "3f1093a5a46aaeee1412726722b74b4865dd80885af7144941879d0917aa7ebc",
+        "inputSha256": "06775c21de30195f66bf5f991e73fe3b5ab59c3195b46f620ee5b1119701e0d7"
+      },
+      {
+        "brotliBytes": 1490,
+        "brotliSha256": "90f2fbfce98994ffeba62aacf34c679c33302332ce1ee1ae89826928bde6f4c9",
+        "hostname": "www.tomkimberlin.com",
+        "metadataSha256": "e8006a8face2291325914cdb63461e389e7aba77032398460882ef84c25d5a89",
+        "inputSha256": "10d003a9fcefe2199c69d4a16f8916b3343947c88c83f254afbd558f5810b91f"
+      },
+      {
+        "brotliBytes": 1491,
+        "brotliSha256": "d42dcc45ad25444a8ef53796292adfd62e5f835406bd19fa4fcd133b63faf288",
+        "hostname": "tom.kimberlin.net",
+        "metadataSha256": "e0562faebf2f9232617bc03f161dc8a8c04f1be6d5b29df60c5e270613dd3688",
+        "inputSha256": "be23241b52bfdc46078d8e59a7bf704d6fac9e351b4437eacbcc4aeffbe402f1"
+      }
+    ],
+    "trustedLiveCompleteCompressedCertificateBytes": [
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1498
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1502
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "www.tomkimberlin.com",
+        "protocol": "TLSv1.3",
+        "verified": true
+      },
+      {
+        "alpn": "h2",
+        "cipher": "TLS_AES_128_GCM_SHA256",
+        "compressedCertificateMessageBytes": [
+          1503
+        ],
+        "compressedCertificateMessageCount": 1,
+        "hostname": "tom.kimberlin.net",
+        "protocol": "TLSv1.3",
+        "verified": true
+      }
+    ],
+    "scope": "Cache hashes/metadata rechecked unchanged under both locks; complete served chains and compressed messages freshly verified during successful activation."
+  },
+  "verification": {
+    "mainHttp11AndHttp2Checks": 120,
+    "aliasRedirectChecks": 12,
+    "http3Checks": 36,
+    "allThreeFreshOwnCaptureGatesPassed": true,
+    "publicNativeNavigationChecks": 3,
+    "nativeFallbackDecodingChecks": 4,
+    "localSemanticBrowserEvidence": {
+      "path": "measurements/page-20261025-font-validation-local.json",
+      "sha256": "24b80e662bb09fcc5eb3df2842b52af3a709c53a6eafcd2f6612924570dd8e60"
+    },
+    "evidenceWindow": {
+      "startedAt": "2026-10-25T05:19:40.745478Z",
+      "completedAt": "2026-10-25T05:20:54.486791Z"
+    },
+    "mainChecksSha256": "84cb4a9905904587fb99675b9233b91b0fb5dd8e9dec6cdbeed61cb83b98fdae",
+    "aliasChecksSha256": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9",
+    "http3ChecksSha256": "898af1332828338ef6f6238f3b262d7491d51313e1e8b7a2a384a6a236f8e6eb",
+    "publicBrowserMetadataSha256": "08722b928d9321f83fd1edad89d6433f8539ad5af3b465b2126a07f7d5b3e34e",
+    "sourcePrCi": {
+      "url": "https://github.com/tomkimberlin/1kb-website/actions/runs/40164695491",
+      "headSha": "a3dd1150ba8c55300d851890820132eef3a8052a",
+      "jobs": {
+        "browser": "success",
+        "application": "success",
+        "runtime": "success"
+      },
+      "terminalSnapshotSha256": "6f5e1360021bf466efc0f4723f8926c7c826da2523b537e8b7537b6b8af608d0"
+    },
+    "activationLogSha256": "6c434f9985a65508f66081e9b253284484193976a32fa693cd0acba10a49e0d2",
+    "activationActionSha256": "59813ddb1f5badd72436bb4417150e32c1a3d63940534ea96b5076080a2ec8d1",
+    "activationResultArchiveSha256": "962c3600411c7c0dbabac55920ef96426c06762e162da36e8f2f31b6c0f71be3",
+    "actualLinuxBuildResultArchiveSha256": "e72d85d462552bb041a29293bffe7e10ec0edd2864bada7283c27493f13c69f1",
+    "ordinaryFinalImageFixtureArchiveSha256": "c08d79571b5c36ac62266eaa12e2e5f1d810061a613dec7c273aba4e72272aac",
+    "ownCaptureResultArchiveSha256": "c16c5cf6e09d3cef8aff03d05c5a42cef8de1b73cc9f7feed262ecd9928c6764",
+    "retainedStoppedContainer": "onekb-website-rollback-quic-adjacent-20261025-051925-1612739",
+    "previousRuntimeImageId": "sha256:fdc327367ceab6f28e8fd88c3903c256900c7b23f86855eaae20d2f4c28bd27f",
+    "deploymentBuilderInputSha256": {
+      "activation": "ab412a7def80d311a0dc05bad6a0c726b71b89581331e2af41931932b4cb7ee6",
+      "runtimeReadback": "0fc8de72d9cbee49aa4630c8e1844bfb9db598b10a80e06102e0c0de5a86e6a8",
+      "serverFacts": "33726c992bd776bc1e2f749368c557b6cd3307edec1a5bf0b15d35b13dff9244",
+      "representations": "42833ee73a89638bb474cb4ff087effe360a194d2b90ee905b96ffa66c2d41a2",
+      "certificateCache": "e565a686bf254f08eb4c79a46f765527b2ed83d7287b3cfe30a17b75f196670e",
+      "verification": "b4299d7ab6e58057f745dda25f1167035e75f5bb517148b0924ea0c911092296"
+    }
+  },
+  "quicFinCoalescing": {
+    "path": "measurements/quic-fin-20261023-live.json",
+    "sha256": "50d137402c99d99064cb4b8679465ce78f0d42808571a9d79dd4e15087704404"
+  },
+  "quicStreamLengthEncoding": {
+    "path": "measurements/quic-stream-length-20261023-live.json",
+    "sha256": "711fdbbd9e97be067edf77f1e9677df22f2e17a1f0ab7f4e812e07e2553e284f"
+  },
+  "quicAdjacentStreams": {
+    "path": "measurements/quic-adjacent-20261025-adjacent-live.json",
+    "sha256": "ed19a587ea16b70637ecc140addefd44149a597459fa58c09cff8005f585943f"
+  },
+  "quicStreamOffsets": {
+    "path": "measurements/quic-stream-offset-20261025-adjacent-live.json",
+    "sha256": "4c4dead4a6c1064db55e5838d72c67966c9409d248349e634f4e529918e5b206"
+  },
+  "statusEncoding": {
+    "path": "measurements/status-encoding-20261025-adjacent-live.json",
+    "sha256": "d812067c3ffb2bd6cb77518fe6a74e7ec19202264a2a373159f0ea0eb9c2862b"
+  },
+  "quicTransportParameters": {
+    "path": "measurements/quic-parameters-20261025-adjacent-live.json",
+    "sha256": "adcd81ddd0cc96ca4f6d32875023b6dbb6103c0b2d6cb9a0434972cfe95e266c"
+  },
+  "peerComparison": {
+    "path": "measurements/gallery-20261023-integrated.json",
+    "sha256": "07c99b31aac2794e33e26d3297a2e3a1b5a79d1484dcb9a5f620e6a08c142d35"
+  },
+  "deliveryOverhead": {
+    "evidence": "measurements/overhead-20261025-adjacent.json",
+    "summary": {
+      "estimatedTcpPlusDnsMinusBody": {
+        "median": 6945,
+        "minimum": 6944,
+        "maximum": 6996
+      },
+      "tlsThroughBodyCompleteMinusBody": {
+        "median": 5252,
+        "minimum": 5252,
+        "maximum": 5253
+      },
+      "responseHttpPlainMinusBody": {
+        "median": 105,
+        "minimum": 105,
+        "maximum": 105
+      },
+      "tlsHandshakeMessageBytes": {
+        "sent": {
+          "median": 1583,
+          "minimum": 1583,
+          "maximum": 1583
+        },
+        "received": {
+          "median": 2891,
+          "minimum": 2891,
+          "maximum": 2892
+        }
+      },
+      "tlsResidualAfterBodyAndHandshakeMessages": {
+        "sent": {
+          "median": 574,
+          "minimum": 574,
+          "maximum": 574
+        },
+        "received": {
+          "median": 204,
+          "minimum": 204,
+          "maximum": 204
+        }
+      },
+      "tlsComponents": {
+        "newSessionTicket": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 49,
+              "minimum": 49,
+              "maximum": 49
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "certificate": {
+          "read": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "compressedCertificate": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 1498,
+              "minimum": 1498,
+              "maximum": 1498
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        "certificateVerify": {
+          "read": {
+            "count": {
+              "median": 1,
+              "minimum": 1,
+              "maximum": 1
+            },
+            "bytes": {
+              "median": 79,
+              "minimum": 79,
+              "maximum": 80
+            }
+          },
+          "write": {
+            "count": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "bytes": {
+              "median": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        }
+      }
+    },
+    "scope": "Fresh own-site H2 captures. Each total subtracts the complete encoded body; no H3 component delta is added to these results."
+  }
+}

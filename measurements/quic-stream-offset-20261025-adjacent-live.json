@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "targetUrl": "https://tomkimberlin.com/",
+  "protocol": "h3",
+  "source": {
+    "runtimeSourceCommit": "79fd19662243a6968bbf4e00ddfff1b336000d77",
+    "dockerfileSha256": "8d28d28115fa78a85a7534f9fa8437868cfa8d34e210c3824bb040b987e48d7a",
+    "streamOffsetPatchSha256": "c54501a08170325c70504592186d44b1fa6572fcb8dc4d23968ee7a585ca5f5a"
+  },
+  "before": {
+    "runtimeImageId": "sha256:0fb57e6254282615542a1e1796c89f015799537bd7d262f7039757898bdba8ec",
+    "runtimeSourceCommit": "2055306d4f632e5dd2eedd9793e17ace77b3c3bd",
+    "pageCommitAtReadback": "915b846211505389c3c7e392ccc80b0b3a1e1155",
+    "pageReleaseAtReadback": "releases/20261023T103015Z-aa9d6af64c9d-onekb-deploy.GwTE8U",
+    "perRequestGenerationVerified": false,
+    "privateRawSnapshotSha256": "07c97097a18549e32b728e2dc115d3bbee2e91dfaf44d38f84e430e85d8b8823",
+    "runtimeReadbacks": {
+      "precisionSeconds": 1,
+      "before": {
+        "startedAt": "2026-10-23T10:56:14Z",
+        "completedAt": "2026-10-23T10:56:14Z",
+        "sha256": "0e4d61f8408c5c9d568da6a898352364667b4f464896b438bec31276e85da68a"
+      },
+      "after": {
+        "startedAt": "2026-10-23T10:56:14Z",
+        "completedAt": "2026-10-23T10:56:14Z",
+        "sha256": "0e4d61f8408c5c9d568da6a898352364667b4f464896b438bec31276e85da68a"
+      }
+    },
+    "observer": {
+      "sourceSha256": "297e152798685065bb02b0b3d55685e8fa8840dff39e5ad8a3c0e18e1be489c0",
+      "versions": {
+        "python": "3.13.16",
+        "aioquic": "1.3.0",
+        "pylsqpack": "0.3.24",
+        "cryptography": "50.0.2",
+        "certifi": "2026.10.19"
+      },
+      "aioquicSourceSha256": {
+        "aioquic.quic.connection": "f6d0bd15ea563a3bd68518e3d4a6b918f4c9341048f850b27aa582f3a63fab65",
+        "aioquic.asyncio.client": "5159d2e28bd33da386c59dbac99dbb35ee47ecf4b480596367299c5ec03dd1c9",
+        "aioquic.h3.connection": "696e9c3735de11c314b8cd1e7e1265761a9373d1bbd2dbdf66570961dac839cd"
+      },
+      "reusedSourceSha256": {
+        "tools/verify-http3.py": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+        "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa"
+      }
+    },
+    "passed": true,
+    "startedAt": "2026-10-23T10:56:14.556156Z",
+    "observationStoppedAt": "2026-10-23T10:56:14.580953Z",
+    "completedAt": "2026-10-23T10:56:14.669323Z",
+    "normalCertificateValidation": true,
+    "freshConnection": true,
+    "handshake": {
+      "alpn": "h3",
+      "sessionResumed": false,
+      "earlyDataAccepted": false
+    },
+    "statusCode": 200,
+    "exactBrotliBody": true,
+    "bodyBytes": 389,
+    "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+    "streamRolesVerified": true,
+    "firstAcceptedFrames": {
+      "control": {
+        "streamId": 3,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 1,
+        "fin": false
+      },
+      "qpackDecoder": {
+        "streamId": 7,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 1,
+        "fin": false
+      },
+      "response": {
+        "streamId": 0,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 2,
+        "dataBytes": 437,
+        "fin": false
+      }
+    },
+    "acceptedRelevantFrames": [
+      {
+        "streamId": 3,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 1,
+        "fin": false
+      },
+      {
+        "streamId": 3,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 1,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 8,
+        "fin": false
+      },
+      {
+        "streamId": 7,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 1,
+        "fin": false
+      },
+      {
+        "streamId": 0,
+        "frameType": 14,
+        "offPresent": true,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 1,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 2,
+        "dataBytes": 437,
+        "fin": false
+      },
+      {
+        "streamId": 0,
+        "frameType": 15,
+        "offPresent": true,
+        "semanticOffset": 437,
+        "offsetFieldBytes": 2,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 0,
+        "fin": true
+      }
+    ],
+    "allAcceptedStreamFrameCount": 5
+  },
+  "after": {
+    "runtimeImageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+    "runtimeSourceCommit": "79fd19662243a6968bbf4e00ddfff1b336000d77",
+    "pageCommitAtReadback": "79fd19662243a6968bbf4e00ddfff1b336000d77",
+    "pageReleaseAtReadback": "releases/20261025T045750Z-aa9d6af64c9d-onekb-deploy.UTfgl2",
+    "perRequestGenerationVerified": false,
+    "privateRawSnapshotSha256": "ea063e883c21bcdf7c06c6d301626366838c22fa3135f06cf55b619136e5945e",
+    "runtimeReadbacks": {
+      "precisionSeconds": 1,
+      "before": {
+        "startedAt": "2026-10-25T05:19:47Z",
+        "completedAt": "2026-10-25T05:19:47Z",
+        "sha256": "3351329923ec8d3459b9867eba3a841036443b8a33697503ae119eb185ea4b3d"
+      },
+      "after": {
+        "startedAt": "2026-10-25T05:19:48Z",
+        "completedAt": "2026-10-25T05:19:48Z",
+        "sha256": "dc763415f496f3c2a3a5b74959456c8ee9fae58dcf217ec9c48294beb4ab421b"
+      }
+    },
+    "observer": {
+      "sourceSha256": "297e152798685065bb02b0b3d55685e8fa8840dff39e5ad8a3c0e18e1be489c0",
+      "versions": {
+        "python": "3.13.16",
+        "aioquic": "1.3.0",
+        "pylsqpack": "0.3.24",
+        "cryptography": "50.0.2",
+        "certifi": "2026.10.19"
+      },
+      "aioquicSourceSha256": {
+        "aioquic.quic.connection": "f6d0bd15ea563a3bd68518e3d4a6b918f4c9341048f850b27aa582f3a63fab65",
+        "aioquic.asyncio.client": "5159d2e28bd33da386c59dbac99dbb35ee47ecf4b480596367299c5ec03dd1c9",
+        "aioquic.h3.connection": "696e9c3735de11c314b8cd1e7e1265761a9373d1bbd2dbdf66570961dac839cd"
+      },
+      "reusedSourceSha256": {
+        "tools/verify-http3.py": "07c4f5f1d1fe1ce3768c1b3599182b2ad2b24f5b61ba5a8235fcd3fd74ce03e9",
+        "tools/probe_response.py": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa"
+      }
+    },
+    "passed": true,
+    "startedAt": "2026-10-25T05:19:47.898123Z",
+    "observationStoppedAt": "2026-10-25T05:19:47.910348Z",
+    "completedAt": "2026-10-25T05:19:47.996983Z",
+    "normalCertificateValidation": true,
+    "freshConnection": true,
+    "handshake": {
+      "alpn": "h3",
+      "sessionResumed": false,
+      "earlyDataAccepted": false
+    },
+    "statusCode": 200,
+    "exactBrotliBody": true,
+    "bodyBytes": 389,
+    "bodySha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e",
+    "streamRolesVerified": true,
+    "firstAcceptedFrames": {
+      "control": {
+        "streamId": 3,
+        "frameType": 10,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 9,
+        "fin": false
+      },
+      "qpackDecoder": {
+        "streamId": 7,
+        "frameType": 8,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": false,
+        "lengthFieldBytes": 0,
+        "dataBytes": 1,
+        "fin": false
+      },
+      "response": {
+        "streamId": 0,
+        "frameType": 9,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": false,
+        "lengthFieldBytes": 0,
+        "dataBytes": 437,
+        "fin": true
+      }
+    },
+    "acceptedRelevantFrames": [
+      {
+        "streamId": 3,
+        "frameType": 10,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": true,
+        "lengthFieldBytes": 1,
+        "dataBytes": 9,
+        "fin": false
+      },
+      {
+        "streamId": 7,
+        "frameType": 8,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": false,
+        "lengthFieldBytes": 0,
+        "dataBytes": 1,
+        "fin": false
+      },
+      {
+        "streamId": 0,
+        "frameType": 9,
+        "offPresent": false,
+        "semanticOffset": 0,
+        "offsetFieldBytes": 0,
+        "streamIdFieldBytes": 1,
+        "lengthPresent": false,
+        "lengthFieldBytes": 0,
+        "dataBytes": 437,
+        "fin": true
+      }
+    ],
+    "allAcceptedStreamFrameCount": 3
+  },
+  "deltas": {
+    "control": {
+      "offsetFieldBytesSaved": 1
+    },
+    "qpackDecoder": {
+      "offsetFieldBytesSaved": 1
+    },
+    "response": {
+      "offsetFieldBytesSaved": 1
+    }
+  },
+  "retainedBefore": {
+    "path": "measurements/quic-stream-offset-20261023-len-live.json",
+    "sha256": "ffbfd6623f545861dde9310f1e970a542ebc2b610e7c038af83663926984284e"
+  },
+  "limitations": [
+    "The original pre-OFF before phase is retained unchanged; the current after phase is refreshed for this runtime.",
+    "Three selected field components, not a fixed summed datagram or whole-exchange saving."
+  ]
+}
