@@ -1,0 +1,125 @@
+{
+  "schemaVersion": 1,
+  "kind": "maintenance-verification",
+  "verifiedAt": "2026-10-25T02:23:11Z",
+  "sourceCommit": "52c8dd0d955acd9352c5eb9d8284e35459b1fad3",
+  "change": "Report operational DNS lock failures instead of a successful skipped run; contention remains a quiet success.",
+  "script": {
+    "path": "server/update-dns.sh",
+    "beforeSha256": "9b133a18c03f4d1f12091c215a190955cd92358bcd198bd6c700d30647b01e5d",
+    "afterSha256": "2d36fbdc315011e071c049835994f5c687ec2f9d5f24ff1817b24657ddf4fd1c",
+    "originalOwnershipAndModePreserved": true,
+    "originalRetainedForRollback": true
+  },
+  "regressionVerification": {
+    "newWholeScriptTestMethods": 4,
+    "originalErrorCasesRejected": 3,
+    "pythonRegressionTestsPassed": 178,
+    "contentionExit": 0,
+    "operationalErrorStatusesPreserved": [
+      64,
+      73
+    ],
+    "missingExecutableExit": 127,
+    "successfulAcquisitionContinuesToCredentialValidation": true,
+    "newLockFixturesUseNoRealCredentialsOrNetwork": true,
+    "sourceCi": [
+      {
+        "runId": 40153671084,
+        "headSha": "52c8dd0d955acd9352c5eb9d8284e35459b1fad3",
+        "jobs": [
+          {
+            "name": "runtime",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "application",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "runId": 40153722312,
+        "headSha": "52c8dd0d955acd9352c5eb9d8284e35459b1fad3",
+        "jobs": [
+          {
+            "name": "runtime",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "browser",
+            "status": "completed",
+            "conclusion": "success"
+          },
+          {
+            "name": "application",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      }
+    ]
+  },
+  "installationVerification": {
+    "bundleSha256": "056dd4338c112402e4bbe95a69ea5dc967ad050c97de19c72e2eb20ee96ce26f",
+    "actionSha256": "9454e7bd5c3724940c2c599241f21e1514f0170e64bc53aa288167a982508cbe",
+    "offlineInstallerFaultCasesPassed": 7,
+    "privateFaultProofSha256": "4cdeffad15bb509c5c642f347ab5883ed17023a70c8eb38ef28c598d21765757",
+    "privateInstallLogSha256": "d9706806f720f28af077c95deb8774afd8d297bc8e7fed90b8c30bfd20bd930a",
+    "privateHostReadbackSha256": "ccfd8c65ce7d858f4fd9003907658644be4cc3f5d0178803bb7e01073076dc61",
+    "updaterInvokedByInstaller": false,
+    "credentialReadOrDnsRequestByInstaller": false
+  },
+  "pageVerification": {
+    "sourceCommit": "52c8dd0d955acd9352c5eb9d8284e35459b1fad3",
+    "release": "releases/20261025T022153Z-aa9d6af64c9d-onekb-deploy.toDmZv",
+    "representations": [
+      {
+        "encoding": "identity",
+        "bytes": 1021,
+        "sha256": "aa9d6af64c9dbc06da71361f34da43c1d9ea40e725de70daa8ffcd9c165069d9"
+      },
+      {
+        "encoding": "br",
+        "bytes": 389,
+        "sha256": "ecdaa2f1bc1b86240ec863f8be8ed1cf4f1fc4012e437c7b35c5fa17c21ca36e"
+      },
+      {
+        "encoding": "gzip",
+        "bytes": 535,
+        "sha256": "8128dce71c9c9f4a16ff3920fff528891f83cad0aaa09b53bc2f7ef2218070a0"
+      },
+      {
+        "encoding": "deflate",
+        "bytes": 523,
+        "sha256": "2b9950a17868ca9a2ecdf7c32d68814e262d62057c80e8b90fa9f7c3e8b37713"
+      }
+    ],
+    "exactOriginAndPublicBodies": true,
+    "liveHttp11AndHttp2ChecksPassed": 120,
+    "aliasChecksPassed": 12,
+    "privateDeployLogSha256": "f115db49d9dd7a890e654a1ac4836e98f3569a47de56eec7e982825b7bc85ac9",
+    "privateLiveLogSha256": "84cb4a9905904587fb99675b9233b91b0fb5dd8e9dec6cdbeed61cb83b98fdae",
+    "privateAliasLogSha256": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9"
+  },
+  "runtimeVerification": {
+    "imageId": "sha256:fdc327367ceab6f28e8fd88c3903c256900c7b23f86855eaae20d2f4c28bd27f",
+    "runtimeSourceCommit": "efe18b575e09ff8e7bd9c733ac568b37572fe541",
+    "running": true,
+    "activeConfigurationSha256": "0eff8baf3ac54e84780c29522ac5c458cacb0279821248f40e0c3457c3c9a6c5",
+    "tlsLibraries": {
+      "libsslSha256": "247277958733cfea479f27289ca2b38386b8b8cb42adc3e681ca7f25dd724a37",
+      "libcryptoSha256": "229050c1c2edc3ff448b27e3905cfaed45adb2d954f627213268c6ca3b30cf14"
+    },
+    "existingTlsReleaseUnchanged": true
+  },
+  "scope": "Operational maintenance and unchanged page/runtime verification. The installer did not invoke DNS updates. These observations establish no body, delivery-overhead, timing or latency reduction; existing dated transfer measurements remain unchanged."
+}
