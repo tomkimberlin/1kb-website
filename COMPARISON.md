@@ -96,7 +96,7 @@ A socket-local kernel filter limits queued traffic to the selected peer and port
 From the repository root, build the OpenSSL/nginx image and then the measurement image:
 
 ```sh
-docker build -t onekb-nginx:20261023f -f server/Dockerfile .
+docker build -t onekb-nginx:20261025a -f server/Dockerfile .
 docker build -t onekb-gallery:local -f tools/gallery.Dockerfile .
 ```
 

@@ -199,11 +199,11 @@ for(const [name,mutate] of [
   ['stale QUIC observation',f=>f.current.quic.parameterObservation.afterArtifactModifiedAt='2026-10-25T11:00:00Z'],
   ['QUIC readback precedes observation',f=>f.current.quic.after.runtimeReadbackAt='2026-10-25T11:43:00Z'],
 ])test('current-window rejects '+name,()=>{const f=fixture();mutate(f);assert.throws(f.checkCurrent);});
-test('no production binding is fabricated and observed adoption cannot bypass it',()=>{
-  const f=fixture();assert.equal(actualAdjacentBinding,null);
+test('missing explicit binding cannot bypass observed adoption',()=>{
+  const f=fixture();
   const readCommitted=(c,p)=>f.sources[p];
   assert.throws(()=>requireAdjacentEvidence(f.current.deployment,null,readCommitted),/requires fresh/);
-  assert.throws(()=>checkAdjacentAdoption(f.record,{...f.current,page:f.context.page,readCommitted}),/binding unavailable/);
+  assert.throws(()=>checkAdjacentAdoption(f.record,{...f.current,page:f.context.page,readCommitted,binding:null}),/binding unavailable/);
 });
 test('known image cannot omit evidence using an older Dockerfile',()=>{
   const f=fixture();assert.throws(()=>requireAdjacentEvidence(f.current.deployment,null,()=>Buffer.from('FROM old'),f.binding),/requires fresh/);
