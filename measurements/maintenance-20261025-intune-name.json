@@ -91,5 +91,13 @@
     "buildSourceSha256": "d893c2873ee422fc86ed4a6a4f31d335a587df1dfea6e64bd8ed0abbe94beb99",
     "regressionTestsPassed": 80,
     "privateTestLogSha256": "bc24cb8458600a0b236f1591e146e3a9f357e0ffe775ded3a06c487b57f1fd24"
+  },
+  "historicalFixtureValidation": {
+    "snapshotCommit": "56810bdae15d91b08fd0e37d2ddf707a6cb9cdfb",
+    "change": "The stream-phase normalizer tests load their pinned 1021-byte HTML and 389-byte Brotli inputs from this immutable historical commit rather than the changed working page. Production normalizer guards are unchanged.",
+    "probeTestsPassed": 212,
+    "privateProbeLogSha256": "3177379238a250c09d749b521f9fe3685f1369f792119cfda3c89c7b1cfcae7d",
+    "optimizerTestsWithNodePassed": 12,
+    "privateOptimizerLogSha256": "50404aed4838f64bae9d29c8ec683020aca8a86019f5b5a738a164bbf5a4c3aa"
   }
 }

@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import stat
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -46,8 +47,11 @@ class NormalizerTests(unittest.TestCase):
                     "bodyBytes": 389, "bodySha256": n.BODY_SHA256, "statusCode": 200, "exactBrotliBody": True, "scope": n.SCOPE}
         self.before = self.make_readback()
         self.after = self.make_readback()
-        self.html = (REPO / "index.html").read_bytes()
-        self.body = (REPO / "compression/index.html.br").read_bytes()
+        # This normalizer deliberately validates the dated 389-byte snapshot.
+        # Later copy edits must not replace its synthetic fixture's input page.
+        fixture_commit = "56810bdae15d91b08fd0e37d2ddf707a6cb9cdfb"
+        self.html = subprocess.check_output(["git", "show", fixture_commit + ":index.html"], cwd=REPO)
+        self.body = subprocess.check_output(["git", "show", fixture_commit + ":compression/index.html.br"], cwd=REPO)
         self.reads = []
 
     def make_readback(self):
