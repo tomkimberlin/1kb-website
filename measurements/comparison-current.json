@@ -11,8 +11,8 @@
       "sha256": "d28e797abc404e2b07d836926f3ae2f081975117e20ddd893b863c49328a5fd4"
     },
     "page": {
-      "path": "measurements/page-20261023-rle-local.json",
-      "sha256": "ed6b4f60c9758cbc9df5fb9c8b5c2c888706ee50ea81c692e539426836038a24"
+      "path": "measurements/page-20261025-font-validation-local.json",
+      "sha256": "24b80e662bb09fcc5eb3df2842b52af3a709c53a6eafcd2f6612924570dd8e60"
     }
   },
   "historicalGallery": {

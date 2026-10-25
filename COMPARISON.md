@@ -42,7 +42,7 @@ Three cold first-document exchanges per site count both directions and subtract 
 [Peer evidence](measurements/gallery-20261023-integrated.json). All 18 requests passed normal certificate validation, complete SYN visibility and zero capture-drop checks. The frozen Python/OpenSSL client measured document exchanges. This dated sample remains separate from later own-site updates; three samples do not establish a timing or universal ranking claim.
 <!-- comparison:fresh-gallery:end -->
 
-[Overhead evidence](measurements/overhead-20261023-len.json), [verified deployment](measurements/deployment-20261023-len.json) and [page measurements](measurements/page-20261023-rle-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
+[Overhead evidence](measurements/overhead-20261023-len.json), [verified deployment](measurements/deployment-20261023-len.json) and [page measurements](measurements/page-20261025-font-validation-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
