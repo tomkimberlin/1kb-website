@@ -49,6 +49,8 @@ Three cold first-document exchanges per site count both directions and subtract 
 Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
 <!-- comparison:current:end -->
 
+The [October 26 hosting graph](docs/delivery-overhead/) is a separate TLS-only comparison with a fresh check of the renamed page. It does not replace the broader packet/DNS evidence above.
+
 The [project-name update](measurements/maintenance-20261025-intune-name.json) is deployed. The earlier transport figures above remain tied to their original page; no fresh overhead measurement is claimed.
 
 <!-- comparison:candidate:start -->

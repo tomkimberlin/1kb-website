@@ -1,0 +1,169 @@
+{
+  "status": "passed",
+  "started_at_utc": "2026-10-26T01:18:53Z",
+  "completed_at_utc": "2026-10-26T01:18:54Z",
+  "frozen_client_image": "sha256:597ef273b8ca5b3abb5710801fb111005c53374718952191940af032b9424ac9",
+  "client": {
+    "python": "3.14.8",
+    "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+    "h2": "4.1.0",
+    "h11": "0.16.0",
+    "brotli": "1.2.1",
+    "zstandard": "0.25.0",
+    "hpack": "4.1.0",
+    "hyperframe": "6.1.0",
+    "probe_response_sha256": "e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa",
+    "dns_measurement_sha256": "7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0"
+  },
+  "probe_sha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256",
+  "private_raw_sha256": "ca1a7ffd296bcbac3d3d95740dc495cedacb8e8372d88840c795f42462c58f39",
+  "server_state_before": [
+    "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3|true|0",
+    "releases/20261025T172002Z-d3292c44fafb-onekb-deploy.tGwijc",
+    "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7  /srv/current/index.html",
+    "0e5b0c3dd3fb8d33d6314e7839a995d700233a9b8130266ff8fd44231eb058eb  /etc/nginx/nginx.conf"
+  ],
+  "server_state_after": [
+    "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3|true|0",
+    "releases/20261025T172002Z-d3292c44fafb-onekb-deploy.tGwijc",
+    "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7  /srv/current/index.html",
+    "0e5b0c3dd3fb8d33d6314e7839a995d700233a9b8130266ff8fd44231eb058eb  /etc/nginx/nginx.conf"
+  ],
+  "production_state_unchanged": true,
+  "host_write_mounts": false,
+  "container_root_read_only": true,
+  "request_headers": [
+    [
+      "accept-encoding",
+      "gzip, deflate, br, zstd"
+    ],
+    [
+      "sec-ch-ua",
+      "\"Chromium\";v=\"145\", \"Not:A-Brand\";v=\"99\""
+    ],
+    [
+      "sec-ch-ua-mobile",
+      "?0"
+    ],
+    [
+      "sec-ch-ua-platform",
+      "\"macOS\""
+    ],
+    [
+      "upgrade-insecure-requests",
+      "1"
+    ],
+    [
+      "user-agent",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+    ],
+    [
+      "accept",
+      "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+    ],
+    [
+      "sec-fetch-site",
+      "none"
+    ],
+    [
+      "sec-fetch-mode",
+      "navigate"
+    ],
+    [
+      "sec-fetch-user",
+      "?1"
+    ],
+    [
+      "sec-fetch-dest",
+      "document"
+    ],
+    [
+      "accept-language",
+      "en-US,en;q=0.9"
+    ],
+    [
+      "priority",
+      "u=0, i"
+    ]
+  ],
+  "runs": [
+    {
+      "run": 1,
+      "measured_at_utc": "2026-10-26T01:18:54Z",
+      "body_bytes_subtracted": 396,
+      "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+      "decoded_body_bytes": 1039,
+      "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+      "tls_through_document": {
+        "sent": 2157,
+        "received": 3492
+      },
+      "tls_minus_body": 5253,
+      "estimated_tcp_dns_minus_body": 7165,
+      "http2_plaintext_minus_body": 105,
+      "capture_statistics": {
+        "available": true,
+        "kernelPackets": 22,
+        "kernelDrops": 0,
+        "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+      },
+      "capture_handshake": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true
+      }
+    },
+    {
+      "run": 2,
+      "measured_at_utc": "2026-10-26T01:18:54Z",
+      "body_bytes_subtracted": 396,
+      "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+      "decoded_body_bytes": 1039,
+      "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+      "tls_through_document": {
+        "sent": 2157,
+        "received": 3491
+      },
+      "tls_minus_body": 5252,
+      "estimated_tcp_dns_minus_body": 6944,
+      "http2_plaintext_minus_body": 105,
+      "capture_statistics": {
+        "available": true,
+        "kernelPackets": 21,
+        "kernelDrops": 0,
+        "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+      },
+      "capture_handshake": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true
+      }
+    },
+    {
+      "run": 3,
+      "measured_at_utc": "2026-10-26T01:18:54Z",
+      "body_bytes_subtracted": 396,
+      "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+      "decoded_body_bytes": 1039,
+      "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+      "tls_through_document": {
+        "sent": 2157,
+        "received": 3491
+      },
+      "tls_minus_body": 5252,
+      "estimated_tcp_dns_minus_body": 6996,
+      "http2_plaintext_minus_body": 105,
+      "capture_statistics": {
+        "available": true,
+        "kernelPackets": 22,
+        "kernelDrops": 0,
+        "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+      },
+      "capture_handshake": {
+        "sentSynPackets": 1,
+        "receivedSynAckPackets": 1,
+        "completeSynObserved": true
+      }
+    }
+  ]
+}
