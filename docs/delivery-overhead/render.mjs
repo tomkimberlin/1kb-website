@@ -12,9 +12,9 @@ if(values.join(',')!=='6203,5421,4432')throw new Error('Unexpected chart values'
 const out=['<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Archived Cloudflare test 6203 bytes, default self-hosted test 5421 bytes, optimized self-hosted test 4432 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>'];
 const baseline=690,scale=550/6500;
 const bars=[
- {x:137,value:values[0],label:['Cloudflare','(archived)'],color:'#a3b1bf'},
- {x:439,value:values[1],label:['Default','self-hosted','(test)'],color:'#5bada7'},
- {x:741,value:values[2],label:['Optimized','self-hosted','(test)'],color:'#087f7d'},
+ {x:137,value:values[0],label:['Cloudflare'],color:'#a3b1bf'},
+ {x:439,value:values[1],label:['Default','self-hosted'],color:'#5bada7'},
+ {x:741,value:values[2],label:['Optimized','self-hosted'],color:'#087f7d'},
 ];
 for(const b of bars){
  const h=b.value*scale,top=baseline-h,cx=b.x+100;

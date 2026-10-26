@@ -2,15 +2,12 @@
 <text x="237" y="133.131" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">6,203 B</text>
 <rect data-value="6203" data-baseline="0" x="137" y="165.131" width="200" height="524.869" fill="#a3b1bf"/>
 <text x="237" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Cloudflare</text>
-<text x="237" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(archived)</text>
 <text x="539" y="199.300" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,421 B</text>
 <rect data-value="5421" data-baseline="0" x="439" y="231.300" width="200" height="458.700" fill="#5bada7"/>
 <text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Default</text>
 <text x="539" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
-<text x="539" y="853" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(test)</text>
 <text x="841" y="282.985" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">4,432 B</text>
 <rect data-value="4432" data-baseline="0" x="741" y="314.985" width="200" height="375.015" fill="#087f7d"/>
 <text x="841" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Optimized</text>
 <text x="841" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
-<text x="841" y="853" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(test)</text>
 </svg>
