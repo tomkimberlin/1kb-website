@@ -1,0 +1,509 @@
+{
+  "status": "fresh_current_shipped_page_verified",
+  "metric": "Observed encrypted TLS bytes sent + received through the first document response minus its entire encoded body. Excludes DNS and TCP/IP.",
+  "metric_change_from_previous_graph": "Required for an apples-to-apples measurement boundary: no Cloudflare-through-close packet/DNS baseline is archived. The earlier 6944-byte latest value is a different, broader metric and is not used here.",
+  "baseline_nature": "Contemporaneously archived controlled replay of the former Cloudflare Worker hosting, not a newly reconstructed value or original public production capture.",
+  "migration_commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+  "migration_recorded_utc": "2026-09-10T22:05:01Z",
+  "resumption_commit": "28e55767eec827b4188fe55e0f497ce3606e9fe2",
+  "resumption_recorded_utc": "2026-09-10T19:24:44Z",
+  "cloudflare_worker_commit": "7c95931",
+  "cloudflare_worker_recorded_utc": "2026-09-10T19:39:28Z",
+  "documentation_source": {
+    "commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+    "path": "TRANSPORT.md",
+    "git_blob": "9a9850843895a1e645d4441e877127229eed90df",
+    "sha256": "ceb719bd72d13b71c684a04a8e639d0b220ba2163410aa18b400b76ade5fb81e",
+    "url": "https://github.com/tomkimberlin/1kb-website/blob/d27361142429199c89e300630cbf9eb561eda9fe/TRANSPORT.md"
+  },
+  "points": [
+    {
+      "label": "Cloudflare test",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-10T21:55:39Z",
+      "sent_tls_bytes": 2148,
+      "received_tls_bytes": 4326,
+      "encoded_body_subtracted_bytes": 271,
+      "extra_bytes": 6203,
+      "n": 1,
+      "cipher": "TLS_AES_256_GCM_SHA384",
+      "client_openssl": "OpenSSL 3.5.8 25 Aug 2026",
+      "source": {
+        "commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+        "path": "measurements/cloudflare-http2.json",
+        "git_blob": "1cbe6934805a24cbc6dd558aca90b2fd05fc0e2f",
+        "sha256": "f01a6748c409df9e989cd4cee009650ab40cb8377f1de077c9a94b6e246c690c",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/d27361142429199c89e300630cbf9eb561eda9fe/measurements/cloudflare-http2.json"
+      },
+      "measurement_nature": "Archived controlled comparison of former hosting; temporary Worker route, not an original public-route production capture.",
+      "event": 1
+    },
+    {
+      "label": "Initial home-server test",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-10T21:55:39Z",
+      "sent_tls_bytes": 2132,
+      "received_tls_bytes": 3516,
+      "encoded_body_subtracted_bytes": 271,
+      "extra_bytes": 5377,
+      "n": 1,
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "client_openssl": "OpenSSL 3.5.8 25 Aug 2026",
+      "source": {
+        "commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+        "path": "measurements/direct-http2.json",
+        "git_blob": "598acfe45bc331a1b522e40de5896bd3ed129de9",
+        "sha256": "1d79878a18bbeb111be8909a8343a0a84353ada05b1c4e747e332c2466dccd33",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/d27361142429199c89e300630cbf9eb561eda9fe/measurements/direct-http2.json"
+      },
+      "measurement_nature": "Archived controlled comparison of former hosting; temporary Worker route, not an original public-route production capture.",
+      "event": 2
+    },
+    {
+      "label": "First sample",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-10T22:46:29Z",
+      "extra_bytes": 5403,
+      "range": {
+        "median": 5403,
+        "minimum": 5403,
+        "maximum": 5403
+      },
+      "n": 1,
+      "source": {
+        "commit": "f32b6bff2cce01fbd72cea831538bcf0bcb94b11",
+        "path": "measurements/gallery-20260910.json",
+        "git_blob": "cd6001e0c1f7f79b0a18ac4df796a4f3a669f087",
+        "sha256": "e923fe4a4ddebfa7ee4efd07fd2efb90b775af19e6247a08c318f46dbc1ddfd4",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/f32b6bff2cce01fbd72cea831538bcf0bcb94b11/measurements/gallery-20260910.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 3
+    },
+    {
+      "label": "First repeated sample",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-11T15:01:44Z",
+      "extra_bytes": 5403,
+      "range": {
+        "median": 5403,
+        "minimum": 5403,
+        "maximum": 5404
+      },
+      "n": 3,
+      "source": {
+        "commit": "628c5266dc7a2378793bcb937d0fb55c77b1fe95",
+        "path": "measurements/gallery-20260911.json",
+        "git_blob": "21a458089cf23d9441370e3f9845d8927758e880",
+        "sha256": "d873dd1175617fe36cff0e3068bf3f02a59edfe1255a4cf8136acbc157ea13a0",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/628c5266dc7a2378793bcb937d0fb55c77b1fe95/measurements/gallery-20260911.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 4
+    },
+    {
+      "label": "HTTP/2 tuning",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-15T17:44:19Z",
+      "extra_bytes": 5356,
+      "range": {
+        "median": 5356,
+        "minimum": 5355,
+        "maximum": 5357
+      },
+      "n": 3,
+      "source": {
+        "commit": "47d974e830cc01e45871e33836fb816a58153276",
+        "path": "measurements/gallery-20260915.json",
+        "git_blob": "93a7d93f446dd74762599ea6eae9ed2a45c0b0ec",
+        "sha256": "c4c608ce6f43c5d8acab1fbd447011efccb823c05fd1430022db69bded25143f",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/47d974e830cc01e45871e33836fb816a58153276/measurements/gallery-20260915.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 5
+    },
+    {
+      "label": "HTTP/2 SETTINGS",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-22T14:26:10Z",
+      "extra_bytes": 5349,
+      "range": {
+        "median": 5349,
+        "minimum": 5349,
+        "maximum": 5351
+      },
+      "n": 3,
+      "source": {
+        "commit": "2f27d4b78f8765fb2e3c54a7a2e8445be2c3039b",
+        "path": "measurements/gallery-20260922.json",
+        "git_blob": "be82211d2f67eb1c9a52a8a0a55774dbb8af28fc",
+        "sha256": "2a585a0ec0fd4c359089ec101060f49378bf3d0078ff7ede1119373c91298651",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/2f27d4b78f8765fb2e3c54a7a2e8445be2c3039b/measurements/gallery-20260922.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 6
+    },
+    {
+      "label": "Response-record coalescing",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-22T17:31:51Z",
+      "extra_bytes": 5327,
+      "range": {
+        "median": 5327,
+        "minimum": 5326,
+        "maximum": 5328
+      },
+      "n": 3,
+      "source": {
+        "commit": "69a4b7eaf09d1db7329e2a06afd101c2b28bb70b",
+        "path": "measurements/gallery-20260922.json",
+        "git_blob": "fd9090280c237a3bfa0d07705ea2b793c51494d7",
+        "sha256": "8671c62629198c65b57c0637af47c6464a4641dc9dca5a83540a0b8721cd7fc9",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/69a4b7eaf09d1db7329e2a06afd101c2b28bb70b/measurements/gallery-20260922.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 7
+    },
+    {
+      "label": "Handshake-record coalescing",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-22T20:23:25Z",
+      "extra_bytes": 5262,
+      "range": {
+        "median": 5262,
+        "minimum": 5261,
+        "maximum": 5262
+      },
+      "n": 3,
+      "source": {
+        "commit": "cb612a94e5a815732d3034e345b86fa82da82365",
+        "path": "measurements/gallery-20260922.json",
+        "git_blob": "1dcfe13b6b47661d57c019486d9cb437dbbcb138",
+        "sha256": "5c656b910f5f04cf143b8fc0e0a259079f1dd369555da5a188a8ea4f2de44e07",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/cb612a94e5a815732d3034e345b86fa82da82365/measurements/gallery-20260922.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 8
+    },
+    {
+      "label": "Certificate cache",
+      "connection": "cold",
+      "measured_from_utc": "2026-09-22T20:59:37Z",
+      "extra_bytes": 5251,
+      "range": {
+        "median": 5251,
+        "minimum": 5251,
+        "maximum": 5252
+      },
+      "n": 3,
+      "source": {
+        "commit": "2f7dccf3bee5b8f7ffb1f94c344b74420bdf119f",
+        "path": "measurements/gallery-20260922.json",
+        "git_blob": "444a7efcc83b04240893a35894f5e64b5130d966",
+        "sha256": "e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/2f7dccf3bee5b8f7ffb1f94c344b74420bdf119f/measurements/gallery-20260922.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 9
+    },
+    {
+      "label": "October remeasurement",
+      "connection": "cold",
+      "measured_from_utc": "2026-10-05T23:36:49Z",
+      "extra_bytes": 5253,
+      "range": {
+        "median": 5253,
+        "minimum": 5252,
+        "maximum": 5253
+      },
+      "n": 3,
+      "source": {
+        "commit": "e487edbbfe0613dc624eed225071793134ee24a4",
+        "path": "measurements/overhead-20261005.json",
+        "git_blob": "9112dddfb0fad285a9594c3ebaa52911f854034f",
+        "sha256": "4e6503049e4b63c978c93c77d704700d223ca74332c9fa10df5da3b797f4b67d",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/e487edbbfe0613dc624eed225071793134ee24a4/measurements/overhead-20261005.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 10
+    },
+    {
+      "label": "TLS runtime check",
+      "connection": "cold",
+      "measured_from_utc": "2026-10-22T16:59:13Z",
+      "extra_bytes": 5253,
+      "range": {
+        "median": 5253,
+        "minimum": 5252,
+        "maximum": 5254
+      },
+      "n": 3,
+      "source": {
+        "commit": "e487edbbfe0613dc624eed225071793134ee24a4",
+        "path": "measurements/overhead-20261022-openssl359.json",
+        "git_blob": "8d371bce1705c5fd6c710a6ed0923873a0f66a42",
+        "sha256": "2728cdba277379ea272f80e5edda662b63e60a12ed3aba7ca07ca66fee583d56",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/e487edbbfe0613dc624eed225071793134ee24a4/measurements/overhead-20261022-openssl359.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 11
+    },
+    {
+      "label": "Latest verified HTTP/2 check",
+      "connection": "cold",
+      "measured_from_utc": "2026-10-23T16:37:05Z",
+      "extra_bytes": 5252,
+      "range": {
+        "median": 5252,
+        "minimum": 5251,
+        "maximum": 5253
+      },
+      "n": 3,
+      "source": {
+        "commit": "e487edbbfe0613dc624eed225071793134ee24a4",
+        "path": "measurements/overhead-20261023-len.json",
+        "git_blob": "160e03639c7ef72856afb9d8cfdbe0cb9994961a",
+        "sha256": "f2106833f0025f734e7e54f0b6625505282a21b6550bdfcb2ca157dac9239b63",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/e487edbbfe0613dc624eed225071793134ee24a4/measurements/overhead-20261023-len.json"
+      },
+      "measurement_nature": "Archived own-site measurement; historical client builds are not identical to the initial controlled comparison.",
+      "event": 12
+    },
+    {
+      "event": 13,
+      "label": "Latest verified measurement",
+      "connection": "cold",
+      "measured_from_utc": "2026-10-25T05:20:01Z",
+      "extra_bytes": 5252,
+      "range": {
+        "median": 5252,
+        "minimum": 5252,
+        "maximum": 5253
+      },
+      "n": 3,
+      "samples": [
+        {
+          "measured_at_utc": "2026-10-25T05:20:01Z",
+          "sent_tls_bytes": 2157,
+          "received_tls_bytes": 3484,
+          "entire_encoded_body_subtracted_bytes": 389,
+          "extra_tls_bytes": 5252
+        },
+        {
+          "measured_at_utc": "2026-10-25T05:20:02Z",
+          "sent_tls_bytes": 2157,
+          "received_tls_bytes": 3485,
+          "entire_encoded_body_subtracted_bytes": 389,
+          "extra_tls_bytes": 5253
+        },
+        {
+          "measured_at_utc": "2026-10-25T05:20:03Z",
+          "sent_tls_bytes": 2157,
+          "received_tls_bytes": 3484,
+          "entire_encoded_body_subtracted_bytes": 389,
+          "extra_tls_bytes": 5252
+        }
+      ],
+      "source": {
+        "commit": "87acd395d301db17bb7d5b609ea74cd0f2f84824",
+        "path": "measurements/overhead-20261025-adjacent.json",
+        "git_blob": "07c39254ee8b8a1fe7b440fa3ea22d5f83ae2d13",
+        "sha256": "d5852fcd34888c57416c195a3d43f4d151983f562933d30efc35a331710819cf",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/87acd395d301db17bb7d5b609ea74cd0f2f84824/measurements/overhead-20261025-adjacent.json"
+      },
+      "measurement_nature": "Verified shipped runtime before later wording change; no claim of a new HTTP/2 saving from the HTTP/3 patch."
+    },
+    {
+      "event": 14,
+      "label": "Fresh check of current shipped page",
+      "connection": "cold",
+      "measured_from_utc": "2026-10-26T01:18:53Z",
+      "measured_to_utc": "2026-10-26T01:18:54Z",
+      "extra_bytes": 5252,
+      "range": {
+        "median": 5252,
+        "minimum": 5252,
+        "maximum": 5253
+      },
+      "n": 3,
+      "samples": [
+        {
+          "run": 1,
+          "measured_at_utc": "2026-10-26T01:18:54Z",
+          "body_bytes_subtracted": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "decoded_body_bytes": 1039,
+          "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_document": {
+            "sent": 2157,
+            "received": 3492
+          },
+          "tls_minus_body": 5253,
+          "estimated_tcp_dns_minus_body": 7165,
+          "http2_plaintext_minus_body": 105,
+          "capture_statistics": {
+            "available": true,
+            "kernelPackets": 22,
+            "kernelDrops": 0,
+            "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+          },
+          "capture_handshake": {
+            "sentSynPackets": 1,
+            "receivedSynAckPackets": 1,
+            "completeSynObserved": true
+          }
+        },
+        {
+          "run": 2,
+          "measured_at_utc": "2026-10-26T01:18:54Z",
+          "body_bytes_subtracted": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "decoded_body_bytes": 1039,
+          "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_document": {
+            "sent": 2157,
+            "received": 3491
+          },
+          "tls_minus_body": 5252,
+          "estimated_tcp_dns_minus_body": 6944,
+          "http2_plaintext_minus_body": 105,
+          "capture_statistics": {
+            "available": true,
+            "kernelPackets": 21,
+            "kernelDrops": 0,
+            "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+          },
+          "capture_handshake": {
+            "sentSynPackets": 1,
+            "receivedSynAckPackets": 1,
+            "completeSynObserved": true
+          }
+        },
+        {
+          "run": 3,
+          "measured_at_utc": "2026-10-26T01:18:54Z",
+          "body_bytes_subtracted": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "decoded_body_bytes": 1039,
+          "decoded_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_document": {
+            "sent": 2157,
+            "received": 3491
+          },
+          "tls_minus_body": 5252,
+          "estimated_tcp_dns_minus_body": 6996,
+          "http2_plaintext_minus_body": 105,
+          "capture_statistics": {
+            "available": true,
+            "kernelPackets": 22,
+            "kernelDrops": 0,
+            "counterScope": "Peer/port-prefiltered AF_PACKET socket through this post-join read; may include packets rejected by the exact local-address Python filter or unread queued packets. Not a complete owned-flow count."
+          },
+          "capture_handshake": {
+            "sentSynPackets": 1,
+            "receivedSynAckPackets": 1,
+            "completeSynObserved": true
+          }
+        }
+      ],
+      "source": {
+        "type": "fresh read-only measurement",
+        "path": "fresh-measurement.json",
+        "sha256": "374b56303dcbb3c9b633e96ca01b0fa92445bbe9a5b0c41365db7cec7d0b3404",
+        "frozen_client_image": "sha256:597ef273b8ca5b3abb5710801fb111005c53374718952191940af032b9424ac9",
+        "probe_sha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256"
+      },
+      "measurement_nature": "Fresh current-page measurement; exact encoded and decoded body hashes verified, production state unchanged."
+    }
+  ],
+  "resumed_controls_not_plotted": [
+    {
+      "label": "Cloudflare test",
+      "connection": "resumed",
+      "measured_from_utc": "2026-09-10T21:55:39Z",
+      "sent_tls_bytes": 2419,
+      "received_tls_bytes": 2436,
+      "encoded_body_subtracted_bytes": 271,
+      "extra_bytes": 4584,
+      "n": 1,
+      "cipher": "TLS_AES_256_GCM_SHA384",
+      "client_openssl": "OpenSSL 3.5.8 25 Aug 2026",
+      "source": {
+        "commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+        "path": "measurements/cloudflare-http2.json",
+        "git_blob": "1cbe6934805a24cbc6dd558aca90b2fd05fc0e2f",
+        "sha256": "f01a6748c409df9e989cd4cee009650ab40cb8377f1de077c9a94b6e246c690c",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/d27361142429199c89e300630cbf9eb561eda9fe/measurements/cloudflare-http2.json"
+      },
+      "measurement_nature": "Archived controlled comparison of former hosting; temporary Worker route, not an original public-route production capture."
+    },
+    {
+      "label": "Initial home-server test",
+      "connection": "resumed",
+      "measured_from_utc": "2026-09-10T21:55:39Z",
+      "sent_tls_bytes": 2211,
+      "received_tls_bytes": 1900,
+      "encoded_body_subtracted_bytes": 271,
+      "extra_bytes": 3840,
+      "n": 1,
+      "cipher": "TLS_AES_128_GCM_SHA256",
+      "client_openssl": "OpenSSL 3.5.8 25 Aug 2026",
+      "source": {
+        "commit": "d27361142429199c89e300630cbf9eb561eda9fe",
+        "path": "measurements/direct-http2.json",
+        "git_blob": "598acfe45bc331a1b522e40de5896bd3ed129de9",
+        "sha256": "1d79878a18bbeb111be8909a8343a0a84353ada05b1c4e747e332c2466dccd33",
+        "url": "https://github.com/tomkimberlin/1kb-website/blob/d27361142429199c89e300630cbf9eb561eda9fe/measurements/direct-http2.json"
+      },
+      "measurement_nature": "Archived controlled comparison of former hosting; temporary Worker route, not an original public-route production capture."
+    }
+  ],
+  "controlled_cold_tls_difference_bytes": 826,
+  "latest_descriptive_difference_from_cloudflare_bytes": 951,
+  "important_limits": [
+    "Only the two September 10 control points share the same contemporaneous request/profile and body.",
+    "Later samples have a closely related but different request profile and rebuilt clients; the 951-byte span is descriptive, not an isolated cumulative saving.",
+    "Different cipher suites, certificates, headers and ticket behavior are part of the hosting-path comparison, not a pure nginx-code experiment.",
+    "The 7867-byte Cloudflare estimate ends at the first response; the later 6944-byte network estimate ends at connection close. Those values must not be plotted together.",
+    "No preserved Netlify or October 2022 network capture was found; redirect syntax alone cannot establish the provider or its overhead.",
+    "Repository commit times record migration history, not independently proven exact deployment times."
+  ],
+  "checked_at_utc": "2026-10-26T01:14:36Z",
+  "checked_branch_head": "87acd395d301db17bb7d5b609ea74cd0f2f84824",
+  "latest_verified_endpoint": {
+    "measured_at_utc": "2026-10-26T01:18:54Z",
+    "median": 5252,
+    "range": [
+      5252,
+      5253
+    ],
+    "body_bytes_subtracted": 396,
+    "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+    "validates_current_shipped_body": true
+  },
+  "latest_shipped_state": {
+    "verified_at_utc": "2026-10-25T17:20:17.879108Z",
+    "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+    "html_bytes": 1039,
+    "encoded_brotli_bytes": 396,
+    "runtime_unchanged_since_transport_sample": true,
+    "transport_measured": true,
+    "reason": "Later project-name wording/link update changed the body. Existing transport measurements remain tied to the preceding page."
+  },
+  "fresh_measurement_attempt": {
+    "status": "passed",
+    "route": "existing alfred-lan alias with pinned host-key verification",
+    "resolution": "Normal OpenSSH worked outside the restricted network sandbox. No DNS or security settings changed.",
+    "server_or_repository_changed": false,
+    "measured_at_utc": "2026-10-26T01:18:54Z"
+  },
+  "excluded_component_result": {
+    "pr": 17,
+    "protocol": "HTTP/3",
+    "control_stream_header_bytes": [
+      7,
+      3
+    ],
+    "scope": "Component result and repeated/resumed fixture saving; not a cold HTTP/2 whole-exchange saving."
+  }
+}
