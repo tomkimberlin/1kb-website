@@ -1,0 +1,1539 @@
+{
+  "schemaVersion": 1,
+  "scope": "Matched isolated nginx fixtures; not a production measurement or a universal default.",
+  "metric": "TLS bytes sent plus received through the first complete HTTP/2 document response, minus its entire encoded body. DNS, TCP/IP and close traffic excluded.",
+  "measuredAt": "2026-10-26T13:09:15Z",
+  "sourceCommit": "da55dbd46e07c7858b0b48b424f45c6c911992f5",
+  "software": {
+    "stock": {
+      "imageId": "sha256:1ae82dcc4a34bcd976195b3c4c5a6b7e569505527a1e2a28c2101e032159a5c7",
+      "imageManifest": "nginx@sha256:dc5069ad14f19660b141b21236140b91656bf89bbc3e2417c70ae650cd66104c",
+      "nginx": "1.30.4",
+      "opensslRuntime": "3.5.8",
+      "definition": "Official stable-alpine image, unchanged binary; stock HTTP defaults, explicit HTTPS/HTTP2, document root and shared test chain. Paths/worker count adapted only for isolated nonroot execution."
+    },
+    "optimized": {
+      "imageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+      "nginx": "1.30.4",
+      "opensslRuntime": "3.5.9",
+      "definition": "Deployed patched binary and applicable HTTP2/TLS/handler settings, same test chain, runtime certificate compression fallback; offline certificate-cache optimization excluded."
+    },
+    "client": {
+      "imageId": "sha256:597ef273b8ca5b3abb5710801fb111005c53374718952191940af032b9424ac9",
+      "requestHeaders": [
+        [
+          "accept-encoding",
+          "gzip, deflate, br, zstd"
+        ],
+        [
+          "sec-ch-ua",
+          "\"Chromium\";v=\"145\", \"Not:A-Brand\";v=\"99\""
+        ],
+        [
+          "sec-ch-ua-mobile",
+          "?0"
+        ],
+        [
+          "sec-ch-ua-platform",
+          "\"macOS\""
+        ],
+        [
+          "upgrade-insecure-requests",
+          "1"
+        ],
+        [
+          "user-agent",
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+        ],
+        [
+          "accept",
+          "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8"
+        ],
+        [
+          "sec-fetch-site",
+          "none"
+        ],
+        [
+          "sec-fetch-mode",
+          "navigate"
+        ],
+        [
+          "sec-fetch-user",
+          "?1"
+        ],
+        [
+          "sec-fetch-dest",
+          "document"
+        ],
+        [
+          "accept-language",
+          "en-US,en;q=0.9"
+        ],
+        [
+          "priority",
+          "u=0, i"
+        ]
+      ],
+      "probe": "default-reference/probe.py",
+      "probeSha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9",
+      "sourceGallerySha256": "286b80603699b7eaafd0bebaaef669831e0f86ab8a28d60881ac2ccf63724256",
+      "versions": {
+        "python": "3.14.8",
+        "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+        "h2": "4.1.0",
+        "h11": "0.16.0",
+        "brotli": "1.2.1",
+        "zstandard": "0.25.0"
+      }
+    }
+  },
+  "certificate": {
+    "kind": "Generated fixture CA, ECDSA P-256 leaf and one intermediate, identical across arms. Root excluded from served chain.",
+    "productionPrivateKeysAccessed": false,
+    "systemTrustChanged": false,
+    "explicitTestCA": true,
+    "DERBytes": {
+      "leaf": 480,
+      "intermediate": 443,
+      "root": 434
+    },
+    "chainSha256": "3355482f426e606a8f59b4581ad4417951cbaf357a845eabc01d054798ce9674",
+    "rootSha256": "cd15b1f1644d8ad1de79ef3ab091d2299fcf5eef29fd30fd8328c5b77fdf4f8d"
+  },
+  "isolation": {
+    "serverNetwork": "none",
+    "clientNetwork": "owned server namespace, loopback only",
+    "publishedPorts": [],
+    "containerUser": "101:101",
+    "rootReadOnly": true,
+    "capabilities": "all dropped",
+    "noNewPrivileges": true,
+    "productionUnchanged": true,
+    "ownedContainersRemaining": false,
+    "stateBeforeSha256": "0d21fb6ebd3896cecb85010bef668ca646b6b9fb283730f426744fb4081d3ed8",
+    "stateAfterSha256": "0d21fb6ebd3896cecb85010bef668ca646b6b9fb283730f426744fb4081d3ed8",
+    "privateResultArchiveSha256": "c259e005fa1cd4688bd53ed992155207a4fb08f813995dfc8f5ba74654d0c211",
+    "cleanupConfirmed": true,
+    "inspections": {
+      "stock-identity": {
+        "sha256": "83ea113f4d917835f623f0c6357d955dc68156ea1a465f22d48d75f46683e094",
+        "networkNone": true,
+        "readOnlyRoot": true,
+        "privileged": false,
+        "allCapabilitiesDropped": true,
+        "noPublishedPorts": true,
+        "onlyMountIsOwnedReadOnlyFixture": true
+      },
+      "stock-brotli": {
+        "sha256": "f3d28d8a27909ef97ba8f4c128e90a525db5c146dcc9aa8fbffa5196ba755758",
+        "networkNone": true,
+        "readOnlyRoot": true,
+        "privileged": false,
+        "allCapabilitiesDropped": true,
+        "noPublishedPorts": true,
+        "onlyMountIsOwnedReadOnlyFixture": true
+      },
+      "optimized": {
+        "sha256": "72cef2717cbb8fa9091f5b151a3e4b4dd8920024392ea906dfe2a9b69d134f1b",
+        "networkNone": true,
+        "readOnlyRoot": true,
+        "privileged": false,
+        "allCapabilitiesDropped": true,
+        "noPublishedPorts": true,
+        "onlyMountIsOwnedReadOnlyFixture": true
+      }
+    }
+  },
+  "validation": {
+    "wrongCARejectedWithoutResult": true,
+    "firstAttemptExcluded": "An auxiliary control route returned 500; its partial results are not used. Corrected routing was followed by a complete new nine-sample run."
+  },
+  "runOrder": [
+    [
+      "stock-identity",
+      "optimized",
+      "stock-brotli"
+    ],
+    [
+      "optimized",
+      "stock-brotli",
+      "stock-identity"
+    ],
+    [
+      "stock-brotli",
+      "stock-identity",
+      "optimized"
+    ]
+  ],
+  "arms": {
+    "stock-identity": {
+      "encoding": "identity",
+      "bodyBytesSubtracted": 1039,
+      "median": 5421,
+      "range": [
+        5420,
+        5421
+      ],
+      "nginxConfig": "default-reference/stock-identity.conf",
+      "nginxConfigSha256": "1cd260b93cc452af8815ec1fce5ad60c7c172344a4dea87d57f1a6b23616a9c6",
+      "nginxEffectiveConfigCaptureSha256": "da4f5f97c6de9c03346c88aed04a064beb4787d2608bdb6ae0dadf32b9645941",
+      "versionCapture": "nginx version: nginx/1.30.4\nbuilt by gcc 15.2.0 (Alpine 15.2.0) \nbuilt with OpenSSL 3.5.7 9 Jun 2026 (running with OpenSSL 3.5.8 25 Aug 2026)\nTLS SNI support enabled\nconfigure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/run/nginx.pid --lock-path=/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-perl_modules_path=/usr/lib/perl5/vendor_perl --user=nginx --group=nginx --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_v3_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --with-cc-opt='-Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt -g' --with-ld-opt='-Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs'",
+      "samples": [
+        {
+          "round": 1,
+          "rawResultSha256": "423cb2861bd2de6398e520c34c9422d96450d7670425fb2be9bb67c46ab89262",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 78
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:12 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "1039"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-40f\""
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 1039,
+          "body_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 4286
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 4286
+          },
+          "response_http_plain_bytes": 1215,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 109
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 1039
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5420,
+          "http_plain_minus_body": 176,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:12Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 2,
+          "rawResultSha256": "8529278beb8f121b7dee23779661eb24d55b750590410c5e3c91acf91550b701",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 79
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:13 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "1039"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-40f\""
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 1039,
+          "body_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 4287
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 4287
+          },
+          "response_http_plain_bytes": 1215,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 109
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 1039
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5421,
+          "http_plain_minus_body": 176,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:13Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 3,
+          "rawResultSha256": "4086c8d0a387ef8b8698295b0c3ec61685d7f1e621c5cf6e5123aeb6da82b129",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 79
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:14 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "1039"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-40f\""
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 1039,
+          "body_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 4287
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 4287
+          },
+          "response_http_plain_bytes": 1215,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 109
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 1039
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5421,
+          "http_plain_minus_body": 176,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:14Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        }
+      ]
+    },
+    "stock-brotli": {
+      "encoding": "br",
+      "bodyBytesSubtracted": 396,
+      "median": 5436,
+      "range": [
+        5436,
+        5437
+      ],
+      "nginxConfig": "default-reference/stock-brotli.conf",
+      "nginxConfigSha256": "234c23becf0732f87d3942a7a73e4eba5dcaff1d83da0888ceffc95d04a096cb",
+      "nginxEffectiveConfigCaptureSha256": "405a19cb946d6b7c036d70d4930a91131aff59c68756b301cde0315a2796c967",
+      "versionCapture": "nginx version: nginx/1.30.4\nbuilt by gcc 15.2.0 (Alpine 15.2.0) \nbuilt with OpenSSL 3.5.7 9 Jun 2026 (running with OpenSSL 3.5.8 25 Aug 2026)\nTLS SNI support enabled\nconfigure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/run/nginx.pid --lock-path=/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-perl_modules_path=/usr/lib/perl5/vendor_perl --user=nginx --group=nginx --with-compat --with-file-aio --with-threads --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-http_v3_module --with-mail --with-mail_ssl_module --with-stream --with-stream_realip_module --with-stream_ssl_module --with-stream_ssl_preread_module --with-cc-opt='-Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt -g' --with-ld-opt='-Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs'",
+      "samples": [
+        {
+          "round": 1,
+          "rawResultSha256": "471635325b7ab2c839b9858c630b304809e463f8158291501d8ff330c8edb1cc",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 79
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:12 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "396"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-18c\""
+            ],
+            [
+              "content-encoding",
+              "br"
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 3659
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 3659
+          },
+          "response_http_plain_bytes": 587,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 124
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5436,
+          "http_plain_minus_body": 191,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:12Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 2,
+          "rawResultSha256": "6a406583dd92054c9762183b3fa87c7da80bd3922fa260a4161dd41d6da65a95",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 79
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:13 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "396"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-18c\""
+            ],
+            [
+              "content-encoding",
+              "br"
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 3659
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 3659
+          },
+          "response_http_plain_bytes": 587,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 124
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5436,
+          "http_plain_minus_body": 191,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:13Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 3,
+          "rawResultSha256": "3153f0621e394758ac15be10957054b33e39d0e60a222220d877019650362fbe",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_256_GCM_SHA384",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 11,
+              "bytes": 941
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 80
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 52
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 281
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "server",
+              "nginx/1.30.4"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:14 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "content-length",
+              "396"
+            ],
+            [
+              "last-modified",
+              "Mon, 26 Oct 2026 13:05:15 GMT"
+            ],
+            [
+              "etag",
+              "\"6adf500b-18c\""
+            ],
+            [
+              "content-encoding",
+              "br"
+            ],
+            [
+              "accept-ranges",
+              "bytes"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2173,
+            "received": 3660
+          },
+          "tls_before_client_close": {
+            "sent": 2173,
+            "received": 3660
+          },
+          "response_http_plain_bytes": 587,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 18
+            },
+            {
+              "type": 8,
+              "stream": 0,
+              "payload_bytes": 4
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 124
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 5437,
+          "http_plain_minus_body": 191,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:14Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        }
+      ]
+    },
+    "optimized": {
+      "encoding": "br",
+      "bodyBytesSubtracted": 396,
+      "median": 4432,
+      "range": [
+        4432,
+        4432
+      ],
+      "nginxConfig": "default-reference/optimized.conf",
+      "nginxConfigSha256": "aeb04fb5a4c42ba04e6e43f91929ebcbea1ef2a100e11ba80d4a39e766775633",
+      "nginxEffectiveConfigCaptureSha256": "fa9f9982d54cd768513f75c1c3cb6d46bf36fa803c2801b576500b98b72f374d",
+      "versionCapture": "nginx version: nginx/1.30.4\nbuilt by gcc 15.2.0 (Alpine 15.2.0) \nbuilt with OpenSSL 3.5.9 29 Sep 2026\nTLS SNI support enabled\nconfigure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/dev/stderr --http-log-path=/dev/stdout --pid-path=/tmp/nginx.pid --lock-path=/tmp/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --with-cc-opt='-DNGX_SSL_CERT_BROTLI_CACHE=1 -I/opt/openssl/include -Os -fstack-clash-protection -Wformat -Werror=format-security -fno-plt' --with-ld-opt='-L/opt/openssl/lib -lbrotlidec -Wl,--as-needed,-O1,--sort-common -Wl,-z,pack-relative-relocs' --with-compat --with-http_ssl_module --with-http_v2_module --with-http_v3_module --add-dynamic-module=/build/headers-more-nginx-module-0.40",
+      "samples": [
+        {
+          "round": 1,
+          "rawResultSha256": "2c8a5335a1299f540926a4a3f2fc75f443520a5e0b614386ddfc6513d2de4585",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_128_GCM_SHA256",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 25,
+              "bytes": 677
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 80
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 49
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:12 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "tls_before_client_close": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "response_http_plain_bytes": 501,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 6
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 63
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 4432,
+          "http_plain_minus_body": 105,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:12Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 2,
+          "rawResultSha256": "e850ba2afe4f8009dafbe476833e1cb02aab81b77d60b27e0c31ddee3290cdc4",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_128_GCM_SHA256",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 25,
+              "bytes": 677
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 80
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 49
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:13 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "tls_before_client_close": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "response_http_plain_bytes": 501,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 6
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 63
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 4432,
+          "http_plain_minus_body": 105,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:13Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        },
+        {
+          "round": 3,
+          "rawResultSha256": "7f6d564b7a3ed96bd7ee7b1a27362db06bccec58dab607957c5c753f29616466",
+          "url": "https://tomkimberlin.com/",
+          "ip": "127.0.0.1",
+          "local_ip": "127.0.0.1",
+          "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+          "tls": "TLSv1.3",
+          "cipher": "TLS_AES_128_GCM_SHA256",
+          "certificate_der_bytes": 480,
+          "http": "h2",
+          "keyshare_group_ids": [
+            4588
+          ],
+          "certificate_verified": true,
+          "tls_handshake_messages": [
+            {
+              "direction": "write",
+              "type": 1,
+              "bytes": 1547
+            },
+            {
+              "direction": "read",
+              "type": 2,
+              "bytes": 1210
+            },
+            {
+              "direction": "read",
+              "type": 8,
+              "bytes": 19
+            },
+            {
+              "direction": "read",
+              "type": 25,
+              "bytes": 677
+            },
+            {
+              "direction": "read",
+              "type": 15,
+              "bytes": 80
+            },
+            {
+              "direction": "read",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "write",
+              "type": 20,
+              "bytes": 36
+            },
+            {
+              "direction": "read",
+              "type": 4,
+              "bytes": 49
+            }
+          ],
+          "response_headers": [
+            [
+              ":status",
+              "200"
+            ],
+            [
+              "date",
+              "Mon, 26 Oct 2026 13:09:14 GMT"
+            ],
+            [
+              "content-type",
+              "text/html"
+            ],
+            [
+              "vary",
+              "accept-encoding"
+            ],
+            [
+              "cache-control",
+              "max-age=86400"
+            ],
+            [
+              "content-encoding",
+              "br"
+            ]
+          ],
+          "body_bytes": 396,
+          "body_sha256": "6dc58eab1aa78ceb8444aaba9ff9f086c95825551874686efed350c70fd03ae1",
+          "tls_through_body_complete": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "tls_before_client_close": {
+            "sent": 2157,
+            "received": 2671
+          },
+          "response_http_plain_bytes": 501,
+          "session_reused": false,
+          "response_http2_frames": [
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 6
+            },
+            {
+              "type": 4,
+              "stream": 0,
+              "payload_bytes": 0
+            },
+            {
+              "type": 1,
+              "stream": 1,
+              "payload_bytes": 63
+            },
+            {
+              "type": 0,
+              "stream": 1,
+              "payload_bytes": 396
+            }
+          ],
+          "response_http2_trailing_partial_bytes": 0,
+          "decoded_body_bytes": 1039,
+          "tls_minus_body": 4432,
+          "http_plain_minus_body": 105,
+          "source_sha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+          "measured_at_utc": "2026-10-26T13:09:15Z",
+          "client": {
+            "python": "3.14.8",
+            "openssl": "OpenSSL 3.5.8 25 Aug 2026",
+            "h2": "4.1.0",
+            "h11": "0.16.0",
+            "brotli": "1.2.1",
+            "zstandard": "0.25.0"
+          },
+          "probe_sha256": "4fe974ecaf58d723d7e0ac30ee736bcbc34bf27393a46f3a9ca83048fd66e7f9"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "Self-hosted bars use a smaller generated test chain and explicit test CA, not the production chain. The earlier 5,252 B live result is not subtracted from these fixture results.",
+    "Stock defaults negotiate AES-256-GCM; the optimized configuration negotiates AES-128-GCM. Both use TLS 1.3 and X25519MLKEM768.",
+    "Stock identity serves 1,039 B; optimized Brotli serves 396 B. All body bytes are subtracted, but representation length and headers can still affect framing.",
+    "Only the two self-hosted primary arms share this controlled setup. The 6,203 B Cloudflare point is a separate archived temporary-route experiment.",
+    "Counts include bytes co-read with stream completion, matching the prior MemoryBIO accounting boundary. Three samples do not establish a universal cost or latency claim."
+  ]
+}

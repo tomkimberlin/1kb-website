@@ -1,13 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Cloudflare 6203 bytes, unoptimized self-hosted 5377 bytes, optimized self-hosted 5252 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Archived Cloudflare test 6203 bytes, default self-hosted test 5421 bytes, optimized self-hosted test 4432 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>
 <text x="237" y="133.131" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">6,203 B</text>
 <rect data-value="6203" data-baseline="0" x="137" y="165.131" width="200" height="524.869" fill="#a3b1bf"/>
 <text x="237" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Cloudflare</text>
-<text x="539" y="203.023" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,377 B</text>
-<rect data-value="5377" data-baseline="0" x="439" y="235.023" width="200" height="454.977" fill="#5bada7"/>
-<text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Unoptimized</text>
+<text x="237" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(archived)</text>
+<text x="539" y="199.300" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,421 B</text>
+<rect data-value="5421" data-baseline="0" x="439" y="231.300" width="200" height="458.700" fill="#5bada7"/>
+<text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Default</text>
 <text x="539" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
-<text x="841" y="213.600" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,252 B</text>
-<rect data-value="5252" data-baseline="0" x="741" y="245.600" width="200" height="444.400" fill="#087f7d"/>
+<text x="539" y="853" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(test)</text>
+<text x="841" y="282.985" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">4,432 B</text>
+<rect data-value="4432" data-baseline="0" x="741" y="314.985" width="200" height="375.015" fill="#087f7d"/>
 <text x="841" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Optimized</text>
 <text x="841" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
+<text x="841" y="853" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">(test)</text>
 </svg>

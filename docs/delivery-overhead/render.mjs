@@ -6,14 +6,15 @@ const require=createRequire(import.meta.url);
 const sharp=require(process.env.SHARP_MODULE || 'sharp');
 const dir=resolve(process.argv[2]||fileURLToPath(new URL('.',import.meta.url)));
 const data=JSON.parse(readFileSync(resolve(dir,'history-data.json'),'utf8'));
-const values=[data.points[0].extra_bytes,data.points[1].extra_bytes,data.points.at(-1).extra_bytes];
-if(values.join(',')!=='6203,5377,5252')throw new Error('Unexpected chart values');
-const out=['<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Cloudflare 6203 bytes, unoptimized self-hosted 5377 bytes, optimized self-hosted 5252 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>'];
+const reference=JSON.parse(readFileSync(resolve(dir,'default-reference-20261026.json'),'utf8'));
+const values=[data.points[0].extra_bytes,reference.arms['stock-identity'].median,reference.arms.optimized.median];
+if(values.join(',')!=='6203,5421,4432')throw new Error('Unexpected chart values');
+const out=['<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Archived Cloudflare test 6203 bytes, default self-hosted test 5421 bytes, optimized self-hosted test 4432 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>'];
 const baseline=690,scale=550/6500;
 const bars=[
- {x:137,value:values[0],label:['Cloudflare'],color:'#a3b1bf'},
- {x:439,value:values[1],label:['Unoptimized','self-hosted'],color:'#5bada7'},
- {x:741,value:values[2],label:['Optimized','self-hosted'],color:'#087f7d'},
+ {x:137,value:values[0],label:['Cloudflare','(archived)'],color:'#a3b1bf'},
+ {x:439,value:values[1],label:['Default','self-hosted','(test)'],color:'#5bada7'},
+ {x:741,value:values[2],label:['Optimized','self-hosted','(test)'],color:'#087f7d'},
 ];
 for(const b of bars){
  const h=b.value*scale,top=baseline-h,cx=b.x+100;
