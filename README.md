@@ -8,7 +8,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 ![TLS connection overhead: Cloudflare 6,203 B; unoptimized self-hosted 5,377 B; optimized self-hosted 5,252 B.](docs/delivery-overhead/delivery-overhead.png)
 
-TLS traffic through the first page response, minus the entire encoded body; TCP/IP and DNS are excluded. Cloudflare is an archived controlled test, not a production capture or universal provider comparison. [Method and data](docs/delivery-overhead/).
+TLS traffic on a cold connection through the first page response, minus the entire encoded body; TCP/IP and DNS are excluded. Cloudflare is an archived controlled test, not a production capture or universal provider comparison. [Method and data](docs/delivery-overhead/).
 
 **Delivery overhead = measured traffic − the entire encoded page body.**
 

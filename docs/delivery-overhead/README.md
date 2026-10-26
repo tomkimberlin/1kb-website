@@ -1,6 +1,6 @@
 # Delivery-overhead graph
 
-The graph counts **TLS connection bytes sent and received through the first complete HTTP/2 page response, minus the entire encoded page body**. It excludes TCP/IP and DNS. This differs from the broader packet-and-DNS estimate in the repository's [dated comparison](../../COMPARISON.md).
+The graph counts **TLS bytes sent and received on a cold connection through the first complete HTTP/2 page response, minus the entire encoded page body**. It excludes TCP/IP and DNS. This differs from the broader packet-and-DNS estimate in the repository's [dated comparison](../../COMPARISON.md).
 
 | Graph label | Overhead | Evidence |
 | --- | ---: | --- |
