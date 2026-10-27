@@ -55,4 +55,4 @@ npm install --prefix /tmp/onekb-graph-render --no-save --package-lock=false shar
 SHARP_MODULE=/tmp/onekb-graph-render/node_modules/sharp node docs/delivery-overhead/render.mjs
 ```
 
-The renderer uses the archived Cloudflare point and the new primary fixture medians. Bars start at zero and share one scale; the PNG contains only labels and values. This is documentation only and adds no request to the live page.
+The renderer uses the archived Cloudflare point, the primary fixture medians and the dated live sample. Bars start at zero and share one scale; the matched pair is grouped separately from the archived control, and the live result is labeled as a separate context. The README uses the accessible SVG; a PNG is also generated for preview. This is documentation only and adds no request to the live page.
