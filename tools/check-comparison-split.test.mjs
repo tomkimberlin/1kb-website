@@ -2,7 +2,7 @@
 // They do not represent a deployment, response, browser run or measurement.
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,cpSync,copyFileSync,symlinkSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,cpSync,copyFileSync,symlinkSync,readdirSync,existsSync,lstatSync} from 'node:fs';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {dirname,resolve,join} from 'node:path';
@@ -37,9 +37,45 @@ const commit=git(gitRoot,['rev-parse','HEAD']).toString().trim();
 const cases=join(gitRoot,'cases');mkdirSync(cases);
 const fileNames={html:'index.html',brotli:'index.html.br',gzip:'index.html.gz',deflate:'index.html.deflate'};
 const map={identity:'html',br:'brotli',gzip:'gzip',deflate:'deflate'};
-function fixture(t) {
+// Synthetic cases branch from the last maintenance deployment. Keep all older
+// evidence, but remove newer own-page deployments from each disposable copy.
+// Malformed or misplaced records remain for the validator to reject.
+function timestampParts(value) {
+ const match=typeof value==='string'&&/^(\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d)(?:\.(\d+))?(?:Z|\+00:00)$/.exec(value);
+ if(!match)return null;
+ const second=Date.parse(match[1]+'Z');
+ return Number.isFinite(second)&&new Date(second).toISOString().slice(0,19)===match[1]?[second,match[2]??'']:null;
+}
+function laterThan(a,b) {
+ if(a[0]!==b[0])return a[0]>b[0];
+ const width=Math.max(a[1].length,b[1].length);
+ return a[1].padEnd(width,'0')>b[1].padEnd(width,'0');
+}
+function isolateDeployments(root,cutoff) {
+ const measurements=join(root,'measurements'),baseline=timestampParts(cutoff);
+ assert.ok(baseline);
+ for(const name of readdirSync(measurements)) {
+  if(!/^(?:deployment|maintenance)-[A-Za-z0-9._-]+\.json$/.test(name))continue;
+  const path=join(measurements,name);let record,url;
+  if(lstatSync(path).isSymbolicLink())continue;
+  try {record=read(path);} catch {continue;}
+  if(typeof record?.url!=='string'||record.url.trim()!==record.url||!record.url)continue;
+  try {url=new URL(record.url);} catch {continue;}
+  if(!['http:','https:'].includes(url.protocol)||url.username||url.password||url.port
+    ||!['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'].includes(url.hostname)||!['/','/index.html'].includes(url.pathname))continue;
+  const pageDeployment=['content-update-deployment','page-only-deployment'].includes(record.kind);
+  if((!pageDeployment&&!name.startsWith('deployment-'))||(record.kind==='page-only-deployment'&&!name.startsWith('deployment-')))continue;
+  const values=pageDeployment?['verifiedAt','verifiedThrough'].filter(key=>Object.hasOwn(record,key)).map(key=>record[key]):[record.verifiedThrough??record.verifiedAt];
+  const times=values.map(timestampParts);
+  if(times.length&&times.every(Boolean)&&times.some(time=>laterThan(time,baseline)))rmSync(path);
+ }
+}
+function fixture(t,seed=()=>{}) {
  const root=mkdtempSync(join(cases,'case-'));t.after(()=>rmSync(root,{recursive:true,force:true}));
- cpSync(join(repo,'measurements'),join(root,'measurements'),{recursive:true});mkdirSync(join(root,'public'));
+ cpSync(join(repo,'measurements'),join(root,'measurements'),{recursive:true});
+ seed(root);
+ isolateDeployments(root,read(join(root,'measurements/maintenance-20261025-intune-name.json')).verifiedAt);
+ mkdirSync(join(root,'public'));
  for(const file of Object.values(fileNames))copyFileSync(join(repo,'tools/fixtures/comparison-split',file),join(root,'public',file));
  copyFileSync(join(repo,'tools/fixtures/comparison-split/index.html'),join(root,'index.html'));
  const build=Object.fromEntries(Object.entries(fileNames).map(([key,file])=>[key,readFileSync(join(root,'public',file)).length]));
@@ -89,6 +125,41 @@ function fixture(t) {
 
 test('synthetic newer page remains independent from actual measured transport and components',t=>{const f=fixture(t),result=f.check();assert.equal(result.liveDate,'2026-11-01');assert.equal(result.measuredDate,'2026-10-25');assert.equal(result.localCandidate,false);});
 test('the retained maintenance record can be the latest page before a candidate is deployed',t=>{const f=fixture(t);f.useMaintenance();const result=f.check();assert.equal(result.liveDate,'2026-10-25');assert.equal(result.localCandidate,true);});
+test('fixture isolates later copied deployments while retaining older, equal and unrelated records',t=>{
+ const records={
+  'deployment-later-page.json':{kind:'page-only-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-10-25T17:20:17.879109+00:00',verifiedThrough:'2026-10-25T17:20:17.879107Z'},
+  'maintenance-later-content.json':{kind:'content-update-deployment',url:'http://tom.kimberlin.net/index.html?release=1#top',verifiedAt:'2026-11-02T00:00:00Z'},
+  'deployment-later-legacy.json':{url:'https://www.tomkimberlin.com/',verifiedAt:'invalid',verifiedThrough:'2026-11-02T00:00:00Z'},
+  'deployment-later-legacy-at.json':{url:'https://tomkimberlin.com/',verifiedAt:'2026-11-02T00:00:00Z'},
+  'deployment-legacy-uses-through.json':{url:'https://tomkimberlin.com/',verifiedAt:'2026-11-02T00:00:00Z',verifiedThrough:'2026-10-25T17:20:17.879107Z'},
+  'deployment-earlier.json':{url:'https://tomkimberlin.com/',verifiedAt:'2026-10-25T17:20:17.879107Z'},
+  'deployment-equal.json':{url:'https://tomkimberlin.com/',verifiedAt:'2026-10-25T17:20:17.8791080Z'},
+  'deployment-unrelated.json':{url:'https://example.com/',verifiedAt:'2026-11-02T00:00:00Z'}
+ };
+ const f=fixture(t,root=>{for(const [name,value] of Object.entries(records))writeFileSync(join(root,'measurements',name),JSON.stringify(value));});
+ for(const name of ['deployment-later-page.json','maintenance-later-content.json','deployment-later-legacy.json','deployment-later-legacy-at.json'])assert.equal(existsSync(join(f.root,'measurements',name)),false);
+ for(const name of ['deployment-earlier.json','deployment-equal.json','deployment-unrelated.json','deployment-legacy-uses-through.json'])assert.deepEqual(read(join(f.root,'measurements',name)),records[name]);
+ f.useMaintenance();assert.doesNotThrow(f.check);
+});
+test('fixture isolation retains malformed copied deployment evidence for validation',t=>{
+ const name='measurements/deployment-malformed-fixture.json';
+ const f=fixture(t,root=>writeFileSync(join(root,name),JSON.stringify({kind:'page-only-deployment',url:'https://tomkimberlin.com/',verifiedAt:'invalid',verifiedThrough:'2026-11-02T00:00:00Z'})));
+ assert.ok(existsSync(join(f.root,name)));f.useMaintenance();assert.throws(f.check,/timestamp/i);
+});
+test('fixture isolation leaves copied symlinks for the confinement check',t=>{
+ const name='measurements/deployment-escape-fixture.json';
+ const f=fixture(t,root=>{const outside=join(root,'outside-fixture.json');writeFileSync(outside,JSON.stringify({url:'https://tomkimberlin.com/',verifiedAt:'2026-11-02T00:00:00Z'}));symlinkSync(outside,join(root,name));});
+ assert.ok(lstatSync(join(f.root,name)).isSymbolicLink());f.useMaintenance();assert.throws(f.check,/escapes measurements/i);
+});
+test('real current deployment still validates and invalidates the historical fixture when added',t=>{
+ const ref=read(join(repo,'measurements/comparison-current.json')).current.deployment;
+ const actual=readFileSync(join(repo,ref.path)),record=JSON.parse(actual),f=fixture(t);
+ f.useMaintenance();assert.doesNotThrow(f.check);
+ assert.ok(laterThan(timestampParts(record.verifiedAt),timestampParts(read(join(repo,'measurements/maintenance-20261025-intune-name.json')).verifiedAt)));
+ copyFileSync(join(repo,ref.path),join(f.root,ref.path));assert.throws(f.check,/newer verified deployment/i);
+ assert.deepEqual(readFileSync(join(repo,ref.path)),actual);
+ assert.equal(checkComparison({root:repo}).liveDate,record.verifiedAt.slice(0,10));
+});
 test('downgrading to the actual v1 measured pointer cannot hide the later retained maintenance deployment',t=>{
  const f=fixture(t);f.useMaintenance();f.config.schemaVersion=1;f.config.current=f.config.measured;delete f.config.measured;f.flush({doc:false});
  assert.throws(f.check,/newer verified deployment/i);

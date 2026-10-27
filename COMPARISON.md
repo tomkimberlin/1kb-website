@@ -3,8 +3,10 @@
 <!-- comparison:current:start -->
 ## Latest verified page
 
-Verified 2026-10-25: **1,039 B HTML; 396 B Brotli; 549 B gzip; 537 B deflate.** [Page evidence](measurements/page-20261025-intune-name-local.json) and [deployment evidence](measurements/maintenance-20261025-intune-name.json) bind the verified representations. This page verification does not measure delivery overhead.
+Verified 2026-10-27: **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** [Page evidence](measurements/page-20261027-brotli-first-local.json) and [deployment evidence](measurements/deployment-20261027-page-only.json) bind the verified representations. This page verification does not measure delivery overhead.
 <!-- comparison:current:end -->
+
+The deployment record lists expected alias destinations; verifier logs retain aggregate pass results rather than per-request response records. The www check covers an HTTPS query redirect, while the other alias includes root, path and query checks. The readback trust flag refers to the successful normal-trust private readiness probe; its method is recorded from the executed command, not from a per-request trace. Log hashes identify retained private files; they do not authenticate observations.
 
 <!-- comparison:measured:start -->
 ## Latest measured transport and dated components
@@ -58,12 +60,6 @@ These figures remain tied to the measured page and deployment above. They do not
 The [October 26 hosting graph](docs/delivery-overhead/) now uses matched stock and optimized nginx test fixtures for its self-hosted bars. The separate live TLS reference and the broader packet/DNS evidence above remain dated.
 
 The [project-name update](measurements/maintenance-20261025-intune-name.json) is deployed. The earlier transport figures above remain tied to their original page; no fresh overhead measurement is claimed.
-
-<!-- comparison:candidate:start -->
-## Local page build awaiting verification
-
-The current local page build is **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** [Local build evidence](measurements/page-20261027-brotli-first-local.json) binds these exact representations. This is not a verified deployment or transport measurement.
-<!-- comparison:candidate:end -->
 
 <!-- comparison:gallery:start -->
 ## Historical six-site sample — September 22, 2026
