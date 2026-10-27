@@ -1,11 +1,17 @@
 # Delivery overhead comparison
 
 <!-- comparison:current:start -->
-## Latest verified own-site result
+## Latest verified page
+
+Verified 2026-10-25: **1,039 B HTML; 396 B Brotli; 549 B gzip; 537 B deflate.** [Page evidence](measurements/page-20261025-intune-name-local.json) and [deployment evidence](measurements/maintenance-20261025-intune-name.json) bind the verified representations. This page verification does not measure delivery overhead.
+<!-- comparison:current:end -->
+
+<!-- comparison:measured:start -->
+## Latest measured transport and dated components
 
 Measured 2026-10-25: **1,021 B HTML; 389 B Brotli; 535 B gzip; 523 B deflate.** Three cold first-document exchanges count both directions. Delivery overhead subtracts the entire encoded body from each exchange.
 
-Verified certificate components: **tomkimberlin.com 1,498 B; www.tomkimberlin.com 1,502 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
+Certificate components at this measurement: **tomkimberlin.com 1,498 B; www.tomkimberlin.com 1,502 B; tom.kimberlin.net 1,503 B** (complete compressed Certificate handshake messages). These are component bytes; aliases have no complete-exchange measurement here.
 
 | Measurement | Median | Range |
 | --- | ---: | ---: |
@@ -46,17 +52,17 @@ Three cold first-document exchanges per site count both directions and subtract 
 
 [Overhead evidence](measurements/overhead-20261025-adjacent.json), [verified deployment](measurements/deployment-20261025-adjacent.json) and [page measurements](measurements/page-20261025-font-validation-local.json). The own-site result above and the dated peer sample have separate evidence. TLS and packet totals stop at different points, so their difference does not isolate TCP overhead. Three samples do not establish a timing or universal saving.
 
-Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.
-<!-- comparison:current:end -->
+These figures remain tied to the measured page and deployment above. They do not describe the later verified page; a fresh measurement is required to update transport totals.
+<!-- comparison:measured:end -->
 
 The [October 26 hosting graph](docs/delivery-overhead/) now uses matched stock and optimized nginx test fixtures for its self-hosted bars. The separate live TLS reference and the broader packet/DNS evidence above remain dated.
 
 The [project-name update](measurements/maintenance-20261025-intune-name.json) is deployed. The earlier transport figures above remain tied to their original page; no fresh overhead measurement is claimed.
 
 <!-- comparison:candidate:start -->
-## Page build awaiting transport measurement
+## Local page build awaiting verification
 
-The current page build is **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** [Local build evidence](measurements/page-20261027-brotli-first-local.json) binds these exact representations. These bodies differ from the dated transport snapshot above. No new transfer, overhead or peer-ranking result is claimed. After transport measurement, advance the verified-live pointers and remove this section.
+The current local page build is **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** [Local build evidence](measurements/page-20261027-brotli-first-local.json) binds these exact representations. This is not a verified deployment or transport measurement.
 <!-- comparison:candidate:end -->
 
 <!-- comparison:gallery:start -->
@@ -99,7 +105,9 @@ The October 22 runtime comparison used a frozen OpenSSL 3.5.8 client against the
 
 ## Reproduce a new sample
 
-`npm run check:measurements` checks the current comparison against hashed live evidence, exact page bodies and the latest published verification. A changed working build requires a separate local-candidate section and matching evidence until deployed and measured. Update `measurements/comparison-current.json` and the latest figures together; the historical peer sample stays dated.
+`npm run check:measurements` checks the current comparison against hashed live evidence, exact page bodies and the latest published verification. A changed working build requires a separate local-candidate section and matching evidence until deployed and verified. Advance the page references with verified deployment evidence; transport remains tied to its measured page until a fresh measurement is reviewed. The historical peer sample stays dated.
+
+The latest verified page and the dated transport measurement have separate evidence. Verifying a later page does not change earlier transport values; collect and review a fresh measurement before updating them.
 
 The [probe](tools/compare-gallery.py) requires a Linux host with Docker, host networking and raw-socket access. It captures metadata only for the connected local address, selected peer address and TCP source port, and requires HTTP 200 before publishing a decoded document. The capture interface is set to `br0` in the probe; change that binding if the host uses a different interface for outbound traffic.
 

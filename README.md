@@ -8,7 +8,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 ![Cold-connection TLS overhead: matched nginx test setups measured 5,421 B stock and 4,432 B optimized. A separate archived Cloudflare control measured 6,203 B; the live median of three with a different certificate was 5,252 B.](docs/delivery-overhead/delivery-overhead.svg)
 
-Self-hosted bars compare stock and optimized nginx with the same test certificate chain. Values exclude the entire page body, TCP/IP and DNS. Cloudflare is a separate archived temporary-route control, not a universal provider comparison. The trusted live result remains 5,252 B with its different certificate. [Definition, samples and method](docs/delivery-overhead/).
+Self-hosted bars compare stock and optimized nginx with the same test certificate chain. Values exclude the entire page body, TCP/IP and DNS. Cloudflare is a separate archived temporary-route control, not a universal provider comparison. The October 26 trusted live sample measured 5,252 B with its different certificate. [Definition, samples and method](docs/delivery-overhead/).
 
 ### Separate packet-and-DNS estimate
 
@@ -16,7 +16,7 @@ This broader measure counts traffic through connection close, including estimate
 
 **Delivery overhead = measured traffic − the entire encoded page body.**
 
-**Latest verified result: 6,945 B estimated overhead, October 25, 2026.** Three cold own-site exchanges (6,944–6,996 B), measured before the project-name update below. [Evidence](measurements/overhead-20261025-adjacent.json).
+**Latest measured transport result: 6,945 B estimated overhead, October 25, 2026.** Three cold own-site exchanges (6,944–6,996 B), measured before the project-name update below. [Evidence](measurements/overhead-20261025-adjacent.json).
 
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>

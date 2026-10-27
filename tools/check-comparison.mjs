@@ -9,6 +9,7 @@ import {checkStreamOffsets,renderStreamOffsets,checkFreshQuicAfter} from './chec
 import {checkFinCoalescing,requireFinEvidence,renderFinCoalescing} from './check-fin-coalescing.mjs';
 import {checkLenAdoption,renderLen} from './check-stream-lengths.mjs';
 import {requireAdjacentEvidence,checkAdjacentAdoption,renderAdjacent} from './check-adjacent-streams.mjs';
+import {checkPageState} from './check-page-state.mjs';
 
 const target='https://tomkimberlin.com/';
 const hash=data=>createHash('sha256').update(data).digest('hex');
@@ -22,6 +23,15 @@ const stamp=value=>{need(typeof value==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d
 const representations={identity:['html','index.html'],br:['brotli','index.html.br'],gzip:['gzip','index.html.gz'],deflate:['deflate','index.html.deflate']};
 const metrics=['tlsThroughBodyCompleteMinusBody','estimatedTcpPlusDnsMinusBody','responseHttpPlainMinusBody'];
 const componentHosts=['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'];
+// Resolve source provenance in this repository, ignoring injected Git object,
+// routing and configuration variables as well as repository replacement refs.
+function readCommitted(root,commit,path) {
+  need(typeof commit==='string'&&/^[0-9a-f]{40}$/.test(commit)&&typeof path==='string'
+    &&/^[A-Za-z0-9._/-]+$/.test(path)&&!path.startsWith('/')&&!path.split('/').includes('..'),'Invalid immutable source reference');
+  const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!key.startsWith('GIT_')));
+  Object.assign(env,{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_NO_REPLACE_OBJECTS:'1',GIT_TERMINAL_PROMPT:'0'});
+  return execFileSync('git',['--no-replace-objects','show',commit+':'+path],{cwd:root,env,stdio:['ignore','pipe','pipe']});
+}
 const markers=kind=>[`<!-- comparison:${kind}:start -->`,`<!-- comparison:${kind}:end -->`];
 const bytes=n=>n.toLocaleString('en-US')+' B';
 const interval=s=>`${s.minimum.toLocaleString('en-US')}–${s.maximum.toLocaleString('en-US')} B`;
@@ -44,7 +54,7 @@ function checkPeers(p,{root,historical}) {
   need(start<end&&end<=stamp(p.normalizedAt)&&p.date===p.startedAt.slice(0,10),'Invalid peer comparison dates');
   need(keys(p.probe,['sourceCommit','mountedProbeSha256','frozenImageHelperSha256','helperProvenance'])
     &&/^[0-9a-f]{40}$/.test(p.probe.sourceCommit)&&digest(p.probe.mountedProbeSha256),'Invalid peer probe identity');
-  const source=execFileSync('git',['show',p.probe.sourceCommit+':tools/compare-gallery.py'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  const source=readCommitted(root,p.probe.sourceCommit,'tools/compare-gallery.py');
   need(hash(source)===p.probe.mountedProbeSha256,'Peer probe differs from immutable source');
   need(equal(p.probe.frozenImageHelperSha256,{dnsHelperSha256:'7bc8672e9b5d483f635c7a226b9bf1ad4114835fbc5e1c78dad8a497a7a669e0',responseHelperSha256:'e16a4fba43ee63f94cedcdb16b8e76bba53544109b55e275872883e31ab07eaa'})
     &&typeof p.probe.helperProvenance==='string'&&p.probe.helperProvenance.length>0,'Invalid frozen peer helper identities');
@@ -60,9 +70,9 @@ function checkPeers(p,{root,historical}) {
   const own=p.ownSite,runtime=p.serverRuntime,bounded=(n,min,max)=>integer(n)&&n>=min&&n<=max;
   need(keys(own,['sourceSha256','bodySha256','bodyBytes','decodedBodyBytes','pageCommit'])&&digest(own.sourceSha256)&&digest(own.bodySha256)
     &&bounded(own.bodyBytes,1,1<<20)&&bounded(own.decodedBodyBytes,1,1<<20)&&/^[0-9a-f]{40}$/.test(own.pageCommit),'Invalid dated peer own-site identity');
-  const html=execFileSync('git',['show',own.pageCommit+':index.html'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  const html=readCommitted(root,own.pageCommit,'index.html');
   need(html.length===own.decodedBodyBytes&&hash(html)===own.sourceSha256,'Peer own-site source differs from immutable commit');
-  const body=execFileSync('git',['show',own.pageCommit+':compression/index.html.br'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  const body=readCommitted(root,own.pageCommit,'compression/index.html.br');
   need(body.length===own.bodyBytes&&hash(body)===own.bodySha256,'Peer own-site body differs from immutable commit');
   need(keys(runtime,['imageId','running','pageRelease','openssl'])&&/^sha256:[0-9a-f]{64}$/.test(runtime.imageId)
     &&runtime.running===true&&/^releases\/[A-Za-z0-9._-]{1,200}$/.test(runtime.pageRelease)
@@ -187,6 +197,35 @@ Refresh this section after every verified body or transport byte reduction. Comp
 ${markers('current')[1]}`;
 }
 
+// Split-state output must attribute all byte totals and components to the
+// page on which they were actually measured, never to the later page.
+export function renderSplitPage({page,deployment,refs}) {
+  const day=(deployment.verifiedThrough??deployment.verifiedAt).slice(0,10);
+  return `${markers('current')[0]}
+## Latest verified page
+
+Verified ${day}: **${bytes(page.html)} HTML; ${bytes(page.brotli)} Brotli; ${bytes(page.gzip)} gzip; ${bytes(page.deflate)} deflate.** [Page evidence](${refs.page.path}) and [deployment evidence](${refs.deployment.path}) bind the verified representations. This page verification does not measure delivery overhead.
+${markers('current')[1]}`;
+}
+
+export function renderMeasuredHistory(args) {
+  return renderCurrent(args)
+    .replace(markers('current')[0],markers('measured')[0])
+    .replace(markers('current')[1],markers('measured')[1])
+    .replace('## Latest verified own-site result','## Latest measured transport and dated components')
+    .replace('Verified certificate components:', 'Certificate components at this measurement:')
+    .replace('Refresh this section after every verified body or transport byte reduction. Complete totals show body savings even when body-subtracted overhead stays unchanged.',
+      'These figures remain tied to the measured page and deployment above. They do not describe the later verified page; a fresh measurement is required to update transport totals.');
+}
+
+export function renderSplitCandidate(page,ref) {
+  return `${markers('candidate')[0]}
+## Local page build awaiting verification
+
+The current local page build is **${bytes(page.html)} HTML; ${bytes(page.brotli)} Brotli; ${bytes(page.gzip)} gzip; ${bytes(page.deflate)} deflate.** [Local build evidence](${ref.path}) binds these exact representations. This is not a verified deployment or transport measurement.
+${markers('candidate')[1]}`;
+}
+
 export function renderCandidate(page,ref) {
   return `${markers('candidate')[0]}
 ## Page build awaiting transport measurement
@@ -200,8 +239,16 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   const read=name=>JSON.parse(readFileSync(resolve(root,name),'utf8'));
   const doc=readFileSync(resolve(root,'COMPARISON.md'),'utf8');
   const config=read(pointer);
-  need(keys(config,['schemaVersion','targetUrl','current','historicalGallery',...(Object.hasOwn(config,'candidate')?['candidate']:[])])&&config.schemaVersion===1&&config.targetUrl===target,'Invalid comparison pointer schema');
-  need(keys(config.current,['overhead','deployment','page']),'Invalid current comparison pointers');
+  const split=config.schemaVersion===2;
+  need(keys(config,['schemaVersion','targetUrl','current','historicalGallery',...(split?['measured']:[]),...(Object.hasOwn(config,'candidate')?['candidate']:[])])
+    &&[1,2].includes(config.schemaVersion)&&config.targetUrl===target,'Invalid comparison pointer schema');
+  need(keys(config.current,split?['deployment','page']:['overhead','deployment','page']),'Invalid current comparison pointers');
+  const historicalRefs=split?config.measured:config.current;
+  if(split)need(equal(historicalRefs,{
+    deployment:{path:'measurements/deployment-20261025-adjacent.json',sha256:'4f5925c07ee3d2bc6736a279f8ee00e95a42959825c86ef29502199c1ce3bf7f'},
+    overhead:{path:'measurements/overhead-20261025-adjacent.json',sha256:'d5852fcd34888c57416c195a3d43f4d151983f562933d30efc35a331710819cf'},
+    page:{path:'measurements/page-20261025-font-validation-local.json',sha256:'24b80e662bb09fcc5eb3df2842b52af3a709c53a6eafcd2f6612924570dd8e60'}
+  })&&equal(config.historicalGallery,{path:'measurements/gallery-20260922.json',sha256:'e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef'}),'Historical measured evidence anchor differs');
   function record(ref) {
     need(keys(ref,['path','sha256'])&&/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.json$/.test(ref.path)&&digest(ref.sha256),'Invalid comparison evidence reference');
     const path=realpathSync(resolve(root,ref.path));
@@ -209,14 +256,15 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     const contents=readFileSync(path);need(hash(contents)===ref.sha256,'Comparison evidence hash is stale');
     return JSON.parse(contents);
   }
-  const overhead=record(config.current.overhead),deployment=record(config.current.deployment),page=record(config.current.page),gallery=record(config.historicalGallery);
+  const overhead=record(historicalRefs.overhead),deployment=record(historicalRefs.deployment),page=record(historicalRefs.page),gallery=record(config.historicalGallery);
+  const latestDeployment=split?record(config.current.deployment):deployment,latestPage=split?record(config.current.page):page;
   const peerComparison=deployment.peerComparison===undefined?null:record(deployment.peerComparison);
   if(deployment.peerComparison!==undefined)checkPeers(peerComparison,{root,historical:config.historicalGallery});
   const streamOffsets=deployment.quicStreamOffsets===undefined?null:record(deployment.quicStreamOffsets);
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/quic-stream-offset.patch')||streamOffsets!==null,'Current STREAM-offset runtime requires component evidence');
-  if(streamOffsets!==null)checkStreamOffsets(streamOffsets,{deployment,page,readCommitted:(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']})});
+  if(streamOffsets!==null)checkStreamOffsets(streamOffsets,{deployment,page,readCommitted:(commit,path)=>readCommitted(root,commit,path)});
   const finCoalescing=deployment.quicFinCoalescing===undefined?null:record(deployment.quicFinCoalescing);
-  const immutableSource=(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']});
+  const immutableSource=(commit,path)=>readCommitted(root,commit,path);
   requireFinEvidence(deployment,finCoalescing,immutableSource);
   const streamLengths=deployment.quicStreamLengthEncoding===undefined?null:record(deployment.quicStreamLengthEncoding);
   const adjacentStreams=deployment.quicAdjacentStreams===undefined?null:record(deployment.quicAdjacentStreams);
@@ -236,7 +284,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
       &&s.after.runtimeSourceCommit===deployment.runtimeSourceCommit,'Status component runtime source commit differs');
     for(const [path,key] of [['server/status-encoding.patch','statusEncodingPatchSha256'],['server/Dockerfile','dockerfileSha256']]) {
       need(digest(source[key])&&source[key]===hashes?.[path],'Status component source hash differs from deployment');
-      const committed=execFileSync('git',['show',deployment.runtimeSourceCommit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']});
+      const committed=readCommitted(root,deployment.runtimeSourceCommit,path);
       need(hash(committed)===source[key],'Status component source differs from immutable runtime commit');
     }
     const cases={main:{hostname:'tomkimberlin.com',method:'GET',path:'/',statusCode:200},
@@ -295,7 +343,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     }
   }
   const quic=deployment.quicTransportParameters===undefined?null:record(deployment.quicTransportParameters);
-  if(streamOffsets!==null)checkFreshQuicAfter(quic,{deployment,streamOffsets,readCommitted:(commit,path)=>execFileSync('git',['show',commit+':'+path],{cwd:root,stdio:['ignore','pipe','pipe']})});
+  if(streamOffsets!==null)checkFreshQuicAfter(quic,{deployment,streamOffsets,readCommitted:(commit,path)=>readCommitted(root,commit,path)});
   if(deployment.quicTransportParameters!==undefined) {
     need(quic&&quic.schemaVersion===1&&quic.targetUrl===target,'Invalid QUIC component evidence');
     need(digest(quic.before?.runtimeImageId?.replace(/^sha256:/,''))&&quic.after?.runtimeImageId===deployment.server?.imageId,'QUIC component runtime image differs from current deployment');
@@ -336,15 +384,15 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   need(overhead.serverRuntime.pageRelease===deployment.pageRelease,'Current deployed page release differs');
   need(deployment.server.running===true,'Current deployment did not verify a running server');
   need(Array.isArray(deployment.pageRepresentations)&&deployment.pageRepresentations.length===4,'Deployment must verify exactly four representations');
-  const live={};
+  const historicalLive={};
   for(const [encoding,[key]] of Object.entries(representations)) {
     const matches=deployment.pageRepresentations.filter(r=>r.encoding===encoding);
     need(matches.length===1,'Duplicate or missing deployed representation');
     const row=matches[0];
     need(integer(page[key])&&page[key]>0&&digest(page[key+'Sha256'])&&row.bytes===page[key]&&row.sha256===page[key+'Sha256']&&row.exactLocalOriginAndPublicResponse===true,'Page and verified deployment representations differ');
-    live[key]={bytes:page[key],sha256:page[key+'Sha256']};
+    historicalLive[key]={bytes:page[key],sha256:page[key+'Sha256']};
   }
-  const committed=execFileSync('git',['show',deployment.pageCommit+':index.html'],{cwd:root,stdio:['ignore','pipe','pipe']});
+  const committed=readCommitted(root,deployment.pageCommit,'index.html');
   need(committed.length===page.html&&hash(committed)===page.htmlSha256,'Verified deployment source differs from its immutable commit');
   need(overhead.bodyBytes===page.brotli&&overhead.bodySha256===page.brotliSha256&&overhead.decodedBodyBytes===page.html&&overhead.sourceSha256===page.htmlSha256,'Overhead body/source differs from the verified page');
   const rawHashes=new Set(),times=[];
@@ -387,15 +435,24 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   need(rawHashes.size===3&&equal(times,[...times].sort((a,b)=>a-b)),'Duplicate samples or unordered timestamps');
   for(const key of metrics)need(equal(overhead.summary?.[key],stats(overhead.runs.map(r=>r[key]))),'Current overhead summary is stale');
   // New published verification must advance the pointer even when bytes match.
-  const deploymentTime=stamp(deployment.verifiedThrough??deployment.verifiedAt),overheadTime=Math.max(...times);
+  const historicalDeploymentTime=stamp(deployment.verifiedThrough??deployment.verifiedAt),overheadTime=Math.max(...times);
+  // The separate maintenance record is an already verified later page, even
+  // though the legacy v1 pointer names only the earlier transport snapshot.
+  const legacyMaintenance=split?record({path:'measurements/maintenance-20261025-intune-name.json',sha256:'7ce8a78a736e87e8c0dfcb7a58f6e11ca0f825ab266f5be6a04805bade2bcb0d'}):null;
+  const pageState=split?checkPageState({root,page:latestPage,deployment:latestDeployment,refs:config.current,record,immutableSource,
+    earliest:Math.max(historicalDeploymentTime,overheadTime,stamp(legacyMaintenance.verifiedAt))}):null;
+  const deploymentTime=split?pageState.at:historicalDeploymentTime;
+  const live=split?pageState.live:historicalLive;
   for(const name of readdirSync(resolve(root,'measurements'))) {
-    if(!/^(?:deployment|overhead|gallery)-[A-Za-z0-9._-]+\.json$/.test(name))continue;
+    if(!(split?/^[A-Za-z0-9][A-Za-z0-9._-]*\.json$/:/^(?:deployment|overhead|gallery)-[A-Za-z0-9._-]+\.json$/).test(name))continue;
     const other=read('measurements/'+name);
+    if(split&&other?.kind==='page-only-deployment')need(/^deployment-[A-Za-z0-9._-]+\.json$/.test(name),'Misplaced page-only deployment evidence');
+    if(split&&other?.kind==='content-update-deployment')need(/^(?:deployment|maintenance)-[A-Za-z0-9._-]+\.json$/.test(name),'Misplaced content deployment evidence');
     if(name.startsWith('gallery-')&&other.schemaVersion===1) {
       need(peerComparison!==null,'Published normalized peer comparison requires a current reference');
       need(stamp(other.completedAt)<=stamp(peerComparison.completedAt),'A newer peer comparison is missing from the comparison');
     }
-    if(name.startsWith('deployment-')&&other.url===target)need(stamp(other.verifiedThrough??other.verifiedAt)<=deploymentTime,'A newer verified deployment is missing from the comparison');
+    if((name.startsWith('deployment-')||(split&&name.startsWith('maintenance-')&&other.kind==='content-update-deployment'))&&other.url===target)need(stamp(other.verifiedThrough??other.verifiedAt)<=deploymentTime,'A newer verified deployment is missing from the comparison');
     if(name.startsWith('overhead-')&&other.targetUrl===target&&other.phase!=='baseline') {
       need(Array.isArray(other.runs)&&other.runs.length===3,'Malformed published overhead record');
       need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
@@ -403,13 +460,18 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   }
   if(adjacentStreams!==null)checkAdjacentAdoption(adjacentStreams,{deployment,page,streamOffsets,overhead,statusEncoding,quic,readCommitted:immutableSource,
     readRecord:path=>readFileSync(resolve(root,path))});
-  need(block(doc,'current')===renderCurrent({overhead,deployment,page,refs:config.current,quic,statusEncoding,peerComparison,streamOffsets,finCoalescing,streamLengths,adjacentStreams}),'Current comparison section is stale');
+  const measuredArgs={overhead,deployment,page,refs:historicalRefs,quic,statusEncoding,peerComparison,streamOffsets,finCoalescing,streamLengths,adjacentStreams};
+  if(split) {
+    need(block(doc,'current')===renderSplitPage({page:latestPage,deployment:latestDeployment,refs:config.current}),'Current page comparison section is stale');
+    need(block(doc,'measured')===renderMeasuredHistory(measuredArgs),'Historical measured comparison section is stale');
+  } else need(block(doc,'current')===renderCurrent(measuredArgs),'Current comparison section is stale');
   need(block(doc,'fresh-gallery',peerComparison!==null)===(peerComparison?renderPeers(peerComparison,deployment.peerComparison).trim():null),'Fresh peer section is stale');
-  const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith('**Latest verified result: '));
+  const readmePrefix=split?'**Latest measured transport result: ':'**Latest verified result: ';
+  const latest=readFileSync(resolve(root,'README.md'),'utf8').split('\n').filter(line=>line.startsWith(readmePrefix));
   const current=overhead.summary.estimatedTcpPlusDnsMinusBody;
   const date=new Date(overhead.runs.at(-1).measuredAt).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric',timeZone:'UTC'});
-  need(latest.length===1&&latest[0].includes(`**Latest verified result: ${bytes(current.median)} estimated overhead, ${date}.**`)
-    &&latest[0].includes(`(${interval(current)})`)&&latest[0].includes(`](${config.current.overhead.path})`),'Stale README latest result, range or evidence link');
+  need(latest.length===1&&latest[0].includes(`${readmePrefix}${bytes(current.median)} estimated overhead, ${date}.**`)
+    &&latest[0].includes(`(${interval(current)})`)&&latest[0].includes(`](${historicalRefs.overhead.path})`),'Stale README latest result, range or evidence link');
   const historical=block(doc,'gallery');
   need(historical.includes('September 22, 2026')&&historical.includes(`](${config.historicalGallery.path})`),'Historical gallery date/evidence link is missing');
   need(Array.isArray(gallery.summary)&&gallery.summary.length===6,'Historical gallery must retain six sites');
@@ -433,15 +495,17 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
     const candidate=record(config.candidate.page);
     need(candidate.scope==='local build'||candidate.verification?.browserCandidateSha256===candidate.htmlSha256,'Candidate must carry explicitly local build or browser evidence');
     for(const key of Object.keys(working))need(candidate[key]===working[key].bytes&&candidate[key+'Sha256']===working[key].sha256,'Local candidate evidence is stale');
-    need(block(doc,'candidate')===renderCandidate(candidate,config.candidate.page),'Local candidate comparison section is stale');
+    need(block(doc,'candidate')===(split?renderSplitCandidate(candidate,config.candidate.page):renderCandidate(candidate,config.candidate.page)),'Local candidate comparison section is stale');
   } else need(!Object.hasOwn(config,'candidate')&&block(doc,'candidate',false)===null,'Remove the local candidate after live publication');
-  return {liveDate:overhead.runs.at(-1).measuredAt.slice(0,10),localCandidate:changed};
+  return split?{liveDate:new Date(pageState.at).toISOString().slice(0,10),measuredDate:overhead.runs.at(-1).measuredAt.slice(0,10),localCandidate:changed}
+    :{liveDate:overhead.runs.at(-1).measuredAt.slice(0,10),localCandidate:changed};
 }
 
 if(process.argv[1]&&resolve(process.argv[1])===fileURLToPath(import.meta.url)) {
   try {
     need(process.argv.length<=3,'Usage: check-comparison.mjs [POINTER]');
     const result=checkComparison({pointer:process.argv[2]});
-    console.log(`Verified-live comparison is current (${result.liveDate}); ${result.localCandidate?'local candidate is separately labeled':'working build matches live evidence'}. Historical gallery remains dated.`);
+    console.log(result.measuredDate?`Verified page is current (${result.liveDate}); transport remains measured ${result.measuredDate}. ${result.localCandidate?'Local candidate is separately labeled.':'Working build matches page evidence.'} Historical gallery remains dated.`
+      :`Verified-live comparison is current (${result.liveDate}); ${result.localCandidate?'local candidate is separately labeled':'working build matches live evidence'}. Historical gallery remains dated.`);
   } catch(error) {console.error('Comparison check failed: '+error.message);process.exitCode=1;}
 }

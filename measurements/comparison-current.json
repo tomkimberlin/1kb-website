@@ -1,7 +1,17 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "targetUrl": "https://tomkimberlin.com/",
   "current": {
+    "deployment": {
+      "path": "measurements/maintenance-20261025-intune-name.json",
+      "sha256": "7ce8a78a736e87e8c0dfcb7a58f6e11ca0f825ab266f5be6a04805bade2bcb0d"
+    },
+    "page": {
+      "path": "measurements/page-20261025-intune-name-local.json",
+      "sha256": "1d02f588491896b4edfc116519889adb96b1da237fb9ba05e26d4cb83525d135"
+    }
+  },
+  "measured": {
     "deployment": {
       "path": "measurements/deployment-20261025-adjacent.json",
       "sha256": "4f5925c07ee3d2bc6736a279f8ee00e95a42959825c86ef29502199c1ce3bf7f"
