@@ -1,6 +1,7 @@
 // Measurements follow the build; the gallery remains a dated snapshot.
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
+import {relative,resolve} from 'node:path';
 import assert from 'node:assert/strict';
 
 const args=process.argv.slice(2);
@@ -8,6 +9,7 @@ const buildOnly=args[0]==='--build-only';
 if(buildOnly)args.shift();
 assert.equal(args.length,2,'Usage: check-measurements.mjs [--build-only] PAGE GALLERY');
 const [browserPath,galleryPath]=args;
+const normalizedBrowserPath=relative(process.cwd(),resolve(browserPath));
 const read=path=>JSON.parse(readFileSync(path,'utf8'));
 const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
 const browser=read(browserPath),gallery=read(galleryPath),build=read('build-report.json');
@@ -59,6 +61,38 @@ if(buildOnly) {
   assert.match(verification.browserBaselineSha256??'',/^[0-9a-f]{64}$/,'Browser baseline hash is missing or invalid');
   assert.equal(verification.browserBaselineSha256,read(browser.publishedMeasurement).htmlSha256,'Browser baseline hash does not match the dated page snapshot');
   checkBrowserMatrix(verification.browserComparisons,'Browser');
+  const legacyWithoutReport=new Set([
+    'measurements/page-20260922.json','measurements/page-20260926-local.json',
+    'measurements/page-20261005-local.json','measurements/page-20261022-accessibility-local.json',
+    'measurements/page-20261022-local.json','measurements/page-20261023-rle-local.json',
+    'measurements/page-20261025-font-validation-local.json'
+  ]);
+  if(!Object.hasOwn(browser,'browserEvidence'))
+    assert.ok(legacyWithoutReport.has(normalizedBrowserPath),'Missing browser evidence reference');
+  if(typeof browser.browserEvidence==='string') {
+    // These older page records predate hashed report references. Do not allow
+    // a new record to downgrade an object reference to an unchecked string.
+    const legacy={
+      'measurements/page-20261005-approved-copy.json':'measurements/browser-20261005-approved-copy.json',
+      'measurements/page-20261005-opening-copy.json':'measurements/browser-20261005-opening-copy.json',
+      'measurements/page-20261005-club-link.json':'measurements/browser-20261005-club-link.json',
+      'measurements/page-20261005-direct-links-local.json':'measurements/browser-20261005-direct-links-local.json'
+    };
+    assert.equal(browser.browserEvidence,legacy[normalizedBrowserPath],'Unsupported legacy browser evidence reference');
+  } else if(Object.hasOwn(browser,'browserEvidence')) {
+    const ref=browser.browserEvidence;
+    assert.match(ref?.path??'',/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.json$/,'Invalid browser evidence path');
+    assert.match(ref.sha256??'',/^[0-9a-f]{64}$/,'Invalid browser evidence hash');
+    assert.equal(hash(ref.path),ref.sha256,'Stale browser evidence hash');
+    const report=read(ref.path);
+    assert.equal(report.verifierSha256,verification.browserVerifierSha256,'Browser report verifier mismatch');
+    assert.equal(report.handlerSha256,verification.handlerSha256,'Browser report handler mismatch');
+    assert.equal(report.baseline?.htmlSha256,verification.browserBaselineSha256,'Browser report baseline mismatch');
+    assert.equal(report.baseline?.htmlBytes,read(browser.publishedMeasurement).html,'Browser report baseline size mismatch');
+    assert.equal(report.candidate?.htmlSha256,verification.browserCandidateSha256,'Browser report candidate mismatch');
+    assert.equal(report.candidate?.htmlBytes,browser.html,'Browser report candidate size mismatch');
+    assert.deepEqual(report.cases,verification.browserComparisons,'Browser report cases mismatch');
+  }
 }
 if(Object.hasOwn(browser,'fontOverrideEvidence')) {
   const references=browser.fontOverrideEvidence;

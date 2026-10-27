@@ -21,8 +21,8 @@
   },
   "candidate": {
     "page": {
-      "path": "measurements/page-20261025-intune-name-local.json",
-      "sha256": "1d02f588491896b4edfc116519889adb96b1da237fb9ba05e26d4cb83525d135"
+      "path": "measurements/page-20261027-serialization-local.json",
+      "sha256": "30563e7694d5da1b978a278cc8a14ed348b61c689984a7321d44e976763e7b99"
     }
   }
 }

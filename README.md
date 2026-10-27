@@ -21,14 +21,14 @@ This broader measure counts traffic through connection close, including estimate
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Built October 25, 2026 |
+| Measurement | Scope | Local build October 27, 2026 |
 | --- | --- | ---: |
-| Brotli response body | Encoded page body | 396 B |
-| Gzip response body | Encoded page body | 549 B |
-| Deflate response body | Encoded page body | 537 B |
-| Raw HTML | Decoded page | 1,039 B |
+| Brotli response body | Encoded page body | 394 B |
+| Gzip response body | Encoded page body | 540 B |
+| Deflate response body | Encoded page body | 528 B |
+| Raw HTML | Decoded page | 1,041 B |
 
-The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. The longer name and URL add 7 B to the Brotli body; no new delivery-overhead measurement is claimed.
+The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization is a local candidate; no new delivery-overhead measurement is claimed.
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 
@@ -45,7 +45,7 @@ npm run check
 npm run check:measurements
 ```
 
-`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261025-intune-name-local.json), not a new live result.
+`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261027-serialization-local.json), not a new live result.
 
 Optional browser comparisons need Playwright (`npm install --no-save --package-lock=false playwright`) and Chromium/WebKit (`npx playwright install chromium webkit`). Save the original HTML before editing, then run `npm run test:browser -- --baseline PATH_TO_ORIGINAL_HTML`. Python optimizer tests (`npm run test:optimizers`) need Python 3.
 

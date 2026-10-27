@@ -38,8 +38,8 @@ function fixture(t) {
   writeFileSync(readme,readFileSync(readme,'utf8')+'\n[Test browser fixture]('+page+')\n');
   return directory;
 }
-function check(directory,buildOnly=false) {
-  return spawnSync(process.execPath,['tools/check-measurements.mjs',...(buildOnly?['--build-only']:[]),page,gallery],{cwd:directory,encoding:'utf8'});
+function check(directory,buildOnly=false,pagePath=page) {
+  return spawnSync(process.execPath,['tools/check-measurements.mjs',...(buildOnly?['--build-only']:[]),pagePath,gallery],{cwd:directory,encoding:'utf8'});
 }
 function changeJson(directory,file,mutate) {
   const path=join(directory,file),data=JSON.parse(readFileSync(path));
@@ -311,6 +311,52 @@ test('browser evidence is bound to its candidate and dated baseline',t=>{
     assert.notEqual(result.status,0,field);
     assert.match(result.stderr,error);
   }
+});
+
+test('referenced browser evidence binds the report bytes, provenance and cases',t=>{
+  const report='measurements/browser-reference.json';
+  function createReport(directory) {
+    const data=JSON.parse(readFileSync(join(directory,page)));
+    const v=data.verification;
+    const value={verifierSha256:v.browserVerifierSha256,handlerSha256:v.handlerSha256,
+      baseline:{htmlSha256:v.browserBaselineSha256,htmlBytes:JSON.parse(readFileSync(join(directory,data.publishedMeasurement))).html},candidate:{htmlSha256:v.browserCandidateSha256,htmlBytes:data.html},cases:v.browserComparisons};
+    writeFileSync(join(directory,report),JSON.stringify(value));
+    const sha256=createHash('sha256').update(readFileSync(join(directory,report))).digest('hex');
+    changeJson(directory,page,data=>data.browserEvidence={path:report,sha256});
+  }
+  const valid=fixture(t);createReport(valid);
+  assert.equal(check(valid).status,0);
+  const missing=fixture(t),newPage='measurements/page-new.json';
+  copyFileSync(join(missing,page),join(missing,newPage));
+  writeFileSync(join(missing,'README.md'),readFileSync(join(missing,'README.md'),'utf8')+'\n[New fixture]('+newPage+')\n');
+  assert.match(check(missing,false,newPage).stderr,/Missing browser evidence reference/);
+  const downgrade=fixture(t);changeJson(downgrade,page,data=>data.browserEvidence='measurements/legacy-report.json');
+  assert.match(check(downgrade).stderr,/Unsupported legacy browser evidence reference/);
+  const legacy=fixture(t),legacyPage='measurements/page-20261005-approved-copy.json';
+  copyFileSync(join(legacy,page),join(legacy,legacyPage));
+  changeJson(legacy,legacyPage,data=>data.browserEvidence='measurements/browser-20261005-approved-copy.json');
+  writeFileSync(join(legacy,'README.md'),readFileSync(join(legacy,'README.md'),'utf8')+'\n[Legacy fixture]('+legacyPage+')\n');
+  assert.equal(check(legacy,false,legacyPage).status,0);
+  const stale=fixture(t);createReport(stale);
+  changeJson(stale,report,data=>data.cases[0].identicalPixels=false);
+  assert.match(check(stale).stderr,/Stale browser evidence hash/);
+  for(const [change,error] of [
+    [data=>data.verifierSha256='0'.repeat(64),/Browser report verifier mismatch/],
+    [data=>data.handlerSha256='0'.repeat(64),/Browser report handler mismatch/],
+    [data=>data.baseline.htmlBytes++,/Browser report baseline size mismatch/],
+    [data=>data.candidate.htmlSha256='0'.repeat(64),/Browser report candidate mismatch/],
+    [data=>data.baseline.htmlSha256='0'.repeat(64),/Browser report baseline mismatch/],
+    [data=>data.candidate.htmlBytes++,/Browser report candidate size mismatch/],
+    [data=>data.cases[0].identicalPixels=false,/Browser report cases mismatch/]
+  ]) {
+    const directory=fixture(t);createReport(directory);changeJson(directory,report,change);
+    const sha256=createHash('sha256').update(readFileSync(join(directory,report))).digest('hex');
+    changeJson(directory,page,data=>data.browserEvidence.sha256=sha256);
+    const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,error);
+  }
+  const outside=fixture(t);createReport(outside);
+  changeJson(outside,page,data=>data.browserEvidence.path='../outside.json');
+  assert.match(check(outside).stderr,/Invalid browser evidence path/);
 });
 
 test('browser claims require the complete unique successful matrix',t=>{
