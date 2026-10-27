@@ -56,7 +56,7 @@ The [project-name update](measurements/maintenance-20261025-intune-name.json) is
 <!-- comparison:candidate:start -->
 ## Page build awaiting transport measurement
 
-The current page build is **1,041 B HTML; 394 B Brotli; 540 B gzip; 528 B deflate.** [Local build evidence](measurements/page-20261027-serialization-local.json) binds these exact representations. These bodies differ from the dated transport snapshot above. No new transfer, overhead or peer-ranking result is claimed. After transport measurement, advance the verified-live pointers and remove this section.
+The current page build is **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** [Local build evidence](measurements/page-20261027-brotli-first-local.json) binds these exact representations. These bodies differ from the dated transport snapshot above. No new transfer, overhead or peer-ranking result is claimed. After transport measurement, advance the verified-live pointers and remove this section.
 <!-- comparison:candidate:end -->
 
 <!-- comparison:gallery:start -->

@@ -21,8 +21,8 @@
   },
   "candidate": {
     "page": {
-      "path": "measurements/page-20261027-serialization-local.json",
-      "sha256": "30563e7694d5da1b978a278cc8a14ed348b61c689984a7321d44e976763e7b99"
+      "path": "measurements/page-20261027-brotli-first-local.json",
+      "sha256": "5b85543e641fea8f0a18ef5e64a8251206c7adbf6578a12090aa46ca9e79abbe"
     }
   }
 }

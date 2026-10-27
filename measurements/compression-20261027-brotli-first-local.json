@@ -1,0 +1,43 @@
+{
+  "scope": "Local bounded serialization and compression search; no live or network-overhead claim.",
+  "sourceBaselineSha256": "d3292c44fafb1ce8a47be2caf24346836e21b615483d9b9cfc2ae2c3e8964ea7",
+  "candidateSha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c",
+  "baseline": {
+    "html": 1039,
+    "brotli": 396,
+    "gzip": 549,
+    "deflate": 537
+  },
+  "candidate": {
+    "html": 1040,
+    "brotli": 392,
+    "gzip": 542,
+    "deflate": 530
+  },
+  "serializer": {
+    "node": "24.22.1",
+    "optimizerSha256": "fd4a6708b1fc996d4740265a3209af1dcbf0f132c9da102d63b27fe97509b31d",
+    "initialSeed": 20261027,
+    "initialAttempts": 8000,
+    "initialNodeGzipCap": 560,
+    "continuationSeed": 20261030,
+    "continuationAttempts": 16000,
+    "continuationNodeGzipCap": 555,
+    "note": "The 392 B final size is from the full 5,988-setting stock build grid, not the serializer\u2019s reduced setting subset."
+  },
+  "gzip": {
+    "recipe": "python3 optimize-gzip.py --tuned --archive ARCHIVE --input index.html --output NEWFILE --iterations 10000",
+    "archiveSha256": "d3a50f91a13cea9bafe025de8fd87a005eb26de02a4f0c193127ddbf23ac8ebe",
+    "optimizerSha256": "99f95b957aa5fc2e20ea47dae869ff2a8eba26555429107d992f216783d97989",
+    "gzipSha256": "d2395eb521d9f4fe5cbe15f80c0553a9a79028119ef158c5ce03936248e80f81",
+    "deflateSha256": "440f6c0a572b0fb9faa7a7de529a541e5eb5cb6c211c9e641b8afd15401c5ef8",
+    "reproducedIndependentCompiles": 2,
+    "pythonAndNodeCompleteDecode": true
+  },
+  "limitations": [
+    "Finite search, not a global minimum.",
+    "Pinned encoder output was reproduced with fresh compilations on one macOS host; cross-platform generation reproducibility was not established.",
+    "The saved standard stream is selected only when it exactly decodes to current HTML and is no larger than the stock result.",
+    "Compared with the separately tested 393/540/528 B candidate, this saves one Brotli byte and costs two bytes in each fallback."
+  ]
+}
