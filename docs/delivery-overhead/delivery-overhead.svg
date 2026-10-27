@@ -1,13 +1,24 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-label="Archived Cloudflare test 6203 bytes, default self-hosted test 5421 bytes, optimized self-hosted test 4432 bytes"><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>
-<text x="237" y="133.131" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">6,203 B</text>
-<rect data-value="6203" data-baseline="0" x="137" y="165.131" width="200" height="524.869" fill="#a3b1bf"/>
-<text x="237" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Cloudflare</text>
-<text x="539" y="199.300" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,421 B</text>
-<rect data-value="5421" data-baseline="0" x="439" y="231.300" width="200" height="458.700" fill="#5bada7"/>
-<text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Default</text>
-<text x="539" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
-<text x="841" y="282.985" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">4,432 B</text>
-<rect data-value="4432" data-baseline="0" x="741" y="314.985" width="200" height="375.015" fill="#087f7d"/>
-<text x="841" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Optimized</text>
-<text x="841" y="809" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">self-hosted</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="650" viewBox="0 0 1080 650" role="img" aria-labelledby="title description">
+<title id="title">Cold connection delivery overhead</title>
+<desc id="description">Matched nginx test setups: stock 5,421 bytes and optimized 4,432 bytes, a difference of 989 bytes. A separate archived Cloudflare control measured 6,203 bytes. An October 26 live median of three measured 5,252 bytes with a different certificate. TLS bytes through the first complete HTTP/2 page response, less the entire encoded body; excludes TCP/IP, DNS and connection close.</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif}.title{font-size:32px;font-weight:700;fill:#142b3f}.subtitle{font-size:19px;fill:#465a68}.section{font-size:18px;font-weight:700;fill:#465a68;letter-spacing:.04em}.label{font-size:22px;font-weight:700;fill:#142b3f}.detail{font-size:17px;fill:#526773}.number{font-size:22px;font-weight:700;fill:#142b3f}</style>
+<rect width="1080" height="650" rx="20" fill="#f7faf9"/>
+<text x="48" y="56" class="title">Cold connection delivery overhead</text>
+<text x="48" y="86" class="subtitle">TLS bytes through first complete HTTP/2 response, minus the encoded page body</text>
+<text x="48" y="144" class="section">MATCHED NGINX TEST SETUPS</text>
+<text x="48" y="174" class="detail">Same test certificate chain · median of 3</text>
+<text x="48" y="234" class="label">Stock nginx</text>
+<rect data-value="5421" data-baseline="0" x="310" y="205" width="517.080" height="40" rx="8" fill="#5bada7"/><text x="842.080" y="234" class="number">5,421 B</text>
+<text x="48" y="302" class="label">Optimized nginx</text>
+<rect data-value="4432" data-baseline="0" x="310" y="273" width="422.745" height="40" rx="8" fill="#087f7d"/><text x="747.745" y="302" class="number">4,432 B</text>
+<rect x="310" y="332" width="530" height="32" rx="16" fill="#e3f1ef"/>
+<text x="326" y="354" class="detail">989 B fewer in this fixture; results vary by setup</text>
+<path d="M48 391H1032" stroke="#d3dfdc"/>
+<text x="48" y="428" class="section">SEPARATE ARCHIVED CONTROL</text>
+<text x="48" y="461" class="label">Cloudflare</text>
+<text x="48" y="484" class="detail">Temporary route · 2026</text>
+<rect data-value="6203" data-baseline="0" x="310" y="434" width="591.671" height="40" rx="8" fill="#8396a2"/><text x="916.671" y="463" class="number">6,203 B</text>
+<text x="48" y="543" class="subtitle">October 26 live median of 3: 5,252 B, measured with a different certificate.</text>
+<text x="48" y="573" class="detail">The archived control and live result are not matched with the nginx test setups.</text>
+<text x="48" y="607" class="detail">Excludes TCP/IP, DNS and connection-close traffic.</text>
 </svg>
