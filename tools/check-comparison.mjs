@@ -12,6 +12,18 @@ import {requireAdjacentEvidence,checkAdjacentAdoption,renderAdjacent} from './ch
 import {checkPageState} from './check-page-state.mjs';
 
 const target='https://tomkimberlin.com/';
+const ownHosts=new Set(['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net']);
+const ownPagePaths=new Set(['/','/index.html']);
+function pageUrl(value) {
+  if(typeof value!=='string'||value.trim()!==value||value.length===0)return null;
+  try {
+    const url=new URL(value);
+    return ['http:','https:'].includes(url.protocol)&&!url.username&&!url.password?url:null;
+  } catch {return null;}
+}
+// server/site.js redirects HTTP, the two aliases and /index.html to this page.
+// Restrict recognition to its known hosts, paths and default public ports.
+const targetPage=url=>url!==null&&ownHosts.has(url.hostname)&&url.port===''&&ownPagePaths.has(url.pathname);
 const hash=data=>createHash('sha256').update(data).digest('hex');
 const need=(condition,message)=>{if(!condition)throw Error(message);};
 const equal=isDeepStrictEqual;
@@ -20,6 +32,17 @@ const integer=value=>Number.isSafeInteger(value)&&value>=0;
 const keys=(value,expected)=>value&&typeof value==='object'&&!Array.isArray(value)&&equal(Object.keys(value).sort(),[...expected].sort());
 const stats=values=>({median:[...values].sort((a,b)=>a-b)[1],minimum:Math.min(...values),maximum:Math.max(...values)});
 const stamp=value=>{need(typeof value==='string'&&/^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\d(?:\.\d+)?(?:Z|\+00:00)$/.test(value)&&Number.isFinite(Date.parse(value))&&new Date(value).toISOString().slice(0,19)===value.slice(0,19),'Invalid evidence timestamp');return Date.parse(value);};
+// Date.parse truncates sub-millisecond digits. Preserve those digits when
+// deciding whether a published verification or measurement is newer.
+function compareStamps(a,b) {
+  stamp(a);stamp(b);
+  const aSecond=Date.parse(a.slice(0,19)+'Z'),bSecond=Date.parse(b.slice(0,19)+'Z');
+  if(aSecond!==bSecond)return aSecond<bSecond?-1:1;
+  const fraction=value=>/\.(\d+)(?:Z|\+00:00)$/.exec(value)?.[1]??'';
+  const left=fraction(a),right=fraction(b),width=Math.max(left.length,right.length);
+  const x=left.padEnd(width,'0'),y=right.padEnd(width,'0');
+  return x===y?0:x<y?-1:1;
+}
 const representations={identity:['html','index.html'],br:['brotli','index.html.br'],gzip:['gzip','index.html.gz'],deflate:['deflate','index.html.deflate']};
 const metrics=['tlsThroughBodyCompleteMinusBody','estimatedTcpPlusDnsMinusBody','responseHttpPlainMinusBody'];
 const componentHosts=['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'];
@@ -441,21 +464,47 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   const legacyMaintenance=split?record({path:'measurements/maintenance-20261025-intune-name.json',sha256:'7ce8a78a736e87e8c0dfcb7a58f6e11ca0f825ab266f5be6a04805bade2bcb0d'}):null;
   const pageState=split?checkPageState({root,page:latestPage,deployment:latestDeployment,refs:config.current,record,immutableSource,
     earliest:Math.max(historicalDeploymentTime,overheadTime,stamp(legacyMaintenance.verifiedAt))}):null;
-  const deploymentTime=split?pageState.at:historicalDeploymentTime;
+  const deploymentStamp=split?latestDeployment.verifiedAt:(deployment.verifiedThrough??deployment.verifiedAt);
+  const overheadStamp=overhead.runs.map(row=>row.measuredAt).reduce((a,b)=>compareStamps(a,b)>=0?a:b);
   const live=split?pageState.live:historicalLive;
   for(const name of readdirSync(resolve(root,'measurements'))) {
-    if(!(split?/^[A-Za-z0-9][A-Za-z0-9._-]*\.json$/:/^(?:deployment|overhead|gallery)-[A-Za-z0-9._-]+\.json$/).test(name))continue;
-    const other=read('measurements/'+name);
-    if(split&&other?.kind==='page-only-deployment')need(/^deployment-[A-Za-z0-9._-]+\.json$/.test(name),'Misplaced page-only deployment evidence');
+    if(!(split?/^[A-Za-z0-9][A-Za-z0-9._-]*\.json$/:/^(?:deployment|maintenance|overhead|gallery)-[A-Za-z0-9._-]+\.json$/).test(name))continue;
+    const measurements=realpathSync(resolve(root,'measurements')),path=realpathSync(resolve(measurements,name));
+    need(path.startsWith(measurements+sep),'Scanned evidence reference escapes measurements');
+    const contents=readFileSync(path,'utf8');let other;
+    try {other=JSON.parse(contents);} catch {throw Error('Malformed scanned evidence JSON');}
+    if(other?.kind==='page-only-deployment')need(/^deployment-[A-Za-z0-9._-]+\.json$/.test(name),'Misplaced page-only deployment evidence');
     if(split&&other?.kind==='content-update-deployment')need(/^(?:deployment|maintenance)-[A-Za-z0-9._-]+\.json$/.test(name),'Misplaced content deployment evidence');
+    const pageDeployment=['content-update-deployment','page-only-deployment'].includes(other?.kind);
+    const url=pageUrl(other?.url);
+    let pageDeploymentIsTarget=false,pageDeploymentStamp;
+    if(name.startsWith('maintenance-')) {
+      need(other&&typeof other==='object'&&!Array.isArray(other),'Malformed maintenance evidence kind');
+      const validKind=typeof other.kind==='string'&&other.kind.trim()===other.kind&&other.kind.length>0;
+      // A missing kind is ambiguous unless its valid URL identifies a different
+      // page from the canonical URL and its known redirects.
+      need(validKind||url&&!targetPage(url),'Malformed maintenance evidence kind');
+    }
+    if(pageDeployment) {
+      need(url!==null,'Malformed page deployment target');
+      // Query strings and fragments do not select a different root document.
+      pageDeploymentIsTarget=targetPage(url);
+      if(pageDeploymentIsTarget) {
+        const timestamps=['verifiedAt','verifiedThrough'].filter(key=>Object.hasOwn(other,key)).map(key=>other[key]);
+        need(timestamps.length>0,'Invalid evidence timestamp');
+        timestamps.forEach(stamp);
+        pageDeploymentStamp=timestamps.reduce((a,b)=>compareStamps(a,b)>=0?a:b);
+      }
+    }
     if(name.startsWith('gallery-')&&other.schemaVersion===1) {
       need(peerComparison!==null,'Published normalized peer comparison requires a current reference');
-      need(stamp(other.completedAt)<=stamp(peerComparison.completedAt),'A newer peer comparison is missing from the comparison');
+      need(compareStamps(other.completedAt,peerComparison.completedAt)<=0,'A newer peer comparison is missing from the comparison');
     }
-    if((name.startsWith('deployment-')||(split&&name.startsWith('maintenance-')&&other.kind==='content-update-deployment'))&&other.url===target)need(stamp(other.verifiedThrough??other.verifiedAt)<=deploymentTime,'A newer verified deployment is missing from the comparison');
+    if(pageDeploymentIsTarget||(name.startsWith('deployment-')&&!pageDeployment&&targetPage(url)))
+      need(compareStamps(pageDeploymentStamp??(other.verifiedThrough??other.verifiedAt),deploymentStamp)<=0,'A newer verified deployment is missing from the comparison');
     if(name.startsWith('overhead-')&&other.targetUrl===target&&other.phase!=='baseline') {
       need(Array.isArray(other.runs)&&other.runs.length===3,'Malformed published overhead record');
-      need(Math.max(...other.runs.map(r=>stamp(r.measuredAt)))<=overheadTime,'A newer own-site overhead result is missing from the comparison');
+      need(other.runs.every(row=>compareStamps(row.measuredAt,overheadStamp)<=0),'A newer own-site overhead result is missing from the comparison');
     }
   }
   if(adjacentStreams!==null)checkAdjacentAdoption(adjacentStreams,{deployment,page,streamOffsets,overhead,statusEncoding,quic,readCommitted:immutableSource,

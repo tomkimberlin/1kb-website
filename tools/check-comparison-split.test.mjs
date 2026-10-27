@@ -2,7 +2,7 @@
 // They do not represent a deployment, response, browser run or measurement.
 import test,{after} from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,cpSync,copyFileSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,cpSync,copyFileSync,symlinkSync} from 'node:fs';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {dirname,resolve,join} from 'node:path';
@@ -89,6 +89,35 @@ function fixture(t) {
 
 test('synthetic newer page remains independent from actual measured transport and components',t=>{const f=fixture(t),result=f.check();assert.equal(result.liveDate,'2026-11-01');assert.equal(result.measuredDate,'2026-10-25');assert.equal(result.localCandidate,false);});
 test('the retained maintenance record can be the latest page before a candidate is deployed',t=>{const f=fixture(t);f.useMaintenance();const result=f.check();assert.equal(result.liveDate,'2026-10-25');assert.equal(result.localCandidate,true);});
+test('downgrading to the actual v1 measured pointer cannot hide the later retained maintenance deployment',t=>{
+ const f=fixture(t);f.useMaintenance();f.config.schemaVersion=1;f.config.current=f.config.measured;delete f.config.measured;f.flush({doc:false});
+ assert.throws(f.check,/newer verified deployment/i);
+});
+test('split state rejects malformed recognized maintenance evidence',t=>{
+ const f=fixture(t);f.useMaintenance();f.put('measurements/maintenance-malformed.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/'});
+ assert.throws(f.check,/timestamp/i);
+});
+test('split state rejects a newer maintenance verification within the same millisecond',t=>{
+ const f=fixture(t);f.useMaintenance();f.put('measurements/maintenance-microseconds.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-10-25T17:20:17.879109Z'});
+ assert.throws(f.check,/newer verified deployment/i);
+});
+test('split state recognizes same-page URL variations in later page-only deployments',t=>{
+ const f=fixture(t);f.useMaintenance();f.put('measurements/deployment-page-variant.json',{kind:'page-only-deployment',url:'https://TOMKIMBERLIN.COM:443/?v=release#section',verifiedAt:'2026-12-01T00:00:00Z'});
+ assert.throws(f.check,/newer verified deployment/i);
+});
+test('split state recognizes same-page URL variations in later legacy deployments',t=>{
+ const f=fixture(t);f.useMaintenance();f.put('measurements/deployment-legacy-variant.json',{url:'https://TOMKIMBERLIN.COM:443/?v=release#section',verifiedAt:'2026-12-01T00:00:00Z'});
+ assert.throws(f.check,/newer verified deployment/i);
+});
+test('split state recognizes a later verified deployment through a known redirect',t=>{
+ const f=fixture(t);f.useMaintenance();f.put('measurements/maintenance-redirect.json',{kind:'content-update-deployment',url:'http://tom.kimberlin.net/index.html?v=1',verifiedAt:'2026-12-01T00:00:00Z'});
+ assert.throws(f.check,/newer verified deployment/i);
+});
+test('split state confines scanned references to measurements',t=>{
+ const f=fixture(t),outside=join(f.root,'synthetic-outside.json');writeFileSync(outside,'SYNTHETIC_PRIVATE_SENTINEL');
+ symlinkSync(outside,join(f.root,'measurements/maintenance-escape.json'));
+ assert.throws(f.check,error=>/escapes measurements/i.test(error.message)&&!error.message.includes('SYNTHETIC_PRIVATE_SENTINEL'));
+});
 test('synthetic fixture has no dependency on the old candidate commit',t=>{const r=spawnSync('git',['cat-file','-e','41d09e8eb85faeecd39dea397169a5f3a49d83b2^{commit}'],{cwd:gitRoot,env,stdio:'ignore'});assert.notEqual(r.status,0);assert.notEqual(commit,'41d09e8eb85faeecd39dea397169a5f3a49d83b2');fixture(t).check();});
 test('latest page record must match pointer hash',t=>{const f=fixture(t);f.data.deployment.runtime.running=false;f.put(f.paths.deployment,f.data.deployment);assert.throws(f.check,/hash/i);});
 test('historical page cannot be replaced even when its pointer is rehashed',t=>{const f=fixture(t);f.config.measured.page=f.config.current.page;f.flush();assert.throws(f.check,/historical.*anchor/i);});

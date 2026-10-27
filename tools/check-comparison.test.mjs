@@ -1,7 +1,7 @@
 // Real saved evidence is copied into disposable ignored fixtures. No live calls.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,existsSync} from 'node:fs';
+import {readFileSync,writeFileSync,mkdirSync,mkdtempSync,rmSync,existsSync,symlinkSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {dirname,resolve,join} from 'node:path';
@@ -136,6 +136,119 @@ test('candidate section cannot be omitted',t=>{const f=fixture(t);f.candidate();
 test('remove candidate state once working equals published live',t=>{const f=fixture(t);f.config.candidate={page:f.config.current.page};f.flush();assert.throws(f.check,/Remove the local candidate/);});
 test('unreferenced later live overhead invalidates old pointers even if body is unchanged',t=>{const f=fixture(t);const later=structuredClone(f.data.overhead);for(const r of later.runs)r.measuredAt='2026-10-22T18:59:20Z';f.put('measurements/overhead-newer.json',later);assert.throws(f.check,/newer own-site/);});
 test('newer verified deployment invalidates old pointer with unchanged bytes',t=>{const f=fixture(t);f.put('measurements/deployment-newer.json',{...f.data.deployment,verifiedThrough:'2026-10-22T20:00:00Z'});assert.throws(f.check,/newer verified deployment/);});
+test('v1 rejects a newer verified maintenance content deployment',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-20261025-intune-name.json',json(resolve(repo,'measurements/maintenance-20261025-intune-name.json')));
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 recognizes a normalized equivalent of the target URL',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-canonical.json',{kind:'content-update-deployment',url:'https://TOMKIMBERLIN.COM',verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 recognizes the target URL even when it contains a fragment',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-fragment.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/#section',verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+for(const prefix of ['maintenance','deployment'])test('v1 recognizes same-page URL variations in '+prefix+' records',t=>{
+  const f=fixture(t);
+  f.put(`measurements/${prefix}-variant.json`,{kind:'content-update-deployment',url:'https://TOMKIMBERLIN.COM:443/?v=release#section',verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 recognizes same-page URL variations in page-only deployment records',t=>{
+  const f=fixture(t);
+  f.put('measurements/deployment-page-variant.json',{kind:'page-only-deployment',url:'https://TOMKIMBERLIN.COM:443/?v=release#section',verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 recognizes same-page URL variations in legacy deployment records',t=>{
+  const f=fixture(t);
+  f.put('measurements/deployment-legacy-variant.json',{url:'https://TOMKIMBERLIN.COM:443/?v=release#section',verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+for(const [label,kind,url] of [
+  ['http canonical','content-update-deployment','http://tomkimberlin.com/?v=1'],
+  ['https www alias','content-update-deployment','https://www.tomkimberlin.com/#fragment'],
+  ['http alternate alias','content-update-deployment','http://tom.kimberlin.net/'],
+  ['https alternate alias','page-only-deployment','https://tom.kimberlin.net/'],
+  ['canonical index redirect','page-only-deployment','https://tomkimberlin.com/index.html?v=1'],
+  ['alias index redirect',undefined,'https://www.tomkimberlin.com/index.html#section']
+])test('v1 recognizes a known redirect to the page: '+label,t=>{
+  const f=fixture(t);
+  f.put('measurements/deployment-known-redirect.json',{...(kind?{kind}:{}),url,verifiedAt:'2026-12-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 detects a later maintenance verification within the same millisecond',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-microseconds.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-10-22T17:04:17.857001Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 accepts the same instant with extra fractional zeroes',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-equal-time.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-10-22T17:04:17.857000Z'});
+  assert.doesNotThrow(f.check);
+});
+test('v1 detects a later overhead sample within the same millisecond',t=>{
+  const f=fixture(t),later=structuredClone(f.data.overhead);later.runs[2].measuredAt='2026-10-22T16:59:20.000001Z';
+  f.put('measurements/overhead-microseconds.json',later);assert.throws(f.check,/newer own-site/i);
+});
+test('v1 detects a later peer comparison within the same millisecond',t=>{
+  const f=fixture(t);f.peerComparison();f.put('measurements/gallery-microseconds.json',{schemaVersion:1,completedAt:'2026-10-23T09:25:23.000001Z'});
+  assert.throws(f.check,/newer peer comparison/i);
+});
+test('v1 cannot hide a later verification behind an earlier verifiedThrough',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-two-dates.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-12-01T00:00:00Z',verifiedThrough:'2026-10-01T00:00:00Z'});
+  assert.throws(f.check,/newer verified deployment/i);
+});
+test('v1 accepts an older verified maintenance content deployment',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-old.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'2026-10-01T00:00:00Z'});
+  assert.doesNotThrow(f.check);
+});
+test('v1 ignores unrelated maintenance verification and content deployments for other sites',t=>{
+  const f=fixture(t);
+  f.put('measurements/maintenance-other-kind.json',{kind:'maintenance-verification',verifiedAt:'2026-12-01T00:00:00Z'});
+  f.put('measurements/maintenance-unrelated-kind.json',{kind:'network-verification'});
+  f.put('measurements/maintenance-other-no-kind.json',{url:'https://example.invalid/',verifiedAt:'not a timestamp'});
+  f.put('measurements/maintenance-other-bad-kind.json',{kind:7,url:'https://example.invalid/'});
+  f.put('measurements/maintenance-other-port-no-kind.json',{url:'https://tomkimberlin.com:8443/'});
+  f.put('measurements/maintenance-other-site.json',{kind:'content-update-deployment',url:'https://example.invalid/',verifiedAt:'2026-12-01T00:00:00Z'});
+  f.put('measurements/maintenance-other-site-no-date.json',{kind:'content-update-deployment',url:'https://example.invalid/'});
+  f.put('measurements/maintenance-other-site-invalid-date.json',{kind:'content-update-deployment',url:'https://example.invalid/',verifiedAt:'not a timestamp'});
+  f.put('measurements/deployment-other-path.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com/another-page',verifiedAt:'not a timestamp'});
+  f.put('measurements/deployment-other-port.json',{kind:'content-update-deployment',url:'https://tomkimberlin.com:8443/',verifiedAt:'not a timestamp'});
+  f.put('measurements/deployment-other-page-only.json',{kind:'page-only-deployment',url:'https://example.invalid/',verifiedAt:'not a timestamp'});
+  f.put('measurements/deployment-legacy-no-url.json',{verifiedAt:'not a timestamp'});
+  f.put('measurements/deployment-legacy-bad-url.json',{url:'not a URL',verifiedAt:'not a timestamp'});
+  assert.doesNotThrow(f.check);
+});
+for(const [label,value] of [
+  ['missing timestamp',{kind:'content-update-deployment',url:'https://tomkimberlin.com/'}],
+  ['invalid timestamp',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'not a timestamp'}],
+  ['invalid secondary timestamp',{kind:'content-update-deployment',url:'https://tomkimberlin.com/',verifiedAt:'not a timestamp',verifiedThrough:'2026-10-01T00:00:00Z'}],
+  ['missing target',{kind:'content-update-deployment',verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['invalid target',{kind:'content-update-deployment',url:7,verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['malformed URL',{kind:'content-update-deployment',url:'not a URL',verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['missing kind',{url:'https://tomkimberlin.com/',verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['missing kind and target',{verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['invalid kind and same-site target',{kind:7,url:'https://www.tomkimberlin.com/',verifiedAt:'2026-10-01T00:00:00Z'}],
+  ['missing kind and index redirect',{url:'https://tomkimberlin.com/index.html',verifiedAt:'2026-10-01T00:00:00Z'}]
+])test('v1 rejects maintenance content deployment with '+label,t=>{
+  const f=fixture(t);f.put('measurements/maintenance-malformed.json',value);assert.throws(f.check);
+});
+test('v1 rejects malformed maintenance JSON',t=>{
+  const f=fixture(t);writeFileSync(join(f.root,'measurements/maintenance-malformed.json'),'{');assert.throws(f.check,/JSON/i);
+});
+for(const prefix of ['maintenance','deployment','overhead','gallery'])test('v1 confines scanned '+prefix+' references to measurements',t=>{
+  const f=fixture(t),outside=join(f.root,'synthetic-outside.json');writeFileSync(outside,'SYNTHETIC_PRIVATE_SENTINEL');
+  symlinkSync(outside,join(f.root,`measurements/${prefix}-escape.json`));
+  assert.throws(f.check,error=>/escapes measurements/i.test(error.message)&&!error.message.includes('SYNTHETIC_PRIVATE_SENTINEL'));
+});
+test('v1 malformed scanned JSON errors do not expose content',t=>{
+  const f=fixture(t);writeFileSync(join(f.root,'measurements/maintenance-malformed.json'),'{"sentinel":"SYNTHETIC_PRIVATE_SENTINEL", invalid}');
+  assert.throws(f.check,error=>/JSON/i.test(error.message)&&!error.message.includes('SYNTHETIC_PRIVATE_SENTINEL'));
+});
 test('malformed new deployment timestamp cannot fall back to an older valid timestamp',t=>{const f=fixture(t);f.data.deployment.verifiedThrough='not a timestamp';f.data.deployment.verifiedAt='2026-10-22T17:00:00Z';f.save('deployment');f.flush();assert.throws(f.check,/Invalid evidence timestamp/);});
 test('later baseline-only preview does not pretend to be a live measurement',t=>{const f=fixture(t);f.put('measurements/overhead-baseline.json',{...f.data.overhead,phase:'baseline',runs:f.data.overhead.runs.map(r=>({...r,measuredAt:'2026-10-22T20:00:00Z'}))});assert.doesNotThrow(f.check);});
 test('unrelated target deployment does not advance this site',t=>{const f=fixture(t);f.put('measurements/deployment-other.json',{url:'https://example.invalid/',verifiedAt:'2026-10-22T20:00:00Z'});assert.doesNotThrow(f.check);});
