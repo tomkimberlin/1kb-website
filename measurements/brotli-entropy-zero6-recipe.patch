@@ -1,0 +1,86 @@
+diff --git a/optimize-brotli.py b/optimize-brotli.py
+index fa47d4f..1566c12 100644
+--- a/optimize-brotli.py
++++ b/optimize-brotli.py
+@@ -18,6 +18,7 @@ ARCHIVE_SHA256 = '0afe09a53c8bad9861c8dd1fc1284308d54f19d2979ba3541cfdcc9b05fe36
+ URL = f'https://codeload.github.com/google/brotli/tar.gz/{REVISION}'
+ parser = argparse.ArgumentParser(description=__doc__)
+ parser.add_argument('--archive', type=Path, help='Use an already downloaded source archive.')
++parser.add_argument('--entropy-zero6', action='store_true', help='Use the alternate zero-run threshold 6 recipe.')
+ parser.add_argument('--input', type=Path, default=Path('index.html'), help='HTML source to encode.')
+ parser.add_argument('--output', type=Path, default=Path('compression/index.html.br'), help='Candidate path; keeps any smaller valid encoding of the same input.')
+ args = parser.parse_args()
+@@ -39,29 +40,37 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
+         tar.extractall(root, filter='data')
+     tree = root / f'brotli-{REVISION}'
+ 
+-    # Tune match-selection estimates, leaving the Brotli format and dictionary
+-    # unchanged. Distance estimates influence which equivalent sequence the
+-    # quality-11 search chooses; literal and command costs stay unchanged.
+-    path = tree / 'c/enc/backward_references_hq.c'
+-    text = path.read_text()
+-    old = '    *num_commands = orig_num_commands;'
+-    if text.count(old) != 1:
+-        raise RuntimeError('Pinned Brotli source does not match cost model patch')
+-    text = text.replace(old, '''    {
+-      size_t j;
+-      for (j = 0; j < params->dist.alphabet_size_limit; ++j)
+-        model->cost_dist_[j] *= 1.3f;
+-    }
+-''' + old)
+-    path.write_text(text)
++    if args.entropy_zero6:
++        path = tree / 'c/enc/entropy_encode.c'
++        text = path.read_text()
++        old = 'symbol == 0 && step >= 5'
++        if text.count(old) != 1:
++            raise RuntimeError('Pinned Brotli source does not match zero-run threshold patch')
++        path.write_text(text.replace(old, 'symbol == 0 && step >= 6'))
++    else:
++        # Tune match-selection estimates, leaving the Brotli format and dictionary
++        # unchanged. Distance estimates influence which equivalent sequence the
++        # quality-11 search chooses; literal and command costs stay unchanged.
++        path = tree / 'c/enc/backward_references_hq.c'
++        text = path.read_text()
++        old = '    *num_commands = orig_num_commands;'
++        if text.count(old) != 1:
++            raise RuntimeError('Pinned Brotli source does not match cost model patch')
++        text = text.replace(old, '''    {
++          size_t j;
++          for (j = 0; j < params->dist.alphabet_size_limit; ++j)
++            model->cost_dist_[j] *= 1.3f;
++        }
++    ''' + old)
++        path.write_text(text)
+ 
+-    # The shorter literal window changes match estimates, not decoded bytes.
+-    path = tree / 'c/enc/literal_cost.c'
+-    text = path.read_text()
+-    old = 'size_t window_half = 495;'
+-    if text.count(old) != 1:
+-        raise RuntimeError('Pinned Brotli source does not match literal window patch')
+-    path.write_text(text.replace(old, 'size_t window_half = 256;'))
++        # The shorter literal window changes match estimates, not decoded bytes.
++        path = tree / 'c/enc/literal_cost.c'
++        text = path.read_text()
++        old = 'size_t window_half = 495;'
++        if text.count(old) != 1:
++            raise RuntimeError('Pinned Brotli source does not match literal window patch')
++        path.write_text(text.replace(old, 'size_t window_half = 256;'))
+ 
+     library = root / 'encoder.so'
+     compiler = shlex.split(os.environ.get('CC', 'cc'))
+@@ -89,9 +98,10 @@ with tempfile.TemporaryDirectory(prefix='onekb-brotli-') as directory:
+     if not state:
+         raise MemoryError('Cannot create Brotli encoder')
+     try:
+-        # Generic mode, quality 11, 64 KiB window, literal contexts enabled,
+-        # two distance postfix bits and 28 direct distance codes.
+-        for key, value in {0: 0, 1: 11, 2: 16, 4: 0, 7: 2, 8: 28}.items():
++        # Both recipes use generic mode, quality 11, a 64 KiB window, literal
++        # contexts and 28 direct distance codes; the alternate uses one postfix bit.
++        params = {0: 0, 1: 11, 2: 16, 4: 0, 7: 1 if args.entropy_zero6 else 2, 8: 28}
++        for key, value in params.items():
+             if not lib.BrotliEncoderSetParameter(state, key, value):
+                 raise RuntimeError(f'Brotli rejected parameter {key}')
+         raw = (byte * len(source)).from_buffer_copy(source)

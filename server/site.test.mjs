@@ -41,8 +41,13 @@ for(const [accepted,encoding] of cases) test('encoding: '+JSON.stringify(accepte
   assert.equal(r.headersOut['Content-Encoding'],encoding==='identity'?undefined:encoding);
   const suffix=encoding==='identity'?'':encoding==='br'?'.br':encoding==='deflate'?'.deflate':'.gz';
   assert.deepEqual(r.body,readFileSync('public/index.html'+suffix));
-  const decoded=encoding==='br'?brotliDecompressSync(r.body):encoding==='gzip'?gunzipSync(r.body):encoding==='deflate'?inflateSync(r.body):r.body;
-  assert.deepEqual(decoded,readFileSync('index.html'));
+  if(encoding==='identity') assert.deepEqual(r.body,readFileSync('index.html'));
+  else {
+    const decode={br:brotliDecompressSync,gzip:gunzipSync,deflate:inflateSync}[encoding];
+    const decoded=decode(r.body,{info:true});
+    assert.deepEqual(decoded.buffer,readFileSync('index.html'));
+    assert.equal(decoded.engine.bytesWritten,r.body.length,'the selected stream must be consumed completely');
+  }
 });
 test('unacceptable encodings and methods return empty errors',()=>{
   for(const accepted of ['*;q=0','* ;q=0','br;q=0,gzip;q=0,identity;q=0','identity ;q=0, * ;q=0']) {

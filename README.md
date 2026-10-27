@@ -8,7 +8,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 ![Cold-connection TLS overhead: matched nginx test setups measured 5,421 B stock and 4,432 B optimized. A separate archived Cloudflare control measured 6,203 B; the live median of three with a different certificate was 5,252 B.](docs/delivery-overhead/delivery-overhead.svg)
 
-Self-hosted bars compare stock and optimized nginx with the same test certificate chain. Values exclude the entire page body, TCP/IP and DNS. Cloudflare is a separate archived temporary-route control, not a universal provider comparison. The trusted live result remains 5,252 B with its different certificate. [Definition, samples and method](docs/delivery-overhead/).
+Self-hosted bars compare stock and optimized nginx with the same test certificate chain. Values exclude the entire page body, TCP/IP and DNS. Cloudflare is a separate archived temporary-route control, not a universal provider comparison. The October 26 trusted live sample measured 5,252 B with its different certificate. [Definition, samples and method](docs/delivery-overhead/).
 
 ### Separate packet-and-DNS estimate
 
@@ -16,19 +16,19 @@ This broader measure counts traffic through connection close, including estimate
 
 **Delivery overhead = measured traffic − the entire encoded page body.**
 
-**Latest verified result: 6,945 B estimated overhead, October 25, 2026.** Three cold own-site exchanges (6,944–6,996 B), measured before the project-name update below. [Evidence](measurements/overhead-20261025-adjacent.json).
+**Latest measured transport result: 6,945 B estimated overhead, October 25, 2026.** Three cold own-site exchanges (6,944–6,996 B), measured before the project-name update below. [Evidence](measurements/overhead-20261025-adjacent.json).
 
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Built October 25, 2026 |
+| Measurement | Scope | Local build October 27, 2026 |
 | --- | --- | ---: |
-| Brotli response body | Encoded page body | 396 B |
-| Gzip response body | Encoded page body | 549 B |
-| Deflate response body | Encoded page body | 537 B |
-| Raw HTML | Decoded page | 1,039 B |
+| Brotli response body | Encoded page body | 392 B |
+| Gzip response body | Encoded page body | 542 B |
+| Deflate response body | Encoded page body | 530 B |
+| Raw HTML | Decoded page | 1,040 B |
 
-The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. The longer name and URL add 7 B to the Brotli body; no new delivery-overhead measurement is claimed.
+The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization is a local candidate; no new delivery-overhead measurement is claimed.
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 
@@ -45,7 +45,7 @@ npm run check
 npm run check:measurements
 ```
 
-`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261025-intune-name-local.json), not a new live result.
+`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261027-brotli-first-local.json), not a new live result.
 
 Optional browser comparisons need Playwright (`npm install --no-save --package-lock=false playwright`) and Chromium/WebKit (`npx playwright install chromium webkit`). Save the original HTML before editing, then run `npm run test:browser -- --baseline PATH_TO_ORIGINAL_HTML`. Python optimizer tests (`npm run test:optimizers`) need Python 3.
 
