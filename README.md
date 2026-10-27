@@ -21,14 +21,14 @@ This broader measure counts traffic through connection close, including estimate
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Local build October 27, 2026 |
+| Measurement | Scope | Verified live October 27, 2026 |
 | --- | --- | ---: |
 | Brotli response body | Encoded page body | 392 B |
 | Gzip response body | Encoded page body | 542 B |
 | Deflate response body | Encoded page body | 530 B |
 | Raw HTML | Decoded page | 1,040 B |
 
-The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization is a local candidate; no new delivery-overhead measurement is claimed.
+The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization is verified live; no new delivery-overhead measurement is claimed.
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 
