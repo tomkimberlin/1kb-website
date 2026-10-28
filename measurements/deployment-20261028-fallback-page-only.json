@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 2,
+  "kind": "page-only-deployment",
+  "url": "https://tomkimberlin.com/",
+  "verifiedAt": "2026-10-28T03:17:44Z",
+  "pageCommit": "6a412cd431ab27c51a037197df6d45e2079c23af",
+  "pageRelease": "releases/20261028T031706Z-86b1f6f2777f-onekb-deploy.x1NPdP",
+  "runtime": {
+    "imageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+    "running": true
+  },
+  "representations": [
+    {
+      "encoding": "identity",
+      "bytes": 1040,
+      "sha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c",
+      "contentEncoding": null
+    },
+    {
+      "encoding": "br",
+      "bytes": 392,
+      "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5",
+      "contentEncoding": "br"
+    },
+    {
+      "encoding": "gzip",
+      "bytes": 541,
+      "sha256": "c3d75eb558ff097e54ec7e0f180e37869c9b4bfbec301045410413f0ff974fef",
+      "contentEncoding": "gzip"
+    },
+    {
+      "encoding": "deflate",
+      "bytes": 529,
+      "sha256": "055a322af0c96ace5f049886e0ac4675b4dc0728cbcef72c48b2667af7235d01",
+      "contentEncoding": "deflate"
+    }
+  ],
+  "aliases": [
+    {
+      "host": "www.tomkimberlin.com",
+      "location": "https://tomkimberlin.com/"
+    },
+    {
+      "host": "tom.kimberlin.net",
+      "location": "https://tomkimberlin.com/"
+    }
+  ],
+  "verification": {
+    "window": {
+      "startedAt": "2026-10-28T03:17:06Z",
+      "completedAt": "2026-10-28T03:17:29Z"
+    },
+    "originReleaseMarkerVerified": true,
+    "originRepresentationsVerified": true,
+    "publicRepresentationsVerified": true,
+    "aliasesVerified": true,
+    "normalCertificateValidation": true,
+    "publicVerificationEnvironment": {
+      "ONEKB_TEST_IP": null,
+      "ONEKB_TEST_HTTP_PORT": null,
+      "ONEKB_TEST_HTTPS_PORT": null,
+      "ONEKB_ALIAS_IP": null,
+      "CURL_CA_BUNDLE": null,
+      "SSL_CERT_FILE": null,
+      "SSL_CERT_DIR": null,
+      "NODE_EXTRA_CA_CERTS": null,
+      "NODE_TLS_REJECT_UNAUTHORIZED": null,
+      "NODE_OPTIONS": null,
+      "DYLD_INSERT_LIBRARIES": null,
+      "LD_PRELOAD": null
+    },
+    "publicEnvironmentRecordedAt": "2026-10-28T03:17:27Z",
+    "privateLogHashes": {
+      "deploy": "67180fb1e85c7ca6b232f9255394caa13e8ff203dd76a0484aee3baec75559bc",
+      "build": "75ccf4f8a1cac548d54068afae36662b194ccb49a742cb1efe11cbc30ef2fc08",
+      "live": "84cb4a9905904587fb99675b9233b91b0fb5dd8e9dec6cdbeed61cb83b98fdae",
+      "alias": "b81558270544af8fb6e2f628d927848dadf705e5635c172fed20c685d224d9c9",
+      "publicEnvironment": "cbb228d8216de51e026a14bd640a4de138dc773c874144e4c79e06eb707e205a",
+      "readback": "e6e4ff2a41cddaa8b99cc23b68ef2290a70a657039865fede2c3d6759d9428d7"
+    },
+    "fileReadbacks": {
+      "preflight": {
+        "observedAt": "2026-10-28T03:16:46Z",
+        "passed": true,
+        "privateReadbackSha256": "3100dcd1253171630c5ebd25cc8d86f37bdd524eafe58832671e22f2032ef241",
+        "files": [
+          {
+            "encoding": "identity",
+            "file": "index.html",
+            "bytes": 1040,
+            "sha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c"
+          },
+          {
+            "encoding": "br",
+            "file": "index.html.br",
+            "bytes": 392,
+            "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5"
+          },
+          {
+            "encoding": "gzip",
+            "file": "index.html.gz",
+            "bytes": 541,
+            "sha256": "c3d75eb558ff097e54ec7e0f180e37869c9b4bfbec301045410413f0ff974fef"
+          },
+          {
+            "encoding": "deflate",
+            "file": "index.html.deflate",
+            "bytes": 529,
+            "sha256": "055a322af0c96ace5f049886e0ac4675b4dc0728cbcef72c48b2667af7235d01"
+          }
+        ]
+      },
+      "postBuild": {
+        "observedAt": "2026-10-28T03:17:27Z",
+        "passed": true,
+        "privateReadbackSha256": "96f25bd43f90653c52bae8163630cce375005dc5797305ebbddb33bf40d7fabd",
+        "files": [
+          {
+            "encoding": "identity",
+            "file": "index.html",
+            "bytes": 1040,
+            "sha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c"
+          },
+          {
+            "encoding": "br",
+            "file": "index.html.br",
+            "bytes": 392,
+            "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5"
+          },
+          {
+            "encoding": "gzip",
+            "file": "index.html.gz",
+            "bytes": 541,
+            "sha256": "c3d75eb558ff097e54ec7e0f180e37869c9b4bfbec301045410413f0ff974fef"
+          },
+          {
+            "encoding": "deflate",
+            "file": "index.html.deflate",
+            "bytes": 529,
+            "sha256": "055a322af0c96ace5f049886e0ac4675b4dc0728cbcef72c48b2667af7235d01"
+          }
+        ]
+      },
+      "release": {
+        "observedAt": "2026-10-28T03:17:44Z",
+        "passed": true,
+        "privateReadbackSha256": "e6e4ff2a41cddaa8b99cc23b68ef2290a70a657039865fede2c3d6759d9428d7",
+        "pageRelease": "releases/20261028T031706Z-86b1f6f2777f-onekb-deploy.x1NPdP",
+        "files": [
+          {
+            "encoding": "identity",
+            "file": "index.html",
+            "bytes": 1040,
+            "sha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c"
+          },
+          {
+            "encoding": "br",
+            "file": "index.html.br",
+            "bytes": 392,
+            "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5"
+          },
+          {
+            "encoding": "gzip",
+            "file": "index.html.gz",
+            "bytes": 541,
+            "sha256": "c3d75eb558ff097e54ec7e0f180e37869c9b4bfbec301045410413f0ff974fef"
+          },
+          {
+            "encoding": "deflate",
+            "file": "index.html.deflate",
+            "bytes": 529,
+            "sha256": "055a322af0c96ace5f049886e0ac4675b4dc0728cbcef72c48b2667af7235d01"
+          }
+        ]
+      }
+    },
+    "readback": {
+      "verifiedAt": "2026-10-28T03:17:44Z",
+      "pageRelease": "releases/20261028T031706Z-86b1f6f2777f-onekb-deploy.x1NPdP",
+      "imageId": "sha256:bd2a90f1661d741e5a2788ac19b6054116b5bca44103a8b6a8af6ab09ec127e3",
+      "running": true,
+      "normalCertificateValidation": true
+    },
+    "toolSha256": {
+      "server/deploy.sh": "5b5260ff6904c73d19f5d498dd2b944a419c8c19d2266034fa9f66d38e20747c",
+      "build.mjs": "d893c2873ee422fc86ed4a6a4f31d335a587df1dfea6e64bd8ed0abbe94beb99",
+      "server/verify.mjs": "3dbe7bd6ae56a10634e6d130d3f0c54fef143968862d229a40beaf5e80f5b6f3",
+      "server/verify-alias.mjs": "3da19f8a883eeff511374263dba231cc4e9d45476a4c116dce29d02b25edbc79",
+      "server/verify-response.mjs": "3e57f69039e0cf0adfd358888bb17b32eb2c8d034ce4c71be240a28b22e05d06"
+    }
+  }
+}

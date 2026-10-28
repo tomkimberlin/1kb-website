@@ -21,14 +21,14 @@ This broader measure counts traffic through connection close, including estimate
 <details>
 <summary>Current page sizes and 1KB Club qualification</summary>
 
-| Measurement | Scope | Verified live October 27, 2026 | Local candidate |
-| --- | --- | ---: | ---: |
-| Brotli response body | Encoded page body | 392 B | 392 B |
-| Gzip response body | Encoded page body | 542 B | 541 B |
-| Deflate response body | Encoded page body | 530 B | 529 B |
-| Raw HTML | Decoded page | 1,040 B | 1,040 B |
+| Measurement | Scope | Verified live October 28, 2026 |
+| --- | --- | ---: |
+| Brotli response body | Encoded page body | 392 B |
+| Gzip response body | Encoded page body | 541 B |
+| Deflate response body | Encoded page body | 529 B |
+| Raw HTML | Decoded page | 1,040 B |
 
-The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization is verified live; no new delivery-overhead measurement is claimed.
+The [October 25 page update](measurements/maintenance-20261025-intune-name.json) uses **Intune Device Workbench**. At the time, the longer name and URL added 7 B to the Brotli body. The October 27 serialization and October 28 fallback streams are verified live; no new delivery-overhead measurement is claimed.
 
 The last [1KB Club](https://1kb.club/submit/) scanner check was October 5: [report](https://www.debugbear.com/test/website-speed/Gv3z2tDz/overview), [evidence](measurements/debugbear-20261005.json).
 
@@ -45,7 +45,7 @@ npm run check
 npm run check:measurements
 ```
 
-`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [local candidate build evidence](measurements/page-20261028-fallback-local.json), not a new live result.
+`index.html` is the source; the build writes four representations and nginx's preload snapshot to `public/`, plus [build-report.json](build-report.json). Keep source ASCII and use character references for Unicode. The 128 B response allowance is a build budget. The measurement check validates [saved build evidence](measurements/page-20261028-fallback-local.json), not a new live result.
 
 Optional browser comparisons need Playwright (`npm install --no-save --package-lock=false playwright`) and Chromium/WebKit (`npx playwright install chromium webkit`). Save the original HTML before editing, then run `npm run test:browser -- --baseline PATH_TO_ORIGINAL_HTML`. Python optimizer tests (`npm run test:optimizers`) need Python 3.
 
