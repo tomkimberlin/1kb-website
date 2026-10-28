@@ -1,14 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-labelledby="title description"><title id="title">Cold-connection TLS overhead</title><desc id="description">Archived Cloudflare test: 6,203 bytes. Matched nginx tests using the same certificate chain: stock 5,421 bytes and optimized 4,432 bytes. TLS bytes through the first complete HTTP/2 page response minus the entire encoded body; excludes TCP/IP, DNS and connection close. Cloudflare is a separate, unmatched historical control.</desc><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1080" height="880" fill="white"/>
-<text x="237" y="133.131" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">6,203 B</text>
-<rect data-value="6203" data-baseline="0" x="137" y="165.131" width="200" height="524.869" fill="#6c7f90"/>
-<text x="237" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Cloudflare</text>
-<text x="237" y="809" text-anchor="middle" font-size="36" font-weight="400" fill="#172b40">archived test</text>
-<text x="539" y="199.300" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">5,421 B</text>
-<rect data-value="5421" data-baseline="0" x="439" y="231.300" width="200" height="458.700" fill="#34817d"/>
-<text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Stock nginx</text>
-<text x="539" y="809" text-anchor="middle" font-size="36" font-weight="400" fill="#172b40">matched test</text>
-<text x="841" y="282.985" text-anchor="middle" font-size="48" font-weight="700" fill="#172b40">4,432 B</text>
-<rect data-value="4432" data-baseline="0" x="741" y="314.985" width="200" height="375.015" fill="#086b69"/>
-<text x="841" y="765" text-anchor="middle" font-size="36" font-weight="600" fill="#172b40">Optimized nginx</text>
-<text x="841" y="809" text-anchor="middle" font-size="36" font-weight="400" fill="#172b40">matched test</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="880" viewBox="0 0 1080 880" role="img" aria-labelledby="title description"><title id="title">Cold-connection TLS overhead</title><desc id="description">Archived Cloudflare test: 6,203 bytes. Matched nginx tests using the same certificate chain: stock 5,421 bytes and optimized 4,432 bytes. TLS bytes through the first complete HTTP/2 page response minus the entire encoded body; excludes TCP/IP, DNS and connection close. Cloudflare is a separate, unmatched historical control.</desc><style>text{font-family:Arial,Helvetica,sans-serif;fill:#6c787e}rect{fill:#34817d}#gh-light-mode-only:target~text{fill:#172b40}#gh-dark-mode-only:target~text{fill:#e6edf3}#gh-dark-mode-only:target~rect{fill:#5bada7}</style><g id="gh-light-mode-only"/><g id="gh-dark-mode-only"/>
+<text x="237" y="133.131" text-anchor="middle" font-size="48" font-weight="700">6,203 B</text>
+<rect data-value="6203" data-baseline="0" x="137" y="165.131" width="200" height="524.869"/>
+<text x="237" y="765" text-anchor="middle" font-size="36" font-weight="600">Cloudflare</text>
+<text x="539" y="199.300" text-anchor="middle" font-size="48" font-weight="700">5,421 B</text>
+<rect data-value="5421" data-baseline="0" x="439" y="231.300" width="200" height="458.700"/>
+<text x="539" y="765" text-anchor="middle" font-size="36" font-weight="600">Stock nginx</text>
+<text x="841" y="282.985" text-anchor="middle" font-size="48" font-weight="700">4,432 B</text>
+<rect data-value="4432" data-baseline="0" x="741" y="314.985" width="200" height="375.015"/>
+<text x="841" y="765" text-anchor="middle" font-size="36" font-weight="600">Optimized nginx</text>
 </svg>

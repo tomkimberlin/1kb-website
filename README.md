@@ -6,7 +6,7 @@ Certificates and connection setup cost more than the page itself. Precompressed 
 
 ## Delivery overhead
 
-![Cold-connection TLS overhead: an archived Cloudflare test measured 6,203 B; matched nginx tests measured 5,421 B stock and 4,432 B optimized.](docs/delivery-overhead/delivery-overhead.svg)
+![Cold-connection TLS overhead: an archived Cloudflare test measured 6,203 B; matched nginx tests measured 5,421 B stock and 4,432 B optimized.](docs/delivery-overhead/delivery-overhead.svg#gh-light-mode-only) ![Cold-connection TLS overhead: an archived Cloudflare test measured 6,203 B; matched nginx tests measured 5,421 B stock and 4,432 B optimized.](docs/delivery-overhead/delivery-overhead-dark.svg#gh-dark-mode-only)
 
 TLS bytes through the first complete HTTP/2 response, excluding the entire page body, TCP/IP, DNS and connection close. The nginx tests used the same certificate chain; Cloudflare is a separate archived temporary-route control. The October 26 live median was 5,252 B with a different certificate. [Definition, samples and method](docs/delivery-overhead/).
 

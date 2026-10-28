@@ -4,9 +4,9 @@ The graph counts **TLS bytes sent and received on a cold connection through the 
 
 | Graph label | Overhead | Meaning |
 | --- | ---: | --- |
-| Cloudflare (archived) | 6,203 B | September 10, 2026 temporary-route control |
-| Default self-hosted (test) | 5,421 B | Stock nginx 1.30.4; median of 5,420 / 5,421 / 5,421 B |
-| Optimized self-hosted (test) | 4,432 B | Patched nginx 1.30.4; three samples of 4,432 B |
+| Cloudflare | 6,203 B | September 10, 2026 temporary-route control |
+| Stock nginx | 5,421 B | Stock nginx 1.30.4; median of 5,420 / 5,421 / 5,421 B |
+| Optimized nginx | 4,432 B | Patched nginx 1.30.4; three samples of 4,432 B |
 
 **The two self-hosted bars are matched test setups, not production measurements.** Both use the same generated ECDSA P-256 leaf/intermediate chain and explicit test CA. No production key or system trust store was accessed or changed. The [separate trusted live measurement](fresh-measurement.json) remains **5,252 B** with its different production certificate. It has not improved to 4,432 B.
 
@@ -55,4 +55,4 @@ npm install --prefix /tmp/onekb-graph-render --no-save --package-lock=false shar
 SHARP_MODULE=/tmp/onekb-graph-render/node_modules/sharp node docs/delivery-overhead/render.mjs
 ```
 
-The renderer uses the archived Cloudflare point and the primary fixture medians. Bars start at zero and share one scale; the labels identify the archived control and the matched tests. The separately measured live result is described above, not plotted as a matched test. The README uses the accessible SVG; a PNG is also generated for preview. This is documentation only and adds no request to the live page.
+The renderer uses the archived Cloudflare point and the primary fixture medians. Bars start at zero and share one scale; their measurement context is described above and in the accessible image description. The separately measured live result is described above, not plotted as a matched test. The README uses GitHub's theme markers and two identical transparent SVG files so browsers keep the selected theme fragment separate, including when the site and system themes differ. A Markdown renderer without those markers may display both links. The unfragmented SVG uses a neutral palette for direct viewing, and a PNG is also generated for preview. This is documentation only and adds no request to the live page.
