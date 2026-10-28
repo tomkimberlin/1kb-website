@@ -3,12 +3,12 @@
   "targetUrl": "https://tomkimberlin.com/",
   "current": {
     "deployment": {
-      "path": "measurements/deployment-20261027-page-only.json",
-      "sha256": "13dde633c00528869b9cfe713b727cd6236d5917278cc16d7d12dd01b25b6616"
+      "path": "measurements/deployment-20261028-fallback-page-only.json",
+      "sha256": "e07f968c86e87bcf3d3f93f9be0ca5a7ddc53e02f1dbeea979d45d13e7b6c249"
     },
     "page": {
-      "path": "measurements/page-20261027-brotli-first-local.json",
-      "sha256": "5b85543e641fea8f0a18ef5e64a8251206c7adbf6578a12090aa46ca9e79abbe"
+      "path": "measurements/page-20261028-fallback-local.json",
+      "sha256": "79b1e82df89ed149408886ce619379d95a9adf523d41fb3f15d9d2138f52fefb"
     }
   },
   "measured": {
@@ -28,11 +28,5 @@
   "historicalGallery": {
     "path": "measurements/gallery-20260922.json",
     "sha256": "e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef"
-  },
-  "candidate": {
-    "page": {
-      "path": "measurements/page-20261028-fallback-local.json",
-      "sha256": "79b1e82df89ed149408886ce619379d95a9adf523d41fb3f15d9d2138f52fefb"
-    }
   }
 }
