@@ -26,6 +26,10 @@ jobs:
       - run: npm test
       - run: npm run check
       - run: npm run check:measurements
+      - name: Reproduce the fixed-source Brotli streams
+        run: |
+          curl -fsSL https://codeload.github.com/google/brotli/tar.gz/db24a98aed38a16de78cc05ca15cdd8dc2a0d92d -o "$RUNNER_TEMP/brotli-1.2.1.tar.gz"
+          BROTLI_SOURCE_ARCHIVE="$RUNNER_TEMP/brotli-1.2.1.tar.gz" python3 -m unittest tools.test_reproduce_brotli_391_20261028 -v
       - run: python3 -m pip install --disable-pip-version-check --no-input -r tools/requirements.txt -r tools/gallery-requirements.txt
       - run: npm run test:probes
       - run: npm run check:python
@@ -46,7 +50,7 @@ jobs:
       - run: npm run test:browser:guards
         env:
           PLAYWRIGHT_MODULE: playwright
-      # These pins exercise the October 28 fallback candidate; update the
+      # These pins exercise the October 28 Brotli candidate; update the
       # fixture and evidence together when the representations change.
       - run: npm run build
       - run: node --test tools/native-encoding/runner.test.mjs

@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {readFileSync,realpathSync} from 'node:fs';
 import {resolve,sep} from 'node:path';
-import {gzipSync,gunzipSync,inflateRawSync,inflateSync} from 'node:zlib';
+import {brotliCompressSync,brotliDecompressSync,gzipSync,gunzipSync,inflateRawSync,inflateSync,constants as c} from 'node:zlib';
 
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -77,6 +77,48 @@ function validateCommittedFallback(page,{source,sourceCommit,immutableSource}) {
  const decoded=inflateSync(deflate,{info:true,maxOutputLength:Math.max(source.length+1,1<<20)});
  need(decoded.engine.bytesWritten===deflate.length&&decoded.buffer.equals(source),'Committed deflate does not decode completely to the source');
  need(deflate.length===page.deflate&&hash(deflate)===page.deflateSha256,'Deflate differs from the committed gzip stream');
+}
+
+// Reproduce the reviewed build's Brotli grid once per source. The selected
+// stock bytes depend on this Node/Brotli runtime; they do not establish the
+// historic deployment runtime or replace the separately retained readbacks.
+let cachedStockBrotli;
+function stockBrotli(source) {
+ if(cachedStockBrotli?.source.equals(source))return cachedStockBrotli.data;
+ let best;
+ const consider=params=>{
+  const data=brotliCompressSync(source,{params});
+  if(!best||data.length<best.data.length)best={data,params};
+ };
+ for(let quality=0;quality<=11;quality++)for(let mode=0;mode<=2;mode++)for(let window=10;window<=24;window++)for(const hint of [0,source.length])
+  consider({[c.BROTLI_PARAM_QUALITY]:quality,[c.BROTLI_PARAM_MODE]:mode,[c.BROTLI_PARAM_LGWIN]:window,[c.BROTLI_PARAM_SIZE_HINT]:hint});
+ for(let quality=0;quality<=11;quality++)for(let mode=0;mode<=2;mode++)for(let context=0;context<=1;context++)for(let postfix=0;postfix<=3;postfix++)for(let direct=0;direct<=15<<postfix;direct+=1<<postfix)
+  consider({[c.BROTLI_PARAM_QUALITY]:quality,[c.BROTLI_PARAM_MODE]:mode,[c.BROTLI_PARAM_LGWIN]:16,[c.BROTLI_PARAM_DISABLE_LITERAL_CONTEXT_MODELING]:context,[c.BROTLI_PARAM_NPOSTFIX]:postfix,[c.BROTLI_PARAM_NDIRECT]:direct});
+ const advanced=best.params;
+ for(let window=10;window<=24;window++)for(const block of [0,16,17,18,19,20,21,22,23,24])for(const hint of [0,source.length])
+  consider({...advanced,[c.BROTLI_PARAM_LGWIN]:window,[c.BROTLI_PARAM_LGBLOCK]:block,[c.BROTLI_PARAM_SIZE_HINT]:hint});
+ cachedStockBrotli={source:Buffer.from(source),data:best.data};
+ return best.data;
+}
+
+function validateCommittedBrotli(page,{source,sourceCommit,immutableSource}) {
+ const saved=immutableSource(sourceCommit,'compression/index.html.br',{optional:true});
+ let decoded;
+ if(saved!==null) {
+  try {
+   // Like the gzip provenance check, impose a conservative bound on an
+   // unrelated saved candidate even though build.mjs has no output bound.
+   const result=brotliDecompressSync(saved,{info:true,maxOutputLength:Math.max(source.length+1,1<<20)});
+   need(result.engine.bytesWritten===saved.length,'Trailing committed Brotli bytes');
+   decoded=result.buffer;
+  } catch(error) {throw new Error('Invalid committed Brotli candidate',{cause:error});}
+ }
+ let selected=stockBrotli(source);
+ // The reviewed build selects a saved candidate only when it matches the
+ // source and is strictly smaller; stock wins a tie or an unrelated stream.
+ if(saved!==null&&decoded.equals(source)&&saved.length<selected.length)selected=saved;
+ need(selected.length===page.brotli&&hash(selected)===page.brotliSha256,
+  'Brotli differs from the immutable commit or cannot be reproduced with this runtime');
 }
 
 function validateBrowser(page,{root,record,immutableSource,source,sourceCommit,legacy,latestPageRef}) {
@@ -198,7 +240,10 @@ export function checkPageState({root,page,deployment,refs,record,immutableSource
  need(page.url===target&&Object.values(mapping).every(k=>integer(page[k])&&digest(page[k+'Sha256'])),'Invalid latest page measurements');
  const source=immutableSource(sourceCommit,'index.html');
  need(source.length===page.html&&hash(source)===page.htmlSha256,'Latest page differs from immutable commit');
- if(!legacy)validateCommittedFallback(page,{source,sourceCommit,immutableSource});
+ if(!legacy) {
+  validateCommittedFallback(page,{source,sourceCommit,immutableSource});
+  validateCommittedBrotli(page,{source,sourceCommit,immutableSource});
+ }
  validateBrowser(page,{root,record,immutableSource,source,sourceCommit,legacy,latestPageRef:refs.page});
  return {at,sourceCommit,pageRelease:deployment.pageRelease,live:Object.fromEntries(Object.values(mapping).map(k=>[k,{bytes:page[k],sha256:page[k+'Sha256']}]))};
 }

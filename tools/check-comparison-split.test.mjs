@@ -7,7 +7,7 @@ import {execFileSync,spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {dirname,resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {gzipSync,gunzipSync,inflateSync} from 'node:zlib';
+import {brotliCompressSync,brotliDecompressSync,gzipSync,gunzipSync,inflateSync,constants as zlibConstants} from 'node:zlib';
 import {checkComparison,renderSplitPage,renderMeasuredHistory,renderSplitCandidate} from './check-comparison.mjs';
 import {actualAdjacentBinding} from './check-adjacent-streams.mjs';
 
@@ -77,6 +77,37 @@ const optionalGzip=Buffer.concat([savedFixture.subarray(0,10),Buffer.from([120,0
 optionalGzip[3]=8;
 assert.deepEqual(gunzipSync(optionalGzip),source);
 const optionalGzipCommit=gzipCommit('Synthetic optional gzip field',optionalGzip);
+// The historic page's stock Brotli stream and two fixed alternatives all
+// decode to the same source. The tied stream is deliberately different.
+const stockBr=readFileSync(join(repo,'tools/fixtures/comparison-split/index.html.br'));
+const smallerBr=readFileSync(join(repo,'tools/fixtures/brotli-391/candidate.br'));
+const tiedBr=readFileSync(join(repo,'tools/fixtures/brotli-391/tied.br'));
+assert.equal(hash(smallerBr),'fa488bbf1bc3bd9d07be9d1030d06eb7632c3523396b4ef09780594edb704786');
+assert.equal(hash(tiedBr),'6aa8410354437bdba0402266f044510d438709607cdc3aa5ccad7e09257a7563');
+for(const br of [stockBr,smallerBr,tiedBr])assert.deepEqual(brotliDecompressSync(br),source);
+assert.equal(stockBr.length,392);assert.equal(smallerBr.length,391);assert.equal(tiedBr.length,stockBr.length);
+assert.notDeepEqual(tiedBr,stockBr);
+const largerBr=brotliCompressSync(source,{params:{[zlibConstants.BROTLI_PARAM_QUALITY]:0}});
+assert.ok(largerBr.length>stockBr.length);
+// Restore the original valid gzip before varying only the Brotli input.
+git(gitRoot,['checkout',commit,'--','compression/index.html.gz']);
+function brotliCommit(label,bytes) {
+ const path='compression/index.html.br';
+ writeFileSync(join(gitRoot,path),bytes);git(gitRoot,['add','--',path]);
+ git(gitRoot,['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false','commit','--quiet','--no-verify','-m',label]);
+ return git(gitRoot,['rev-parse','HEAD']).toString().trim();
+}
+const smallerBrCommit=brotliCommit('Synthetic smaller Brotli',smallerBr);
+const tiedBrCommit=brotliCommit('Synthetic tied Brotli',tiedBr);
+const largerBrCommit=brotliCommit('Synthetic larger Brotli',largerBr);
+const staleBrCommit=brotliCommit('Synthetic unrelated Brotli',brotliCompressSync(Buffer.from('A different source')));
+const overDecodeBrCommit=brotliCommit('Synthetic large unrelated Brotli',brotliCompressSync(Buffer.alloc((1<<20)+1,65)));
+const malformedBr=Buffer.from([0xff]);
+const malformedBrCommit=brotliCommit('Synthetic malformed Brotli',malformedBr);
+const truncatedBr=smallerBr.subarray(0,-1);
+const truncatedBrCommit=brotliCommit('Synthetic truncated Brotli',truncatedBr);
+const trailingBr=Buffer.concat([smallerBr,Buffer.from([0x7f])]);
+const trailingBrCommit=brotliCommit('Synthetic trailing Brotli',trailingBr);
 git(gitRoot,['rm','--quiet','-r','--','compression']);
 symlinkSync('elsewhere',join(gitRoot,'compression'));
 git(gitRoot,['add','--','compression']);
@@ -283,6 +314,44 @@ test('a tree object containing identical files cannot be used as a page commit',
 test('same HTML and verifier cannot hide a different committed gzip member',t=>{
  const f=fixture(t);f.data.deployment.pageCommit=differentGzipCommit;f.save('deployment');f.flush();
  assert.throws(f.check,/gzip.*immutable commit/i);
+});
+function installBrotliEvidence(f,br) {
+ f.data.page.brotli=br.length;f.data.page.brotliSha256=hash(br);
+ writeFileSync(join(f.root,'public/index.html.br'),br);
+ const row=f.data.deployment.representations.find(row=>row.encoding==='br');row.bytes=br.length;row.sha256=hash(br);
+ for(const readback of Object.values(f.data.deployment.verification.fileReadbacks)) {
+  const entry=readback.files.find(row=>row.encoding==='br');entry.bytes=br.length;entry.sha256=hash(br);
+ }
+ // The saved native report describes its original stream, not these
+ // synthetic bytes. The normal/font reports still describe the same HTML.
+ delete f.data.page.nativeEncodingEvidence;
+ const build=read(join(f.root,'build-report.json'));build.brotli=br.length;
+ writeFileSync(join(f.root,'build-report.json'),JSON.stringify(build));
+ f.put(f.paths.page,f.data.page);f.save('page');
+}
+test('a smaller committed Brotli candidate matching the page is selected',t=>{
+ const f=fixture(t);installBrotliEvidence(f,smallerBr);f.data.deployment.pageCommit=smallerBrCommit;f.save('deployment');f.flush();
+ assert.doesNotThrow(f.check);
+});
+for(const [label,target] of [['absent',commit],['different',tiedBrCommit]])test(`same HTML and verifier cannot hide a committed Brotli candidate that is ${label}`,t=>{
+ const f=fixture(t);installBrotliEvidence(f,smallerBr);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.throws(f.check,/brotli.*immutable commit/i);
+});
+for(const [label,target] of [['unrelated',staleBrCommit],['larger exact',largerBrCommit],['tied exact',tiedBrCommit]])test(`stock Brotli is retained for ${label} saved candidate`,t=>{
+ const f=fixture(t);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.doesNotThrow(f.check);
+});
+for(const [label,target,br] of [['larger',largerBrCommit,largerBr],['tied',tiedBrCommit,tiedBr]])test(`a ${label} saved Brotli stream cannot be claimed as the selected response`,t=>{
+ const f=fixture(t);installBrotliEvidence(f,br);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.throws(f.check,/brotli.*immutable commit/i);
+});
+for(const [label,target,br] of [['malformed',malformedBrCommit,malformedBr],['truncated',truncatedBrCommit,truncatedBr],['trailing',trailingBrCommit,trailingBr]])test(`rejects matching committed Brotli evidence with ${label} bytes`,t=>{
+ const f=fixture(t);installBrotliEvidence(f,br);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid committed brotli candidate/i);
+});
+test('an unrelated committed Brotli stream exceeding the decode bound fails closed',t=>{
+ const f=fixture(t);f.data.deployment.pageCommit=overDecodeBrCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid committed brotli candidate/i);
 });
 function installFallbackEvidence(f,gzip) {
  let a=1,b=0;for(const byte of source){a=(a+byte)%65521;b=(b+a)%65521;}

@@ -147,6 +147,49 @@ if(Object.hasOwn(browser,'nativeEncodingEvidence')) {
   }
 }
 
+// Newer local candidates may link a reproducible Brotli study. Historical
+// records without that optional reference keep their original meaning.
+if(Object.hasOwn(browser,'brotliResearchEvidence')) {
+  const ref=browser.brotliResearchEvidence;
+  const measurementPath=path=>/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.json$/.test(path??'');
+  const digest=value=>/^[0-9a-f]{64}$/.test(value??'');
+  assert.ok(measurementPath(ref?.path)&&digest(ref.sha256),'Invalid Brotli research evidence reference');
+  assert.equal(hash(ref.path),ref.sha256,'Stale Brotli research evidence hash');
+  const study=read(ref.path);
+  assert.equal(study.source?.path,'index.html','Brotli research source path differs');
+  assert.equal(study.source?.bytes,browser.html,'Brotli research source size differs');
+  assert.equal(study.source?.sha256,browser.htmlSha256,'Brotli research source hash differs');
+  assert.equal(study.candidate?.path,'compression/index.html.br','Brotli research candidate path differs');
+  assert.equal(study.candidate?.bytes,browser.brotli,'Brotli research candidate size differs');
+  assert.equal(study.candidate?.sha256,browser.brotliSha256,'Brotli research candidate hash differs');
+  assert.equal(hash(study.candidate.path),browser.brotliSha256,'Stale Brotli research candidate file');
+  for(const [field,extension] of [['recipe','py'],['harness','c']]) {
+    const path=study.reproduction?.[field],sha256=study.reproduction?.[field+'Sha256'];
+    assert.ok(new RegExp(`^tools/[A-Za-z0-9][A-Za-z0-9._-]*\\.${extension}$`).test(path??'')&&digest(sha256),
+      `Invalid Brotli research ${field} reference`);
+    assert.equal(hash(path),sha256,`Stale Brotli research ${field} hash`);
+  }
+  const audit=study.independentAudit,emitted=study.encoder?.emittedDistanceHeader;
+  if(audit!==undefined||emitted!==undefined) {
+    assert.ok(measurementPath(audit?.bitEvidence)&&digest(audit.sha256),'Invalid Brotli bit-audit reference');
+    assert.equal(hash(audit.bitEvidence),audit.sha256,'Stale Brotli bit-audit hash');
+    assert.ok(/^measurements\/[A-Za-z0-9][A-Za-z0-9._-]*\.py$/.test(audit.script??'')&&digest(audit.scriptSha256),
+      'Invalid Brotli bit-audit script reference');
+    assert.equal(hash(audit.script),audit.scriptSha256,'Stale Brotli bit-audit script hash');
+    const bits=read(audit.bitEvidence);
+    assert.equal(bits.scriptSha256,audit.scriptSha256,'Brotli bit-audit script identity differs');
+    assert.equal(bits.sourceSha256,browser.htmlSha256,'Brotli bit-audit source differs');
+    for(const name of ['control','candidate']) {
+      assert.equal(bits.streams?.[name]?.bytes,study[name]?.bytes,`Brotli bit-audit ${name} size differs`);
+      assert.equal(bits.streams?.[name]?.sha256,study[name]?.sha256,`Brotli bit-audit ${name} hash differs`);
+      assert.equal(bits.streams?.[name]?.preamble?.distancePostfix,emitted?.postfix,'Brotli bit-audit postfix differs');
+      assert.equal(bits.streams?.[name]?.preamble?.distanceDirect,emitted?.direct,'Brotli bit-audit direct count differs');
+    }
+    assert.equal(emitted?.evidence,audit.bitEvidence,'Brotli bit-audit reference differs');
+    assert.equal(emitted?.evidenceSha256,audit.sha256,'Brotli bit-audit reference hash differs');
+  }
+}
+
 const readme=readFileSync('README.md','utf8'),comparison=readFileSync('COMPARISON.md','utf8');
 const galleryStart='<!-- comparison:gallery:start -->',galleryEnd='<!-- comparison:gallery:end -->';
 assert.equal(comparison.split(galleryStart).length,2,'Missing or duplicate historical gallery start');

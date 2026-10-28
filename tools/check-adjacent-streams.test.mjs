@@ -1,6 +1,7 @@
 // Synthetic contracts only; the after identities below are not build attestations.
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
 import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -15,8 +16,11 @@ function fixture() {
   const old=originalFixture(),before=JSON.parse(JSON.stringify(old.record.before).replaceAll('2026-10-23','2026-10-25')),after=JSON.parse(JSON.stringify(old.record.after).replaceAll('2026-10-23','2026-10-25'));
   const baselinePageCommit='c'.repeat(40),normalizerCommit='d'.repeat(40);
   before.pageCommitAtReadback=baselinePageCommit;before.pageReleaseAtReadback='releases/20261025T042442Z-synthetic-baseline';
-  const baselineSource=readFileSync(join(repoRoot,'index.html'));
-  const baselineBody=readFileSync(join(repoRoot,'compression/index.html.br'));
+  // This fixture describes the historical 389-byte page, not the mutable
+  // working build. Its source and body are already pinned by the binding.
+  const historical=path=>execFileSync('git',['-C',repoRoot,'show',`${actualAdjacentBinding.baseline.pageCommit}:${path}`]);
+  const baselineSource=historical('index.html');
+  const baselineBody=historical('compression/index.html.br');
   const page={...old.page,html:baselineSource.length,htmlSha256:hash(baselineSource)};
   const normalizerBytes=Buffer.from('synthetic independently committed normalizer');
   const beforeRuntime={imageId:actualLenBinding.imageId,runtimeSourceCommit:actualLenBinding.runtimeSourceCommit,pageCommit:before.pageCommitAtReadback,pageRelease:before.pageReleaseAtReadback};
