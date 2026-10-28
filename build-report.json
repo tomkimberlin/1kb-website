@@ -1,8 +1,8 @@
 {
   "html": 1040,
   "brotli": 392,
-  "gzip": 542,
-  "deflate": 530,
+  "gzip": 541,
+  "deflate": 529,
   "attempts": 5988,
   "brotliParams": {
     "0": 0,
