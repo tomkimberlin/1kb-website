@@ -25,5 +25,6 @@ for(const b of bars){
 out.push('</svg>');
 const source=out.join('\n');
 writeFileSync(resolve(dir,'delivery-overhead.svg'),source);
+writeFileSync(resolve(dir,'delivery-overhead-dark.svg'),source);
 await sharp(Buffer.from(source)).png().toFile(resolve(dir,'delivery-overhead.png'));
 console.log(JSON.stringify({values,width:1080,height:880,scale:'550/6500'}));
