@@ -42,10 +42,20 @@ jobs:
           node-version: 24.22.1
       - run: npm ci
       - run: npm install --no-save --package-lock=false playwright@1.63.0
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser:guards
         env:
           PLAYWRIGHT_MODULE: playwright
+      # These pins exercise the October 28 fallback candidate; update the
+      # fixture and evidence together when the representations change.
+      - run: npm run build
+      - run: node --test tools/native-encoding/runner.test.mjs
+        env:
+          NATIVE_BROWSER_FIXTURES: ${{ github.workspace }}/public
+      - name: Verify native decoding of the candidate representations
+        run: |
+          node tools/native-encoding/runner.mjs --run --fixtures public --out "$RUNNER_TEMP/native-encoding.json"
+          node -e "console.log('NATIVE_ENCODING_REPORT=' + JSON.stringify(require(process.env.RUNNER_TEMP + '/native-encoding.json')))"
 
   runtime:
     runs-on: ubuntu-latest

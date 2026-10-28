@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {readFileSync,realpathSync} from 'node:fs';
 import {resolve,sep} from 'node:path';
+import {gzipSync,gunzipSync,inflateRawSync,inflateSync} from 'node:zlib';
 
 const hash=x=>createHash('sha256').update(x).digest('hex');
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -36,6 +37,46 @@ function browserMatrix(rows,source,label) {
    identicalFocusedPixels:9,keyboardEnterDestinations:9,pageLoadRequests:1,keyboardProbeRequests:9-native,nativeProtocolActivations:native,unexpectedRequests:0,externalRequestsBlocked:true};
   need(Object.entries(expected).every(([k,v])=>r[k]===v)&&typeof r.browserVersion==='string'&&r.browserVersion.trim().length>0&&['Tab','Alt+Tab'].includes(r.focusKey),label+' browser case failed');
  }
+}
+
+// Bind the two fallback bodies to the build inputs in the immutable page
+// commit. Reproduce the reviewed build's stock grid and saved-member selection
+// on this runtime. A different zlib implementation may change the stock bytes
+// or selection. A mismatch fails; a match establishes selection only on this
+// runtime, not on the historical deployment runtime. The retained readbacks
+// describe their observations separately.
+function validateCommittedFallback(page,{source,sourceCommit,immutableSource}) {
+ const saved=immutableSource(sourceCommit,'compression/index.html.gz',{optional:true});
+ let savedSource;
+ if(saved!==null) {
+  try {
+   // Conservative bound: unlike build.mjs, this can reject an unrelated saved
+   // candidate that expands beyond the bound instead of ignoring it.
+   const gzip=gunzipSync(saved,{info:true,maxOutputLength:Math.max(source.length+1,1<<20)});
+   need(saved[3]===0&&gzip.engine.bytesWritten===saved.length,'Invalid committed gzip member');
+   const raw=inflateRawSync(saved.subarray(10,-8),{info:true,maxOutputLength:Math.max(source.length+1,1<<20)});
+   need(raw.engine.bytesWritten===saved.length-18&&raw.buffer.equals(gzip.buffer),'Invalid committed DEFLATE stream');
+   savedSource=gzip.buffer;
+  } catch(error) {throw new Error('Invalid committed gzip candidate',{cause:error});}
+ }
+ // Match build.mjs's order, strict-shorter stock selection, and saved-member
+ // preference on ties. A larger or unrelated saved member is not selected.
+ let gzip;
+ for(let level=1;level<=9;level++)for(let strategy=0;strategy<=4;strategy++) {
+  const candidate=gzipSync(source,{level,strategy});
+  if(!gzip||candidate.length<gzip.length)gzip=candidate;
+ }
+ if(saved!==null&&savedSource.equals(source)&&saved.length<=gzip.length)gzip=saved;
+ need(gzip.length===page.gzip&&hash(gzip)===page.gzipSha256,
+  'Gzip differs from the immutable commit or cannot be reproduced with this runtime');
+ need(gzip[3]===0,'Unexpected gzip optional fields');
+ let a=1,b=0;
+ for(const byte of source){a=(a+byte)%65521;b=(b+a)%65521;}
+ const checksum=Buffer.alloc(4);checksum.writeUInt32BE((b*65536+a)>>>0);
+ const deflate=Buffer.concat([Buffer.from([120,218]),gzip.subarray(10,-8),checksum]);
+ const decoded=inflateSync(deflate,{info:true,maxOutputLength:Math.max(source.length+1,1<<20)});
+ need(decoded.engine.bytesWritten===deflate.length&&decoded.buffer.equals(source),'Committed deflate does not decode completely to the source');
+ need(deflate.length===page.deflate&&hash(deflate)===page.deflateSha256,'Deflate differs from the committed gzip stream');
 }
 
 function validateBrowser(page,{root,record,immutableSource,source,sourceCommit,legacy,latestPageRef}) {
@@ -157,6 +198,7 @@ export function checkPageState({root,page,deployment,refs,record,immutableSource
  need(page.url===target&&Object.values(mapping).every(k=>integer(page[k])&&digest(page[k+'Sha256'])),'Invalid latest page measurements');
  const source=immutableSource(sourceCommit,'index.html');
  need(source.length===page.html&&hash(source)===page.htmlSha256,'Latest page differs from immutable commit');
+ if(!legacy)validateCommittedFallback(page,{source,sourceCommit,immutableSource});
  validateBrowser(page,{root,record,immutableSource,source,sourceCommit,legacy,latestPageRef:refs.page});
  return {at,sourceCommit,pageRelease:deployment.pageRelease,live:Object.fromEntries(Object.values(mapping).map(k=>[k,{bytes:page[k],sha256:page[k+'Sha256']}]))};
 }

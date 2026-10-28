@@ -7,6 +7,7 @@ import {execFileSync,spawnSync} from 'node:child_process';
 import {createHash} from 'node:crypto';
 import {dirname,resolve,join} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {gzipSync,gunzipSync,inflateSync} from 'node:zlib';
 import {checkComparison,renderSplitPage,renderMeasuredHistory,renderSplitCandidate} from './check-comparison.mjs';
 import {actualAdjacentBinding} from './check-adjacent-streams.mjs';
 
@@ -31,9 +32,56 @@ git(gitRoot,['index-pack','--stdin'],{input:pack});
 for(const file of ['index.html','tools/verify-page.mjs','server/site.js','server/deploy.sh','build.mjs','server/verify.mjs','server/verify-alias.mjs','server/verify-response.mjs']) {
  mkdirSync(dirname(join(gitRoot,file)),{recursive:true});copyFileSync(join(repo,file==='index.html'?'tools/fixtures/comparison-split/index.html':file),join(gitRoot,file));
 }
-git(gitRoot,['add','index.html','tools/verify-page.mjs','server/site.js','server/deploy.sh','build.mjs','server/verify.mjs','server/verify-alias.mjs','server/verify-response.mjs']);
+mkdirSync(join(gitRoot,'compression'));
+copyFileSync(join(repo,'tools/fixtures/comparison-split/index.html.gz'),join(gitRoot,'compression/index.html.gz'));
+git(gitRoot,['add','index.html','compression/index.html.gz','tools/verify-page.mjs','server/site.js','server/deploy.sh','build.mjs','server/verify.mjs','server/verify-alias.mjs','server/verify-response.mjs']);
 git(gitRoot,['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false','commit','--quiet','--no-verify','-m','Synthetic page fixture']);
 const commit=git(gitRoot,['rev-parse','HEAD']).toString().trim();
+const treeId=git(gitRoot,['rev-parse',commit+'^{tree}']).toString().trim();
+// Each additional commit has the same HTML and reviewed tools but different
+// compressed inputs, so an identity-only provenance check cannot distinguish it.
+const source=readFileSync(join(gitRoot,'index.html'));
+let stockGzip;
+for(let level=1;level<=9;level++)for(let strategy=0;strategy<=4;strategy++) {
+ const candidate=gzipSync(source,{level,strategy});
+ if(!stockGzip||candidate.length<stockGzip.length)stockGzip=candidate;
+}
+function gzipCommit(label,bytes) {
+ const path='compression/index.html.gz';
+ if(bytes===null)git(gitRoot,['rm','--quiet','--',path]);
+ else {mkdirSync(dirname(join(gitRoot,path)),{recursive:true});writeFileSync(join(gitRoot,path),bytes);git(gitRoot,['add','--',path]);}
+ git(gitRoot,['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false','commit','--quiet','--no-verify','-m',label]);
+ return git(gitRoot,['rev-parse','HEAD']).toString().trim();
+}
+const noSavedCommit=gzipCommit('Synthetic stock gzip',null);
+mkdirSync(join(gitRoot,'compression'),{recursive:true});
+writeFileSync(join(gitRoot,'compression/other.bin'),'other compressed input');
+git(gitRoot,['add','--','compression/other.bin']);
+git(gitRoot,['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false','commit','--quiet','--no-verify','-m','Synthetic stock gzip with directory']);
+const noSavedWithDirectoryCommit=git(gitRoot,['rev-parse','HEAD']).toString().trim();
+const differentGzipCommit=gzipCommit('Synthetic different gzip',gzipSync(source,{level:9}));
+const oversizedGzip=gzipSync(source,{level:1,strategy:2});
+assert.ok(oversizedGzip.length>stockGzip.length&&oversizedGzip.length<1024);
+const oversizedGzipCommit=gzipCommit('Synthetic oversized gzip',oversizedGzip);
+const tiedGzip=Buffer.from(stockGzip);tiedGzip[4]=1;
+const tiedGzipCommit=gzipCommit('Synthetic tied gzip',tiedGzip);
+const staleGzipCommit=gzipCommit('Synthetic stale gzip',gzipSync(Buffer.from('A different source')));
+const overDecodeLimitCommit=gzipCommit('Synthetic large unrelated source',gzipSync(Buffer.alloc((1<<20)+1,65)));
+const malformedGzipCommit=gzipCommit('Synthetic malformed gzip',Buffer.from('not a gzip member'));
+const savedFixture=readFileSync(join(repo,'tools/fixtures/comparison-split/index.html.gz'));
+const trailingGzip=Buffer.concat([savedFixture,Buffer.from([0])]);
+const trailingGzipCommit=gzipCommit('Synthetic trailing gzip',trailingGzip);
+const concatenatedGzip=Buffer.concat([savedFixture,savedFixture]);
+const concatenatedGzipCommit=gzipCommit('Synthetic concatenated gzip',concatenatedGzip);
+const optionalGzip=Buffer.concat([savedFixture.subarray(0,10),Buffer.from([120,0]),savedFixture.subarray(10)]);
+optionalGzip[3]=8;
+assert.deepEqual(gunzipSync(optionalGzip),source);
+const optionalGzipCommit=gzipCommit('Synthetic optional gzip field',optionalGzip);
+git(gitRoot,['rm','--quiet','-r','--','compression']);
+symlinkSync('elsewhere',join(gitRoot,'compression'));
+git(gitRoot,['add','--','compression']);
+git(gitRoot,['-c','core.hooksPath=/dev/null','-c','commit.gpgsign=false','commit','--quiet','--no-verify','-m','Synthetic symlink parent']);
+const symlinkGzipParentCommit=git(gitRoot,['rev-parse','HEAD']).toString().trim();
 const cases=join(gitRoot,'cases');mkdirSync(cases);
 const fileNames={html:'index.html',brotli:'index.html.br',gzip:'index.html.gz',deflate:'index.html.deflate'};
 const map={identity:'html',br:'brotli',gzip:'gzip',deflate:'deflate'};
@@ -228,6 +276,87 @@ test('README must identify the old value as measured transport',t=>{const f=fixt
 test('later verified deployment invalidates the latest page pointer',t=>{const f=fixture(t);f.put('measurements/deployment-newer.json',{url:'https://tomkimberlin.com/',verifiedAt:'2026-12-01T00:00:00Z'});assert.throws(f.check,/newer verified deployment/i);});
 test('later measured transport invalidates the dated measured pointer',t=>{const f=fixture(t);const p=structuredClone(f.historical.overhead);for(const r of p.runs)r.measuredAt='2026-12-01T00:00:00Z';f.put('measurements/overhead-newer.json',p);assert.throws(f.check,/newer own-site/i);});
 test('source commit must contain the verified page even if it names another real commit',t=>{const f=fixture(t);f.data.deployment.pageCommit='2fa4e3fe7e2b6863f6a62ab46fd7dbdafb459e0a';f.save('deployment');f.flush();assert.throws(f.check,/immutable commit|verifier/i);});
+test('a tree object containing identical files cannot be used as a page commit',t=>{
+ const f=fixture(t);f.data.deployment.pageCommit=treeId;f.save('deployment');f.flush();
+ assert.throws(f.check,/source reference must be a Git commit/i);
+});
+test('same HTML and verifier cannot hide a different committed gzip member',t=>{
+ const f=fixture(t);f.data.deployment.pageCommit=differentGzipCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/gzip.*immutable commit/i);
+});
+function installFallbackEvidence(f,gzip) {
+ let a=1,b=0;for(const byte of source){a=(a+byte)%65521;b=(b+a)%65521;}
+ const checksum=Buffer.alloc(4);checksum.writeUInt32BE((b*65536+a)>>>0);
+ const deflate=Buffer.concat([Buffer.from([120,218]),gzip.subarray(10,-8),checksum]);
+ for(const [key,bytes,file] of [['gzip',gzip,'index.html.gz'],['deflate',deflate,'index.html.deflate']]) {
+  f.data.page[key]=bytes.length;f.data.page[key+'Sha256']=hash(bytes);
+  writeFileSync(join(f.root,'public',file),bytes);
+  const row=f.data.deployment.representations.find(row=>row.encoding===key);row.bytes=bytes.length;row.sha256=hash(bytes);
+  for(const readback of Object.values(f.data.deployment.verification.fileReadbacks)) {
+   const entry=readback.files.find(row=>row.encoding===key);entry.bytes=bytes.length;entry.sha256=hash(bytes);
+  }
+ }
+ // The frozen native-encoding report measured the old member, not this
+ // synthetic member; normal/font reports still match the same HTML.
+ delete f.data.page.nativeEncodingEvidence;
+ const build=read(join(f.root,'build-report.json'));build.gzip=gzip.length;build.deflate=deflate.length;
+ writeFileSync(join(f.root,'build-report.json'),JSON.stringify(build));
+ f.put(f.paths.page,f.data.page);f.save('page');
+}
+const installStockEvidence=f=>installFallbackEvidence(f,stockGzip);
+for(const [label,target] of [['no saved candidate',noSavedCommit],['directory without saved candidate',noSavedWithDirectoryCommit],['valid unrelated candidate',staleGzipCommit]])test('stock gzip can be reproduced with '+label,t=>{
+ const f=fixture(t);installStockEvidence(f);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.doesNotThrow(f.check);
+});
+test('a saved candidate wins a stock tie, so the stock member cannot be claimed',t=>{
+ const f=fixture(t);installStockEvidence(f);f.data.deployment.pageCommit=tiedGzipCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/gzip.*immutable commit/i);
+});
+test('matching saved-member evidence cannot claim a gzip larger than the stock winner',t=>{
+ const f=fixture(t);installFallbackEvidence(f,oversizedGzip);f.data.deployment.pageCommit=oversizedGzipCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/gzip.*immutable commit/i);
+});
+test('a malformed committed gzip cannot be ignored as a stock build',t=>{
+ const f=fixture(t);installStockEvidence(f);f.data.deployment.pageCommit=malformedGzipCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid committed gzip candidate/i);
+});
+test('an unrelated saved gzip exceeding the decode bound fails closed',t=>{
+ const f=fixture(t);installStockEvidence(f);f.data.deployment.pageCommit=overDecodeLimitCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid committed gzip candidate/i);
+});
+for(const [label,target,gzip] of [
+ ['trailing bytes',trailingGzipCommit,trailingGzip],
+ ['concatenated member',concatenatedGzipCommit,concatenatedGzip],
+ ['optional field',optionalGzipCommit,optionalGzip]
+])test('rejects matching committed gzip evidence with '+label,t=>{
+ const f=fixture(t);installFallbackEvidence(f,gzip);f.data.deployment.pageCommit=target;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid committed gzip candidate/i);
+});
+test('a committed symlink parent is not treated as an absent gzip candidate',t=>{
+ const f=fixture(t);installStockEvidence(f);f.data.deployment.pageCommit=symlinkGzipParentCommit;f.save('deployment');f.flush();
+ assert.throws(f.check,/invalid immutable optional file parent/i);
+});
+test('deflate must derive from the exact committed gzip stream',t=>{
+ const f=fixture(t),key='deflate';
+ let a=1,b=0;for(const byte of source){a=(a+byte)%65521;b=(b+a)%65521;}
+ const checksum=Buffer.alloc(4);checksum.writeUInt32BE((b*65536+a)>>>0);
+ // This complete alternate stream decodes to the same HTML but comes from a
+ // different valid gzip member, so independently matching hashes are not enough.
+ const alternative=Buffer.concat([Buffer.from([120,218]),stockGzip.subarray(10,-8),checksum]);
+ assert.deepEqual(inflateSync(alternative),source);
+ assert.notEqual(hash(alternative),f.data.page.deflateSha256);
+ f.data.page.deflate=alternative.length;f.data.page.deflateSha256=hash(alternative);
+ const representation=f.data.deployment.representations.find(r=>r.encoding===key);
+ representation.bytes=alternative.length;representation.sha256=hash(alternative);
+ for(const readback of Object.values(f.data.deployment.verification.fileReadbacks)) {
+  const entry=readback.files.find(r=>r.encoding===key);entry.bytes=alternative.length;entry.sha256=hash(alternative);
+ }
+ writeFileSync(join(f.root,'public/index.html.deflate'),alternative);
+ const build=read(join(f.root,'build-report.json'));build.deflate=alternative.length;
+ writeFileSync(join(f.root,'build-report.json'),JSON.stringify(build));
+ f.put(f.paths.page,f.data.page);f.save('page');f.save('deployment');f.flush();
+ assert.throws(f.check,/deflate.*committed gzip/i);
+});
 test('pinned maintenance evidence cannot be replaced and rehashed',t=>{const f=fixture(t);f.useMaintenance();const path=f.config.current.deployment.path,p=read(join(f.root,path));p.pageRelease='releases/other';f.put(path,p);f.config.current.deployment.sha256=hash(readFileSync(join(f.root,path)));f.flush();assert.throws(f.check,/hash|deployment identity/i);});
 test('a rehashed page record cannot make a failing browser case pass',t=>{const f=fixture(t);f.data.page.verification.browserComparisons[0].identicalPixels=false;f.put(f.paths.page,f.data.page);f.save('page');f.flush();assert.throws(f.check,/browser/i);});
 test('a rehashed page cannot replace the immutable browser verifier',t=>{const f=fixture(t);f.data.page.verification.browserVerifierSha256='0'.repeat(64);f.put(f.paths.page,f.data.page);f.save('page');f.flush();assert.throws(f.check,/browser verifier/i);});
