@@ -1,0 +1,105 @@
+{
+  "measuredAt": "2026-10-28T06:32:33Z",
+  "scope": "fixed-source local Brotli research and reproduction; not live or transport evidence",
+  "source": {
+    "path": "index.html",
+    "bytes": 1040,
+    "sha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c"
+  },
+  "control": {
+    "bytes": 392,
+    "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5",
+    "meaningfulBits": 3136
+  },
+  "candidate": {
+    "path": "compression/index.html.br",
+    "bytes": 391,
+    "sha256": "fa488bbf1bc3bd9d07be9d1030d06eb7632c3523396b4ef09780594edb704786",
+    "meaningfulBits": 3128
+  },
+  "research": {
+    "method": "Combined best stock-serialized single data-depth swap in each of literal and command trees",
+    "singleSwapsScored": {
+      "literal": 1184,
+      "command": 1020,
+      "distance": 197
+    },
+    "selected": [
+      {
+        "tree": 0,
+        "pair": [
+          49,
+          119
+        ],
+        "stockHeaderBits": 135,
+        "headerBits": 136,
+        "dataPayloadDeltaBits": -6,
+        "meaningfulBits": 3131,
+        "bytes": 392
+      },
+      {
+        "tree": 1,
+        "pair": [
+          180,
+          208
+        ],
+        "stockHeaderBits": 161,
+        "headerBits": 157,
+        "dataPayloadDeltaBits": 1,
+        "meaningfulBits": 3133,
+        "bytes": 392
+      }
+    ],
+    "originalReportSha256": "73ec4c5145b068022cb09cafde8281d96cd5271c0609fa3a1a447f771a6b0c58",
+    "captureSha256": "7ce101b7be95cf0f6ab64f4668fb61d44b0cfa29939a871eb662325e547c530d",
+    "screenSha256": "2942ebc40cd66be0d4f24a1ef7a7c4e8a108f97d84be4d61e9615acda5e4285c",
+    "detail": "Full capture and screen reports are retained in the separate local research directory, not included here."
+  },
+  "encoder": {
+    "source": "https://github.com/google/brotli/tree/db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "archiveUrl": "https://codeload.github.com/google/brotli/tar.gz/db24a98aed38a16de78cc05ca15cdd8dc2a0d92d",
+    "archiveSha256": "113b9685dfc14dd2f3360d077283266eec2fbdfb0fe3e5600f11be151da0d68e",
+    "license": "tools/brotli-391-20261028-LICENSE",
+    "suppliedParameters": {
+      "mode": "generic",
+      "quality": 11,
+      "lgwin": 16,
+      "disableLiteralContextModeling": 0,
+      "npostfix": 1,
+      "ndirect": 28
+    },
+    "parameterNote": "Supplied encoder settings are requests; the independent bit audit records the emitted distance header.",
+    "emittedDistanceHeader": {
+      "postfix": 0,
+      "direct": 1,
+      "evidence": "measurements/brotli-391-bit-audit-20261028.json",
+      "evidenceSha256": "aec79f33fd6189c1f65e2b7ffb13c873e764e880e54a6f0aaf10f126ab003ceb"
+    }
+  },
+  "reproduction": {
+    "recipe": "tools/reproduce-brotli-391-20261028.py",
+    "recipeSha256": "e141b4296bd90040a2b7fe54f113bc77d4d4124f6dd413fffa0608dd36c4b094",
+    "harness": "tools/reproduce-brotli-391-20261028.c",
+    "harnessSha256": "667543eef8e81e2952392313024f82b5fb7e92d548116191e41a6b4911a0a056",
+    "python": "3.13.18",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "platform": "Darwin arm64",
+    "freshCompiles": 2,
+    "reproducedBothStreams": true,
+    "exactCompleteCDecodes": true,
+    "truncatedAndTrailingControlsPassed": true
+  },
+  "limitations": [
+    "Local result; exact-head CI and live deployment verification are pending.",
+    "The fresh compiles ran on one Mac; Linux reproducibility must be verified separately.",
+    "The C and Node decoders are separate builds of Brotli-project decoder code, not independent implementations.",
+    "The bounded screen did not exhaust multiple swaps, other parses, secondary trees or encoder settings."
+  ],
+  "independentAudit": {
+    "bitEvidence": "measurements/brotli-391-bit-audit-20261028.json",
+    "sha256": "aec79f33fd6189c1f65e2b7ffb13c873e764e880e54a6f0aaf10f126ab003ceb",
+    "scriptSha256": "65d4822a97de990825cac12ee0d3a4fd99f2cc1663deedb7fc01ac74f96fc568",
+    "scope": "Independent raw-bit parsing of canonical trees, command fields and exact endpoint; dictionary transforms were validated by full C and Node decoding, not by the bit reader.",
+    "script": "measurements/brotli-391-bit-audit-script-20261028.py"
+  }
+}

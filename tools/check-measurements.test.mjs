@@ -172,6 +172,53 @@ test('native encoding evidence rejects stale hashes and incomplete or changed ca
     result=check(root);assert.notEqual(result.status,0);assert.match(result.stderr,error);
   }
 });
+const researchFile='measurements/compression-synthetic-brotli.json';
+const bitFile='measurements/synthetic-brotli-bit-audit.json';
+const bitScript='measurements/synthetic-brotli-bit-audit.py';
+const recipe='tools/synthetic-brotli-recipe.py',harness='tools/synthetic-brotli-harness.c';
+const digestFile=(directory,path)=>createHash('sha256').update(readFileSync(join(directory,path))).digest('hex');
+function refreshResearchReference(directory) {
+  changeJson(directory,page,data=>data.brotliResearchEvidence={path:researchFile,sha256:digestFile(directory,researchFile)});
+}
+function researchFixture(t) {
+  const directory=fixture(t),measured=JSON.parse(readFileSync(join(directory,page)));
+  mkdirSync(join(directory,'compression'));
+  copyFileSync(join(directory,'public/index.html.br'),join(directory,'compression/index.html.br'));
+  for(const path of [recipe,harness,bitScript])writeFileSync(join(directory,path),`synthetic ${path}\n`);
+  const control={bytes:392,sha256:'a'.repeat(64)},candidate={path:'compression/index.html.br',bytes:measured.brotli,sha256:measured.brotliSha256};
+  const audit={scriptSha256:digestFile(directory,bitScript),sourceSha256:measured.htmlSha256,streams:{
+    control:{...control,preamble:{distancePostfix:0,distanceDirect:1}},
+    candidate:{bytes:candidate.bytes,sha256:candidate.sha256,preamble:{distancePostfix:0,distanceDirect:1}}}};
+  writeFileSync(join(directory,bitFile),JSON.stringify(audit));
+  const bitHash=digestFile(directory,bitFile),study={
+    source:{path:'index.html',bytes:measured.html,sha256:measured.htmlSha256},control,candidate,
+    reproduction:{recipe,recipeSha256:digestFile(directory,recipe),harness,harnessSha256:digestFile(directory,harness)},
+    independentAudit:{bitEvidence:bitFile,sha256:bitHash,script:bitScript,scriptSha256:digestFile(directory,bitScript)},
+    encoder:{emittedDistanceHeader:{postfix:0,direct:1,evidence:bitFile,evidenceSha256:bitHash}}};
+  writeFileSync(join(directory,researchFile),JSON.stringify(study));refreshResearchReference(directory);
+  return directory;
+}
+test('optional Brotli research binds the page, tools and independent bit report',t=>{
+  const result=check(researchFixture(t));assert.equal(result.status,0,result.stderr);
+});
+test('Brotli research rejects stale or inconsistent linked records and tools',t=>{
+  for(const [mutate,error] of [
+    [root=>writeFileSync(join(root,researchFile),'{}'),/Stale Brotli research evidence hash/],
+    [root=>{changeJson(root,researchFile,v=>v.source.sha256='0'.repeat(64));refreshResearchReference(root);},/Brotli research source hash differs/],
+    [root=>{changeJson(root,researchFile,v=>v.candidate.sha256='0'.repeat(64));refreshResearchReference(root);},/Brotli research candidate hash differs/],
+    [root=>writeFileSync(join(root,'compression/index.html.br'),'stale'),/Stale Brotli research candidate file/],
+    [root=>writeFileSync(join(root,recipe),'stale'),/Stale Brotli research recipe hash/],
+    [root=>writeFileSync(join(root,harness),'stale'),/Stale Brotli research harness hash/],
+    [root=>writeFileSync(join(root,bitFile),'{}'),/Stale Brotli bit-audit hash/],
+    [root=>writeFileSync(join(root,bitScript),'stale'),/Stale Brotli bit-audit script hash/],
+    [root=>{changeJson(root,researchFile,v=>v.independentAudit.script='../outside.py');refreshResearchReference(root);},/Invalid Brotli bit-audit script reference/],
+    [root=>{changeJson(root,researchFile,v=>v.encoder.emittedDistanceHeader.direct=2);refreshResearchReference(root);},/Brotli bit-audit direct count differs/],
+    [root=>{changeJson(root,researchFile,v=>delete v.independentAudit);refreshResearchReference(root);},/Invalid Brotli bit-audit reference/]
+  ]) {
+    const directory=researchFixture(t);mutate(directory);
+    const result=check(directory);assert.notEqual(result.status,0);assert.match(result.stderr,error);
+  }
+});
 const debugbear='measurements/debugbear-20261005.json';
 function debugbearFixture(t) {
   const directory=fixture(t);

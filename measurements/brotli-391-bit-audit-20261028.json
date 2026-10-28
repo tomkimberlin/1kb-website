@@ -1,0 +1,124 @@
+{
+  "scriptSha256": "65d4822a97de990825cac12ee0d3a4fd99f2cc1663deedb7fc01ac74f96fc568",
+  "reportSha256": "73ec4c5145b068022cb09cafde8281d96cd5271c0609fa3a1a447f771a6b0c58",
+  "captureSha256": "7ce101b7be95cf0f6ab64f4668fb61d44b0cfa29939a871eb662325e547c530d",
+  "sourceSha256": "86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c",
+  "streams": {
+    "control": {
+      "sha256": "a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5",
+      "bytes": 392,
+      "preamble": {
+        "windowBits": 16,
+        "isLast": 1,
+        "uncompressedLength": 1040,
+        "blockTypeCounts": [
+          1,
+          1,
+          1
+        ],
+        "distancePostfix": 0,
+        "distanceDirect": 1,
+        "literalContextMode": 2
+      },
+      "headers": [
+        {
+          "start": 34,
+          "end": 169,
+          "bits": 135,
+          "secondaryBits": 18,
+          "active": 62,
+          "maxDepth": 7,
+          "kraftUnits15": 32768,
+          "secondaryActive": 7
+        },
+        {
+          "start": 169,
+          "end": 330,
+          "bits": 161,
+          "secondaryBits": 21,
+          "active": 73,
+          "maxDepth": 7,
+          "kraftUnits15": 32768,
+          "secondaryActive": 7
+        },
+        {
+          "start": 330,
+          "end": 426,
+          "bits": 96,
+          "secondaryBits": 17,
+          "active": 24,
+          "maxDepth": 6,
+          "kraftUnits15": 32768,
+          "secondaryActive": 6
+        }
+      ],
+      "payloadStart": 426,
+      "payloadBits": 2710,
+      "commandCount": 101,
+      "literalCount": 167,
+      "distanceCount": 95,
+      "meaningfulBits": 3136,
+      "endPaddingBits": 0
+    },
+    "candidate": {
+      "sha256": "fa488bbf1bc3bd9d07be9d1030d06eb7632c3523396b4ef09780594edb704786",
+      "bytes": 391,
+      "preamble": {
+        "windowBits": 16,
+        "isLast": 1,
+        "uncompressedLength": 1040,
+        "blockTypeCounts": [
+          1,
+          1,
+          1
+        ],
+        "distancePostfix": 0,
+        "distanceDirect": 1,
+        "literalContextMode": 2
+      },
+      "headers": [
+        {
+          "start": 34,
+          "end": 170,
+          "bits": 136,
+          "secondaryBits": 18,
+          "active": 62,
+          "maxDepth": 7,
+          "kraftUnits15": 32768,
+          "secondaryActive": 7
+        },
+        {
+          "start": 170,
+          "end": 327,
+          "bits": 157,
+          "secondaryBits": 21,
+          "active": 73,
+          "maxDepth": 7,
+          "kraftUnits15": 32768,
+          "secondaryActive": 7
+        },
+        {
+          "start": 327,
+          "end": 423,
+          "bits": 96,
+          "secondaryBits": 17,
+          "active": 24,
+          "maxDepth": 6,
+          "kraftUnits15": 32768,
+          "secondaryActive": 6
+        }
+      ],
+      "payloadStart": 423,
+      "payloadBits": 2705,
+      "commandCount": 101,
+      "literalCount": 167,
+      "distanceCount": 95,
+      "meaningfulBits": 3128,
+      "endPaddingBits": 0
+    }
+  },
+  "controlAndCandidateCanonicalSymbolsAndCommandFieldsMatch": true,
+  "allPrimaryCodeSpacesFullAndDepthsMatch": true,
+  "actualDecodedCodeCountsMatchCapturedHistograms": true,
+  "limitation": "This narrow reader compares parsed copy fields, not dictionary transform execution; the fully consuming Node and stock C decoders supply end-to-end validation."
+}

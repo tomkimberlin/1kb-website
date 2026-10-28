@@ -10,7 +10,13 @@ The deployment record lists expected alias destinations; verifier logs retain ag
 
 The October 27 deployment record does not specify Node or zlib versions. The checker recomputes gzip selection using the current runtime, which establishes present reproducibility rather than the deployment's original selection process.
 
-The checker rejects committed symlinks and limits decompression of a saved gzip candidate to the larger of 1 MiB or the source size plus one byte. The build can follow symlinks or ignore an unrelated candidate exceeding that limit, so those cases need separate evidence.
+The checker rejects committed symlinks and limits decompression of saved gzip and Brotli candidates to the larger of 1 MiB or the source size plus one byte. The build can follow symlinks or ignore an unrelated candidate exceeding that limit, so those cases need separate evidence. The Brotli check repeats the build's stock encoder grid on the checker's Node/Brotli runtime; a different runtime can select different bytes and needs separate evidence.
+
+<!-- comparison:candidate:start -->
+## Local page build awaiting verification
+
+The current local page build is **1,040 B HTML; 391 B Brotli; 541 B gzip; 529 B deflate.** [Local build evidence](measurements/page-20261028-brotli-391-local.json) binds these exact representations. This is not a verified deployment or transport measurement.
+<!-- comparison:candidate:end -->
 
 <!-- comparison:measured:start -->
 ## Latest measured transport and dated components

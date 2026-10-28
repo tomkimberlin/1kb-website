@@ -28,5 +28,11 @@
   "historicalGallery": {
     "path": "measurements/gallery-20260922.json",
     "sha256": "e211526fc18cd92e2d52d147cba2d23770fe140f037e57e7f47e26ed9f5e71ef"
+  },
+  "candidate": {
+    "page": {
+      "path": "measurements/page-20261028-brotli-391-local.json",
+      "sha256": "6e7dcff2c77a3b5eef82eedb3a7091ec3eafd8fb54b08841b90c5b5dad0d09c6"
+    }
   }
 }

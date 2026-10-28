@@ -3,14 +3,14 @@ import {readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {brotliDecompressSync, gunzipSync, inflateSync} from 'node:zlib';
 
-// Pinned to research-20261028/build-check/public, including its build manifest.
+// Pinned to the 391-byte local build and its manifest.
 export const EXPECTED = Object.freeze({
   identity: {file: 'index.html', bytes: 1040, sha256: '86b1f6f2777fbfe9e98fcbe43456e85c87829ed03c10d8bd911271fd463a277c'},
-  br: {file: 'index.html.br', bytes: 392, sha256: 'a5302e0d6b9199bf0a9fe7d81916315e6be47772b97b7d12491ce9eaf1fa1bd5'},
+  br: {file: 'index.html.br', bytes: 391, sha256: 'fa488bbf1bc3bd9d07be9d1030d06eb7632c3523396b4ef09780594edb704786'},
   gzip: {file: 'index.html.gz', bytes: 541, sha256: 'c3d75eb558ff097e54ec7e0f180e37869c9b4bfbec301045410413f0ff974fef'},
   deflate: {file: 'index.html.deflate', bytes: 529, sha256: '055a322af0c96ace5f049886e0ac4675b4dc0728cbcef72c48b2667af7235d01'},
 });
-export const MANIFEST_SHA256 = '8c9fbe7c70097af32dadd321311e3cf10c863c15d2ab95a24cd3ca7536cf0097';
+export const MANIFEST_SHA256 = '441caa39500be4b9c410de43a407eb5e782f4d3b18530e858180da4bdd892d0f';
 export const CODINGS = Object.freeze(Object.keys(EXPECTED));
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 export function need(condition, message) {
