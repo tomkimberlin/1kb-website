@@ -6,7 +6,7 @@
   "previousPageEvidence": "measurements/page-20261027-brotli-first-local.json",
   "publishedMeasurement": "measurements/page-20261025-intune-name-local.json",
   "limitations": [
-    "New gzip and deflate streams have local decode checks; a native browser encoding matrix is pending.",
+    "Native encoding evidence is from the linked CI job on Linux; it is not a public-site, TLS, transfer or deployment measurement.",
     "Visual and enlarged-font browser reports are retained from the previous unchanged HTML, not rerun for this candidate.",
     "Local build only; no new live or transport measurement."
   ],
@@ -348,5 +348,9 @@
   },
   "browserMethod": "Compare the candidate with the exact earlier source; separately apply 24px root and body font overrides to both sources.",
   "recipe": "tools/reproduce-fallback-20261028.py",
-  "recipeSha256": "2f096e87faca3ae8117ee7371adf52aa3d9774f261c1bde7d810444da743c638"
+  "recipeSha256": "2f096e87faca3ae8117ee7371adf52aa3d9774f261c1bde7d810444da743c638",
+  "nativeEncodingEvidence": {
+    "path": "measurements/browser-20261028-fallback-encodings-ci.json",
+    "sha256": "bea71f2849776b963ba679b0b9d3b664948e289d63f4102c0eacf1e7b3c58e58"
+  }
 }

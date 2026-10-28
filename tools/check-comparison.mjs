@@ -48,11 +48,28 @@ const metrics=['tlsThroughBodyCompleteMinusBody','estimatedTcpPlusDnsMinusBody',
 const componentHosts=['tomkimberlin.com','www.tomkimberlin.com','tom.kimberlin.net'];
 // Resolve source provenance in this repository, ignoring injected Git object,
 // routing and configuration variables as well as repository replacement refs.
-function readCommitted(root,commit,path) {
+function readCommitted(root,commit,path,{optional=false}={}) {
   need(typeof commit==='string'&&/^[0-9a-f]{40}$/.test(commit)&&typeof path==='string'
     &&/^[A-Za-z0-9._/-]+$/.test(path)&&!path.startsWith('/')&&!path.split('/').includes('..'),'Invalid immutable source reference');
   const env=Object.fromEntries(Object.entries(process.env).filter(([key])=>!key.startsWith('GIT_')));
-  Object.assign(env,{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_NO_REPLACE_OBJECTS:'1',GIT_TERMINAL_PROMPT:'0'});
+  // Ask Git not to fetch missing promisor objects during a provenance read.
+  Object.assign(env,{GIT_CONFIG_NOSYSTEM:'1',GIT_CONFIG_GLOBAL:'/dev/null',GIT_NO_REPLACE_OBJECTS:'1',GIT_NO_LAZY_FETCH:'1',GIT_TERMINAL_PROMPT:'0'});
+  const type=execFileSync('git',['--no-replace-objects','cat-file','-t',commit],{cwd:root,env,stdio:['ignore','pipe','pipe']}).toString('utf8').trim();
+  need(type==='commit','Immutable source reference must be a Git commit');
+  if(optional) {
+    // An absent file is different from a missing commit, Git failure, symlink,
+    // or other non-regular object. Only the genuinely absent file is optional.
+    const ls=entry=>execFileSync('git',['--no-replace-objects','ls-tree','--full-tree','-z',commit,'--',entry],{cwd:root,env,stdio:['ignore','pipe','pipe']}).toString('utf8');
+    const parts=path.split('/');
+    for(let i=1;i<parts.length;i++) {
+      const parent=parts.slice(0,i).join('/'),entry=ls(parent);
+      if(entry==='')return null;
+      need(/^040000 tree [0-9a-f]{40}\t/.test(entry)&&entry.endsWith('\t'+parent+'\0'),'Invalid immutable optional file parent');
+    }
+    const entry=ls(path);
+    if(entry==='')return null;
+    need(/^100(?:644|755) blob [0-9a-f]{40}\t/.test(entry)&&entry.endsWith('\t'+path+'\0'),'Invalid immutable optional file');
+  }
   return execFileSync('git',['--no-replace-objects','show',commit+':'+path],{cwd:root,env,stdio:['ignore','pipe','pipe']});
 }
 const markers=kind=>[`<!-- comparison:${kind}:start -->`,`<!-- comparison:${kind}:end -->`];
@@ -287,7 +304,7 @@ export function checkComparison({root=process.cwd(),pointer='measurements/compar
   need(!Object.hasOwn(deployment.server?.sourceFileHashes??{},'server/quic-stream-offset.patch')||streamOffsets!==null,'Current STREAM-offset runtime requires component evidence');
   if(streamOffsets!==null)checkStreamOffsets(streamOffsets,{deployment,page,readCommitted:(commit,path)=>readCommitted(root,commit,path)});
   const finCoalescing=deployment.quicFinCoalescing===undefined?null:record(deployment.quicFinCoalescing);
-  const immutableSource=(commit,path)=>readCommitted(root,commit,path);
+  const immutableSource=(commit,path,options)=>readCommitted(root,commit,path,options);
   requireFinEvidence(deployment,finCoalescing,immutableSource);
   const streamLengths=deployment.quicStreamLengthEncoding===undefined?null:record(deployment.quicStreamLengthEncoding);
   const adjacentStreams=deployment.quicAdjacentStreams===undefined?null:record(deployment.quicAdjacentStreams);

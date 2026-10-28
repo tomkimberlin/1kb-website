@@ -8,6 +8,10 @@ Verified 2026-10-27: **1,040 B HTML; 392 B Brotli; 542 B gzip; 530 B deflate.** 
 
 The deployment record lists expected alias destinations; verifier logs retain aggregate pass results rather than per-request response records. The www check covers an HTTPS query redirect, while the other alias includes root, path and query checks. The readback trust flag refers to the successful normal-trust private readiness probe; its method is recorded from the executed command, not from a per-request trace. Log hashes identify retained private files; they do not authenticate observations.
 
+The October 27 deployment record does not specify Node or zlib versions. The checker recomputes gzip selection using the current runtime, which establishes present reproducibility rather than the deployment's original selection process.
+
+The checker rejects committed symlinks and limits decompression of a saved gzip candidate to the larger of 1 MiB or the source size plus one byte. The build can follow symlinks or ignore an unrelated candidate exceeding that limit, so those cases need separate evidence.
+
 <!-- comparison:candidate:start -->
 ## Local page build awaiting verification
 
